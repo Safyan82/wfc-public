@@ -7,6 +7,8 @@ import PhoneNumberInput from "./components/input/phone";
 import { CreateField } from "./components/createFields";
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import { Login } from "./pages/login";
+import { DefaultLayout } from "./layout/defaultLayout";
+import { Employee } from "./pages/employee";
 
 function App() {
   return (
@@ -14,8 +16,8 @@ function App() {
      <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login/>} />
-        <Route path='/user' element={<Navbar/>}>
-          {/* <Route index element={<Calendar />} /> */}
+        <Route path='/user' element={<DefaultLayout/>}>
+          <Route index element={<Employee />} />
         </Route>
       </Routes>
     </BrowserRouter>

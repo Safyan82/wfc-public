@@ -12,75 +12,9 @@ const data= [
     age: 32,
     address: 'New York No. 1 Lake Park',
   },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
 ];
 
-const App = () => {
+const DataTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
@@ -139,8 +73,20 @@ const App = () => {
         setSelectedRowKeys(newSelectedRowKeys);
       };
 
-  
+
+  // normal row selection
   const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.name === 'Disabled User', // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
+
+  // advance row selection not implemented yet
+  const customrowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
     selections: [
@@ -179,15 +125,30 @@ const App = () => {
   };
 
   return (
-    <Layout>
-      <Content className="site-layout" style={{ padding: '0 50px' }}>
-        <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>Employee</Breadcrumb.Item>
-        </Breadcrumb>
+    <Layout className='bg-white'>
+      <Content className="site-layout" style={{ padding: '0 48px' }}>
         <div style={{ padding: 5, minHeight: 450, background: colorBgContainer }}>
-            <TabsComponent/>
-            <Table  rowSelection={rowSelection} columns={columns} dataSource={data} onChange={handleChange} />
+            {/* <TabsComponent/> */}
+            <Table  
+              bordered
+              rowSelection={
+                {
+                  type: 'Checkbox',
+                  ...rowSelection,
+                }
+              } 
+              columns={columns} 
+              dataSource={data} 
+              onChange={handleChange}
+              
+    title={() => {
+      return(
+        <div>
+          <input/>
+          </div>
+      )
+    }} 
+            />
         </div>
       </Content>
       
@@ -195,4 +156,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default DataTable;

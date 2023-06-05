@@ -2,6 +2,10 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+.bg-white{
+    background-color: white;
+}
+
 .text-center{
     text-align: center !important;
 }
@@ -185,4 +189,82 @@
 .login-title{
     color: rgb(51, 71, 91);
     text-align: center;
+}
+
+
+/* ------------- TABLE GRID --------------- */
+.grid-head-section{
+    padding: 20px 48px 0px;
+    display: flex;
+    justify-content: space-between !important;
+    
+}
+
+.grid-title{
+    font-size: 20px;
+    font-weight: 600;
+    color:#0091ae;
+}
+
+.grid-subtitle{
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    color: black;
+}
+
+.grid-header-btn{
+    margin-left: auto;
+    display: flex;
+    column-gap: 10px;
+}
+
+.grid-outlined-btn{
+    border-color: #fb8c5f;
+    color:#fb8c5f;
+    border-radius: 0 !important;
+}
+
+.grid-outlined-btn:hover{
+    border-color: #fb8c5f !important;
+    color:#fb8c5f !important;
+    box-shadow: 0px 0px 2px #fb8c5f !important;
+}
+
+.grid-filed-btn{
+    border: none;
+    background-color: #fb8c5f;
+    color: white !important;
+    border-radius: 0 !important;
+}
+
+.grid-head-right-btn{
+    background-color: #eaf0f6;
+    border-color: #cbd6e2;
+    color: #506e91;
+    font-size: 12px;
+    line-height: 14px;
+    padding: 8px 16px;
+}
+
+.grid-filed-btn:hover{
+    border: none;
+    background-color: #fb8c5f !important;
+    color: white !important;
+    box-shadow: 0px 0px 2px #fb8c5f;
+}
+
+.grid-text-btn{
+    padding: 0 !important;
+    color:#0091ae !important;
+    font-size: 14px;
+    font-weight: 600;
+}
+.grid-text-btn:hover {
+    background: none !important;
+    color:#33475b !important;
+}
+.grid-head-left-btn-section{
+    display: flex;
+    column-gap: 20px;
 }
