@@ -19,7 +19,7 @@ export function Navbar(){
     const [isWindowMaximized, setWindowMaximized] = useState(true);
     return(
     <Layout>
-        <Menu mode="horizontal" theme="dark">
+        <Menu mode="horizontal" theme="dark" className='top-menu-layout'>
             <Menu.Item>
                 <img src={logo} style={{width:'25px'}}/>
             </Menu.Item>

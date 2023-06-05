@@ -35,39 +35,39 @@ export const TableGrid=()=>{
                 <div className='grid-head-left-btn-section'>
 
                     <Popover 
-                        visible={assignedEmployee} 
                         content={<SelectDropdown />} 
                         placement='bottom'
+                        trigger="click"
                     >
-                        <Button type='text' className='grid-text-btn'  onClick={()=>setAssignedEmployee(!assignedEmployee)}>Assigned Employee <CaretDownFilled/> </Button>
+                        <Button type='text' className='grid-text-btn'>Assigned Employee <CaretDownFilled/> </Button>
                     </Popover>
 
 
                     <Popover 
-                        visible={createdDate} 
                         content={<SelectDropdown />} 
                         placement='bottom'
+                        trigger="click"
                     >
-                        <Button type='text' className='grid-text-btn'  onClick={()=>setCreatedDate(!createdDate)}>Created Date <CaretDownFilled/> </Button>
+                        <Button type='text' className='grid-text-btn'>Created Date <CaretDownFilled/> </Button>
                     </Popover>
 
 
                     <Popover 
-                        visible={lastActivityDate} 
                         content={<SelectDropdown />} 
                         placement='bottom'
+                        trigger="click"
                     >
-                        <Button type='text' className='grid-text-btn'  onClick={()=>setLastActivityDate(!lastActivityDate)}>Last Activity Date <CaretDownFilled/> </Button>
+                        <Button type='text' className='grid-text-btn'>Last Activity Date <CaretDownFilled/> </Button>
                     </Popover>
 
 
 
                     <Popover 
-                        visible={lastActivityDate} 
                         content={<SelectDropdown />} 
                         placement='bottom'
+                        trigger="click"
                     >
-                        <Button type='text' className='grid-text-btn'  onClick={()=>setLastActivityDate(!lastActivityDate)}>Status <CaretDownFilled/></Button>
+                        <Button type='text' className='grid-text-btn' >Status <CaretDownFilled/></Button>
                     </Popover>
 
                     <Button type='text' className='grid-text-btn'> <SlidersOutlined />   Advance Filter</Button>

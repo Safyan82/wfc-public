@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Breadcrumb, Layout, theme, Table } from 'antd';
+import { Layout, theme, Table, Input, Popover } from 'antd';
+import {SearchOutlined} from '@ant-design/icons';
 import TabsComponent from '../tab';
 
   
@@ -126,7 +127,7 @@ const DataTable = () => {
 
   return (
     <Layout className='bg-white'>
-      <Content className="site-layout" style={{ padding: '0 48px' }}>
+      <Content className="site-layout" style={{ padding: '0 42px' }}>
         <div style={{ padding: 5, minHeight: 450, background: colorBgContainer }}>
             {/* <TabsComponent/> */}
             <Table  
@@ -141,13 +142,23 @@ const DataTable = () => {
               dataSource={data} 
               onChange={handleChange}
               
-    title={() => {
-      return(
-        <div>
-          <input/>
-          </div>
-      )
-    }} 
+              title={() => {
+                return(
+                  <div className='grid-table-search-input'>
+                    
+                    <Popover  
+                        // overlayInnerStyle={{background:'red', color: "white"}}
+                        // overlayStyle={{background:'red', color: "white"}}
+                        // overlayClassName='grid-custom-popover'
+                        content={"Search name, phone, email, address"} 
+                        placement='right'
+                        trigger="click"
+                    >
+                        <Input type='search' placeholder='Search name, phone, email'  suffix={<SearchOutlined />}/>
+                    </Popover>
+                    </div>
+                )
+              }} 
             />
         </div>
       </Content>

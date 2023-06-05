@@ -24,7 +24,7 @@
 
 
 
-/* login */
+/* ---------------- Login -------------------*/
 .login-title {
     font-size: 1.75rem;
     font-weight: 400;
@@ -128,7 +128,11 @@
     color:rgba(255, 0, 0, 0.7);
 }
 
-/* top nav bar */
+/* 
+-----------------------------  TOP NAVIGATION BAR ------------------------------ 
+*/
+
+
 .minimize{
     line-height: 37px;
 }
@@ -141,6 +145,10 @@
 .menu-more{
     transform: rotate(270deg);
 }
+.top-menu-layout .ant-menu-item-selected{
+    background: none !important;
+}
+
 
 /* layout */
 .sidebarLayout{
@@ -267,4 +275,19 @@
 .grid-head-left-btn-section{
     display: flex;
     column-gap: 20px;
+}
+
+.grid-table-search-input{
+    margin-left:-12px;
+    width: 200px;
+    border-radius: 0px !important   ;
+}
+
+.grid-custom-popover{
+    background: red !important;
+}
+
+.grid-custom-popover .ant-popover-arrow {
+    border-color: #ff0000 !important;
+    outline-color: red !important;
 }

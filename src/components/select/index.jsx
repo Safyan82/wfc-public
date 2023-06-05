@@ -22,7 +22,6 @@ export const SelectDropdown = ({isOpen}) =>{
         style={{ width: 200 }}
         placeholder="Select an option"
         optionFilterProp="children"
-        
         suffixIcon={<SearchOutlined />}
         onSearch={handleSearch}
         onSelect={handleSelect}
@@ -30,7 +29,6 @@ export const SelectDropdown = ({isOpen}) =>{
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
         autoFocus={true}
-        isOpen={true}
       >
         <Option value="option1">Option 1</Option>
         <Option value="option2">Option 2</Option>
