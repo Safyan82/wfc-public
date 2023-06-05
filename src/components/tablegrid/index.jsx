@@ -38,6 +38,7 @@ export const TableGrid=()=>{
                         content={<SelectDropdown />} 
                         placement='bottom'
                         trigger="click"
+                        onClick={(visible)=>console.log(visible)}
                     >
                         <Button type='text' className='grid-text-btn'>Assigned Employee <CaretDownFilled/> </Button>
                     </Popover>
