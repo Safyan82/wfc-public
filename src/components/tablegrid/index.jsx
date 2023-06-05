@@ -39,6 +39,7 @@ export const TableGrid=()=>{
                         placement='bottom'
                         trigger="click"
                         onClick={(visible)=>console.log(visible)}
+                        overlayInnerStyle={{height:'200px'}}
                     >
                         <Button type='text' className='grid-text-btn'>Assigned Employee <CaretDownFilled/> </Button>
                     </Popover>
@@ -48,6 +49,7 @@ export const TableGrid=()=>{
                         content={<SelectDropdown />} 
                         placement='bottom'
                         trigger="click"
+                        overlayInnerStyle={{height:'200px'}}
                     >
                         <Button type='text' className='grid-text-btn'>Created Date <CaretDownFilled/> </Button>
                     </Popover>
@@ -57,6 +59,7 @@ export const TableGrid=()=>{
                         content={<SelectDropdown />} 
                         placement='bottom'
                         trigger="click"
+                        overlayInnerStyle={{height:'200px'}}
                     >
                         <Button type='text' className='grid-text-btn'>Last Activity Date <CaretDownFilled/> </Button>
                     </Popover>
@@ -67,6 +70,7 @@ export const TableGrid=()=>{
                         content={<SelectDropdown />} 
                         placement='bottom'
                         trigger="click"
+                        overlayInnerStyle={{height:'200px'}}
                     >
                         <Button type='text' className='grid-text-btn' >Status <CaretDownFilled/></Button>
                     </Popover>
