@@ -31,7 +31,7 @@ export const Login=()=>{
     const handelformSubmit=(e)=>{
         e.preventDefault();
         if(email.value.length >0 && password.value.length >0 && email.error=="" && password.error==""){
-            navigate("/user");
+            navigate("/user/branch");
         }else{
             openNotification('topRight');
         }
