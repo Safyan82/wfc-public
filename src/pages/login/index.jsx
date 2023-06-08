@@ -1,5 +1,6 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
 import { Row, Col, Form, Input, Typography, Checkbox, notification } from 'antd';
 import workforcecityLogin from '../../assets/img/workForceCityLogin.png';
 import logo from '../../assets/img/wc-logo-big.png';
@@ -16,7 +17,6 @@ export const Login=()=>{
     const[email, setEmail] = React.useState({value:'',error:''});
     const[password, setPassword] = React.useState({value:'',error:''});
     const[remember, setRemember] = React.useState();
-    
 
 
     const openNotification = (placement,message, description) => {

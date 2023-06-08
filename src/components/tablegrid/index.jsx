@@ -1,12 +1,10 @@
 import { Button, Popover  } from 'antd';
 import React from 'react';
-import { HTML5Backend } from "react-dnd-html5-backend";
-import DraggableTabs from '../dragableTab';
-import {DndProvider} from 'react-dnd';
 import { CaretDownFilled, SlidersOutlined, SaveFilled } from '@ant-design/icons';
 
 import { SelectDropdown } from '../select';
 import DataTable from '../table';
+import { GridHeader } from './header';
 
 export const TableGrid=()=>{
 
@@ -16,21 +14,7 @@ export const TableGrid=()=>{
 
     return (
         <div>
-            <div className='grid-head-section'>
-                <div className='grid-title'>
-                    Employee
-                    <div className='grid-subtitle'>0 records</div>
-                </div>
-                {/* right section */}
-                <div className='grid-header-btn'>
-                    <Button className='grid-outlined-btn'>Action</Button>
-                    <Button className='grid-outlined-btn'>Import</Button>
-                    <Button className='grid-filed-btn'>Create Employee</Button>
-                </div>
-            </div>
-            <div className='dragable-view'>
-                {/* dragable tabs implementation */}
-            </div>
+            <GridHeader title={"Employee"} record={0} />
             <div className='grid-head-section'>
                 <div className='grid-head-left-btn-section'>
 

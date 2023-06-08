@@ -9,6 +9,9 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import { Login } from "./pages/login";
 import { DefaultLayout } from "./layout/defaultLayout";
 import { Employee } from "./pages/employee";
+import { Branch } from "./pages/branch";
+import { EditForm } from "./pages/editForm";
+import DraggableList from "./pages/shuffle";
 
 function App() {
   return (
@@ -16,9 +19,11 @@ function App() {
      <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login/>} />
-        <Route path='/user' element={<DefaultLayout/>}>
+        <Route path='/user/' element={<DefaultLayout/>}>
           <Route index element={<Employee />} />
+          <Route path='branch' element={<Branch />} />
         </Route>
+        <Route path='/editfrom' element={<EditForm />} />
       </Routes>
     </BrowserRouter>
     {/* <Navbar/> */}

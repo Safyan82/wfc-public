@@ -15,7 +15,7 @@ const data= [
   },
 ];
 
-const DataTable = () => {
+const DataTable = ({header}) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
@@ -142,7 +142,8 @@ const DataTable = () => {
               dataSource={data} 
               onChange={handleChange}
               
-              title={() => {
+              title={!header? null : () => {
+                if(header){
                 return(
                   <div className='grid-table-search-input'>
                     
@@ -157,7 +158,7 @@ const DataTable = () => {
                         <Input type='search' placeholder='Search name, phone, email'  suffix={<SearchOutlined />}/>
                     </Popover>
                     </div>
-                )
+                )}else{return null}
               }} 
             />
         </div>

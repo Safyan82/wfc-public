@@ -1,0 +1,116 @@
+.section{
+    padding-left: 0;
+    padding-right: 0;
+    z-index: 2;
+}
+.toolbar{
+        background: rgb(37, 51, 66);
+    color: rgb(255, 255, 255);
+    padding-left: 32px;
+    padding-right: 20px;
+}
+.toolbar-inner{
+    -webkit-box-align: center;
+    align-items: center;
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    margin: -2px 0px 0px -12px;
+    min-height: 56px;
+    padding-top: 5px;
+    width: 100%;
+}
+
+.toolbar-inner-link{
+    padding: 8px 0px;
+    font-weight: 600;
+    font-size: 14px;
+    width: 33%;
+    display: flex;
+    column-gap: 12px;
+    cursor: pointer;
+}
+
+.toolbar-inner-title{
+    width: 33%;
+    font-weight: 400;
+    font-size: 20px;    
+    -webkit-font-smoothing: auto;
+}
+
+.btn-group{
+    display: flex;
+    column-gap: 10px;
+}
+
+.btn-group .grid-outlined-btn{
+    font-weight: 600 !important;
+    font-size: 14px;
+}
+
+.btn-group .grid-filed-btn{
+    font-weight: 600 !important;
+    font-size: 14px;
+}
+
+.left-sidebar{
+    position: fixed;
+    height: 100%;
+    overflow: hidden auto;
+    box-shadow: rgba(66, 91, 118, 0.21) 3px 0px 8px 0px;
+    overflow-y: auto;
+}
+
+.left-sidebar-inner{
+    padding-top: 20px;
+    width: 400px;
+}
+
+.left-sidebar-item{
+    padding-top: 20px;
+    padding-bottom: 10px;
+    padding-left: 24px;
+    cursor: pointer;
+    display: flex;
+    column-gap: 15px;
+    color: #0091ae;
+
+}
+
+.left-sidebar-item-text{
+    
+    font-size: 16px;
+    font-weight: 600;
+    transition: all .15s ease-out;
+    line-height: 17px;
+}
+
+.form-section{
+    margin-left: 33%;
+    position: relative;
+    padding:20px;
+    
+}
+
+.form-section-inner{
+    width: 600px;
+    margin:auto;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(45, 62, 80, 0.12) 0px 1px 5px 0px;
+    border-radius: 3px;
+    padding-bottom: 20px;
+}
+
+.form-section-body{
+    padding: 0px 40px;
+}
+.form-section-body .input{
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: black !important;
+    height: 25px !important;
+    margin-top: 3%;
+    width:auto ;
+    padding: 9px 30px 9px 26px !important;    
+}
