@@ -12,8 +12,14 @@ import { Employee } from "./pages/employee";
 import { Branch } from "./pages/branch";
 import { EditForm } from "./pages/editForm";
 import DraggableList from "./pages/shuffle";
+import { useEffect } from "react";
 
 function App() {
+  
+  useEffect(()=>{
+    localStorage.setItem("branchOrder", JSON.stringify([{"id":1,"content":"Branch Name"},{"id":2,"content":"Post code"},{"id":3,"content":"Address Line 1"},{"id":4,"content":"Address Line2"},{"id":5,"content":"City"},{"id":6,"content":"County"}]));
+  },[])
+
   return (
     <>
      <BrowserRouter>
