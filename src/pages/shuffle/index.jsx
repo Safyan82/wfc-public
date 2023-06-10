@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { Form, Input } from "antd";
+import { ApartmentOutlined } from "@ant-design/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { Popover } from "antd";
 
 // fake data generator
 const getItems = count =>
@@ -62,17 +65,47 @@ export default class DraggableList extends Component {
               {this.state.items.map((item, index) => (
                 <Draggable key={item.id.toString()} draggableId={item.id.toString()} index={index}>
                   {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      id={"item-"+index}
-                      itemRef={"item-"+index}
-                      key={item.id}
-                      className="input-control input"
-                    >
-                        {item.content}
+                    <div className="icon-wrapper">
+                      <div className="delete-icon">
+                        <Popover 
+                          overlayClassName="custom-popover"
+                          content={"This Property is a part of object schema"} 
+                          placement='top'
+                        >
+                          <FontAwesomeIcon icon={faTrashAlt} />
+                        </Popover>
+                        
+                        <Popover 
+                          overlayClassName="custom-popover"
+                          content={"Conditional logic is not available for non-enumerated properties."} 
+                          placement='top'
+                        >
+                          <ApartmentOutlined />
+                        </Popover>
+
+                        
+                        <Popover 
+                        overlayClassName="custom-popover"
+                        content={"Change the label of this property"} 
+                        placement='top'
+                        >
+                          <FontAwesomeIcon icon={faEdit} />
+                        </Popover>
+
+                      </div>
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        id={"item-"+index}
+                        itemRef={"item-"+index}
+                        key={item.id}
+                        className="input-control input inputItemList"
+                      >
+                          {item.content}
+                      </div>
                     </div>
+
                   )}
                 </Draggable>
               ))}

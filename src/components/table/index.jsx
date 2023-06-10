@@ -6,14 +6,7 @@ import TabsComponent from '../tab';
   
 const { Header, Content, Footer } = Layout;
 
-const data= [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-];
+const data=  [];
 
 const DataTable = ({header}) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -32,35 +25,35 @@ const DataTable = ({header}) => {
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: 'Branch Name',
+      dataIndex: 'BranchName',
       key: 'name',
-      filters: [
-        { text: 'Joe', value: 'Joe' },
-        { text: 'Jim', value: 'Jim' },
-      ],
-      filteredValue: filteredInfo.name || null,
-      onFilter: (value, record) => record.name.includes(value),
+      // filters: [
+      //   { text: 'Joe', value: 'Joe' },
+      //   { text: 'Jim', value: 'Jim' },
+      // ],
+      // filteredValue: filteredInfo.name || null,
+      // onFilter: (value, record) => record.name.includes(value),
       sorter: (a, b) => a.name.length - b.name.length,
-      sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
+      // sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
+      title: 'Post code',
+      dataIndex: 'postCode',
       key: 'age',
       sorter: (a, b) => a.age - b.age,
-      sortOrder: sortedInfo.columnKey === 'age' ? sortedInfo.order : null,
+      // sortOrder: sortedInfo.columnKey === 'age' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
       title: 'Address',
       dataIndex: 'address',
       key: 'address',
-      filters: [
-        { text: 'London', value: 'London' },
-        { text: 'New York', value: 'New York' },
-      ],
+      // filters: [
+      //   { text: 'London', value: 'London' },
+      //   { text: 'New York', value: 'New York' },
+      // ],
       filteredValue: filteredInfo.address || null,
       onFilter: (value, record) => record.address.includes(value),
       sorter: (a, b) => a.address.length - b.address.length,

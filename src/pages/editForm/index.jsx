@@ -4,12 +4,16 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { Button, Divider, Form, Input } from "antd";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DraggableList from '../shuffle';
+import AddBranch from '../branch/addBranch';
 
 export const EditForm=()=>{
     const location = useLocation();
-    const {title} = location.state;
+    const navigate = useNavigate();
+    const {title, url} = location.state;
+    const [modalState, setModalState] = useState(false);
+
     const list = [
         {id:1, content:"Branch Name"}, 
         {id:2, content:"Post code"},
@@ -29,8 +33,8 @@ export const EditForm=()=>{
                         </div>
                         <div className="toolbar-inner-title">Edit {title} form</div>
                         <div className="btn-group">
-                            <Button className="grid-outlined-btn">Preview</Button>
-                            <Button className="grid-filed-btn">Save</Button>
+                            <Button className="grid-outlined-btn" onClick={()=>setModalState(!modalState)}>Preview</Button>
+                            <Button className="grid-filed-btn" onClick={()=>navigate(url)}>Save</Button>
                         </div>
                     </div>
                 </div>
@@ -64,6 +68,7 @@ export const EditForm=()=>{
                     </div>
                 </div>
             </div>
+            <AddBranch visible={modalState} onCancel={()=>setModalState(!modalState)}/>
         </React.Fragment>
     );
 }
