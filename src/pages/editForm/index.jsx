@@ -1,4 +1,5 @@
 import './editform.css';
+import '../../assets/default.css';
 import React, { useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,6 +8,7 @@ import { Button, Divider, Form, Input } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import DraggableList from '../shuffle';
 import AddBranch from '../branch/addBranch';
+import { AddProperty } from './addProperty';
 
 export const EditForm=()=>{
     const location = useLocation();
@@ -22,12 +24,15 @@ export const EditForm=()=>{
         {id:5, content:"City"}, 
         {id:6, content:"County"},
     ]
+
+    const[isPropOpen, setProp]=useState(false);
+
     return(
         <React.Fragment>
             <section className="section">
                 <div className="toolbar">
                     <div className="toolbar-inner">
-                        <div className="toolbar-inner-link">
+                        <div className="toolbar-inner-link"  onClick={()=>navigate(url)}>
                             <div><FontAwesomeIcon icon={faChevronLeft} style={{fontSize:'20px'}} /></div>
                             <div>Back</div>
                         </div>
@@ -39,24 +44,40 @@ export const EditForm=()=>{
                     </div>
                 </div>
             </section>
+
+            {/* left side properties */}
             <div className="left-sidebar">
                 <div className="left-sidebar-inner">
-                    <div className="left-sidebar-item">
-                        <div className="left-sidebar-item-text">Add properties</div>
-                        <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                    </div>
-                    <Divider/>
-                    <div className="left-sidebar-item">
-                        <div className="left-sidebar-item-text">Add conditional logic</div>
-                        <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                    </div>
-                    <Divider/>
-                    <div className="left-sidebar-item">
-                        <div className="left-sidebar-item-text">Add associations </div>
-                        <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                    </div>
+
+                    {
+                    isPropOpen?
+                    
+                    <AddProperty back={()=>setProp(false)}/>
+                    
+                    :
+                    <>
+                        {/* main content of property */}
+                        <div className="left-sidebar-item">
+                            <div className="left-sidebar-item-text" onClick={()=>setProp(true)} >Add properties</div>
+                            <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                        </div>
+                        <Divider/>
+                        <div className="left-sidebar-item">
+                            <div className="left-sidebar-item-text">Add conditional logic</div>
+                            <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                        </div>
+                        <Divider/>
+                        <div className="left-sidebar-item">
+                            <div className="left-sidebar-item-text">Add associations </div>
+                            <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                        </div>
+                    </>
+                    }
+
                 </div>
             </div>
+
+            {/* main body */}
             <div className="form-section">
                 <div className="form-section-inner">
                     <div className="modal-header-title">

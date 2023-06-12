@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.7.15",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
@@ -16,6 +17,7 @@
     "axios": "^1.4.0",
     "electron": "^15.2.0",
     "framer-motion": "^10.12.16",
+    "graphql": "^16.6.0",
     "popmotion": "^11.0.5",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.0.0",

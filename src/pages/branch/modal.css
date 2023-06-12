@@ -4,7 +4,7 @@
     width: 0 !important;
   }
   to {
-    width: 530px !important;
+    width: 600px !important;
   }
 
   }
@@ -36,3 +36,6 @@
 
 
 
+.notification-without-close .ant-notification-close-icon {
+  display: none;
+}
