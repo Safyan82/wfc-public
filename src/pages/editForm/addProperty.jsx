@@ -1,8 +1,8 @@
+import React from 'react';
 import {SearchOutlined} from '@ant-design/icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "antd";
-
 export const AddProperty=({back})=>{
     return(
         <>

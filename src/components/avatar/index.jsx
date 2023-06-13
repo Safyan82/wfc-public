@@ -1,5 +1,5 @@
 import { Avatar } from 'antd';
-
+import React from 'react';
 const WordLetterAvatar = ({ word }) => {
   let letter = word.split(' ')[0].charAt(0).toUpperCase();
   letter += word.split(' ')[1].charAt(0).toUpperCase();
