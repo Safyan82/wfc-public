@@ -81,7 +81,7 @@ export const Login=()=>{
                     </Form.Item>
 
                     <Form.Item>
-                        <Checkbox checked className='custom-checkbox'>
+                        <Checkbox defaultChecked className='custom-checkbox'>
                             Remember me
                         </Checkbox>
                     </Form.Item>

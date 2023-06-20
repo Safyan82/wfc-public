@@ -382,11 +382,11 @@
 
 
 
-.ant-checkbox-checked:not(.ant-checkbox-disabled):hover .ant-checkbox-inner{
+.propertyCheckbox .ant-checkbox-checked:not(.ant-checkbox-disabled):hover .ant-checkbox-inner{
   background-color: transparent !important;
 }
 
-.ant-checkbox-inner::after {
+.propertyCheckbox .ant-checkbox-inner::after {
   border-color: #0091ae !important; /* Set the desired tick color */
   height: 12px !important;
 }
