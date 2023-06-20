@@ -11,11 +11,18 @@ const multi=[
     'radioDropdown',
 ];
 
-export const FieldType = ({basicInfo})=>{
+export const FieldType = ({basicInfo, setWidth})=>{
     const {Option, OptGroup} = Select;
-    console.log(basicInfo, "basicInfo");
-    const [fieldType, setFieldType] = useState(null);
+    const [fieldType, setFieldType] = useState(sessionStorage.getItem('fieldType'));
 
+    useEffect(()=>{
+        sessionStorage.setItem('fieldType', fieldType);
+        if(multi.includes(fieldType)){
+            setWidth(true);
+        }else{
+            setWidth(false)
+        }
+    },[fieldType]);
     return(
         <React.Fragment>
             <Typography className='label'>
@@ -29,6 +36,7 @@ export const FieldType = ({basicInfo})=>{
                     onChange={(e)=>setFieldType(e)}
                     placeholder="Select field type"
                     style={{marginBottom:'26px'}}
+                    value={fieldType}
                 >
                     <OptGroup label="Meta Field">
                         <Option value="email">Email</Option>
@@ -64,7 +72,7 @@ export const FieldType = ({basicInfo})=>{
                         suffixIcon={<span className="dropdowncaret"></span>}
                         onChange={(e)=>setFieldType(e)}
                         value="custom">
-                            <Option value="custom" selected>Custom</Option>
+                            <Option value="custom">Custom</Option>
                             <Option value="alphabetical">Alphabetical</Option>
                     </Select>
                 </div>

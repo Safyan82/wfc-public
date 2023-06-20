@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Table, Checkbox } from 'antd';
+import { Table, Checkbox, Button } from 'antd';
 
-
-const CheckboxTable = ({tableData}) => {
+const CheckboxTable = ({tableData, footerContent}) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const onSelectChange = (selectedKeys) => {
     setSelectedRowKeys(selectedKeys);
@@ -48,6 +47,7 @@ const CheckboxTable = ({tableData}) => {
         columns={columns}
         dataSource={tableData}
         pagination={{pageSize:50}}
+        footer={footerContent}
       />
     </div>
   );

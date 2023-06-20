@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { CREATE_BRACNH } from '../../util/mutation/branch.mutation';
 import './createFieldDrawer.css';
-import Spinner from '../spinner';
+
 import { BasicInfo } from './step1basicInfo';
 import { FieldType } from './step2fieldType';
+import { Rules } from './step3Rules';
 
 
 const { Step } = Steps;
@@ -23,7 +24,14 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [basicInfo, setBasicInfo] = useState(null);
     const [basicInfoCheck, setBasicInfoCheck] = useState(true);
+    const [width, setWidth] = useState(false);
+    const [api, contextHolder] = notification.useNotification();
+
     const navigate = useNavigate();
+
+    useEffect(()=>{
+      sessionStorage.clear();
+    },[])
 
     useEffect(()=>{
       if(basicInfo?.objectType?.length>0 && basicInfo?.group?.length>0 && basicInfo?.label?.length>0 ){
@@ -38,15 +46,15 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
     const steps = [
       {
         title: 'BASIC INFO',
-        component: <BasicInfo basicInfo={basicInfo} setBasicInfo={setBasicInfo} />
+        component: <BasicInfo basicInfo={basicInfo} setWidth={setWidth} setBasicInfo={setBasicInfo} />
       },
       {
         title: 'FIELD TYPE',
-        component: <FieldType basicInfo={basicInfo}/>
+        component: <FieldType basicInfo={basicInfo} setWidth={setWidth}/>
       },
       {
         title: 'RULES',
-        component:  <div>step3 </div>
+        component: <Rules basicInfo={basicInfo} setWidth={setWidth} />
       }
     ];
   
@@ -58,9 +66,19 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
       setCurrentStep(currentStep - 1);
     };
   
-      
-      return (
+    const handelSubmit=()=>{
+      onClose()
+      api.success({
+        message:'Field was created successfully',
+        placement:"top",
+        className: 'notification-without-close',
+      });
+    }  
+
+    
+    return (
         <div>
+          
           <Drawer
             title="Create a new property "
             placement="right"
@@ -68,7 +86,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
             onClose={onClose}
             closeIcon={<FontAwesomeIcon icon={faClose} onClick={onClose} className='close-icon'/>}
             visible={visible}
-            width={600}
+            width={width ? 900 : 600}
             className='fieldDrawer'
             footer={
               <div className='drawer-footer' style={{display:'flex', justifyContent:'space-between'}}>
@@ -85,11 +103,18 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
                     <button className={currentStep ==0 && basicInfoCheck ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handleNext}>
                     {'Next'} <FontAwesomeIcon className='next-btn-icon' icon={faChevronRight}/>
                     </button>
+                  } 
+                  {currentStep == steps.length - 1 && 
+                    <button onClick={handelSubmit} className={currentStep ==0 && basicInfoCheck ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
+                    {'Create'}
+                    </button>
                   }
 
               </div>
             }
           >
+          {contextHolder}
+
             {/* stepper header */}
             <Steps current={currentStep} progressDot={customDot}>
               {steps.map((step, index) => (

@@ -54,7 +54,11 @@
 }
 
 .fieldDrawer .ant-drawer-body{
-  overflow: auto;
+  overflow-x: hidden;
+}
+
+.ant-drawer-wrapper-body{
+  overflow-x: hidden;
 }
 
 .ant-steps-item-title{
@@ -117,12 +121,33 @@
 
 .custom-select{
   border-radius: 3px;
+  margin-top: -1%;
 }
 
 .custom-select .ant-select-selector{
   background-color: #f5f8fa !important;
   
 }
+
+
+/* table footer */
+.table-footer{
+  display: flex;
+  column-gap: 40px;
+  font-size: 14px !important;
+  font-weight: 800;
+  color: #0091ae;
+}
+
+.table-footer svg{
+  color: #7c98b6;
+}
+
+.table-footer span:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 
 .custom-select .ant-select-selector:hover{
   border-color: #cbd6e2 !important;
@@ -137,7 +162,8 @@
 
 .rc-virtual-list{
   position: relative !important;
-  width: 527px !important;
+  width: 100% !important;
+  /* width: 527px !important; */
   margin-left: -2% !important;
   padding: 8px 4px !important;
 }
@@ -337,4 +363,30 @@
 .multiFieldSection .ant-form-item-control-input-content{
   display: flex;
   column-gap: 20px;
+}
+
+
+/* rule */
+.rule-heading{
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.propertyCheckbox .ant-checkbox .ant-checkbox-inner{
+  border: 2px solid #0091ae !important;
+  border-color: #0091ae !important;
+  background-color: transparent !important;
+  height: 20px !important;
+  width: 20px !important;
+}
+
+
+
+.ant-checkbox-checked:not(.ant-checkbox-disabled):hover .ant-checkbox-inner{
+  background-color: transparent !important;
+}
+
+.ant-checkbox-inner::after {
+  border-color: #0091ae !important; /* Set the desired tick color */
+  height: 12px !important;
 }

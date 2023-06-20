@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Input, Popover, Select } from "antd";
 import { SelectDropdown } from "../select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode } from "@fortawesome/free-solid-svg-icons";
 
-export const BasicInfo = ({basicInfo, setBasicInfo}) =>{
+export const BasicInfo = ({basicInfo, setBasicInfo, setWidth}) =>{
+    useEffect(()=>{setWidth(false)},[])
     return(
         <React.Fragment>
 

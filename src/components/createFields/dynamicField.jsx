@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Input, Button, Modal, Radio, Checkbox, Form, Switch } from 'antd';
 import CheckboxTable from './table';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faList, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 const { Option } = Select;
 
 const multi=[
@@ -19,7 +22,7 @@ export function CreateField({fieldType,label}){
     'singlelineNumber',
     'password',
     'number','email','date','time','datetime-local']);
-    const [multiInput, setMutiInput] = useState(['select', 'checkbox', 'radio']);
+    const [multiInput, setMutiInput] = useState(['multiCheckbox', 'selectDropdown', 'radioDropdown']);
 
     const [labelValue, setLabelValue] = useState([{id:0}]);
     const [selectedId, setSelectedId] = useState();
@@ -71,48 +74,25 @@ export function CreateField({fieldType,label}){
                 
                 break;
 
-            case 'checkbox':
-                setFields([{id, type: 'checkbox', label}]);
+            case 'radioDropdown':
+                setFields([{id, type: 'select' , group:'radioDropdown' , label}]);
                 setSelectedId(id)
-                setVisible(true);
                 break;
 
-            case 'select':
-                setFields([{id, type: 'select', label}]);
+            case 'selectDropdown':
+                setFields([{id, type: 'select', group:'selectDropdown' , label}]);
                 setSelectedId(id)
-                setVisible(true);
                 break;
 
-            case 'radio':
-                setFields([{id, type: 'radio', label}]);
+            case 'multiCheckbox':
+                setFields([{id, type: 'select', group:'multiCheckbox' , label}]);
                 setSelectedId(id)
-                setVisible(true);
+                
                 break;
                 
         }
         setinputTypeDefaultValue("none");
     }
- 
-  
-    const handleOk = () => {
-      setFields(fields.map((field)=>{
-        if(field.id===selectedId){
-            return {
-                ...field,
-                options:labelValue,
-            };
-        }else{
-            return field;
-        }
-      }));
-      setSelectedId(null);
-      setLabelValue([{id:0}])
-      setVisible(false);
-    };
-  
-    const handleCancel = () => {
-      setVisible(false);
-    };
 
     const handelValue=(e, index)=>{
         if(e.key=="Enter"){
@@ -142,19 +122,51 @@ export function CreateField({fieldType,label}){
         setTableData(labelValue?.map((lv, i)=>(
             {
                 key: i,
-                label: <Input id={"key"+i} className='generic-input-control' placeholder='Key' name="key" onKeyUp={(e) => handelValue(e, i)} />,
-                value: <Input className='generic-input-control'  placeholder='Value' name="value" onKeyUp={(e) => handelValue(e, i)} />,
+                label: <Input id={"key"+i} className='generic-input-control' placeholder='Enter label' name="key" onKeyUp={(e) => handelValue(e, i)} />,
+                value: <Input className='generic-input-control'  placeholder='Value' name="Enter value" onKeyUp={(e) => handelValue(e, i)} />,
                 toggle: <Switch/>
             } 
         )));
     },[labelValue]);
+
+
+    const createOption=()=>{
+        setLabelValue([...labelValue, {id:labelValue.length}]);
+            setTimeout(()=>{
+
+                const nextField = document.getElementById(`key${(labelValue.length)}`);
+                nextField.focus();
+            },100)
+    }
+
+    const footerContent = ()=>{
+        return(
+
+          <div className='table-footer'>
+          <div onClick={createOption}>
+            <FontAwesomeIcon icon={faPlus}/> <span>Add an option</span>
+          </div>
+            <div>
+              <FontAwesomeIcon icon={faList}/> <span>Load options</span>
+            </div>
+            <div onClick={
+                async()=>{
+                    await setLabelValue([{id:0}]); 
+                    document.getElementById("key0").value=null;
+            }}>
+              <FontAwesomeIcon icon={faTrash}/> <span>Clear all</span>
+            </div>
+          </div>
+        )
+      }
+
 
     return(
 
         <>
             
             {multi.includes(fieldType) && 
-                <CheckboxTable tableData={tableData} />
+                <CheckboxTable tableData={tableData} footerContent={footerContent} />
             }
         
             <Form.Item>
@@ -180,32 +192,17 @@ export function CreateField({fieldType,label}){
                                     
                                 </>
                                 :
-                                field?.type=='select' ? 
+                                field?.type=='select' &&
                                 <>
-                                    <Select className='createdField'>
-                                        {field.options?.map((option)=>(<Option value={option.value}>{option.key}</Option>))}
+                                    <label>{label}</label>
+                                    <Select 
+                                        mode={field?.group == "multiCheckbox" && "tags"}
+                                        
+                                    >
+                                        {labelValue?.map((option)=>(<Option value={option.value}> {option.key} </Option>))}
                                     </Select>
                                     
                                 </>
-                                :
-                                field?.type=='checkbox' ? 
-                                <>
-                                    {field?.options?.map((option)=>(
-                                        <Checkbox className='createdField'>
-                                            {option.key}
-                                        </Checkbox>
-                                    ))}
-                                </>
-                                :
-                                field?.type=='radio' && 
-                                <div style={{ }}>
-                                    <Radio.Group className='createdField'>
-                                        {field.options?.map((option)=>(
-                                            <Radio type={field.type} value={option.value} >{option.key}</Radio>
-                                        ))}
-
-                                    </Radio.Group>
-                                </div>
                             }
                             
                             </>
@@ -213,22 +210,6 @@ export function CreateField({fieldType,label}){
                         })
                     }
                 </div>
-                <Modal
-                    title="Set Values"
-                    visible={visible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                >
-                        {labelValue?.map((lv, i)=>(
-                            <div style={{display:'flex', columnGap:'10px', marginTop:'3%'}}>
-                            <>
-                                <Input placeholder='Key' name="key" onKeyUp={(e) => handelValue(e, i)} />
-                                <Input placeholder='Value' name="value" onKeyUp={(e) => handelValue(e, i)} />
-                            </>
-                            </div>
-                        ))}
-                </Modal>
-                
             </Form.Item>
         </>
     )
