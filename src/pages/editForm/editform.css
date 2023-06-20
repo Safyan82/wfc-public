@@ -70,7 +70,6 @@
     padding-top: 20px;
     padding-bottom: 10px;
     padding-left: 24px;
-    cursor: alias;
     display: flex;
     column-gap: 15px;
     color: #0091ae;
@@ -83,6 +82,7 @@
     font-weight: 600;
     transition: all .15s ease-out;
     line-height: 17px;
+    cursor: pointer;
 }
 
 .form-section{
@@ -105,17 +105,34 @@
     padding: 0px 40px;
 }
 .form-section-body .input{
-    cursor: grab !important;
+    cursor: grab;
     font-size: 14px !important;
     font-weight: 600 !important;
     color: rgb(51, 71, 91) !important;
-    height: 25px !important;
-    margin-top: 3%;
+    /* height: 25px !important; */
+    /* margin-top: 3%; */
     width:auto ;
     padding: 9px 30px 9px 26px !important;    
     background-image: url("../../assets/img/draggable.svg");
     background-position: 0px calc(50% + 1px);
     background-repeat: no-repeat;
+}
+
+.edit-form-input-control{
+    
+    padding: 9px 10px;
+    border-radius: 3px;
+    border: 1px solid #cbd6e2;
+    font-size: 16px;
+    background-color: #f5f8fa;
+    color: #33475b;
+    display: block;
+    height: 25px;
+    line-height: 22px;
+    text-align: left;
+    vertical-align: middle;
+    width: 100%;
+    margin-top: 3px;
 }
 
 .delete-icon{
@@ -137,11 +154,13 @@
 
 .icon-wrapper:hover .delete-icon{
     display: flex !important;
+    position: absolute;
+    margin-top: -4%;
 }
 
 .icon-wrapper{
     direction: rtl;
-    margin-bottom: 2%;
+    margin-bottom: 6%;
 }
 
 .ant-popover-arrow:before{

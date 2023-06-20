@@ -6,13 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { Popover } from "antd";
 
-// fake data generator
-const getItems = count =>
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `item-${k}`,
-    content: `item ${k}`
-  }));
-
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -22,7 +15,6 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-const grid = 8;
 
 
 export default class DraggableList extends Component {
@@ -35,6 +27,7 @@ export default class DraggableList extends Component {
   }
 
   onDragEnd(result) {
+    console.log(result);
     // dropped outside the list
     if (!result.destination) {
       return;
@@ -63,7 +56,9 @@ export default class DraggableList extends Component {
               ref={provided.innerRef}
             >
               {this.state.items.map((item, index) => (
-                <Draggable key={item.id.toString()} draggableId={item.id.toString()} index={index}>
+                <Draggable key={item.id.toString()} draggableId={item.id.toString()} index={index}
+                 
+                >
                   {(provided, snapshot) => (
                     <div className="icon-wrapper">
                       <div className="delete-icon">
@@ -100,7 +95,11 @@ export default class DraggableList extends Component {
                         id={"item-"+index}
                         itemRef={"item-"+index}
                         key={item.id}
-                        className="input-control input inputItemList"
+                        className="edit-form-input-control input inputItemList"
+                        style={{
+                          opacity: snapshot.isDragging ? 0.5 : 1,
+                          ...provided.draggableProps.style
+                        }}
                       >
                           {item.content}
                       </div>

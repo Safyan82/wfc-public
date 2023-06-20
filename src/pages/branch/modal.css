@@ -1,37 +1,4 @@
-@keyframes slideInRightToLeft {
-  
-  from {
-    width: 0 !important;
-  }
-  to {
-    width: 600px !important;
-  }
 
-  }
-  
-.slide-in-right-to-left-modal {
-  
-  /* animation: slideInRightToLeft 0.1s forwards; */
-  /* width: 530px; */
-  /* transform: translate(100%, 0%) !important; */
-  /* transform: translateX(-40%) !important; */
-  
-  /* overflow: hidden; */
-}
-
-/* ---------------  modal footer ---------------------- */
-
-.footer{
-  display: flex;
-  column-gap: 10px;
-  padding: 24px 40px;
-  border-top: 1px solid rgb(203, 214, 226);
-  bottom: 0px;
-  background-color: rgb(245, 248, 250) !important;
-}
-.ant-modal-footer{
-  margin-top: 0px !important;
-} 
 
 
 

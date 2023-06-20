@@ -22,7 +22,7 @@ export function Navbar(){
     return(
     <Layout>
         <Menu mode="horizontal" theme="dark" className='top-menu-layout'>
-            <Menu.Item>
+            <Menu.Item className='menu-icon'>
                 <img src={logo} style={{width:'25px'}}/>
             </Menu.Item>
 
@@ -45,14 +45,14 @@ export function Navbar(){
             </Menu.Item>
 
 
-            <Menu.Item className='menu-item'>
+            <Menu.Item className='menu-item menu-icon'>
                 <FontAwesomeIcon icon={faGear} />
             </Menu.Item>
-            <Menu.Item className='menu-item'>
+            <Menu.Item className='menu-item menu-icon'>
                 <FontAwesomeIcon icon={faBell} />
             </Menu.Item>
 
-            <Menu.Item className='menu-item'>
+            <Menu.Item className='menu-item menu-icon'>
                 <FontAwesomeIcon icon={faComments} />
             </Menu.Item>
 

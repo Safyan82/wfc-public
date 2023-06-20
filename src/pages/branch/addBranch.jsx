@@ -115,7 +115,6 @@ const AddBranch = ({ visible, onCancel, refetch }) => {
         }
       })}> <FontAwesomeIcon icon={faExternalLink} style={{ marginLeft: 4 }} /> Edit this form </div>
           
-          {loading ? <center><Spin/></center>:
           <form id="branchForm" className='form'>
             <Form.Item>
               <label>Branch Name</label>
@@ -132,7 +131,6 @@ const AddBranch = ({ visible, onCancel, refetch }) => {
             </Form.Item>
             ))}            
           </form>
-          }
         </div>  
       </React.Fragment>  
     </Modal>

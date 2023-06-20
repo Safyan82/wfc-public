@@ -6,9 +6,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { Button, Divider, Form, Input } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import DraggableList from '../shuffle';
+import DraggableList from '../../components/shuffle';
 import AddBranch from '../branch/addBranch';
 import { AddProperty } from './addProperty';
+import { Popover } from "antd";
+import { ApartmentOutlined } from "@ant-design/icons";
+import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 export const EditForm=()=>{
     const location = useLocation();
@@ -84,6 +87,80 @@ export const EditForm=()=>{
                         Create {title}
                     </div>
                     <div className="form-section-body form"> 
+
+                    {/* branch name */}
+                    <div className="icon-wrapper">
+                      <div className="delete-icon">
+                        <Popover 
+                          overlayClassName="custom-popover"
+                          content={"This Property is a part of object schema"} 
+                          placement='top'
+                        >
+                          <FontAwesomeIcon icon={faTrashAlt} />
+                        </Popover>
+                        
+                        <Popover 
+                          overlayClassName="custom-popover"
+                          content={"Conditional logic is not available for non-enumerated properties."} 
+                          placement='top'
+                        >
+                          <ApartmentOutlined />
+                        </Popover>
+
+                        
+                        <Popover 
+                        overlayClassName="custom-popover"
+                        content={"Change the label of this property"} 
+                        placement='top'
+                        >
+                          <FontAwesomeIcon icon={faEdit} />
+                        </Popover>
+
+                      </div>
+                      <div
+                        className="edit-form-input-control input inputItemList"   
+                        style={{backgroundImage: "none", cursor: "auto"}}                    
+                      >
+                          Branch Name
+                      </div>
+                    </div>
+
+                    {/* post code */}
+                    <div className="icon-wrapper">
+                      <div className="delete-icon">
+                        <Popover 
+                          overlayClassName="custom-popover"
+                          content={"This Property is a part of object schema"} 
+                          placement='top'
+                        >
+                          <FontAwesomeIcon icon={faTrashAlt} />
+                        </Popover>
+                        
+                        <Popover 
+                          overlayClassName="custom-popover"
+                          content={"Conditional logic is not available for non-enumerated properties."} 
+                          placement='top'
+                        >
+                          <ApartmentOutlined />
+                        </Popover>
+
+                        
+                        <Popover 
+                        overlayClassName="custom-popover"
+                        content={"Change the label of this property"} 
+                        placement='top'
+                        >
+                          <FontAwesomeIcon icon={faEdit} />
+                        </Popover>
+
+                      </div>
+                      <div
+                        className="edit-form-input-control input inputItemList"   
+                        style={{backgroundImage: "none", cursor: "auto"}}                     
+                      >
+                          Post Code
+                      </div>
+                    </div>
                         <DraggableList list={JSON.parse(localStorage.getItem('branchOrder')) || list} />          
                                   
                     </div>

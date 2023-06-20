@@ -1,10 +1,8 @@
-@font-face {
-    font-family: 'wfcFont';
-    src: url('./font/Lexend_Deca/static/LexendDeca-ExtraLight.ttf') format('ttf');
-}
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300&display=swap');
 
 *{
-    font-family: "wfcFont",'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji' !important;
+    font-family: 'Lexend Deca', sans-serif;
+    user-select: none;
 }
 
 body{
@@ -166,7 +164,7 @@ body{
 
 .top-menu-layout{
     background-color: #2e3f50 !important;
-    /* justify-content: space-between; */
+    padding-left: 30px;
     height: 50px;
     color: white;
     box-shadow: inset 0 1px 0 #4d4d4d, 0 2px 3px rgba(0,0,0,.25);
@@ -311,7 +309,7 @@ body{
 .grid-outlined-btn{
     border-color: #fb8c5f;
     color:#fb8c5f;
-    border-radius: 0 !important;
+    border-radius: 3px !important;
 }
 
 .grid-outlined-btn:hover{
@@ -324,7 +322,7 @@ body{
     border: none;
     background-color: #fb8c5f;
     color: white !important;
-    border-radius: 0 !important;
+    border-radius: 3px !important;
 }
 
 .grid-head-right-btn{
@@ -453,7 +451,8 @@ body{
 /* form */
 
 .form{
-    margin-top:4%;
+    margin-top:6%;
+    position: relative;
 }
 
 .form .input-control{
@@ -571,3 +570,39 @@ body{
   .dropdown-content a:hover {
     background-color: #e5f5f8;
   }
+
+  .menu-icon{
+    line-height: 4 !important;
+    margin-top: -1px !important;
+  }
+
+
+  /* form input generic */
+
+.generic-input-control{
+    padding: 9px 10px;
+    border-radius: 3px;
+    border: 1px solid #cbd6e2;
+    font-size: 16px;
+    transition: all .15s ease-out;
+    background-color: #f5f8fa;
+    color: #33475b;
+    display: block;
+    height: 40px;
+    line-height: 22px;
+    text-align: left;
+    vertical-align: middle;
+    width: 100%;
+    margin-top: 3px;
+}
+
+.generic-input-control:focus{
+    border-color: rgba(0,208,228,.5);
+    box-shadow: 0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4;
+    outline: 0;
+}
+
+.generic-input-control:hover{
+    outline: 0 !important;
+    border-color: #cbd6e2 !important;
+}

@@ -5,7 +5,7 @@ import { SelectDropdown } from '../select';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
-export const GridHeader = ({title, record, createAction})=>{
+export const GridHeader = ({title, record, createAction, editProperty})=>{
     return(
         <>
             <div className='grid-head-section'>
@@ -20,7 +20,7 @@ export const GridHeader = ({title, record, createAction})=>{
                     <div class="dropdown">
                     <Button className='grid-outlined-btn dropdown'>Action <span className='private-dropdown__caret'></span></Button>
                         <div class="dropdown-content">
-                        <a href="#">Edit properties</a>
+                        <a href="#" onClick={editProperty}>Edit properties</a>
                         <a href="#">View Customization</a>
                         <a href="#">Restore records</a>
                         </div>
