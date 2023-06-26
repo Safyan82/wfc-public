@@ -1,12 +1,9 @@
+import './createFieldDrawer.css';
 import React,{ useEffect, useState } from 'react';
 import { Form, Input, Drawer, Button, notification, Steps } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faClose, faExternalLink, faUmbrella } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight, faClose} from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
-import { CREATE_BRACNH } from '../../util/mutation/branch.mutation';
-import './createFieldDrawer.css';
-
 import { BasicInfo } from './step1basicInfo';
 import { FieldType } from './step2fieldType';
 import { Rules } from './step3Rules';
@@ -28,6 +25,13 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
     const [api, contextHolder] = notification.useNotification();
 
     const navigate = useNavigate();
+
+    const clearandClose=()=>{
+      setBasicInfo(null)
+      onClose();
+      sessionStorage.clear();
+      setCurrentStep(0)
+    }
 
     useEffect(()=>{
       sessionStorage.clear();
@@ -67,7 +71,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
     };
   
     const handelSubmit=()=>{
-      onClose()
+      clearandClose()
       api.success({
         message:'Field was created successfully',
         placement:"top",
@@ -78,16 +82,17 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
     
     return (
         <div>
-          
           <Drawer
             title="Create a new property "
             placement="right"
             closable={true}
-            onClose={onClose}
-            closeIcon={<FontAwesomeIcon icon={faClose} onClick={onClose} className='close-icon'/>}
+            onClose={clearandClose}
+            closeIcon={<FontAwesomeIcon icon={faClose} onClick={clearandClose} className='close-icon'/>}
             visible={visible}
             width={width ? 900 : 600}
             className='fieldDrawer'
+            maskClosable={false}
+            mask={true}
             footer={
               <div className='drawer-footer' style={{display:'flex', justifyContent:'space-between'}}>
                   <div>
@@ -96,7 +101,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
                       <FontAwesomeIcon style={{marginRight:'0.5em'}} icon={faChevronLeft}/> {'Back'} 
                     </button>
                   }
-                    <button className='drawer-btn' onClick={onClose}>Cancel</button>
+                    <button className='drawer-btn' onClick={clearandClose} >Cancel</button>
                   </div>
                   
                   {currentStep < steps.length - 1 && 
@@ -113,6 +118,8 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
               </div>
             }
           >
+
+
           {contextHolder}
 
             {/* stepper header */}
@@ -121,7 +128,6 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
                 <Step key={index} title={step.title} />
               ))}
             </Steps>
-            
 
             {/* stepper body */}
 

@@ -80,8 +80,8 @@ export const Login=()=>{
                         <span className="ant-form-text forgetPassword" style={{marginTop:'10px'}} onClick={()=>alert("Not Implemented Yet")}>Forget password ?</span>
                     </Form.Item>
 
-                    <Form.Item>
-                        <Checkbox defaultChecked className='custom-checkbox'>
+                    <Form.Item className='validationCheckboxGroup'>
+                        <Checkbox defaultChecked >
                             Remember me
                         </Checkbox>
                     </Form.Item>

@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { Table, Checkbox, Button } from 'antd';
 
-const CheckboxTable = ({tableData, footerContent}) => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const onSelectChange = (selectedKeys) => {
-    setSelectedRowKeys(selectedKeys);
-  };
+const CheckboxTable = ({tableData, footerContent, onSelectChange, selectedRowKeys}) => {
+ 
 
   const columns = [
     {
@@ -25,14 +22,6 @@ const CheckboxTable = ({tableData, footerContent}) => {
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-      label: 'John Doe',
-      value: 25,
-      toggle: '123 Main St',
-    },
-  ];
 
   const rowSelection = {
     selectedRowKeys,

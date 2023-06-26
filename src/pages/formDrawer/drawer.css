@@ -152,7 +152,8 @@
 }
 
 .ant-drawer-mask{
-    background:none !important;
+    background: rgba(45, 62, 80, 0.79) !important;
+    backdrop-filter: blur(6px);
 }
 
 .mandatory{

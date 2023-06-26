@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Form, Input, Popover, Select } from "antd";
-import { SelectDropdown } from "../select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode } from "@fortawesome/free-solid-svg-icons";
 

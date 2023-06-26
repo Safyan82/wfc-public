@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import { Form, Input, Select, Typography } from 'antd';
 import { CreateField } from './dynamicField';
+import {
+    SearchOutlined,
+  } from '@ant-design/icons';
 import CheckboxTable from './table';
 
 
 const multi=[
-    'singleCheckbox',
     'multiCheckbox',
     'selectDropdown',
     'radioDropdown',
@@ -14,6 +16,8 @@ const multi=[
 export const FieldType = ({basicInfo, setWidth})=>{
     const {Option, OptGroup} = Select;
     const [fieldType, setFieldType] = useState(sessionStorage.getItem('fieldType'));
+    const [sortType, setSortType] = useState('custom');
+    const [search, setSearchKeyword] = useState(null);
 
     useEffect(()=>{
         sessionStorage.setItem('fieldType', fieldType);
@@ -23,6 +27,7 @@ export const FieldType = ({basicInfo, setWidth})=>{
             setWidth(false)
         }
     },[fieldType]);
+    
     return(
         <React.Fragment>
             <Typography className='label'>
@@ -31,7 +36,7 @@ export const FieldType = ({basicInfo, setWidth})=>{
             <Form.Item>
                 <label>Field type</label>
                 <Select 
-                    className="custom-select"
+                    className={multi.includes(fieldType) ? "custom-select step2" : "custom-select"}
                     suffixIcon={<span className="dropdowncaret"></span>}
                     onChange={(e)=>setFieldType(e)}
                     placeholder="Select field type"
@@ -41,15 +46,21 @@ export const FieldType = ({basicInfo, setWidth})=>{
                     <OptGroup label="Meta Field">
                         <Option value="email">Email</Option>
                         <Option value="password">Password</Option>
-                        <Option value="date">Date picker</Option>
-                        <Option value="time">Time picker</Option>
-                        <Option value="datetime-local">Date & Time picker</Option>
                         {/* <Option value="phone">Phone</Option> */}
                     </OptGroup>
                     <OptGroup label="Text Field">
                         <Option value="singlelineText">Single-line text</Option>
                         <Option value="multilineText">Multi-line text</Option>
                     </OptGroup>
+                    <OptGroup label="Number">
+                        <Option value="number">Number</Option>
+                    </OptGroup>
+                    <OptGroup label="Date & Time">
+                        <Option value="date">Date picker</Option>
+                        <Option value="time">Time picker</Option>
+                        <Option value="datetime-local">Date & Time picker</Option>
+                    </OptGroup>
+                  
                     <OptGroup label="Choosing options">
                         <Option value="singleCheckbox">Single checkbox</Option>
                         <Option value="multiCheckbox">Multiple checkboxes</Option>
@@ -70,21 +81,26 @@ export const FieldType = ({basicInfo, setWidth})=>{
                     <Select
                         className="custom-select"
                         suffixIcon={<span className="dropdowncaret"></span>}
-                        onChange={(e)=>setFieldType(e)}
-                        value="custom">
+                        onChange={(e)=>setSortType(e)}
+                        defaultValue="custom">
                             <Option value="custom">Custom</Option>
                             <Option value="alphabetical">Alphabetical</Option>
                     </Select>
                 </div>
-                <div style={{width:'100%'}}>
+                <div style={{width:'100%'}} className='drawer-custom-search'>
                     <label>Search</label>
-                    <Input className="generic-input-control" placeholder="Search" />
+                    <Input className="generic-input-control"  suffix={<SearchOutlined/>} onChange={(e)=>setSearchKeyword(e.target.value)} placeholder="Search" />
                 </div>
             </Form.Item>
             }
             
             {fieldType &&
-                <CreateField fieldType={fieldType} label={basicInfo?.label} />
+                <CreateField
+                    search={search}
+                    sortType={sortType} 
+                    fieldType={fieldType} 
+                    label={basicInfo?.label} 
+                />
             }
         
         </React.Fragment>

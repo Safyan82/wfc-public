@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { Button, Divider, Form, Input } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import DraggableList from '../../components/shuffle';
+import DraggableList from '../../components/shuffle/draggeableList';
 import AddBranch from '../branch/addBranch';
 import { AddProperty } from './addProperty';
 import { Popover } from "antd";

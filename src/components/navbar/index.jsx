@@ -10,7 +10,7 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faWindowRestore, faWindowMaximize, faWindowMinimize} from '@fortawesome/free-regular-svg-icons';
 import WordLetterAvatar from '../avatar';
-import logo from '../../assets/img/wc-logo-big.png';
+import logo from '../../assets/img/wfc-new-logo.png';
 import { faBell, faComment, faComments, faGear, faRing } from '@fortawesome/free-solid-svg-icons';
 
 
@@ -22,7 +22,7 @@ export function Navbar(){
     return(
     <Layout>
         <Menu mode="horizontal" theme="dark" className='top-menu-layout'>
-            <Menu.Item className='menu-icon'>
+            <Menu.Item className='logo-img'>
                 <img src={logo} style={{width:'25px'}}/>
             </Menu.Item>
 

@@ -119,10 +119,26 @@
   margin-top: 0px !important;
 }
 
+.step2 .ant-select-arrow{
+  top: 59% !important
+}
+
 .custom-select{
   border-radius: 3px;
   margin-top: -1%;
 }
+.step2 .ant-select-selection-item{
+  margin-top: -10px;
+}
+
+.rc-virtual-list-scrollbar{
+  right: -4px !important;
+}
+
+.rc-virtual-list-scrollbar-show{
+  display: inherit !important;
+}
+
 
 .custom-select .ant-select-selector{
   background-color: #f5f8fa !important;
@@ -366,13 +382,7 @@
 }
 
 
-/* rule */
-.rule-heading{
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.propertyCheckbox .ant-checkbox .ant-checkbox-inner{
+ .ant-checkbox .ant-checkbox-inner{
   border: 2px solid #0091ae !important;
   border-color: #0091ae !important;
   background-color: transparent !important;
@@ -382,11 +392,258 @@
 
 
 
-.propertyCheckbox .ant-checkbox-checked:not(.ant-checkbox-disabled):hover .ant-checkbox-inner{
+ .ant-checkbox-checked:not(.ant-checkbox-disabled):hover .ant-checkbox-inner{
   background-color: transparent !important;
 }
+
+ .ant-checkbox-inner::after {
+  border-color: #0091ae !important; /* Set the desired tick color */
+  height: 12px !important;
+
+}
+
+/* search bar */
+
+.generic-input-control input{
+  background-color: transparent !important;
+}
+
+.drawer-custom-search .ant-input-affix-wrapper-focused{
+  border-color: rgba(0,208,228,.5) !important;
+  box-shadow: 0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4 !important;
+  outline: 0 !important;
+}
+
+.fieldWarning{
+  border-color: #f2545b;
+  box-shadow: 0 0 4px 1px #f2545b, 0 0 0 1px #f2545b;
+}
+.fieldWarning:focus{
+  border-color: #f2545b !important;
+  box-shadow: 0 0 4px 1px #f2545b, 0 0 0 1px #f2545b !important;
+}
+
+
+/* tree view */
+
+.ant-tree-select-dropdown .ant-select-tree-checkbox .ant-select-tree-checkbox-inner {
+  border-color: #0091ae !important;
+  background-color: transparent !important;
+  border-width: 2px;
+  height: 20px !important;
+  width: 20px !important;
+}
+
+.ant-tree-select-dropdown .ant-select-tree-checkbox-checked .ant-select-tree-checkbox-inner {
+  border-color: #0091ae !important;
+  background-color: transparent !important;
+  border-width: 2px;
+  height: 20px !important;
+  width: 20px !important;
+}
+
+ .ant-select-selection-overflow{
+  margin-top: -17px !important;
+}
+
+
+
+.ant-tree-select-dropdown .ant-select-tree-checkbox .ant-select-tree-checkbox-inner:after{
+  border-color: #0091ae !important;
+  height: 11px;
+}
+
+.ant-tree-select-dropdown .ant-select-tree .ant-select-tree-switcher{
+  width: 0px !important;
+}
+
+
+
+/* step 3 rules */
+
+
+/* rule */
+.rule-heading{
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.validationRules{
+  margin-top: 16px;
+}
+
+.validationRules-title{
+  font-size: 14px;
+  line-height: 25px;
+  color: #33475b;
+}
+
+.validationRules-subTitle{
+  color:#516f90;
+  font-size: 12px;
+}
+
+.validationCheckboxGroup{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-weight: 300;
+  margin-top: 2%;
+}
+
+
+.validationRules .ant-checkbox .ant-checkbox-inner{
+  border: 2px solid rgb(203, 214, 226) !important;
+  border-color: rgb(203, 214, 226) !important;
+  background-color: rgb(203, 214, 226, 0.3) !important;
+  height: 23px !important;
+  width: 23px !important;
+}
+
+
+
+.validationRules .ant-checkbox-checked .ant-checkbox-inner{
+  border: 2px solid !important;
+  border-color: #00a4bd !important;
+  background-color: transparent !important;
+  height: 23px !important;
+  width: 23px !important;
+}
+
+
+.validationRules .ant-checkbox-checked:not(.ant-checkbox-disabled):hover .ant-checkbox-inner{
+  background-color: transparent !important;
+
+}
+
+
+.validationRules .ant-checkbox-inner::after {
+  border-color: #0091ae !important; /* Set the desired tick color */
+  height: 12px !important;
+  border-width: 3px;
+}
+
 
 .propertyCheckbox .ant-checkbox-inner::after {
   border-color: #0091ae !important; /* Set the desired tick color */
   height: 12px !important;
+  border-width: 3px;
+}
+
+.small-text{
+  color: #516f90!important;
+    font-size: 12px;
+    line-height: 10px;
+}
+
+.numberInput{
+  margin: 12px 0px;
+  margin-left: 32px;
+  width: 50%;
+}
+
+.numberInput input{
+  margin-top: -2% !important;
+  padding-left: 4px !important;
+}
+
+.numberInput .ant-input-number-focused{
+  
+  border-color: rgba(0,208,228,.5) !important;
+  box-shadow: 0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4 !important;
+  outline: 0 !important;
+}
+.ant-input-number .ant-input-number-handler-wrap{
+  opacity: 1;
+  width: 35px;
+  background-color: rgb(203, 214, 226, 0.3) ;
+  font-size: 11px;
+}
+
+/* date validate rule */
+
+.ant-picker-focused{
+  
+  border-color: rgba(0,208,228,.5) !important;
+  box-shadow: 0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4 !important;
+  outline: 0 !important;
+}
+
+.dateValidation{
+  margin-top: 16px;
+  color: #33475b;
+
+}
+
+.dateValidationTitle{
+  font-size: 14px;
+  color: #33475b;
+  font-weight: 300;
+
+}
+
+.mainRadioGroup{
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.group{
+  
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-weight: 300;
+  margin-top: 2%;
+}
+
+.group .ant-radio-wrapper .ant-radio-checked .ant-radio-inner{
+  border-color: rgb(0, 164, 189) !important;
+  background-color: transparent !important;
+  border-width: 1.7px !important;
+  width: 20px !important;
+  height: 20px  !important;
+}
+
+
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner::after{
+  background-color: rgb(0, 164, 189) !important;
+    width: 28px !important;
+    height: 28px  !important;
+    margin-block-start: -14px !important;
+    margin-inline-start: -14px !important;
+}
+
+.allowedDays{
+  margin: 16px 0px;
+}
+
+.genericCheckbox{
+  font-weight: 300;
+}
+
+
+
+.datenumberInput{
+  margin: 12px 0px;
+  width: 40%;
+  font-weight: 300;
+  display: flex;
+  column-gap: 5px;
+}
+
+.datenumberInput input{
+  margin-top: -2% !important;
+  padding-left: 4px !important;
+}
+
+.datenumberInput .ant-input-number-focused{
+  
+  border-color: rgba(0,208,228,.5) !important;
+  box-shadow: 0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4 !important;
+  outline: 0 !important;
+}
+
+.bufferTime{
+  margin: 30px 0px;
+  
 }

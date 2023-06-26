@@ -1,0 +1,78 @@
+.ant-table-row  {
+    cursor: move;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    width: 100% !important;
+
+  }
+  
+  
+  .gu-mirror {
+    background-color: transparent;
+    cursor: grabbing;
+    width: -webkit-fill-available;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+    opacity: 0.5;
+
+  }
+
+  .gu-transit {
+     width: 100em !important;
+  }
+  
+  .draggeableTable th label{
+    padding-left: 18px;
+  }
+
+  .draggeableTable td label{
+    padding-left: 18px;
+    background-image: url("../../assets/img/draggable.svg");
+    background-position: 0px calc(50% + 1px);
+    background-repeat: no-repeat;
+  }
+  
+
+  .selected-items {
+    display: flex;
+    column-gap: 4px;
+  }
+
+  .selected-items .item{
+    margin-left: 12px;
+    color: #0091ae;
+    font-size: 13px;
+  }
+
+  .selected-items .item svg{
+    margin-right: 4px;
+    font-size: 14px;
+    color: #7c98b6;
+  }
+
+  .selected-items .item span:hover{
+    text-decoration: underline;
+    text-decoration-thickness: 1.65px;
+    cursor: pointer;
+  }
+
+
+  .selected-items .small{
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .custom-selection .ant-checkbox-indeterminate.ant-checkbox-indeterminate-top .ant-checkbox-inner {
+    background-color: red !important;
+    border-color: green !important;
+  }
+
+
+  .ant-table-title{
+    position: absolute;
+    top: 0%;
+    z-index: 1;
+    opacity: 0;
+    left: 63px;
+  }

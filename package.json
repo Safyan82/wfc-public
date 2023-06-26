@@ -16,6 +16,7 @@
     "antd": "^5.5.1",
     "array-move": "^4.0.0",
     "axios": "^1.4.0",
+    "dragula": "^3.7.3",
     "electron": "^25.1.0",
     "framer-motion": "^10.12.16",
     "graphql": "^16.6.0",
