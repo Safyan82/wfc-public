@@ -1,4 +1,4 @@
-.ant-table-row  {
+.customizedTable .ant-table-row  {
     cursor: move;
     cursor: grab;
     cursor: -moz-grab;
@@ -8,7 +8,7 @@
   }
   
   
-  .gu-mirror {
+ .customizedTable .gu-mirror {
     background-color: transparent;
     cursor: grabbing;
     width: -webkit-fill-available;
@@ -18,7 +18,7 @@
 
   }
 
-  .gu-transit {
+  .customizedTable .gu-transit {
      width: 100em !important;
   }
   
@@ -63,11 +63,16 @@
     line-height: 18px;
   }
 
-  .custom-selection .ant-checkbox-indeterminate.ant-checkbox-indeterminate-top .ant-checkbox-inner {
+  /* .custom-selection .ant-checkbox-indeterminate.ant-checkbox-indeterminate-top .ant-checkbox-inner {
     background-color: red !important;
     border-color: green !important;
-  }
+  } */
 
+  .ant-checkbox-indeterminate .ant-checkbox-inner:after {
+    background-color: #0091ae !important;
+    height: 8px !important;
+    width: 8px !important;
+  }
 
   .ant-table-title{
     position: absolute;
