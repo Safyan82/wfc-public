@@ -6,6 +6,7 @@ import { Employee } from "./pages/employee";
 import { Branch } from "./pages/branch";
 import { EditForm } from "./pages/editForm";
 import React, { useEffect } from "react";
+import { Setting } from './pages/setting/setting';
 
 function App() {
   
@@ -21,7 +22,7 @@ function App() {
         <Route path='/user/' element={<DefaultLayout/>}>
           <Route index element={<Employee />} />
           <Route path='branch' element={<Branch />} />
-          {/* <Route path='drawer' element={<DraggableTable />} /> */}
+          <Route path='setting' element={<Setting />} />
         </Route>
         <Route path='/editfrom' element={<EditForm />} />
       </Routes>

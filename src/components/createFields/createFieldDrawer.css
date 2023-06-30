@@ -408,7 +408,7 @@
   background-color: transparent !important;
 }
 
-.drawer-custom-search .ant-input-affix-wrapper-focused{
+ .ant-input-affix-wrapper-focused{
   border-color: rgba(0,208,228,.5) !important;
   box-shadow: 0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4 !important;
   outline: 0 !important;
@@ -492,7 +492,7 @@
 }
 
 
-.validationRules .ant-checkbox .ant-checkbox-inner{
+ .ant-checkbox .ant-checkbox-inner{
   border: 2px solid rgb(203, 214, 226) !important;
   border-color: rgb(203, 214, 226) !important;
   background-color: rgb(203, 214, 226, 0.3) !important;
@@ -502,7 +502,7 @@
 
 
 
-.validationRules .ant-checkbox-checked .ant-checkbox-inner{
+ .ant-checkbox-checked .ant-checkbox-inner{
   border: 2px solid !important;
   border-color: #00a4bd !important;
   background-color: transparent !important;
@@ -511,13 +511,12 @@
 }
 
 
-.validationRules .ant-checkbox-checked:not(.ant-checkbox-disabled):hover .ant-checkbox-inner{
+ .ant-checkbox-checked:not(.ant-checkbox-disabled):hover .ant-checkbox-inner{
   background-color: transparent !important;
 
 }
 
-
-.validationRules .ant-checkbox-inner::after {
+ .ant-checkbox-inner::after {
   border-color: #0091ae !important; /* Set the desired tick color */
   height: 12px !important;
   border-width: 3px;

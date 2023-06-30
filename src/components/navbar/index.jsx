@@ -12,6 +12,7 @@ import {faWindowRestore, faWindowMaximize, faWindowMinimize} from '@fortawesome/
 import WordLetterAvatar from '../avatar';
 import logo from '../../assets/img/wfc-new-logo.png';
 import { faBell, faComment, faComments, faGear, faRing } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 
 
 const { SubMenu } = Menu;
@@ -46,7 +47,9 @@ export function Navbar(){
 
 
             <Menu.Item className='menu-item menu-icon'>
-                <FontAwesomeIcon icon={faGear} />
+                <Link to="/user/setting">
+                    <FontAwesomeIcon icon={faGear} />
+                </Link>
             </Menu.Item>
             <Menu.Item className='menu-item menu-icon'>
                 <FontAwesomeIcon icon={faBell} />
