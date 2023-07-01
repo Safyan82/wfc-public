@@ -1,25 +1,28 @@
 import './setting.css';
 import '../../components/createFields/createFieldDrawer.css';
 import React, { useEffect, useState } from 'react';
-import { Button, Checkbox, Col, Input, Popover, Row, Select, Tabs, Typography } from 'antd';
+import { Alert, Button, Checkbox, Col, Input, Popover, Row, Select, Tabs, Typography } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faLock, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight, faLock, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Filter } from './settingfilter';
 import {SettingPropertyGrid} from './setting-property-grid';
 import { SettingGroupPropertyGrid } from './settingGroupGrid';
 import { GroupFilter } from './groupfilter';
+import { useNavigate } from 'react-router-dom';
+import { ArcheiveFilter } from './archeiveFilter';
+import { ArcheivePropertyGrid } from './archeiveGrid';
 
 export const Setting=()=>{
     const  { TabPane } = Tabs;
-
+    const navigate = useNavigate();
     return(
         <Row>
             <Col span={4} className='setting-sidebar'>
                 <div className='setting-sidebar-body'>
                     <div className="setting-sidebar-inner">
-                        <div className='back-link'>
+                        <div className='back-link' onClick={()=>navigate(-1)}>
                             <FontAwesomeIcon className='icon' icon={faChevronLeft}/>
-                            <span>Back to Branch</span>
+                            <span >Back</span>
                         </div>
                         <div className="setting-heading">
                             <div className='setting-header-title'>
@@ -115,8 +118,15 @@ export const Setting=()=>{
                                 <GroupFilter/>
                                 <SettingGroupPropertyGrid/>
                             </TabPane>
-                            <TabPane tab="Archeive Properties" key="3" onClick={(e)=>console.log(e)}>
-                                Content of Tab Pane 3
+                            <TabPane tab="Archived Properties" key="3" onClick={(e)=>console.log(e)}>
+                                <ArcheiveFilter/>
+                                <Alert
+                                    description={<b>After 90 days your custom properties will be deleted and can no longer be restored.</b>}
+                                    type="info"
+                                    closable
+                                    closeText={<FontAwesomeIcon style={{fontSize: '16px',color: '#7c98b6'}} icon={faTimes}/>}
+                                />
+                                <ArcheivePropertyGrid/>
                             </TabPane>
                             </Tabs>
 

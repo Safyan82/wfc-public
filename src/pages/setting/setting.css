@@ -41,6 +41,16 @@
     margin-right: 0.5em;
 }
 
+.back-link:hover{
+    cursor: pointer;
+}
+
+.back-link span:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
 .setting-heading{
     display: flex;
 }
@@ -351,15 +361,25 @@
     flex-shrink: 0;
 }
 
+.archeiveFilter .ant-popover-inner{
+    width: 160px !important;
+}
 
 .ant-popover-inner{
     width: 300px;
+    /* border: 1px solid #cbd6e2; */
+}
+
+.ant-popover-arrow{
+    width: 29px; /* Set the desired width */
+    height: 29px; 
 }
 
 .ant-popover-arrow:before{
-    background-color: #eaf0f6 !important;
+    background-color: rgb(234, 240, 246) !important;
     color: white !important;
 }
+
 .ant-popover-inner{
     background-color: white !important;
     color:white !important;
@@ -418,4 +438,28 @@
 
 .ant-table-wrapper .ant-table-pagination-right{
     justify-content: center !important;
+}
+
+.ant-pagination .ant-pagination-item{
+    padding: 0 3px !important;
+    min-width: 25px !important;
+}
+
+.ant-pagination .ant-pagination-item a{
+    color: #0091ae !important;
+    font-weight: 600;
+}
+
+.ant-pagination .ant-pagination-item-active{
+    background-color: #e5f5f8 !important;
+    border: 1px solid #7fd1de !important;
+    font-size: 14px !important;
+}
+
+.ant-picker-suffix svg{
+    color: black !important;
+}
+
+.ant-alert-info{
+    align-items: center;
 }
