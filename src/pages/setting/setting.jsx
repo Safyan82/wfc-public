@@ -19,6 +19,31 @@ export const Setting=()=>{
     const navigate = useNavigate();
     const [fieldModal, setFieldModal] = useState(false);
     const [groupmodal, setGroupModal] = useState(false);
+
+    // setting popover 
+    
+    const [group, setGroupInput] = useState();
+    const [groupPopover, setGroupPopover] = useState(false);
+    const [fieldType, setFieldType] = useState();
+    const [fieldTypePopover, setfieldTypePopover] = useState(false);
+    const [user, setUser] = useState();
+    const [userPopover, setuserPopover] = useState(false);
+
+    // setting popover terminate
+
+    
+    const [archive, setArchive] = useState();
+    const [archivePopover, setArchivePopover] = useState(false);
+    
+
+    //  tab change
+    const handelTabChange = ()=>{
+        setGroupPopover(false);
+        setuserPopover(false);
+        setfieldTypePopover(false);
+        setArchivePopover(false);
+    };
+
     return(
         <Row>
             <Col span={4} className='setting-sidebar'>
@@ -113,9 +138,25 @@ export const Setting=()=>{
 
                             {/* propertie views */}
                             <div className="propertyTab"></div>
-                            <Tabs defaultActiveKey="1">
+                            <Tabs defaultActiveKey="1" onChange={handelTabChange}>
                                 <TabPane tab="Properties" key="1">
-                                    <Filter editProperty={()=>setFieldModal(true)}/>
+                                    <Filter 
+                                        group={group}
+                                        groupPopover={groupPopover}
+                                        fieldType={fieldType}
+                                        fieldTypePopover={fieldTypePopover}
+                                        user={user}
+                                        userPopover={userPopover}
+                                        
+                                        setGroupPopover={setGroupPopover}
+                                        setGroupInput={setGroupInput}
+                                        setFieldType={setFieldType}
+                                        setfieldTypePopover={setfieldTypePopover}
+                                        setUser={setUser}
+                                        setuserPopover={setuserPopover}
+
+                                        editProperty={()=>setFieldModal(true)}
+                                    />
                                     <SettingPropertyGrid />
                                 </TabPane>
                             <TabPane tab="Group" key="2">
@@ -123,7 +164,12 @@ export const Setting=()=>{
                                 <SettingGroupPropertyGrid/>
                             </TabPane>
                             <TabPane tab="Archived Properties" key="3" onClick={(e)=>console.log(e)}>
-                                <ArcheiveFilter/>
+                                <ArcheiveFilter
+                                    archive={archive}
+                                    setArchive={setArchive}
+                                    archivePopover={archivePopover}
+                                    setArchivePopover={setArchivePopover}
+                                />
                                 <Alert
                                     description={<b>After 90 days your custom properties will be deleted and can no longer be restored.</b>}
                                     type="info"

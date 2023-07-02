@@ -6,14 +6,12 @@ import { Button, Checkbox, Col, Input, Popover, Row, Select, Tabs, Typography } 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faLock, faSearch } from '@fortawesome/free-solid-svg-icons';
 
-export const Filter = ({editProperty})=>{
+export const Filter = ({
+    editProperty, group, groupPopover,fieldType, fieldTypePopover,
+    user, userPopover, setGroupPopover, setGroupInput,
+    setFieldType, setfieldTypePopover, setUser, setuserPopover
+})=>{
     
-    const [group, setGroupInput] = useState();
-    const [groupPopover, setGroupPopover] = useState(false);
-    const [fieldType, setFieldType] = useState();
-    const [fieldTypePopover, setfieldTypePopover] = useState(false);
-    const [user, setUser] = useState();
-    const [userPopover, setuserPopover] = useState(false);
     
     const popoverRef = useRef(null);
 

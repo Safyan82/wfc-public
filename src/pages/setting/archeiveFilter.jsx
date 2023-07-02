@@ -7,10 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faCalendarAlt, faCalendarDays, faCalendarWeek, faChevronLeft, faChevronRight, faLock, faLongArrowRight, faRightLong, faSearch } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 
-export const ArcheiveFilter = ()=>{
-    
-    const [archive, setArchive] = useState();
-    const [archivePopover, setArchivePopover] = useState(false);
+export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archivePopover})=>{
     
     const popoverRef = useRef(null);
 
@@ -34,6 +31,7 @@ export const ArcheiveFilter = ()=>{
                     <div className='filter-item archeiveFilter' ref={popoverRef}>
                         <Popover
                             visible={archivePopover}
+                            overlayClassName='settingArchiveCustomPopover'
                             content={
                                 <div ref={popoverRef}>
                                     <div className="popover-data"  ref={popoverRef}>

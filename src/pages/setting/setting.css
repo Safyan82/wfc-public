@@ -361,9 +361,6 @@
     flex-shrink: 0;
 }
 
-.archeiveFilter .ant-popover-inner{
-    width: 160px !important;
-}
 
 /* custom popover */
 
@@ -380,6 +377,20 @@
 .settingCustomPopover .ant-popover-arrow:before{
     background-color: rgb(234, 240, 246) !important;
     color: white !important;
+    clip-path: none !important;
+    
+    top: 68% !important;
+    padding: 15px !important;
+    
+    transform: rotate(-46deg) !important;
+    height: 8px ;
+}
+
+
+
+
+.settingCustomPopover .ant-popover-arrow:after{
+    content: none !important;
 }
 
 .settingCustomPopover .ant-popover-inner{
@@ -392,6 +403,52 @@
 .settingCustomPopover .ant-popover .ant-popover-inner-content{
     color: white !important;
 }
+
+/* archive */
+
+
+
+.settingArchiveCustomPopover .ant-popover-inner{
+    width: 150px;
+    /* border: 1px solid #cbd6e2; */
+}
+
+.settingArchiveCustomPopover .ant-popover-arrow{
+    width: 29px; /* Set the desired width */
+    height: 29px; 
+}
+
+.settingArchiveCustomPopover .ant-popover-arrow:before{
+    background-color: white !important;
+    color: white !important;
+    clip-path: none !important;
+    /* border: 1px solid #cbd6e2; */
+    top: 68% !important;
+    padding: 15px !important;
+    
+    transform: rotate(-46deg) !important;
+    height: 8px ;
+}
+
+
+
+
+.settingArchiveCustomPopover .ant-popover-arrow:after{
+    content: none !important;
+}
+
+.settingArchiveCustomPopover .ant-popover-inner{
+    background-color: white !important;
+    color:white !important;
+    padding:0 !important;
+}
+
+
+.settingArchiveCustomPopover .ant-popover .ant-popover-inner-content{
+    color: white !important;
+}
+
+
 
 /* ant design terminate */
 

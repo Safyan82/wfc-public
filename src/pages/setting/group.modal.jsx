@@ -7,7 +7,15 @@ export const GroupModal = ({ visible, onClose}) => {
 
   const [groupName, setGroupName] = useState("");
 
+  const handelChange = (e)=>{
+    setGroupName(e.target.value);
+    if(e.target.value < 3){
+      e.target.classList.add('input-control-error'); 
+    }else{
+      e.target.classList.remove('input-control-error'); 
+    }
 
+  };
 
   return (
     <Modal
@@ -36,7 +44,7 @@ export const GroupModal = ({ visible, onClose}) => {
           <form id="branchForm" className='form'>
             <Form.Item>
               <label>Name</label>
-              <Input className={groupName?.length<3 ? 'input-control input-control-error': 'input-control'} onChange={(e)=>setGroupName(e.target.value)} name="groupName" />
+              <Input className={'input-control'} onChange={handelChange} name="groupName" />
             </Form.Item>     
           </form>
         </div>  
