@@ -43,18 +43,18 @@
     column-gap: 10px;
 }
 
-.btn-group .grid-outlined-btn{
-    font-weight: 600 !important;
+/* .btn-group .grid-outlined-btn{
+    font-weight: 500 !important;
     font-size: 14px;
 }
 
 .btn-group .grid-filed-btn{
     font-weight: 600 !important;
     font-size: 14px;
-}
+} */
 
 .left-sidebar{
-    position: fixed;
+    position: absolute;
     height: 100%;
     overflow: hidden auto;
     box-shadow: rgba(66, 91, 118, 0.21) 3px 0px 8px 0px;

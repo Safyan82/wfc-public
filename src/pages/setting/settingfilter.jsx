@@ -6,7 +6,7 @@ import { Button, Checkbox, Col, Input, Popover, Row, Select, Tabs, Typography } 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faLock, faSearch } from '@fortawesome/free-solid-svg-icons';
 
-export const Filter = ()=>{
+export const Filter = ({editProperty})=>{
     
     const [group, setGroupInput] = useState();
     const [groupPopover, setGroupPopover] = useState(false);
@@ -183,7 +183,7 @@ export const Filter = ()=>{
                                             
                                             suffix={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faSearch}/>}
                                         />
-                                        <Button className='grid-filed-btn' style={{height:'40px'}}> <b>Create Property</b> </Button>
+                                        <Button className='grid-filed-btn' onClick={editProperty} style={{height:'40px'}}> Create Property </Button>
                                     </div>
                                 </div>
                             </div>

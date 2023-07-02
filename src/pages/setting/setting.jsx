@@ -11,10 +11,13 @@ import { GroupFilter } from './groupfilter';
 import { useNavigate } from 'react-router-dom';
 import { ArcheiveFilter } from './archeiveFilter';
 import { ArcheivePropertyGrid } from './archeiveGrid';
+import { CreateFieldDrawer } from '../../components/createFields/index';
 
 export const Setting=()=>{
     const  { TabPane } = Tabs;
     const navigate = useNavigate();
+    const [fieldModal, setFieldModal] = useState(false);
+
     return(
         <Row>
             <Col span={4} className='setting-sidebar'>
@@ -71,7 +74,7 @@ export const Setting=()=>{
 
                                 <div className='btn-group'>
                                     <button className='btn-transparent'>
-                                        <FontAwesomeIcon icon={faLock}/> &nbsp; Data Quality
+                                        <FontAwesomeIcon icon={faLock}/> &nbsp; <span>Data Quality</span>
                                     </button>
                                     <Button className='setting-filled-btn'>
                                         Export all properties
@@ -111,8 +114,8 @@ export const Setting=()=>{
                             <div className="propertyTab"></div>
                             <Tabs defaultActiveKey="1">
                                 <TabPane tab="Properties" key="1">
-                                    <Filter/>
-                                    <SettingPropertyGrid/>
+                                    <Filter editProperty={()=>setFieldModal(true)}/>
+                                    <SettingPropertyGrid />
                                 </TabPane>
                             <TabPane tab="Group" key="2">
                                 <GroupFilter/>
@@ -136,6 +139,9 @@ export const Setting=()=>{
                         </div>
                     </div>
                 </div>
+        
+        <CreateFieldDrawer visible={fieldModal}  onClose={()=>setFieldModal(false)}/>
+        
         </Row>
     );
 };

@@ -41,8 +41,8 @@ export const EditForm=()=>{
                         </div>
                         <div className="toolbar-inner-title">Edit {title} form</div>
                         <div className="btn-group">
-                            <Button className="grid-outlined-btn" onClick={()=>setModalState(!modalState)}>Preview</Button>
-                            <Button className="grid-filed-btn" onClick={()=>navigate(url)}>Save</Button>
+                            <button className="drawer-outlined-btn" onClick={()=>setModalState(!modalState)}>Preview</button>
+                            <button className="drawer-filled-btn" onClick={()=>navigate(url)}>Save</button>
                         </div>
                     </div>
                 </div>
