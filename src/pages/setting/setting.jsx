@@ -12,12 +12,13 @@ import { useNavigate } from 'react-router-dom';
 import { ArcheiveFilter } from './archeiveFilter';
 import { ArcheivePropertyGrid } from './archeiveGrid';
 import { CreateFieldDrawer } from '../../components/createFields/index';
+import { GroupModal } from './group.modal';
 
 export const Setting=()=>{
     const  { TabPane } = Tabs;
     const navigate = useNavigate();
     const [fieldModal, setFieldModal] = useState(false);
-
+    const [groupmodal, setGroupModal] = useState(false);
     return(
         <Row>
             <Col span={4} className='setting-sidebar'>
@@ -82,7 +83,7 @@ export const Setting=()=>{
                                 </div>
                             </div>
                             <div className="text">
-                                Properties are used to collect and store information about your records in HubSpot. For example, a contact might have properties like First Name or Lead Status.
+                                Properties are used to collect and store information about your records in Wfc. For example, a contact might have properties like First Name or Lead Status.
                             </div>
                             {/* object selection box */}
                             <div className="object-selection-box">
@@ -118,7 +119,7 @@ export const Setting=()=>{
                                     <SettingPropertyGrid />
                                 </TabPane>
                             <TabPane tab="Group" key="2">
-                                <GroupFilter/>
+                                <GroupFilter setGroupModal={()=>setGroupModal(true)}/>
                                 <SettingGroupPropertyGrid/>
                             </TabPane>
                             <TabPane tab="Archived Properties" key="3" onClick={(e)=>console.log(e)}>
@@ -141,7 +142,8 @@ export const Setting=()=>{
                 </div>
         
         <CreateFieldDrawer visible={fieldModal}  onClose={()=>setFieldModal(false)}/>
-        
+        <GroupModal visible={groupmodal} onClose={()=>setGroupModal(false)} />
+
         </Row>
     );
 };

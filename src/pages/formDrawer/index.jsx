@@ -127,7 +127,7 @@ export const FormDrawer = ({ visible, onClose, refetch }) => {
             }
           >
             <div className='title' 
-                onClick={()=>navigate('/editfrom',{
+                onClick={()=>navigate('/editform',{
                     state: {
                     title: 'Branch',
                     url:'/user/branch',

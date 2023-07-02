@@ -6,7 +6,7 @@ import { Button, Checkbox, Col, Input, Popover, Row, Select, Tabs, Typography } 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faLock, faSearch } from '@fortawesome/free-solid-svg-icons';
 
-export const GroupFilter = ()=>{
+export const GroupFilter = ({setGroupModal})=>{
     
     const [group, setGroupInput] = useState();
     const [groupPopover, setGroupPopover] = useState(false);
@@ -46,7 +46,9 @@ export const GroupFilter = ()=>{
 
                                     <div className="right-filter-inner">
                                         
-                                        <Button className='grid-filed-btn' style={{height:'40px'}}> <b>Create group</b> </Button>
+                                        <button onClick={
+                                            setGroupModal
+                                        } className='drawer-filled-btn' style={{height:'40px'}}> Create group </button>
                                     </div>
                                 </div>
                             </div>

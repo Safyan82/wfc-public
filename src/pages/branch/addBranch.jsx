@@ -108,7 +108,7 @@ const AddBranch = ({ visible, onCancel, refetch }) => {
             <span className='close' onClick={onCancel}><FontAwesomeIcon icon={faClose}/></span>
         </div>
         <div className='modal-body'>
-          <div className='title' onClick={()=>navigate('/editfrom',{
+          <div className='title' onClick={()=>navigate('/editform',{
         state: {
           title: 'Branch',
           url:'/user/branch',

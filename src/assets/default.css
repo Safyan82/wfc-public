@@ -398,13 +398,7 @@ body{
 
 
 /* modal */
-.ant-modal {
-    float: right;
-    /* height: 100vh; */
-    margin: 0;
-    top: 0px;
-    padding: 0;
-}
+
 
 .ant-modal-content{
     /* min-height: 100vh; */
@@ -434,12 +428,17 @@ body{
     padding: 0 !important;
 }
 
+.ant-modal-mask{
+    background: rgba(45, 62, 80, 0.79) !important;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
 .modal-body{
     color: #0091ae;
     font-weight: 600;
     font-size: 14px;
-    padding: 40px;
-    height: 61.5vh;
+    padding: 20px 40px;
     overflow: auto;
 }
 
@@ -499,6 +498,12 @@ body{
 .form .input-control:focus{
     border-color: rgba(0,208,228,.5);
     box-shadow: 0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4;
+    outline: 0;
+}
+
+.form .input-control-error:focus{
+    border-color: red !important;
+    box-shadow: 0 0 4px 1px red, 0 0 0 1px red !important;
     outline: 0;
 }
 

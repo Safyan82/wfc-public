@@ -24,7 +24,7 @@ function App() {
           <Route path='branch' element={<Branch />} />
           <Route path='setting' element={<Setting />} />
         </Route>
-        <Route path='/editfrom' element={<EditForm />} />
+        <Route path='/editform' element={<EditForm />} />
       </Routes>
     </BrowserRouter>
     {/* <Navbar/> */}

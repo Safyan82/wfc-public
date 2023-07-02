@@ -71,7 +71,8 @@ export const Filter = ({editProperty})=>{
                                         
                                         <div className='filter-item' ref={popoverRef}>
                                             <Popover
-                                                // visible={groupPopover}
+                                                visible={groupPopover}
+                                                overlayClassName='settingCustomPopover'
                                                 content={
                                                     <div ref={popoverRef}>
                                                         <div className="popover-search"  ref={popoverRef}>
@@ -109,6 +110,7 @@ export const Filter = ({editProperty})=>{
                                         <div className='filter-item' ref={popoverRef}>
                                             <Popover
                                                 visible={fieldTypePopover}
+                                                overlayClassName='settingCustomPopover'
                                                 content={
                                                     <div ref={popoverRef}>
                                                         <div className="popover-search">
@@ -142,6 +144,7 @@ export const Filter = ({editProperty})=>{
                                         <div className='filter-item' ref={popoverRef}>
                                             <Popover
                                                 visible={userPopover}
+                                                overlayClassName='settingCustomPopover'
                                                 content={
                                                     <div>
                                                         <div className="popover-search">
@@ -183,7 +186,7 @@ export const Filter = ({editProperty})=>{
                                             
                                             suffix={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faSearch}/>}
                                         />
-                                        <Button className='grid-filed-btn' onClick={editProperty} style={{height:'40px'}}> Create Property </Button>
+                                        <button className='drawer-filled-btn' onClick={editProperty} style={{height:'40px'}}> Create Property </button>
                                     </div>
                                 </div>
                             </div>

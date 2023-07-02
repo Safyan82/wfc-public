@@ -365,31 +365,35 @@
     width: 160px !important;
 }
 
-.ant-popover-inner{
+/* custom popover */
+
+.settingCustomPopover .ant-popover-inner{
     width: 300px;
     /* border: 1px solid #cbd6e2; */
 }
 
-.ant-popover-arrow{
+.settingCustomPopover .ant-popover-arrow{
     width: 29px; /* Set the desired width */
     height: 29px; 
 }
 
-.ant-popover-arrow:before{
+.settingCustomPopover .ant-popover-arrow:before{
     background-color: rgb(234, 240, 246) !important;
     color: white !important;
 }
 
-.ant-popover-inner{
+.settingCustomPopover .ant-popover-inner{
     background-color: white !important;
     color:white !important;
     padding:0 !important;
 }
 
 
-.filter-item .ant-popover .ant-popover-inner-content{
+.settingCustomPopover .ant-popover .ant-popover-inner-content{
     color: white !important;
 }
+
+/* ant design terminate */
 
 .popover-search{
     padding: 16px;

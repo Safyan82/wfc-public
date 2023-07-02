@@ -33,8 +33,8 @@ export function Navbar(){
             <Menu.Item key="timeline" className='menu-item'>Timeline</Menu.Item>
             <Menu.Item key="more" className='menu-item'>More</Menu.Item>
             
-            <Menu.Item className='search' key="search" style={{margin: 'auto', background:"none !important", backgroundColor: 'none !important', marginLeft:'5%'}}>
-            <Space style={{background:"none"}}>
+            <Menu.Item className='search' key="search" style={{margin: 'auto', background:"none !important", backgroundColor: 'none !important',}}>
+            <Space style={{background:"none", marginLeft: '-14%' }}>
                 <Input
                     suffix={<SearchOutlined />}
                     placeholder={placeholder? "Employees, Sites, Schedule" : "Search"}
@@ -63,11 +63,11 @@ export function Navbar(){
                 <div className='vertical-separator'></div>
             </Menu.Item>
 
-            <SubMenu key="account" icon={<WordLetterAvatar word={"Muhammad Safyan"} />} title={"Muhammad Safyan"} >
-                <Menu.Item key="profile">Profile</Menu.Item>
+            <SubMenu key="account" icon={<WordLetterAvatar word={"Muhammad Safyan"} />} title={"Safyan"} >
+                {/* <Menu.Item key="profile">Profile</Menu.Item>
                 <Menu.Item key="logout" icon={<LogoutOutlined />}>
                     Logout
-                </Menu.Item>
+                </Menu.Item> */}
             </SubMenu>
 
             {/* <Menu.Item key="minimize" className='minimize' id="minimize" itemRef='minimize'> <FontAwesomeIcon icon={faWindowMinimize} /> </Menu.Item>
