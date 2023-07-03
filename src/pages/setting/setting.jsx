@@ -13,6 +13,8 @@ import { ArcheiveFilter } from './archeiveFilter';
 import { ArcheivePropertyGrid } from './archeiveGrid';
 import { CreateFieldDrawer } from '../../components/createFields/index';
 import { GroupModal } from './group.modal';
+import { GROUPLIST } from '../../util/query/group.query';
+import { useQuery } from '@apollo/client';
 
 export const Setting=()=>{
     const  { TabPane } = Tabs;
@@ -43,6 +45,9 @@ export const Setting=()=>{
         setfieldTypePopover(false);
         setArchivePopover(false);
     };
+
+    const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST);
+
 
     return(
         <Row>
@@ -161,7 +166,10 @@ export const Setting=()=>{
                                 </TabPane>
                             <TabPane tab="Group" key="2">
                                 <GroupFilter setGroupModal={()=>setGroupModal(true)}/>
-                                <SettingGroupPropertyGrid/>
+                                <SettingGroupPropertyGrid
+                                    groupList={groupList}
+                                    groupLoading={groupLoading}
+                                />
                             </TabPane>
                             <TabPane tab="Archived Properties" key="3" onClick={(e)=>console.log(e)}>
                                 <ArcheiveFilter
@@ -188,7 +196,7 @@ export const Setting=()=>{
                 </div>
         
         <CreateFieldDrawer visible={fieldModal}  onClose={()=>setFieldModal(false)}/>
-        <GroupModal visible={groupmodal} onClose={()=>setGroupModal(false)} />
+        <GroupModal groupRefetch={groupRefetch} visible={groupmodal} onClose={()=>setGroupModal(false)} />
 
         </Row>
     );

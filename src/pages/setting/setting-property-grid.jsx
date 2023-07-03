@@ -28,24 +28,30 @@ export const SettingPropertyGrid = () => {
       key: 'name',
       sorter: (a, b) => a.name.length - b.name.length,
       sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
-      width:370,
+      width:400,
       render: (_, record) => {
         console.log(record, "record")
         const showActions = hoveredRow === record.key;
         return (
-          <div style={{display:'flex', alignItems:'center', columnGap:'7px'}}>
-              <div>
-                <span className='record-title'>{record.name}</span>
-                <div className='record-subtitle'>single line text</div>
-              </div> &nbsp;
-               {showActions && <button className="grid-sm-btn" type="link" onClick={() => handleEdit(record)}>
-                  Edit
-                </button>}
-                {showActions && <button  className="grid-sm-btn" type="link" onClick={() => handleDelete(record)}>
-                  Clone
-                </button>}
-                {showActions && 
-                <Popover
+          
+          
+          
+          <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+            <div style={{lineHeight:'35px', width:'auto'}} className='truncated-text'>
+              <span className='record-title'>{record.name}</span>
+              <div className='record-subtitle'>single line text</div>
+            </div>
+
+          {showActions && 
+          <div style={{width:'100%', display:'flex', justifyContent:'flex-end' ,alignItems:'center', columnGap:'10px'}}>
+            <button style={{marginLeft:'10%'}} className="grid-sm-btn" type="link" onClick={() => handleEdit(record)}>
+              Edit
+            </button>
+            <button  className="grid-sm-btn" type="link" onClick={() => handleDelete(record)}>
+              Clone 
+            </button>
+
+            <Popover
                   overlayClassName='settingCustomPopover'
                   trigger={"click"}
                   content={
@@ -72,12 +78,14 @@ export const SettingPropertyGrid = () => {
                   }
                 >
 
-                  <button className="grid-sm-btn" type="link" onClick={() => handleDelete(record)}>
-                    <div style={{display: 'flex', gap: '0'}}>More <span className='caret'></span></div>
-                  </button>
-                </Popover>
-                }
+              <button className="grid-sm-btn" type="link" onClick={() => handleDelete(record)}>
+                <div style={{display: 'flex', gap: '0'}}>More <span className='caret'></span></div>
+              </button>
+            </Popover>
+
           </div>
+          }
+        </div>
         );
       },
 
@@ -105,6 +113,7 @@ export const SettingPropertyGrid = () => {
       sorter: (a, b) => a.use.length - b.use.length,
       sortOrder: sortedInfo.columnKey === 'use' ? sortedInfo.order : null,
       ellipsis: true,
+      width:100
     },
   ];
   

@@ -617,3 +617,15 @@ body{
     outline: 0 !important;
     border-color: #cbd6e2 !important;
 }
+
+.ant-notification .ant-notification-notice {
+    padding: 15px 24px;
+    width: 320px;
+}
+
+.truncated-text{
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
