@@ -524,3 +524,35 @@
 .ant-alert-info{
     align-items: center;
 }
+
+
+.grid-sm-btn{
+    background-color: #eaf0f6;
+    border-color: #cbd6e2;
+    color: #506e91;
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px;
+    -webkit-font-smoothing: auto;
+    font-size: 12px;
+    line-height: 14px;
+    padding: 8px 16px;
+}
+
+.grid-sm-btn:hover{
+    background-color: #f5f8fa;
+    color: #506e91;
+    cursor: pointer;
+}
+
+.record-title{
+    color: #0091ae;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.record-subtitle{
+    color: #516f90!important;
+    font-size: 12px;
+    line-height: 15px;
+}
