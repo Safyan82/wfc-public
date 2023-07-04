@@ -304,7 +304,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                     </div>
 
                     <Checkbox>
-                        Restrict to alpha numeric values 
+                        Don't allow alpha numeric values 
                         <div className="small-text">Don't allow alpha numeric characters like 1ag, g5c for this property</div>
                     </Checkbox>
                     <Checkbox>
