@@ -33,7 +33,9 @@ export function Navbar(){
             <Menu.Item key="schedule" className='menu-item'>Schedule</Menu.Item>
             <Menu.Item key="timeline" className='menu-item'>Timeline</Menu.Item>
             <SubMenu title={<span>More <span className='caret-white'></span></span>} key="more" >
-                <Menu.Item key="more" className='menu-item'>Branches</Menu.Item>
+                <Link to="/user/branch">
+                    <Menu.Item key="more" className='menu-item'>Branches</Menu.Item>
+                </Link>
             </SubMenu>
             
             <Menu.Item className='search' key="search" style={{margin: 'auto', background:"none !important", backgroundColor: 'none !important',}}>

@@ -231,6 +231,13 @@ body{
     background: #253342 !important;
 }
 
+.ant-menu-submenu-selected{
+    background: #253342 !important;
+    z-index: 9999;
+}
+a:visited{
+    color: white;
+}
 
 /* layout */
 .sidebarLayout{
