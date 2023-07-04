@@ -17,10 +17,12 @@ const customDot = (dot, { status, index }) => {
   );
 };
 
-export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
+export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoading }) => {
     const [currentStep, setCurrentStep] = useState(0);
-    const [basicInfo, setBasicInfo] = useState(null);
+    const [basicInfo, setBasicInfo] = useState({objectType: 'branches'});
     const [basicInfoCheck, setBasicInfoCheck] = useState(true);
+    const [fieldType, setFieldType] = useState(sessionStorage.getItem('fieldType') || null);
+
     const [width, setWidth] = useState(false);
     const [api, contextHolder] = notification.useNotification();
 
@@ -50,11 +52,11 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
     const steps = [
       {
         title: 'BASIC INFO',
-        component: <BasicInfo basicInfo={basicInfo} setWidth={setWidth} setBasicInfo={setBasicInfo} />
+        component: <BasicInfo groupList={groupList} groupLoading={groupLoading} basicInfo={basicInfo} setWidth={setWidth} setBasicInfo={setBasicInfo} />
       },
       {
         title: 'FIELD TYPE',
-        component: <FieldType basicInfo={basicInfo} setWidth={setWidth}/>
+        component: <FieldType fieldType={fieldType} setFieldType={setFieldType} basicInfo={basicInfo} setWidth={setWidth}/>
       },
       {
         title: 'RULES',
@@ -62,9 +64,24 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
       }
     ];
   
-    const handleNext = () => {
+    const handleNext = (e) => {
       setCurrentStep(currentStep + 1);
     };
+
+    useEffect(()=>{
+      console.log(currentStep);
+      if(currentStep==1 && fieldType==null){
+        document.getElementById("nextBtn").classList.add("disabled-btn");
+      }
+    },[currentStep]);
+
+    useEffect(()=>{
+      if(fieldType){
+        document.getElementById("nextBtn").classList.remove("disabled-btn");
+      }
+    },[fieldType])
+
+   
   
     const handlePrev = () => {
       setCurrentStep(currentStep - 1);
@@ -105,7 +122,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch }) => {
                   </div>
                   
                   {currentStep < steps.length - 1 && 
-                    <button className={currentStep ==0 && basicInfoCheck ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handleNext}>
+                    <button id="nextBtn" className={currentStep ==0 && basicInfoCheck ?' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handleNext}>
                     {'Next'} <FontAwesomeIcon className='next-btn-icon' icon={faChevronRight}/>
                     </button>
                   } 

@@ -361,6 +361,18 @@
     flex-shrink: 0;
 }
 
+.caret-white{
+    color: #fff;
+    margin-left: 0.525em;
+    border: 0.3125em solid transparent;
+    display: inline-block;
+    vertical-align: middle;
+    border-top-color: currentColor;
+    margin-top: 0.3125em;
+    align-self: center;
+    flex-shrink: 0;
+}
+
 
 /* custom popover */
 
@@ -554,4 +566,9 @@
     color: #516f90!important;
     font-size: 12px;
     line-height: 15px;
+}
+
+.text-decore:hover{
+    text-decoration: underline;
+    cursor: pointer;
 }

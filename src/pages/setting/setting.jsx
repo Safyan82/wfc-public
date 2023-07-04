@@ -105,7 +105,7 @@ export const Setting=()=>{
 
                                 <div className='btn-group'>
                                     <button className='btn-transparent'>
-                                        <FontAwesomeIcon icon={faLock}/> &nbsp; <span>Data Quality</span>
+                                        <FontAwesomeIcon icon={faLock}/> &nbsp; <span className='text-decore'>Data Quality</span>
                                     </button>
                                     <Button className='setting-filled-btn'>
                                         Export all properties
@@ -135,7 +135,7 @@ export const Setting=()=>{
                                         </div>
                                     </div>
                                     <div className="right-selection-box">
-                                        <div className='object-item object-text'>Go to branch settings</div>
+                                        <div className='object-item object-text text-decore'>Go to branch settings</div>
                                     </div>
                                 </div>
                             </div>
@@ -195,8 +195,14 @@ export const Setting=()=>{
                     </div>
                 </div>
         
-        <CreateFieldDrawer visible={fieldModal}  onClose={()=>setFieldModal(false)}/>
-        <GroupModal groupRefetch={groupRefetch} visible={groupmodal} onClose={()=>setGroupModal(false)} />
+            <CreateFieldDrawer 
+                groupList={groupList}
+                groupLoading={groupLoading}
+                visible={fieldModal}  
+                onClose={()=>setFieldModal(false)}
+            />
+            
+            <GroupModal groupRefetch={groupRefetch} visible={groupmodal} onClose={()=>setGroupModal(false)} />
 
         </Row>
     );

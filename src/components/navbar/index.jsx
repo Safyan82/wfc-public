@@ -13,6 +13,7 @@ import WordLetterAvatar from '../avatar';
 import logo from '../../assets/img/wfc-new-logo.png';
 import { faBell, faComment, faComments, faGear, faRing } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import './navbar.css';
 
 
 const { SubMenu } = Menu;
@@ -22,16 +23,18 @@ export function Navbar(){
     const [placeholder, setPlaceholder] = useState(false);
     return(
     <Layout>
-        <Menu mode="horizontal" theme="dark" className='top-menu-layout'>
-            <Menu.Item className='logo-img'>
-                <img src={logo} style={{width:'25px'}}/>
+        <Menu mode="horizontal" theme="dark" className='top-menu-layout' triggerSubMenuAction="click">
+            <Menu.Item>
+                <img src={logo} style={{width:'30px', height:'30px', borderRadius:'4px'}}  className='menu-icon' />
             </Menu.Item>
 
             <Menu.Item key="employee" className='menu-item'>Employee</Menu.Item>
             <Menu.Item key="site" className='menu-item'>Site</Menu.Item>
             <Menu.Item key="schedule" className='menu-item'>Schedule</Menu.Item>
             <Menu.Item key="timeline" className='menu-item'>Timeline</Menu.Item>
-            <Menu.Item key="more" className='menu-item'>More</Menu.Item>
+            <SubMenu title={<span>More <span className='caret-white'></span></span>} key="more" >
+                <Menu.Item key="more" className='menu-item'>Branches</Menu.Item>
+            </SubMenu>
             
             <Menu.Item className='search' key="search" style={{margin: 'auto', background:"none !important", backgroundColor: 'none !important',}}>
             <Space style={{background:"none", marginLeft: '-14%' }}>
@@ -46,17 +49,17 @@ export function Navbar(){
             </Menu.Item>
 
 
-            <Menu.Item className='menu-item menu-icon'>
+            <Menu.Item className='menu-item '>
                 <Link to="/user/setting">
-                    <FontAwesomeIcon icon={faGear} />
+                    <FontAwesomeIcon icon={faGear} className='menu-icon' />
                 </Link>
             </Menu.Item>
-            <Menu.Item className='menu-item menu-icon'>
-                <FontAwesomeIcon icon={faBell} />
+            <Menu.Item className='menu-item '>
+                <FontAwesomeIcon icon={faBell} className='menu-icon'  />
             </Menu.Item>
 
-            <Menu.Item className='menu-item menu-icon'>
-                <FontAwesomeIcon icon={faComments} />
+            <Menu.Item className='menu-item '>
+                <FontAwesomeIcon icon={faComments}  className='menu-icon' />
             </Menu.Item>
 
             <Menu.Item>

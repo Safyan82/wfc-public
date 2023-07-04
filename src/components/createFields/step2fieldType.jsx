@@ -4,7 +4,6 @@ import { CreateField } from './dynamicField';
 import {
     SearchOutlined,
   } from '@ant-design/icons';
-import CheckboxTable from './table';
 
 
 const multi=[
@@ -13,9 +12,8 @@ const multi=[
     'radioDropdown',
 ];
 
-export const FieldType = ({basicInfo, setWidth})=>{
+export const FieldType = ({basicInfo, setWidth, fieldType, setFieldType})=>{
     const {Option, OptGroup} = Select;
-    const [fieldType, setFieldType] = useState(sessionStorage.getItem('fieldType'));
     const [sortType, setSortType] = useState('custom');
     const [search, setSearchKeyword] = useState(null);
 
@@ -28,6 +26,12 @@ export const FieldType = ({basicInfo, setWidth})=>{
         }
     },[fieldType]);
     
+    useEffect(()=>{
+        return()=>{
+          document.getElementById("nextBtn")?.classList?.remove("disabled-btn");
+        }
+      },[])
+
     return(
         <React.Fragment>
             <Typography className='label'>

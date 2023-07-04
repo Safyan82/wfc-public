@@ -1,0 +1,17 @@
+.ant-menu-submenu-popup{
+    top: 42px !important;
+    width: 20px !important;
+    background-color: #2e3f50 !important;
+    background: #2e3f50 !important;
+}
+
+.ant-menu-submenu-popup .ant-menu-vertical.ant-menu-sub{
+    background-color: #2e3f50 !important;
+    background: #2e3f50 !important;
+    border-radius: 0 !important;
+    color: white !important;
+}
+
+.top-menu-layout li{
+    font-size: 13px;
+}

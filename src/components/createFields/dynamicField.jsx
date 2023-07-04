@@ -554,7 +554,7 @@ export function CreateField({sortType,fieldType,label,search}){
                                             treeCheckable
                                         >
                                             {labelValue && labelValue?.length && labelValue?.map((option)=>(
-                                                <TreeSelect.TreeNode value={option.value} title={option.key}/>
+                                                option?.value?.length > 0 && <TreeSelect.TreeNode value={option.value} title={option.key}/>
                                             ))}
                                         </TreeSelect>
                                     }

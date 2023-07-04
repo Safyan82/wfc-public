@@ -114,6 +114,9 @@ export const FormDrawer = ({ visible, onClose, refetch }) => {
             closeIcon={<FontAwesomeIcon icon={faClose} onClick={onClose} className='close-icon'/>}
             visible={visible}
             width={600}
+            
+            maskClosable={false}
+            mask={true}
             footer={
               <div className='drawer-footer'>
                   <button disabled={isoverlay || loading} className={isoverlay || loading ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handelSubmit}>

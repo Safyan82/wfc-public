@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
-import { Form, Input, Popover, Select } from "antd";
+import { Form, Input, Popover, Select, Spin } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCode } from "@fortawesome/free-solid-svg-icons";
+import { faCode, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { LoadingOutlined } from '@ant-design/icons';
 
-export const BasicInfo = ({basicInfo, setBasicInfo, setWidth}) =>{
+export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList:{groupList}, groupLoading}) =>{
     useEffect(()=>{setWidth(false)},[])
+    const loading = true
     return(
         <React.Fragment>
 
@@ -12,9 +14,10 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth}) =>{
                 <label>Object type <sup>*</sup></label>
                 <Select 
                     className="custom-select"
-                    suffixIcon={<span className="dropdowncaret"></span>}
                     onChange={(e)=>setBasicInfo({...basicInfo, objectType:e})}
                     value={basicInfo?.objectType}
+                    defaultValue={"branches"}
+                    suffixIcon={<span className="dropdowncaret"></span>}
                 >
                     <Select.Option value="branches">Branches</Select.Option>
                     <Select.Option value="sites">Sites</Select.Option>
@@ -27,11 +30,14 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth}) =>{
                 <label>Group <sup>*</sup></label>
                 <Select 
                     className="custom-select"
-                    suffixIcon={<span className="dropdowncaret"></span>}
                     onChange={(e)=>setBasicInfo({...basicInfo, group:e})}
                     value={basicInfo?.group}
+                    disabled={groupLoading}
+                    suffixIcon={groupLoading ? <Spin indicator={<LoadingOutlined />} />: <span className="dropdowncaret"></span>}
                 >
-                    <Select.Option value="other">Other</Select.Option>
+                    {!groupLoading && groupList?.map((group, index)=>(
+                        <Select.Option value={group.key} key={index}>{group.name}</Select.Option>
+                    ))}
                 </Select>
             </Form.Item>
 

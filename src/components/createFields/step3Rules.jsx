@@ -1,6 +1,6 @@
 import { faCalendar, faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Checkbox, DatePicker, Input, InputNumber, Radio, Typography } from "antd"
+import { Checkbox, DatePicker, Input, InputNumber, Popover, Radio, Tag, Typography, notification } from "antd"
 import React, { useEffect, useState } from "react"
 
 export const Rules = ({basicInfo, setWidth})=>{
@@ -11,6 +11,7 @@ export const Rules = ({basicInfo, setWidth})=>{
     const [fieldType, setFieldType] = useState(sessionStorage.getItem("fieldType"));
     const [dateType, setDateType] = useState("anyDate");
     const [futureDateType, setfutureDateType] = useState();
+    const [api, contextHolder] = notification.useNotification();
     
     useEffect(()=>{
         setWidth(false);
@@ -26,9 +27,37 @@ export const Rules = ({basicInfo, setWidth})=>{
         setDateType(target.value)
     }
 
+    const [passwordCharacter, setPasswordCharacter]= useState(false);
+
+    
+    const [tags, setTags] = useState([]);
+    const [inputValue, setInputValue] = useState('');
+
+    const handleInputKeyPress = (e) => {
+        if (e.key === 'Enter' && inputValue.trim() !== '' && !tags.includes(inputValue) && inputValue.includes('@')) {
+          setTags([...tags, inputValue.trim()]);
+          setInputValue('');
+        }
+        else if(!inputValue.includes('@')){
+            
+            api.warning({
+                message: "Domain should start with @",
+                placement:"topLeft",
+                className: 'notification-without-close',
+            });
+        }
+        else{
+            api.error({
+                message: "Domain already exist",
+                placement:"topLeft",
+                className: 'notification-without-close',
+            });
+        }
+    };
+
     return(
         <React.Fragment>
-            
+            {contextHolder}
             <Typography className='label'>
                 <Typography.Title level={4}>{basicInfo?.label}</Typography.Title>
             </Typography>
@@ -139,7 +168,7 @@ export const Rules = ({basicInfo, setWidth})=>{
             </div>
             }
 
-{/* generic */}
+            {/* generic */}
             <div className="propertyCheckbox">
                 <div style={{color: 'black',marginTop:'5%', marginBottom: '2%'}} >Property visibility</div>
                 <Checkbox style={{fontWeight:'300'}} defaultChecked>Show in forms, pop-up forms, and bots</Checkbox>
@@ -148,12 +177,15 @@ export const Rules = ({basicInfo, setWidth})=>{
             
 
             {/* single field validation */}
-            {(fieldType=="singlelineText" || fieldType=="multilineText") &&
+            {(fieldType=="singlelineText" || fieldType=="multilineText" || fieldType=="password") &&
             <div className="validationRules">
                 <div className="validationRules-title">Validation rules</div>
                 <div className="validationRules-subTitle">Set rules that apply when a user is creating, editing, or importing records.</div>
                 
                 <div className="validationCheckboxGroup">
+
+                    
+
                     <div>
 
                         <Checkbox onChange={(e)=>setMin(e.target.checked)}>
@@ -174,6 +206,7 @@ export const Rules = ({basicInfo, setWidth})=>{
 
                     </div>
 
+
                     <div>
                         <Checkbox onChange={(e)=>setMax(e.target.checked)}>
                             Set max character limit
@@ -193,9 +226,26 @@ export const Rules = ({basicInfo, setWidth})=>{
 
                     </div>
 
+                    
+                    <div>
+
+                        <Checkbox onChange={(e)=>setPasswordCharacter(e.target.checked)}>
+                            Mandatory character in password
+                        </Checkbox>
+                        {passwordCharacter &&
+                            <div className="numberInput">
+                                <Input                        
+                                    className="generic-input-control"
+                                    placeholder="@$%"
+                                />
+                            </div>
+                        }
+
+                    </div>
+
                     <Checkbox>
                         Restrict to numeric values 
-                        <div className="small-text">Don't allow alpha or special characters like a, @, or $ for this property</div>
+                        {/* <div className="small-text">Don't allow alpha or special characters like a, @, or $ for this property</div> */}
                     </Checkbox>
                     <Checkbox>
                         Don't allow special characters
@@ -205,6 +255,115 @@ export const Rules = ({basicInfo, setWidth})=>{
 
             </div>}
 
+            
+
+            {/* single numerix field validation */}
+            {(fieldType=="number") &&
+            <div className="validationRules">
+                <div className="validationRules-title">Validation rules</div>
+                <div className="validationRules-subTitle">Set rules that apply when a user is creating, editing, or importing records.</div>
+                
+                <div className="validationCheckboxGroup">
+                    <div>
+
+                        <Checkbox onChange={(e)=>setMin(e.target.checked)}>
+                            Set min number limit
+                        </Checkbox>
+                        {min &&
+                            <div className="numberInput">
+                                <InputNumber 
+                                    min={1}
+                                    defaultValue={minCharacter}                          
+                                    upHandler={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faChevronUp} />}
+                                    downHandler={<FontAwesomeIcon  style={minCharacter > 1 && {color:'#0091ae'}} icon={faChevronDown} />}
+                                    className="generic-input-control"
+                                    onChange={(e)=>setMinCharacter(e)}
+                                />
+                            </div>
+                        }
+
+                    </div>
+
+                    <div>
+                        <Checkbox onChange={(e)=>setMax(e.target.checked)}>
+                            Set max number limit
+                        </Checkbox>
+                        {max &&
+                        <div className="numberInput">
+                            <InputNumber 
+                                min={100}
+                                defaultValue={maxCharacter}                          
+                                upHandler={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faChevronUp} />}
+                                downHandler={<FontAwesomeIcon  style={{color:'#0091ae'}} icon={faChevronDown} />}
+                                className="generic-input-control"
+                                onChange={(e)=>setMaxCharacter(e)}
+                            />
+                        </div>
+                        }
+
+                    </div>
+
+                    <Checkbox>
+                        Restrict to alpha numeric values 
+                        <div className="small-text">Don't allow alpha numeric characters like 1ag, g5c for this property</div>
+                    </Checkbox>
+                    <Checkbox>
+                        Don't allow special characters
+                        <div className="small-text">Don't allow special characters like @, #, or & for this property</div>
+                    </Checkbox>
+                </div>
+
+            </div>}
+
+
+
+            
+            {/* email numerix field validation */}
+            {(fieldType=="email") &&
+            <div className="validationRules">
+                <div className="validationRules-title">Validation rules</div>
+                <div className="validationRules-subTitle">Set rules that apply when a user is creating, editing, or importing records.</div>
+                
+                <div className="validationCheckboxGroup">
+                    <div>
+
+                        <Checkbox onChange={(e)=>setMin(e.target.checked)}>
+                            Allow only specific domain email address
+                        </Checkbox>
+                        {min &&
+                            <div className="numberInput">
+                                <Popover
+                                    content='Press " ENTER " to add domain'
+                                    placement="right"
+                                    trigger={"click"}
+                                >
+
+                                    <Input                        
+                                        className="generic-input-control"
+                                        placeholder="@wfc.co.uk"
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
+                                        onPressEnter={handleInputKeyPress}
+                                    />
+                                </Popover>
+                                <div style={{ marginTop: '8px' }}>
+                                    {tags.map((tag, index) => (
+                                    <Tag key={index} closable style={{marginTop:'4%'}}>{tag}</Tag>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                        }
+
+                    </div>
+                </div>
+
+            </div>}
+
+
+            
+            
+            
 
         </React.Fragment>
     )
