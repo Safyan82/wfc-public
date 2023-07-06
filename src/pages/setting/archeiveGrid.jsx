@@ -4,16 +4,14 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 import { DELETE_PROPERTY, UN_ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
 
-export const ArcheivePropertyGrid = ({data, refetch}) => {
+export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
+
   const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter);
     setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
-
-
 
 
   const [hoveredRow, setHoveredRow] = useState(null);
@@ -40,6 +38,7 @@ export const ArcheivePropertyGrid = ({data, refetch}) => {
   const handelRestore= async(id, label) => {
     await unArchiveProperty({variables:{input: {id}}});
     await refetch();
+    await propertyListRefetch();
     api.success({
       message:`${label} property was restored`,
       placement:'top',

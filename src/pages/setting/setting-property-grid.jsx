@@ -2,12 +2,11 @@ import { useMutation } from '@apollo/client';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Popover, Space, Table, notification } from 'antd';
-import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
 import { ArchiveConfirmationModal } from './archeiveConfirmation.modal';
 
-export const SettingPropertyGrid = ({propertyList, propertyListLoading, propertyListRefetch}) => {
+export const SettingPropertyGrid = ({propertyList, propertyListLoading, propertyListRefetch, refetch}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
@@ -38,8 +37,9 @@ export const SettingPropertyGrid = ({propertyList, propertyListLoading, property
   const ArcheivePropertyGrid = async() => {
     try{
       await archiveProperty({variables:{input:{id: archivedId}}});
+      await propertyListRefetch();
+      await refetch();
       setArchiveConfirmationModal(false);
-      propertyListRefetch();
       api.success({
         message: `${propertyName} was archived`,
         placement:"top",

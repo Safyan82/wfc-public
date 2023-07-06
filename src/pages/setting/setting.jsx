@@ -175,6 +175,8 @@ export const Setting=()=>{
                                         propertyList={propertyList}
                                         propertyListRefetch={propertyListRefetch}
                                         propertyListLoading={propertyListLoading}
+                                        refetch={refetch}
+
                                     />
                                 </TabPane>
                             <TabPane tab="Group" key="2">
@@ -191,6 +193,7 @@ export const Setting=()=>{
                                     setArchive={setArchive}
                                     archivePopover={archivePopover}
                                     setArchivePopover={setArchivePopover}
+
                                 />
                                 <Alert
                                     description={<b>After 90 days your custom properties will be deleted and can no longer be restored.</b>}
@@ -201,6 +204,8 @@ export const Setting=()=>{
                                 <ArcheivePropertyGrid 
                                     data={data}
                                     refetch={refetch}
+                                    propertyListRefetch={propertyListRefetch}
+
                                 />
                             </TabPane>
                             </Tabs>
