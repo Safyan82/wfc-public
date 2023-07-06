@@ -22,7 +22,7 @@ export const FieldType = ({basicInfo, setWidth, fieldType, setFieldType})=>{
         if(multi.includes(fieldType)){
             setWidth(true);
         }else{
-            setWidth(false)
+            setWidth(false);
         }
     },[fieldType]);
     

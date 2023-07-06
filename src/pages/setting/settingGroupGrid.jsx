@@ -11,15 +11,15 @@ const data = [
     use: '1',
   },
 ];
-export const SettingGroupPropertyGrid = ({groupList, groupLoading}) => {
+export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch}) => {
 
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
 
-  // useEffect(()=>{
-
-  // },[])
+  useEffect(async()=>{
+    await groupRefetch()
+  },[groupRefetch])
   
   // console.log(data, "dataaa");
 
@@ -88,10 +88,10 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading}) => {
     },
     {
       title: 'Number of properties',
-      dataIndex: 'use',
-      key: 'use',
+      dataIndex: 'properties',
+      key: 'properties',
       sorter: (a, b) => a.use.length - b.use.length,
-      sortOrder: sortedInfo.columnKey === 'use' ? sortedInfo.order : null,
+      sortOrder: sortedInfo.columnKey === 'properties' ? sortedInfo.order : null,
       ellipsis: true,
       width:100
     },
@@ -108,7 +108,7 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading}) => {
     onChange: onSelectChange,
   };
   
-  console.log(groupList.groupList, "groupList.groupList");
+  console.log(groupList?.groupList, "groupList.groupList");
   
   return (
     <div 

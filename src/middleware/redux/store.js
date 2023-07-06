@@ -1,8 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
+import ruleReducer from './reducers/rule.reducer';
 
 const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    ruleReducer: ruleReducer,
   },
 });
 

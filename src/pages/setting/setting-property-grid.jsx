@@ -1,45 +1,73 @@
+import { useMutation } from '@apollo/client';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Popover, Space, Table } from 'antd';
-import { useState } from 'react';
-const data = [
-  {
-    key: '1',
-    name: 'Address line 1',
-    age: 'Branch information',
-    address: 'Work force city',
-    use: '1',
-  },
-];
-export const SettingPropertyGrid = () => {
+import { Button, Popover, Space, Table, notification } from 'antd';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
+import { ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
+import { ArchiveConfirmationModal } from './archeiveConfirmation.modal';
+
+export const SettingPropertyGrid = ({propertyList, propertyListLoading, propertyListRefetch}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
+  
+  useEffect(async()=>{
+    await propertyListRefetch();
+  },[propertyListRefetch])
+
   const handleChange = (pagination, filters, sorter) => {
     console.log('Various parameters', pagination, filters, sorter);
     setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
 
+
+  // property archive mutation
+  const [archiveProperty, {loading, error}] = useMutation(ARCHIVE_PROPERTY);
+  const [archiveConfirmationModal, setArchiveConfirmationModal] = useState(false);
+  const [archivedId, setArchivedId] = useState(null);
+
+  const [api, contextHolder] = notification.useNotification();
+
+
+  const [moreOption, setMoreoption]=useState(false);
+  const [propertyName, setPropertyName] = useState("");
+
+
+  const ArcheivePropertyGrid = async() => {
+    try{
+      await archiveProperty({variables:{input:{id: archivedId}}});
+      setArchiveConfirmationModal(false);
+      propertyListRefetch();
+      api.success({
+        message: `${propertyName} was archived`,
+        placement:"top",
+        className: 'notification-without-close'        
+      });
+
+    }catch(err){
+      throw new Error(err.message);
+    }
+  }
+
+
+
   const columns = [
     {
       title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'label',
+      key: 'label',
       sorter: (a, b) => a.name.length - b.name.length,
-      sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
+      sortOrder: sortedInfo.columnKey === 'label' ? sortedInfo.order : null,
       width:400,
       render: (_, record) => {
-        console.log(record, "record")
         const showActions = hoveredRow === record.key;
-        return (
-          
-          
-          
+        return (          
           <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
             <div style={{lineHeight:'35px', width:'auto'}} className='truncated-text'>
-              <span className='record-title'>{record.name}</span>
-              <div className='record-subtitle'>single line text</div>
+              <span className='record-title'>{record.label}</span>
+              <div className='record-subtitle'>{record.fieldType}</div>
             </div>
 
           {showActions && 
@@ -54,6 +82,7 @@ export const SettingPropertyGrid = () => {
             <Popover
                   overlayClassName='settingCustomPopover'
                   trigger={"click"}
+                  visible={moreOption}
                   content={
                     <div className="popover-data">
                       <div className="popoverdataitem" >
@@ -71,14 +100,19 @@ export const SettingPropertyGrid = () => {
                       <div className="popoverdataitem" >
                           Assign Users & Teams &nbsp;<FontAwesomeIcon icon={faLock}/>
                       </div>
-                      <div className="popoverdataitem" >
+                      <div className="popoverdataitem" onClick={()=>{
+                          setArchiveConfirmationModal(true);
+                          setMoreoption(false);
+                          setPropertyName(record.label);
+                          setArchivedId(record.key);
+                        }}>
                           Archive
                       </div>
                     </div>
                   }
                 >
 
-              <button className="grid-sm-btn" type="link" onClick={() => handleDelete(record)}>
+              <button className="grid-sm-btn" type="link" onClick={() => setMoreoption(!moreOption)}>
                 <div style={{display: 'flex', gap: '0'}}>More <span className='caret'></span></div>
               </button>
             </Popover>
@@ -92,26 +126,30 @@ export const SettingPropertyGrid = () => {
     },
     {
       title: 'Group',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'groupName',
+      key: 'groupName',
       sorter: (a, b) => a.age - b.age,
-      sortOrder: sortedInfo.columnKey === 'age' ? sortedInfo.order : null,
+      sortOrder: sortedInfo.columnKey === 'groupName' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
-      title: 'Created By',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Created BY',
+      dataIndex: 'createdBy',
+      key: 'createdBy',
       sorter: (a, b) => a.address.length - b.address.length,
-      sortOrder: sortedInfo.columnKey === 'address' ? sortedInfo.order : null,
+      sortOrder: sortedInfo.columnKey === 'createdBy' ? sortedInfo.order : null,
       ellipsis: true,
+      // render: (_, record) => {
+      //   console.log(dayjs(record.createdAt).format('DD-MM-YY'), "rrr");
+      //   return dayjs(record.createdAt).format('DD-MM-YY')
+      // }
     },
     {
       title: 'USED IN',
-      dataIndex: 'use',
-      key: 'use',
+      dataIndex: 'useIn',
+      key: 'useIn',
       sorter: (a, b) => a.use.length - b.use.length,
-      sortOrder: sortedInfo.columnKey === 'use' ? sortedInfo.order : null,
+      sortOrder: sortedInfo.columnKey === 'useIn' ? sortedInfo.order : null,
       ellipsis: true,
       width:100
     },
@@ -140,20 +178,24 @@ export const SettingPropertyGrid = () => {
   const rowClassName = (record) => {
     return record.key === hoveredRow ? 'hovered-row' : '';
   };
+  
   const handleRowMouseEnter = (record) => {
     setHoveredRow(record.key);
   };
 
+
   const handleRowMouseLeave = () => {
     setHoveredRow(null);
+    setMoreoption(false);
   };
   
   return (
     <div 
     className='setting-grid'>
+      {contextHolder}
       <Table 
         columns={columns} 
-        dataSource={data} 
+        dataSource={propertyList?.propertyList} 
         rowSelection={rowSelection}
         onChange={handleChange} 
         
@@ -163,6 +205,13 @@ export const SettingPropertyGrid = () => {
         })}
         rowClassName={rowClassName}
 
+        />
+
+        <ArchiveConfirmationModal 
+          visible={archiveConfirmationModal}
+          propertyName={propertyName}
+          onClose={()=>setArchiveConfirmationModal(false)}
+          ArcheivePropertyGrid={ArcheivePropertyGrid}
         />
     </div>
   );

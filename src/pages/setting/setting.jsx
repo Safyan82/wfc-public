@@ -15,6 +15,7 @@ import { CreateFieldDrawer } from '../../components/createFields/index';
 import { GroupModal } from './group.modal';
 import { GROUPLIST } from '../../util/query/group.query';
 import { useQuery } from '@apollo/client';
+import { ARCHIVE_PROPERTY_LIST, PROPERTYLIST } from '../../util/query/properties.query';
 
 export const Setting=()=>{
     const  { TabPane } = Tabs;
@@ -39,15 +40,21 @@ export const Setting=()=>{
     
 
     //  tab change
-    const handelTabChange = ()=>{
+ 
+
+    const { loading, error, data, refetch } = useQuery(ARCHIVE_PROPERTY_LIST);
+    const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST);
+    const { loading:propertyListLoading, error:propertyListError, data:propertyList , refetch:propertyListRefetch } = useQuery(PROPERTYLIST);
+
+    const handelTabChange = async ()=>{
+        
         setGroupPopover(false);
         setuserPopover(false);
         setfieldTypePopover(false);
         setArchivePopover(false);
+        await propertyListRefetch();
+        await refetch();
     };
-
-    const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST);
-
 
     return(
         <Row>
@@ -144,7 +151,7 @@ export const Setting=()=>{
                             {/* propertie views */}
                             <div className="propertyTab"></div>
                             <Tabs defaultActiveKey="1" onChange={handelTabChange}>
-                                <TabPane tab="Properties" key="1">
+                                <TabPane tab={`Properties (${propertyList?.propertyList?.length || 0})`} key="1">
                                     <Filter 
                                         group={group}
                                         groupPopover={groupPopover}
@@ -152,6 +159,8 @@ export const Setting=()=>{
                                         fieldTypePopover={fieldTypePopover}
                                         user={user}
                                         userPopover={userPopover}
+
+                                        propertyListRefetch={propertyListRefetch}
                                         
                                         setGroupPopover={setGroupPopover}
                                         setGroupInput={setGroupInput}
@@ -162,16 +171,21 @@ export const Setting=()=>{
 
                                         editProperty={()=>setFieldModal(true)}
                                     />
-                                    <SettingPropertyGrid />
+                                    <SettingPropertyGrid
+                                        propertyList={propertyList}
+                                        propertyListRefetch={propertyListRefetch}
+                                        propertyListLoading={propertyListLoading}
+                                    />
                                 </TabPane>
                             <TabPane tab="Group" key="2">
                                 <GroupFilter setGroupModal={()=>setGroupModal(true)}/>
                                 <SettingGroupPropertyGrid
                                     groupList={groupList}
                                     groupLoading={groupLoading}
+                                    groupRefetch={groupRefetch}
                                 />
                             </TabPane>
-                            <TabPane tab="Archived Properties" key="3" onClick={(e)=>console.log(e)}>
+                            <TabPane tab={`Archived Properties (${data?.getArchiveProperties?.length || 0})`} key="3" onClick={(e)=>console.log(e)}>
                                 <ArcheiveFilter
                                     archive={archive}
                                     setArchive={setArchive}
@@ -184,7 +198,10 @@ export const Setting=()=>{
                                     closable
                                     closeText={<FontAwesomeIcon style={{fontSize: '16px',color: '#7c98b6'}} icon={faTimes}/>}
                                 />
-                                <ArcheivePropertyGrid/>
+                                <ArcheivePropertyGrid 
+                                    data={data}
+                                    refetch={refetch}
+                                />
                             </TabPane>
                             </Tabs>
 
@@ -199,6 +216,7 @@ export const Setting=()=>{
                 groupList={groupList}
                 groupLoading={groupLoading}
                 visible={fieldModal}  
+                propertyListRefetch={propertyListRefetch}
                 onClose={()=>setFieldModal(false)}
             />
             

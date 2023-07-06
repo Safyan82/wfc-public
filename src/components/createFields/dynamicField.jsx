@@ -216,7 +216,6 @@ export function CreateField({sortType,fieldType,label,search}){
                         return msg.id.split('-')[1];
                     }
                 });
-                console.log(msgsIds);
                 msgsIds.forEach((msgId)=>{
                     document.getElementById('key'+msgId)?.classList.remove('fieldWarning');
                 });
@@ -272,7 +271,7 @@ export function CreateField({sortType,fieldType,label,search}){
             const isLabelExist = labelValue.find((label)=>(label?.value)?.toLocaleLowerCase()==(e.target.value).toLocaleLowerCase())
             const ismsgExist = document.querySelectorAll('.warning-val-msg');
             const msgs = Array.from(ismsgExist).filter((msg)=> msg.id.split('-')[2]!=isLabelExist?.id && msg.id.split('-')[2]!=index)
-            console.log(msgs, "mmm");
+            
             msgs.forEach((msg)=>{
                 msg.remove();
             });
@@ -381,7 +380,6 @@ export function CreateField({sortType,fieldType,label,search}){
     
     const syncFormVisibility =()=>{
         const selected = JSON.parse(sessionStorage.getItem('selectedRowKeys'));
-        console.log(selectedRowKeys,selected);
         const origin = document.querySelector('.ant-drawer');
         if(selected.length>0){
           
@@ -391,7 +389,7 @@ export function CreateField({sortType,fieldType,label,search}){
             if(checkBoxesFiltered?.length){
 
                 const isAnyCheckedLocal = Array.from(checkBoxesFiltered).some((checkbox)=>(Array.from(checkbox?.classList)?.includes("ant-switch-checked")));
-                // console.log(isAnyCheckedLocal,checkBoxesFiltered,checkBoxes);
+            
                 setisAnyChecked(isAnyCheckedLocal);
             }
           },1);
@@ -408,6 +406,7 @@ export function CreateField({sortType,fieldType,label,search}){
             setLabelValue([{id:0}]);
             setSelectedRowKeys([]);
         }
+        console.log(labelValue, "labelValuelabelValue");
     }, [labelValue]);
 
     useEffect(()=>{

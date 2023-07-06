@@ -16,10 +16,8 @@ export const Filter = ({
     const popoverRef = useRef(null);
 
     useEffect(() => {
-        console.log("component mount");
         // Function to handle clicks outside the box
         const handleClickOutside = (event) => {
-            console.log(event.target)
           if(event.target.name==="popoverSearch" || event.target.name==="popoverCheckboxes"){ return; }
           if (popoverRef.current && !popoverRef.current.contains(event.target)) {
             // Perform your desired action here

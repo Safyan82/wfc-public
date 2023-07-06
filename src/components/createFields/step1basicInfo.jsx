@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { LoadingOutlined } from '@ant-design/icons';
 
-export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList:{groupList}, groupLoading}) =>{
+export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLoading}) =>{
     useEffect(()=>{setWidth(false)},[])
     const loading = true
     return(
@@ -30,12 +30,13 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList:{groupLi
                 <label>Group <sup>*</sup></label>
                 <Select 
                     className="custom-select"
-                    onChange={(e)=>setBasicInfo({...basicInfo, group:e})}
+                    labelInValue
+                    onChange={(e)=>{console.log(e);setBasicInfo({...basicInfo, groupId:e.value, groupName: e.label})}}
                     value={basicInfo?.group}
                     disabled={groupLoading}
                     suffixIcon={groupLoading ? <Spin indicator={<LoadingOutlined />} />: <span className="dropdowncaret"></span>}
                 >
-                    {!groupLoading && groupList?.map((group, index)=>(
+                    {!groupLoading && groupList?.groupList?.map((group, index)=>(
                         <Select.Option value={group.key} key={index}>{group.name}</Select.Option>
                     ))}
                 </Select>

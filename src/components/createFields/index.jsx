@@ -7,6 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import { BasicInfo } from './step1basicInfo';
 import { FieldType } from './step2fieldType';
 import { Rules } from './step3Rules';
+import { useDispatch } from 'react-redux';
+import { setRules } from '../../middleware/redux/reducers/rule.reducer';
+import { useSelector } from 'react-redux';
+import { useMutation } from '@apollo/client';
+import { CREATE_PROPERTIES } from '../../util/mutation/properties.mutation';
 
 
 const { Step } = Steps;
@@ -17,7 +22,7 @@ const customDot = (dot, { status, index }) => {
   );
 };
 
-export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoading }) => {
+export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoading, propertyListRefetch }) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [basicInfo, setBasicInfo] = useState({objectType: 'branches'});
     const [basicInfoCheck, setBasicInfoCheck] = useState(true);
@@ -35,12 +40,13 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
       setCurrentStep(0)
     }
 
+
     useEffect(()=>{
       sessionStorage.clear();
     },[])
 
     useEffect(()=>{
-      if(basicInfo?.objectType?.length>0 && basicInfo?.group?.length>0 && basicInfo?.label?.length>0 ){
+      if(basicInfo?.objectType?.length>0 && basicInfo?.groupId?.length>0 && basicInfo?.label?.length>0 ){
         setBasicInfoCheck(false);
       }else{
         setBasicInfoCheck(true);
@@ -71,13 +77,13 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
     useEffect(()=>{
       console.log(currentStep);
       if(currentStep==1 && fieldType==null){
-        document.getElementById("nextBtn").classList.add("disabled-btn");
+        document.getElementById("nextBtn")?.classList.add("disabled-btn");
       }
     },[currentStep]);
 
     useEffect(()=>{
       if(fieldType){
-        document.getElementById("nextBtn").classList.remove("disabled-btn");
+        document.getElementById("nextBtn")?.classList.remove("disabled-btn");
       }
     },[fieldType])
 
@@ -87,13 +93,39 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
       setCurrentStep(currentStep - 1);
     };
   
-    const handelSubmit=()=>{
-      clearandClose()
-      api.success({
-        message:'Field was created successfully',
-        placement:"top",
-        className: 'notification-without-close',
-      });
+    // mutation
+    const [createProperty, {loading, error}] = useMutation(CREATE_PROPERTIES);
+
+    const handelSubmit= async ()=>{
+      const field = {
+        ...basicInfo,
+        'fieldType': sessionStorage.getItem('fieldType'),
+      }
+
+      try{
+
+        // call mutation 
+        const {data} = await createProperty({variables:{input:{...field}}});
+  
+        await propertyListRefetch();
+
+        clearandClose();
+        api.success({
+          message:'Field was created successfully',
+          placement:"top",
+          className: 'notification-without-close',
+        });
+      }
+      catch(err){
+        clearandClose();
+        api.error({
+          message:err.message,
+          placement:"top",
+          className: 'notification-without-close',
+        });
+
+      }
+
     }  
 
     
