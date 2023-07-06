@@ -11,8 +11,8 @@ export const SettingPropertyGrid = ({propertyList, propertyListLoading, property
   const [sortedInfo, setSortedInfo] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
   
-  useEffect(async()=>{
-    await propertyListRefetch();
+  useEffect(()=>{
+    propertyListRefetch();
   },[propertyListRefetch])
 
   const handleChange = (pagination, filters, sorter) => {
@@ -36,15 +36,18 @@ export const SettingPropertyGrid = ({propertyList, propertyListLoading, property
 
   const ArcheivePropertyGrid = async() => {
     try{
-      await archiveProperty({variables:{input:{id: archivedId}}});
-      await propertyListRefetch();
-      await refetch();
-      setArchiveConfirmationModal(false);
-      api.success({
-        message: `${propertyName} was archived`,
-        placement:"top",
-        className: 'notification-without-close'        
-      });
+      if(archivedId){
+
+        await archiveProperty({variables:{input:{id: archivedId}}});
+        await propertyListRefetch();
+        await refetch();
+        setArchiveConfirmationModal(false);
+        api.success({
+          message: `${propertyName} was archived`,
+          placement:"top",
+          className: 'notification-without-close'        
+        });
+      }
 
     }catch(err){
       throw new Error(err.message);

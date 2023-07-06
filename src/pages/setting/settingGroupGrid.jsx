@@ -17,8 +17,8 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch}
   const [sortedInfo, setSortedInfo] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
 
-  useEffect(async()=>{
-    await groupRefetch()
+  useEffect(()=>{
+    groupRefetch();
   },[groupRefetch])
   
   // console.log(data, "dataaa");
