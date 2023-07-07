@@ -5,8 +5,11 @@ import { Button, Popover, Space, Table, notification } from 'antd';
 import { useEffect, useState } from 'react';
 import { ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
 import { ArchiveConfirmationModal } from './archeiveConfirmation.modal';
+import { useDispatch } from 'react-redux';
+import { setEditPropertyId } from '../../middleware/redux/reducers/createField.reducer';
+import { useSelector } from 'react-redux';
 
-export const SettingPropertyGrid = ({propertyList, propertyListLoading, propertyListRefetch, refetch}) => {
+export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRefetch, refetch}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
@@ -55,6 +58,8 @@ export const SettingPropertyGrid = ({propertyList, propertyListLoading, property
   }
 
 
+  const dispatch = useDispatch();
+
 
   const columns = [
     {
@@ -78,8 +83,8 @@ export const SettingPropertyGrid = ({propertyList, propertyListLoading, property
             <button style={{marginLeft:'10%'}} className="grid-sm-btn" type="link" onClick={() => handleEdit(record)}>
               Edit
             </button>
-            <button  className="grid-sm-btn" type="link" onClick={() => handleDelete(record)}>
-              Clone 
+            <button  className="grid-sm-btn" type="link" onClick={() => { setFieldModal(true); dispatch(setEditPropertyId(record.key))}}>
+              Clone
             </button>
 
             <Popover

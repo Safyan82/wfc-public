@@ -8,10 +8,12 @@ import { BasicInfo } from './step1basicInfo';
 import { FieldType } from './step2fieldType';
 import { Rules } from './step3Rules';
 import { useDispatch } from 'react-redux';
-import { setRules } from '../../middleware/redux/reducers/rule.reducer';
+import { resetRules, setRules } from '../../middleware/redux/reducers/createField.reducer';
 import { useSelector } from 'react-redux';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_PROPERTIES } from '../../util/mutation/properties.mutation';
+import { GetProptyById } from '../../util/query/properties.query';
+import { setEditPropertyId, setPropertyTobeEdit } from '../../middleware/redux/reducers/createField.reducer';
 
 
 const { Step } = Steps;
@@ -33,8 +35,39 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
 
     const navigate = useNavigate();
 
-    const clearandClose=()=>{
-      setBasicInfo(null)
+    
+    const {propertyToBeEditId} = useSelector(state => state.createFieldReducer);
+    const { loading: propertyLoading, data } =  useQuery(GetProptyById, {
+      variables: { getPropertyById: (propertyToBeEditId)?.toString() || null },
+      skip: !propertyToBeEditId
+    },);
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+      dispatch(setPropertyTobeEdit(data?.getPropertyById));
+      if(data?.getPropertyById){
+
+        setBasicInfo({
+          objectType: data?.getPropertyById?.objectType,
+          groupId: data?.getPropertyById?.groupId,
+          groupName: data?.getPropertyById?.groupName,
+          label: data?.getPropertyById?.label+" (Clone)",
+          description: data?.getPropertyById?.description,
+          options: data?.getPropertyById?.options
+        });
+        setFieldType(data?.getPropertyById?.fieldType);
+      };
+    },[data]);
+
+
+    
+
+    const clearandClose=async()=>{
+      await dispatch(setPropertyTobeEdit(null));
+      await dispatch(setEditPropertyId(''));
+      await dispatch(resetRules({}));
+      setBasicInfo(null);
       onClose();
       sessionStorage.clear();
       setCurrentStep(0)
@@ -43,15 +76,18 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
 
     useEffect(()=>{
       sessionStorage.clear();
-    },[])
+    },[]);
 
+    
     useEffect(()=>{
-      if(basicInfo?.objectType?.length>0 && basicInfo?.groupId?.length>0 && basicInfo?.label?.length>0 ){
+      if(
+          (basicInfo?.objectType?.length>0 && basicInfo?.groupId?.length>0 && basicInfo?.label?.length>0) 
+        ){
         setBasicInfoCheck(false);
       }else{
         setBasicInfoCheck(true);
       }
-      console.log(basicInfo)
+      console.log(basicInfo, basicInfo?.objectType?.length>0 , basicInfo?.groupId?.length>0 , basicInfo?.label?.length>0);
     },[basicInfo]);
     
     
@@ -75,7 +111,6 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
     };
 
     useEffect(()=>{
-      console.log(currentStep);
       if(currentStep==1 && fieldType==null){
         document.getElementById("nextBtn")?.classList.add("disabled-btn");
       }
@@ -95,11 +130,15 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
   
     // mutation
     const [createProperty, {loading, error}] = useMutation(CREATE_PROPERTIES);
+    const {labelValue, rules} = useSelector((state) => state.createFieldReducer);
+    
 
     const handelSubmit= async ()=>{
       const field = {
         ...basicInfo,
-        'fieldType': sessionStorage.getItem('fieldType'),
+        fieldType,
+        options: labelValue[0]?.key && labelValue,
+        rules
       }
 
       try{

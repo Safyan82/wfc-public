@@ -5,6 +5,9 @@ import ReactDOMServer from 'react-dom/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faList, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import DraggableTable from '../shuffle/DraggeableTable';
+import { useDispatch } from 'react-redux';
+import { setLabelValueForField } from '../../middleware/redux/reducers/createField.reducer';
+import { useSelector } from 'react-redux';
 const { Option } = Select;
 
 const multi=[
@@ -58,7 +61,15 @@ export function CreateField({sortType,fieldType,label,search}){
     const [visible, setVisible] = useState(false);
     const [inputTypeDefaultValue, setinputTypeDefaultValue] = useState("none");
     const [selectedRowKeys, setSelectedRowKeys] = React.useState([]);
-    
+    const dispatch = useDispatch();
+    const {propertyToBeEdit} = useSelector(state => state.createFieldReducer);
+
+    useEffect(()=>{
+        console.log(propertyToBeEdit, "propertyToBeEditpropertyToBeEdit");
+        if(propertyToBeEdit?.options){
+            setLabelValue([...propertyToBeEdit.options]);
+        }
+    },[propertyToBeEdit?.options]);
 
     useEffect(()=>{
         if(fieldType){
@@ -86,7 +97,7 @@ export function CreateField({sortType,fieldType,label,search}){
                         key: i,
                         label: <Input id={"key"+i} className='generic-input-control' value={lv.key}  placeholder='Enter label' name="key" onChange={(e) => handelValue(e, i)} />,
                         value: <Input className='generic-input-control' value={lv.value} onBlur={sort} placeholder='Enter value' name="value" onChange={(e) => handelValue(e, i)} />,
-                        toggle: <Switch defaultChecked onClick={syncFormVisibility}  id={"switch-"+i} />
+                        toggle: <Switch defaultChecked  checked={lv.showFormIn} onClick={syncFormVisibility}  onChange={(e) => handelValue(e, i, 'showInForm')}  id={"switch-"+i} />
                     }
                 }))
             ); 
@@ -96,7 +107,7 @@ export function CreateField({sortType,fieldType,label,search}){
                     key: i,
                     label: <Input id={"key"+i} className='generic-input-control' value={lv.key}  placeholder='Enter label' name="key" onChange={(e) => handelValue(e, i)} />,
                     value: <Input className='generic-input-control' value={lv.value} onBlur={sort} placeholder='Enter value' name="value" onChange={(e) => handelValue(e, i)} />,
-                    toggle: <Switch defaultChecked onClick={syncFormVisibility}  id={"switch-"+i} />
+                    toggle: <Switch defaultChecked checked={lv.showFormIn} onClick={syncFormVisibility}  onChange={(e) => handelValue(e, i, 'showInForm')}   id={"switch-"+i} />
                 };
             }));
         }
@@ -177,31 +188,49 @@ export function CreateField({sortType,fieldType,label,search}){
     const [sameKeyId, setSameKeyId] = useState(null);
     // handel all on change value for choice option type from field type
 
-    const handelValue=(e, index)=>{
-
-        setLabelValue(labelValue?.map((lv)=>{
-            if(lv.id==index){
-                if(e.target.name=="key" && lv.override!=1){
-                    return {
-                        ...lv,
-                        key: e.target.value,
-                        value: e.target.value,
-                    }
-
+    const handelValue=(e, index, name, BulkOpertion)=>{
+        if(BulkOpertion){
+            setLabelValue(prevState => labelValue?.map((lv, index)=>{
+                if(lv.id==index){
+                        return {
+                            ...prevState[index],
+                            'showFormIn': e,
+                        }
                 }else{
-
-                    return {
-                        ...lv,
-                        [e.target.name]: e.target.value,
-                        override:1
-                    }
+                    return lv;
                 }
-            }else{
-                return lv;
-            }
-        }))
+            }))
+        }else{   
+            setLabelValue(labelValue?.map((lv)=>{
+                if(lv.id==index){
+                    if(e.target?.name=="key" && lv.override!=1){
+                        return {
+                            ...lv,
+                            key: e.target.value,
+                            value: e.target.value,
+                            showFormIn: true,
+                        }
 
-        if(e.target.name=="key"){
+                    }else if(e?.target?.name){
+
+                        return {
+                            ...lv,
+                            [e.target.name]: e.target.value,
+                            override:1
+                        }
+                    }else{
+                        return {
+                            ...lv,
+                            [name]: e,
+                        }
+                    }
+                }else{
+                    return lv;
+                }
+            }))
+        }
+
+        if(e.target?.name=="key"){
 
                 const isLabelExist = labelValue.find((label)=>(label?.key)?.toLocaleLowerCase()==(e.target.value).toLocaleLowerCase())
                 const ismsgExist = document.querySelectorAll('.warning-msg');
@@ -265,7 +294,7 @@ export function CreateField({sortType,fieldType,label,search}){
         }
         
         
-        if(e.target.name=="value"){
+        if(e.target?.name=="value"){
 
             // remove existing msgs
             const isLabelExist = labelValue.find((label)=>(label?.value)?.toLocaleLowerCase()==(e.target.value).toLocaleLowerCase())
@@ -356,8 +385,9 @@ export function CreateField({sortType,fieldType,label,search}){
                 key: i,
                 label: <Input id={"key"+i} className='generic-input-control' value={lv.key} placeholder='Enter label' name="key" onBlur={(e)=>checkLabelBlur(e)} onChange={(e) => handelValue(e, i)} />,
                 value: <Input id={"value"+i} className='generic-input-control' value={lv.value} onBlur={(e)=>{sort();checkLabelBlur(e); }} placeholder='Enter value' name="value" onChange={(e) => handelValue(e, i)} />,
-                toggle: <Switch defaultChecked onClick={syncFormVisibility}  id={"switch-"+i}  />
+                toggle: <Switch defaultChecked onClick={syncFormVisibility} checked={lv.showFormIn} name="showFormIn"  id={"switch-"+i}  onChange={(e) => handelValue(e, i, 'showFormIn')}  />
             }}));
+
     },[labelValue, sortType]);
 
 
@@ -406,7 +436,8 @@ export function CreateField({sortType,fieldType,label,search}){
             setLabelValue([{id:0}]);
             setSelectedRowKeys([]);
         }
-        console.log(labelValue, "labelValuelabelValue");
+        dispatch(setLabelValueForField(labelValue));
+
     }, [labelValue]);
 
     useEffect(()=>{
@@ -420,19 +451,22 @@ export function CreateField({sortType,fieldType,label,search}){
         const checkBoxes = origin.querySelectorAll('td > button');
         const checkBoxesFiltered =  Array.from(checkBoxes).filter((checkBox)=> selectedRowKeys?.includes(Number(checkBox.id.split("-")[1])));
 
-        Array.from(checkBoxesFiltered).forEach((checkbox)=>{
-            checkbox?.classList.remove("ant-switch-checked")
+        Array.from(checkBoxesFiltered).forEach((checkbox, index)=>{
+            checkbox?.classList.remove("ant-switch-checked");
+            handelValue(false, index, 'showFormIn', true);
+
         });
         syncFormVisibility();
     }
 
-    const showInForm = ()=>{
+    const showInForm = async()=>{
         const origin = document.querySelector('.ant-drawer');
         const checkBoxes = origin.querySelectorAll('td > button');
         const checkBoxesFiltered =  Array.from(checkBoxes).filter((checkBox)=> selectedRowKeys?.includes(Number(checkBox.id.split("-")[1])));
-
-        Array.from(checkBoxesFiltered).forEach((checkbox)=>{
-            checkbox?.classList.add("ant-switch-checked")
+        
+        Array.from(checkBoxesFiltered).forEach(async(checkbox,index)=>{
+            checkbox?.classList.add("ant-switch-checked");
+            await handelValue(true, index, 'showFormIn', true);
         });
         syncFormVisibility();
     }
@@ -553,7 +587,7 @@ export function CreateField({sortType,fieldType,label,search}){
                                             treeCheckable
                                         >
                                             {labelValue && labelValue?.length && labelValue?.map((option)=>(
-                                                option?.value?.length > 0 && <TreeSelect.TreeNode value={option.value} title={option.key}/>
+                                                option?.value?.length > 0 && option?.showFormIn && <TreeSelect.TreeNode value={option.value} title={option.key}/>
                                             ))}
                                         </TreeSelect>
                                     }

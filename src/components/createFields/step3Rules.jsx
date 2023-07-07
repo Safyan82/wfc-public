@@ -4,49 +4,67 @@ import { Checkbox, DatePicker, Input, InputNumber, Popover, Radio, Tag, Typograp
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { setRules } from "../../middleware/redux/reducers/rule.reducer";
+import { resetRules, setRules } from "../../middleware/redux/reducers/createField.reducer";
 
 export const Rules = ({basicInfo, setWidth})=>{
-    const [minCharacter, setMinCharacter] = useState(1);
-    const [maxCharacter, setMaxCharacter] = useState(100);
-    const [min, setMin] = useState(false);
-    const [max, setMax] = useState(false);
+    const {rules,propertyToBeEdit} = useSelector(state => state.createFieldReducer);
+
+    const [minCharacter, setMinCharacter] = useState(propertyToBeEdit?.rules?.minimumCharacter || 1);
+    const [maxCharacter, setMaxCharacter] = useState(propertyToBeEdit?.rules?.maxCharacter || 100);
+    const [min, setMin] = useState(propertyToBeEdit?.rules?.minRange|| false);
     const [fieldType, setFieldType] = useState(sessionStorage.getItem("fieldType"));
-    const [dateType, setDateType] = useState("anyDate");
-    const [futureDateType, setfutureDateType] = useState();
+    const [dateType, setDateType] = useState(propertyToBeEdit?.rules?.dateType || "anyDate");
+    const [futureDateType, setfutureDateType] = useState(propertyToBeEdit?.rules?.futureDateType);
     const [api, contextHolder] = notification.useNotification();
     const [localRule, setLocalRules] = useState([]);
-    const dispatch = useDispatch();
-    const {rules} = useSelector(state => state.ruleReducer);
-
-
-    useEffect(()=>{
+    const [restrictToNumericValue, setRestrictToNumericValue] = useState(propertyToBeEdit?.rules?.restrictToNumericValue || false);
+    const [max, setMax] = useState(propertyToBeEdit?.rules?.maxRange|| false);
+    const [dontAllowSpecialCharacter, setDontAllowSpecialCharacter] = useState(propertyToBeEdit?.rules?.dontAllowSpecialCharacter || false);
+    const [allowEmailDomain, setAllowEmailDomain] = useState(propertyToBeEdit?.rules?.allowEmailDomain || false);
+    
+    const [alphaNumericnotAllow, setAlphaNumericnotAllow] = useState(propertyToBeEdit?.rules?.alphaNumericnotAllow || false);
+    const [specialCharacternotAllowed, setSpecialCharacternotAllowed] = useState(propertyToBeEdit?.rules?.specialCharacternotAllowed || false);
+    
+    useState(()=>{
         console.log(rules);
     },[rules]);
+
+
+    const dispatch = useDispatch();
+  
 
     useEffect(()=>{
         setWidth(false);
         setFieldType(sessionStorage.getItem("fieldType"));
     },[]);
 
+
     const handelFutureDateType=({target})=>{
+        dispatch(setRules({futureDateType: target.value}));
         setfutureDateType(target.value)
     }
 
     const handelDateType=({target})=>{
+        dispatch(setRules({dateType: target.value}));
         setDateType(target.value)
     }
 
-    const [passwordCharacter, setPasswordCharacter]= useState(false);
+    const [passwordCharacter, setPasswordCharacter]= useState(propertyToBeEdit?.rules?.passwordMandatoryCharacter || false);
 
     
-    const [tags, setTags] = useState([]);
+    const [tags, setTags] = useState(propertyToBeEdit?.rules?.emailDomain||[]);
     const [inputValue, setInputValue] = useState('');
+
+
+    useEffect(()=>{
+        if(tags?.length>0){
+            handelRuleChange(tags, 'emailDomain');
+        }
+    },[tags])
 
     const handleInputKeyPress = (e) => {
         if (e.key === 'Enter' && inputValue.trim() !== '' && !tags.includes(inputValue) && inputValue.includes('@')) {
           setTags([...tags, inputValue.trim()]);
-        //   handelRuleChange()
           setInputValue('');
         }
         else if(!inputValue.includes('@')){
@@ -66,14 +84,15 @@ export const Rules = ({basicInfo, setWidth})=>{
         }
     };
 
-    const handelRuleChange = (event, name) =>{
+  
+   
 
+    const handelRuleChange = (event,name) =>{
         if(!event?.target?.name && !name){
             return;
         }
 
         if(event?.target?.checked  && event?.target?.name){
-            console.log(" && event?.target?.name");
             const isExist = localRule.find((lr)=>lr.name==event.target.name);
             if(isExist){
                 setLocalRules(localRule.map((lr)=>{
@@ -93,8 +112,6 @@ export const Rules = ({basicInfo, setWidth})=>{
             };
         }
         else if(event?.target?.value ){
-            console.log(" && event?.target?.name from 2");
-
             const isExist = localRule.find((lr)=>lr.name==event.target.name);
             if(isExist){
 
@@ -116,8 +133,6 @@ export const Rules = ({basicInfo, setWidth})=>{
             };
 
         }else{
-            console.log(" && event?.target?.name from 34");
-            
             const isExist = localRule.find((lr)=>lr.name==name);
 
             if(isExist && name){
@@ -137,12 +152,30 @@ export const Rules = ({basicInfo, setWidth})=>{
             }
 
         }
+       
+        
     }
 
     useEffect(()=>{
-        console.log(localRule, "local");
-        // dispatch(setRules(...localRule));
+        dispatch(resetRules());
+    },[]);
+
+
+    useEffect(()=>{
+        localRule.map((rule)=>{
+            dispatch(setRules({[rule.name]:rule.value}))
+        });
     },[localRule]);
+
+    
+    useEffect(()=>{
+        if(propertyToBeEdit?.rules){
+
+            Object.keys(propertyToBeEdit?.rules).map((rule)=>{
+                dispatch(setRules({[rule]:propertyToBeEdit?.rules[rule]}))
+            });
+        }
+    },[propertyToBeEdit?.rules]);
 
     return(
         <React.Fragment>
@@ -163,7 +196,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                 <div className="mainRadioGroup">
                     <div>What dates are allowed for this property?</div>
                    
-                        <Radio.Group name="dateType" className="group" onChange={handelRuleChange} defaultValue={dateType}>
+                        <Radio.Group name="dateType" className="group" value={dateType} onChange={(e)=>{handelDateType(e)}} >
                             <Radio value={"anyDate"} >Any date</Radio>
                             <Radio value={"futureDate"}>Future dates only</Radio>
                             <Radio value={"pastDate"}>Past dates only</Radio>
@@ -178,7 +211,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                     <div className="mainRadioGroup">
                         <div>What future dates are allowed?</div>
                     
-                            <Radio.Group  onChange={(e) => {handelRuleChange(e);handelFutureDateType(e);} } name="futureDateType" className="group" >
+                            <Radio.Group value={futureDateType}  onChange={(e) => {handelFutureDateType(e);} } name="futureDateType" className="group" >
                                 <Radio value={"anyFutureDate"} >
                                 Any future date
                                 <div className="small-text">Users can choose any date after the current date.</div>
@@ -201,11 +234,11 @@ export const Rules = ({basicInfo, setWidth})=>{
                             <InputNumber 
                                 min={1}
                                 name="bufferTime"
-                                defaultValue={minCharacter}                          
+                                defaultValue={propertyToBeEdit?.rules?.bufferTime || minCharacter}                          
                                 upHandler={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faChevronUp} />}
                                 downHandler={<FontAwesomeIcon  style={minCharacter > 1 && {color:'#0091ae'}} icon={faChevronDown} />}
                                 className="generic-input-control"
-                                onChange={(e)=>{setMinCharacter(e); handelRuleChange(e);}}
+                                onChange={(e)=>{setMinCharacter(e);handelRuleChange(e, 'bufferTime')}}
                             />
                             <span style={{lineHeight:'42px'}}>
                                 day(s)
@@ -222,11 +255,11 @@ export const Rules = ({basicInfo, setWidth})=>{
                             <InputNumber 
                                 min={14}   
                                 name="rollingDate"
-                                defaultValue={14}                      
+                                defaultValue={propertyToBeEdit?.rules?.rollingDate || 14}                      
                                 upHandler={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faChevronUp} />}
                                 downHandler={<FontAwesomeIcon  style={{color:'#0091ae'}} icon={faChevronDown} />}
                                 className="generic-input-control"
-                                onChange={(e)=>{setMinCharacter(e); handelRuleChange(e);}}
+                                onChange={(e)=>{setMinCharacter(e); handelRuleChange(e, 'rollingDate');}}
                             />
                             <span style={{lineHeight:'42px'}}>
                                 day(s)
@@ -246,7 +279,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                         <div>
                             <DatePicker.RangePicker
                                 name="dateRange"
-                                onChange={handelRuleChange}
+                                onChange={(value, dateString)=>handelRuleChange(dateString, "customDate")}
                                 className="generic-input-control"
                                 suffixIcon={<FontAwesomeIcon icon={faCalendar}/>}
                             />
@@ -260,6 +293,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                     <Checkbox 
                         onChange={handelRuleChange}
                         name="mondayFriday"
+                        defaultChecked={propertyToBeEdit?.rules?.mondayFriday}
                         className="genericCheckbox"
                     >Allow Monday through Friday only</Checkbox>
                 </div>
@@ -269,7 +303,7 @@ export const Rules = ({basicInfo, setWidth})=>{
             {/* generic */}
             <div className="propertyCheckbox">
                 <div style={{color: 'black',marginTop:'5%', marginBottom: '2%'}} >Property visibility</div>
-                <Checkbox name="propertyVisibility" onChange={handelRuleChange} style={{fontWeight:'300'}} defaultChecked>Show in forms, pop-up forms, and bots</Checkbox>
+                <Checkbox name="propertyVisibility" defaultChecked={propertyToBeEdit?.rules?.propertyVisibility || rules?.propertyVisibility} onChange={handelRuleChange} style={{fontWeight:'300'}} >Show in forms, pop-up forms, and bots</Checkbox>
             </div>
 
 
@@ -285,7 +319,7 @@ export const Rules = ({basicInfo, setWidth})=>{
 
                     <div>
 
-                        <Checkbox onChange={(e)=>{setMin(e.target.checked);}}>
+                        <Checkbox checked={min} onChange={(e)=>{setMin(e.target.checked);dispatch(setRules({'minRange':e.target.checked}))}}>
                             Set min character limit
                         </Checkbox>
                         {min &&
@@ -293,7 +327,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                                 <InputNumber
                                     min={1}
                                     name="minimumCharacter"                                    
-                                    defaultValue={minCharacter}                          
+                                    defaultValue={propertyToBeEdit?.rules?.minimumCharacter || minCharacter}                          
                                     upHandler={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faChevronUp} />}
                                     downHandler={<FontAwesomeIcon  style={minCharacter > 1 && {color:'#0091ae'}} icon={faChevronDown} />}
                                     className="generic-input-control"
@@ -306,7 +340,10 @@ export const Rules = ({basicInfo, setWidth})=>{
 
 
                     <div>
-                        <Checkbox onChange={(e)=>{setMax(e.target.checked);}}>
+                        <Checkbox 
+                        
+                        checked={max}
+                        onChange={(e)=>{setMax(e.target.checked);dispatch(setRules({'maxRange':e.target.checked}))}}>
                             Set max character limit
                         </Checkbox>
                         {max &&
@@ -314,7 +351,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                             <InputNumber
                                 min={100}
                                 name="maximumCharacter"
-                                defaultValue={maxCharacter}                          
+                                defaultValue={propertyToBeEdit?.rules?.maximumCharacter || maxCharacter}                          
                                 upHandler={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faChevronUp} />}
                                 downHandler={<FontAwesomeIcon  style={{color:'#0091ae'}} icon={faChevronDown} />}
                                 className="generic-input-control"
@@ -325,35 +362,52 @@ export const Rules = ({basicInfo, setWidth})=>{
 
                     </div>
 
-                    
-                    <div>
+                    {fieldType=="password" &&
+                        <div>
 
-                        <Checkbox onChange={(e)=>setPasswordCharacter(e.target.checked)}>
-                            Mandatory character in password
-                        </Checkbox>
-                        {passwordCharacter &&
-                            <div className="numberInput">
-                                <Input                        
-                                    className="generic-input-control"
-                                    placeholder="@$%"
-                                    name="passwordMandatoryCharacter"
-                                    onChange={handelRuleChange}
-                                />
-                            </div>
-                        }
+                            <Checkbox 
+                                onChange={(e)=>{dispatch(setRules({passwordMandatoryCharacter: e.target.checked}));
+                                setPasswordCharacter(e.target.checked)}}      
+                                checked={passwordCharacter}
+                            >
+                                Mandatory character in password
+                            </Checkbox>
+                            {passwordCharacter &&
+                                <div className="numberInput">
+                                    <Input                        
+                                        className="generic-input-control"
+                                        placeholder="@$%"
+                                        name="passwordMandatoryCharacter"
+                                        onChange={handelRuleChange}
+                                        defaultValue={propertyToBeEdit?.rules?.passwordMandatoryCharacter}
+                                    />
+                                </div>
+                            }
 
-                    </div>
+                        </div>
+                    }
 
                     <Checkbox 
                         name="restrictToNumericValue"
-                        onChange={handelRuleChange}
+                        onChange={(e) => {
+                                setRestrictToNumericValue(e.target.checked);
+                                dispatch(setRules({'restrictToNumericValue':e.target.checked}))
+                            }
+                        }
+                        checked={restrictToNumericValue}
+
                     >
                         Restrict to numeric values 
                         {/* <div className="small-text">Don't allow alpha or special characters like a, @, or $ for this property</div> */}
                     </Checkbox>
                     <Checkbox
                         name="dontAllowSpecialCharacter"
-                        onChange={handelRuleChange}
+                        onChange={(e) => {
+                            setDontAllowSpecialCharacter(e.target.checked);
+                            dispatch(setRules({'dontAllowSpecialCharacter':e.target.checked}))
+                            }
+                        }
+                        checked={dontAllowSpecialCharacter}
                     >
                         Don't allow special characters
                         <div className="small-text">Don't allow special characters like @, #, or & for this property</div>
@@ -373,14 +427,14 @@ export const Rules = ({basicInfo, setWidth})=>{
                 <div className="validationCheckboxGroup">
                     <div>
 
-                        <Checkbox onChange={(e)=>setMin(e.target.checked)}>
+                        <Checkbox checked={min} onChange={(e)=>{setMin(e.target.checked);dispatch(setRules({'minRange':e.target.checked}));} }>
                             Set min number limit
                         </Checkbox>
                         {min &&
                             <div className="numberInput">
                                 <InputNumber 
                                     min={1}
-                                    defaultValue={minCharacter}                          
+                                    defaultValue={propertyToBeEdit?.rules?.minimumCharacter || minCharacter}                          
                                     upHandler={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faChevronUp} />}
                                     downHandler={<FontAwesomeIcon  style={minCharacter > 1 && {color:'#0091ae'}} icon={faChevronDown} />}
                                     className="generic-input-control"
@@ -392,14 +446,14 @@ export const Rules = ({basicInfo, setWidth})=>{
                     </div>
 
                     <div>
-                        <Checkbox onChange={(e)=>setMax(e.target.checked)}>
+                        <Checkbox checked={max} onChange={(e)=>{setMax(e.target.checked);dispatch(setRules({'maxRange':e.target.checked}))}}>
                             Set max number limit
                         </Checkbox>
                         {max &&
                         <div className="numberInput">
                             <InputNumber 
                                 min={100}
-                                defaultValue={maxCharacter}                          
+                                defaultValue={propertyToBeEdit?.rules?.maximumCharacter || maxCharacter}                          
                                 upHandler={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faChevronUp} />}
                                 downHandler={<FontAwesomeIcon  style={{color:'#0091ae'}} icon={faChevronDown} />}
                                 className="generic-input-control"
@@ -410,11 +464,23 @@ export const Rules = ({basicInfo, setWidth})=>{
 
                     </div>
 
-                    <Checkbox name="alphaNumericnotAllow" onChange={handelRuleChange} >
+                    <Checkbox name="alphaNumericnotAllow" 
+                        onChange={(e)=>{
+                            setAlphaNumericnotAllow(e.target.value);
+                            dispatch(setRules({'alphaNumericnotAllow':e.target.checked}))
+                        }} 
+                        checked={alphaNumericnotAllow}
+                    >
                         Don't allow alpha numeric values 
                         <div className="small-text">Don't allow alpha numeric characters like 1ag, g5c for this property</div>
                     </Checkbox>
-                    <Checkbox name="specialCharacternotAllowed" onChange={handelRuleChange}>
+                    <Checkbox name="specialCharacternotAllowed"
+                        onChange={(e)=>{
+                            setSpecialCharacternotAllowed(e.target.value);
+                            dispatch(setRules({'specialCharacternotAllowed':e.target.checked}))
+                        }}
+                        checked={specialCharacternotAllowed}
+                     >
                         Don't allow special characters
                         <div className="small-text">Don't allow special characters like @, #, or & for this property</div>
                     </Checkbox>
@@ -434,10 +500,14 @@ export const Rules = ({basicInfo, setWidth})=>{
                 <div className="validationCheckboxGroup">
                     <div>
 
-                        <Checkbox onChange={(e)=>setMin(e.target.checked)}>
+                        <Checkbox checked={allowEmailDomain} 
+                        onChange={(e)=>{
+                            setAllowEmailDomain(e.target.checked);
+                            dispatch(setRules({allowEmailDomain: e.target.checked}))
+                        }}>
                             Allow only specific domain email address
                         </Checkbox>
-                        {min &&
+                        {allowEmailDomain &&
                             <div className="numberInput">
                                 <Popover
                                     content='Press " ENTER " to add domain'
@@ -449,7 +519,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                                         className="generic-input-control"
                                         placeholder="@wfc.co.uk"
                                         value={inputValue}
-                                        onChange={(e) => setInputValue(e.target.value)}
+                                        onChange={(e) => {setInputValue(e.target.value);}}
                                         onPressEnter={handleInputKeyPress}
                                     />
                                 </Popover>

@@ -3,6 +3,7 @@ import {gql} from "@apollo/client";
 export const PROPERTYLIST = gql`
     query{
         propertyList {
+            options
             key
             objectType
             label
@@ -28,5 +29,24 @@ export const ARCHIVE_PROPERTY_LIST = gql`
             createdBy
             
         }
+    }
+`;
+
+export const GetProptyById = gql`
+    query($getPropertyById: String!){
+        getPropertyById(id: $getPropertyById) {
+            _id
+            options
+            key
+            objectType
+            label
+            fieldType
+            useIn
+            groupName
+            createdAt
+            description
+            groupId
+            rules
+        } 
     }
 `;

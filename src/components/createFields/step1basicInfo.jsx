@@ -3,10 +3,12 @@ import { Form, Input, Popover, Select, Spin } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { LoadingOutlined } from '@ant-design/icons';
+import { useSelector } from "react-redux";
 
 export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLoading}) =>{
-    useEffect(()=>{setWidth(false)},[])
-    const loading = true
+    useEffect(()=>{setWidth(false)},[]);
+
+
     return(
         <React.Fragment>
 
@@ -31,8 +33,8 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLo
                 <Select 
                     className="custom-select"
                     labelInValue
-                    onChange={(e)=>{console.log(e);setBasicInfo({...basicInfo, groupId:e.value, groupName: e.label})}}
-                    value={basicInfo?.group}
+                    onChange={(e)=>{setBasicInfo({...basicInfo, groupId:e.value, groupName: e.label})}}
+                    value={basicInfo?.groupId}
                     disabled={groupLoading}
                     suffixIcon={groupLoading ? <Spin indicator={<LoadingOutlined />} />: <span className="dropdowncaret"></span>}
                 >

@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import ruleReducer from './reducers/rule.reducer';
+import createFieldReducer from './reducers/createField.reducer';
 
 const store = configureStore({
   reducer: {
-    ruleReducer: ruleReducer,
+    createFieldReducer: createFieldReducer,
   },
 });
 

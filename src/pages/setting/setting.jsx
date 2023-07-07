@@ -1,7 +1,7 @@
 import './setting.css';
 import '../../components/createFields/createFieldDrawer.css';
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, Checkbox, Col, Input, Popover, Row, Select, Tabs, Typography } from 'antd';
+import { Alert, Button, Col, Input, Popover, Row, Select, Tabs, Typography } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faLock, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Filter } from './settingfilter';
@@ -176,7 +176,7 @@ export const Setting=()=>{
                                         propertyListRefetch={propertyListRefetch}
                                         propertyListLoading={propertyListLoading}
                                         refetch={refetch}
-
+                                        setFieldModal={setFieldModal}
                                     />
                                 </TabPane>
                             <TabPane tab="Group" key="2">
@@ -217,13 +217,13 @@ export const Setting=()=>{
                     </div>
                 </div>
         
-            <CreateFieldDrawer 
+            {fieldModal && <CreateFieldDrawer 
                 groupList={groupList}
                 groupLoading={groupLoading}
                 visible={fieldModal}  
                 propertyListRefetch={propertyListRefetch}
                 onClose={()=>setFieldModal(false)}
-            />
+            />}
             
             <GroupModal groupRefetch={groupRefetch} visible={groupmodal} onClose={()=>setGroupModal(false)} />
 
