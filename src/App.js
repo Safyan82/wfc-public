@@ -7,15 +7,42 @@ import { Branch } from "./pages/branch";
 import { EditForm } from "./pages/editForm";
 import React, { useEffect } from "react";
 import { Setting } from './pages/setting/setting';
+import { useSelector } from 'react-redux';
+import { notification } from 'antd';
 
 function App() {
   
+  
+  const {notificationToast} = useSelector(state => state.notificationReducer);
+  const [api, contextHolder] = notification.useNotification();
+
+  useEffect(()=>{
+    if(Object.keys(notificationToast).length > 0){
+      if(notificationToast?.error){
+
+        api.error({
+          message:notificationToast.message,
+          placement:"top",
+          className: 'notification-without-close',
+        });
+
+      }else{
+        api.success({
+          message:notificationToast.message,
+          placement:"top",
+          className: 'notification-without-close',
+        });
+      }
+    }
+  },[notificationToast]);
+
   useEffect(()=>{
     localStorage.setItem("branchOrder", JSON.stringify([{"id":1,"content":"Address Line 1"},{"id":2,"content":"Address Line2"},{"id":3,"content":"City"},{"id":4,"content":"County"}]));
   },[])
 
   return (
     <>
+     {contextHolder}
      <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login/>} />

@@ -14,6 +14,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_PROPERTIES } from '../../util/mutation/properties.mutation';
 import { GetProptyById } from '../../util/query/properties.query';
 import { setEditPropertyId, setPropertyTobeEdit } from '../../middleware/redux/reducers/createField.reducer';
+import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 
 
 const { Step } = Steps;
@@ -31,7 +32,6 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
     const [fieldType, setFieldType] = useState(sessionStorage.getItem('fieldType') || null);
 
     const [width, setWidth] = useState(false);
-    const [api, contextHolder] = notification.useNotification();
 
     const navigate = useNavigate();
 
@@ -144,24 +144,30 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
       try{
 
         // call mutation 
+
         const {data} = await createProperty({variables:{input:{...field}}});
   
         await propertyListRefetch();
+        
+        dispatch(setNotification({
+          notificationState:true, 
+          message:"Property was created successfully",
+          error: false,
+        }))
+        
+
 
         clearandClose();
-        api.success({
-          message:'Field was created successfully',
-          placement:"top",
-          className: 'notification-without-close',
-        });
       }
       catch(err){
         clearandClose();
-        api.error({
-          message:err.message,
-          placement:"top",
-          className: 'notification-without-close',
-        });
+        dispatch(setNotification(
+          {
+            notificationState:true, 
+            message: err.message,
+            error: true,
+          }
+        ));
 
       }
 
@@ -170,6 +176,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
     
     return (
         <div>
+
           <Drawer
             title="Create a new property "
             placement="right"
@@ -208,7 +215,6 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
           >
 
 
-          {contextHolder}
 
             {/* stepper header */}
             <Steps current={currentStep} progressDot={customDot}>
