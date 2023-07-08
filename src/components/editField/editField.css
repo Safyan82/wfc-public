@@ -1,0 +1,31 @@
+.editProperty-info-box{
+    margin-bottom: 16px;
+    margin-top: 0;
+    position: relative;
+    border-radius: 3px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(223, 227, 235);
+    padding: 20px;
+}
+
+.editProperty-info-box .head{
+    -webkit-box-align: baseline;
+    align-items: baseline;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+    gap: 0px;
+    display: flex;
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    max-width: 100%;
+    width: 100%;
+    /* font-weight: 500; */
+}
+
+.microText{
+    font-size: 12px;
+    line-height: 18px;
+    color: #516f90!important;
+    font-weight: 500;
+
+}

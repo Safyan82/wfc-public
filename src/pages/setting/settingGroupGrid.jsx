@@ -24,7 +24,6 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch}
   // console.log(data, "dataaa");
 
   const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter);
     setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
@@ -108,7 +107,6 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch}
     onChange: onSelectChange,
   };
   
-  console.log(groupList?.groupList, "groupList.groupList");
   
   return (
     <div 

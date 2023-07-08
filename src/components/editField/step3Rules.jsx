@@ -7,12 +7,13 @@ import { useDispatch } from "react-redux";
 import { resetRules, setRules } from "../../middleware/redux/reducers/createField.reducer";
 
 export const Rules = ({basicInfo, setWidth})=>{
-    const {rules,propertyToBeEdit, globalFieldType} = useSelector(state => state.createFieldReducer);
+
+    const {propertyToBeEdit, rules, globalFieldType} = useSelector(state => state.createFieldReducer);
 
     const [minCharacter, setMinCharacter] = useState(propertyToBeEdit?.rules?.minimumCharacter || 1);
     const [maxCharacter, setMaxCharacter] = useState(propertyToBeEdit?.rules?.maxCharacter || 100);
     const [min, setMin] = useState(propertyToBeEdit?.rules?.minRange|| false);
-    const [fieldType, setFieldType] = useState(sessionStorage.getItem("fieldType"));
+    const [fieldType, setFieldType] = useState(sessionStorage.getItem("fieldType") || propertyToBeEdit?.fieldType );
     const [dateType, setDateType] = useState(propertyToBeEdit?.rules?.dateType || "anyDate");
     const [futureDateType, setfutureDateType] = useState(propertyToBeEdit?.rules?.futureDateType);
     const [api, contextHolder] = notification.useNotification();
@@ -25,20 +26,19 @@ export const Rules = ({basicInfo, setWidth})=>{
     const [alphaNumericnotAllow, setAlphaNumericnotAllow] = useState(propertyToBeEdit?.rules?.alphaNumericnotAllow || false);
     const [specialCharacternotAllowed, setSpecialCharacternotAllowed] = useState(propertyToBeEdit?.rules?.specialCharacternotAllowed || false);
     
-    useState(()=>{
+
+   
+    
+
+    useEffect(()=>{
         if(globalFieldType){
+
             setFieldType(globalFieldType);
         }
     },[globalFieldType]);
 
-
     const dispatch = useDispatch();
   
-
-    useEffect(()=>{
-        setWidth(false);
-        setFieldType(sessionStorage.getItem("fieldType"));
-    },[]);
 
 
     const handelFutureDateType=({target})=>{
@@ -51,7 +51,7 @@ export const Rules = ({basicInfo, setWidth})=>{
         setDateType(target.value)
     }
 
-    const [passwordCharacter, setPasswordCharacter]= useState(propertyToBeEdit?.rules?.passwordMandatoryCharacter || "");
+    const [passwordCharacter, setPasswordCharacter]= useState(propertyToBeEdit?.rules?.passwordMandatoryCharacter || false);
 
     
     const [tags, setTags] = useState(propertyToBeEdit?.rules?.emailDomain||[]);
@@ -88,8 +88,6 @@ export const Rules = ({basicInfo, setWidth})=>{
 
   
    
-
-    
 
     const handelRuleChange = (event,name) =>{
         if(!event?.target?.name && !name){
@@ -161,16 +159,11 @@ export const Rules = ({basicInfo, setWidth})=>{
     }
 
 
-    // useEffect(()=>{
-    //     dispatch(resetRules());
-    // },[]);
-
 
     useEffect(()=>{
         localRule.map((rule)=>{
             dispatch(setRules({[rule.name]:rule.value}))
         });
-
     },[localRule]);
 
     
@@ -183,6 +176,7 @@ export const Rules = ({basicInfo, setWidth})=>{
         }
     },[propertyToBeEdit?.rules]);
 
+    
     const handelTag = (index)=>{
         setTags(tags.filter((tag, i)=> i !=index));
     }
@@ -190,12 +184,7 @@ export const Rules = ({basicInfo, setWidth})=>{
     return(
         <React.Fragment>
             {contextHolder}
-            <Typography className='label'>
-                <Typography.Title level={4}>{basicInfo?.label}</Typography.Title>
-            </Typography>
-
-
-            <Typography className='rule-heading'>
+            <Typography className='rule-heading' style={{marginTop: '-30px', marginBottom:'-10px'}}>
                 <Typography.Title level={5}>Select property rules</Typography.Title>
             </Typography>
             {fieldType=="date" &&
@@ -535,7 +524,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                                 </Popover>
                                 <div style={{ marginTop: '8px' }}>
                                     {tags.map((tag, index) => (
-                                    <Tag key={index} closable onClose={()=>{handelTag(index)}} style={{marginTop:'4%'}}>{tag}</Tag>
+                                    <Tag key={index} closable onClose={()=>handelTag(index)} style={{marginTop:'4%'}}>{tag}</Tag>
                                     ))}
                                 </div>
                             </div>

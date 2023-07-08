@@ -540,7 +540,7 @@ export function CreateField({sortType,fieldType,label,search}){
                 />
             }
         
-            <Form.Item>
+            {/* <Form.Item>
                 <label>Preview</label>
                 <div className='preview-box'>
                     {fields?.length > 0 &&
@@ -598,7 +598,7 @@ export function CreateField({sortType,fieldType,label,search}){
                         })
                     }
                 </div>
-            </Form.Item>
+            </Form.Item> */}
         </>
     )
 }

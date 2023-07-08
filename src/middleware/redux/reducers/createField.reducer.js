@@ -8,7 +8,10 @@ const createFieldReducer = createSlice({
     rules:{
         propertyVisibility:true,
         dateType: 'anyDate',
-    }
+    },
+    toggleSaveBtn: false,
+    globalFieldType: '',
+    propertyToBeEdit:{}
   },
   reducers: {
     setLabelValueForField: (state, action) => {
@@ -35,15 +38,65 @@ const createFieldReducer = createSlice({
             rules: {...state.rules, ...action.payload},
         }
     },
+
     resetRules: (state, action) =>{
         return {
             ...state,
-            rules:{},
+            rules:{
+                propertyVisibility:true,
+                dateType: 'anyDate',
+            },
+            propertyToBeEdit:{
+                ...state.propertyToBeEdit,
+                rules:{},
+            },
         }
-    }
+    },
+
+    resetEditRules: (state, action) =>{
+        return {
+            ...state,
+            propertyToBeEdit:{
+                ...state.propertyToBeEdit,
+                rules:{}
+            },
+        }
+    },
+    toggleSaveWhileUpdateProperty: (state, action) =>{
+        return{
+            ...state,
+            toggleSaveBtn: true,
+        }
+    },
+    setGlobalFieldType : (state, action) =>{
+        return{
+            ...state,
+            globalFieldType: action.payload,
+            rules:{
+                propertyVisibility:true,
+                dateType: 'anyDate',
+            }, 
+        }
+    },
+    resetFieldState : ()=> ({
+        labelValue: [],
+        propertyToBeEditId: null,
+        rules:{
+            propertyVisibility:true,
+            dateType: 'anyDate',
+        },
+        toggleSaveBtn: false,
+        globalFieldType: '',
+        propertyToBeEdit:{}})
   },
 });
 
 
-export const { setLabelValueForField, setEditPropertyId, setPropertyTobeEdit, setRules, resetRules } = createFieldReducer.actions;
+export const { 
+    setLabelValueForField, setEditPropertyId, 
+    setPropertyTobeEdit, setRules, resetRules,
+    toggleSaveWhileUpdateProperty,
+    setGlobalFieldType, resetEditRules, resetFieldState,
+    setEmailTags,
+    } = createFieldReducer.actions;
 export default createFieldReducer.reducer;

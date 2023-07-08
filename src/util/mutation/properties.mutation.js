@@ -9,6 +9,15 @@ export const CREATE_PROPERTIES = gql`
     }
 `;
 
+export const UPDATE_PROPERTY = gql`
+    mutation($input: PropertiesInput!){
+        updateProperty(input: $input) {
+            success
+            message
+        }
+    }
+`;
+
 export const ARCHIVE_PROPERTY = gql`
     mutation($input: ArchivePropertyInput!){
         archiveProperty(input: $input) {

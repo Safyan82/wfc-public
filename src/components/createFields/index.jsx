@@ -8,7 +8,7 @@ import { BasicInfo } from './step1basicInfo';
 import { FieldType } from './step2fieldType';
 import { Rules } from './step3Rules';
 import { useDispatch } from 'react-redux';
-import { resetRules, setRules } from '../../middleware/redux/reducers/createField.reducer';
+import { resetFieldState, resetRules, setRules } from '../../middleware/redux/reducers/createField.reducer';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_PROPERTIES } from '../../util/mutation/properties.mutation';
@@ -25,7 +25,7 @@ const customDot = (dot, { status, index }) => {
   );
 };
 
-export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoading, propertyListRefetch }) => {
+export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefetch }) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [basicInfo, setBasicInfo] = useState({objectType: 'branches'});
     const [basicInfoCheck, setBasicInfoCheck] = useState(true);
@@ -64,9 +64,10 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
     
 
     const clearandClose=async()=>{
-      await dispatch(setPropertyTobeEdit(null));
-      await dispatch(setEditPropertyId(''));
-      await dispatch(resetRules({}));
+      // await dispatch(setPropertyTobeEdit(null));
+      // await dispatch(setEditPropertyId(''));
+      // await dispatch(resetRules({}));
+      await dispatch(resetFieldState());
       setBasicInfo(null);
       onClose();
       sessionStorage.clear();
@@ -87,14 +88,13 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, groupList, groupL
       }else{
         setBasicInfoCheck(true);
       }
-      console.log(basicInfo, basicInfo?.objectType?.length>0 , basicInfo?.groupId?.length>0 , basicInfo?.label?.length>0);
     },[basicInfo]);
     
     
     const steps = [
       {
         title: 'BASIC INFO',
-        component: <BasicInfo groupList={groupList} groupLoading={groupLoading} basicInfo={basicInfo} setWidth={setWidth} setBasicInfo={setBasicInfo} />
+        component: <BasicInfo  basicInfo={basicInfo} setWidth={setWidth} setBasicInfo={setBasicInfo} />
       },
       {
         title: 'FIELD TYPE',

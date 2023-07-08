@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { setEditPropertyId } from '../../middleware/redux/reducers/createField.reducer';
 import { useSelector } from 'react-redux';
 
-export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRefetch, refetch}) => {
+export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRefetch, refetch, setEditFieldModal}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
@@ -80,7 +80,7 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
 
           {showActions && 
           <div style={{width:'100%', display:'flex', justifyContent:'flex-end' ,alignItems:'center', columnGap:'10px'}}>
-            <button style={{marginLeft:'10%'}} className="grid-sm-btn" type="link" onClick={() => handleEdit(record)}>
+            <button style={{marginLeft:'10%'}} className="grid-sm-btn" type="link" onClick={() => { dispatch(setEditPropertyId(record.key)); setEditFieldModal(true);}}>
               Edit
             </button>
             <button  className="grid-sm-btn" type="link" onClick={() => { setFieldModal(true); dispatch(setEditPropertyId(record.key))}}>

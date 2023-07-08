@@ -5,7 +5,6 @@ import { SearchOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 export const SelectDropdown = ({isOpen}) =>{
-    console.log(isOpen, "isOpen")
     const handleSearch = (value) => {
         console.log('Search:', value);
         // Add your custom search logic here

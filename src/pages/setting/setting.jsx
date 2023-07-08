@@ -16,11 +16,13 @@ import { GroupModal } from './group.modal';
 import { GROUPLIST } from '../../util/query/group.query';
 import { useQuery } from '@apollo/client';
 import { ARCHIVE_PROPERTY_LIST, PROPERTYLIST } from '../../util/query/properties.query';
+import { EditFieldDrawer } from '../../components/editField/editField.drawer';
 
 export const Setting=()=>{
     const  { TabPane } = Tabs;
     const navigate = useNavigate();
     const [fieldModal, setFieldModal] = useState(false);
+    const [editfieldModal, setEditFieldModal] = useState(false);
     const [groupmodal, setGroupModal] = useState(false);
 
     // setting popover 
@@ -177,6 +179,7 @@ export const Setting=()=>{
                                         propertyListLoading={propertyListLoading}
                                         refetch={refetch}
                                         setFieldModal={setFieldModal}
+                                        setEditFieldModal={setEditFieldModal}
                                     />
                                 </TabPane>
                             <TabPane tab="Group" key="2">
@@ -218,11 +221,17 @@ export const Setting=()=>{
                 </div>
         
             {fieldModal && <CreateFieldDrawer 
-                groupList={groupList}
-                groupLoading={groupLoading}
                 visible={fieldModal}  
                 propertyListRefetch={propertyListRefetch}
                 onClose={()=>setFieldModal(false)}
+            />}
+            
+            {editfieldModal && <EditFieldDrawer 
+                groupList={groupList}
+                groupLoading={groupLoading}
+                visible={editfieldModal}  
+                propertyListRefetch={propertyListRefetch}
+                onClose={()=>setEditFieldModal(false)}
             />}
             
             <GroupModal groupRefetch={groupRefetch} visible={groupmodal} onClose={()=>setGroupModal(false)} />

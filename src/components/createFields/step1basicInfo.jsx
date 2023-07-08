@@ -1,13 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Popover, Select, Spin } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { LoadingOutlined } from '@ant-design/icons';
 import { useSelector } from "react-redux";
+import { useQuery } from "@apollo/client";
+import { GROUPLIST } from "../../util/query/group.query";
 
-export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLoading}) =>{
-    useEffect(()=>{setWidth(false)},[]);
+export const BasicInfo = ({basicInfo, setBasicInfo, setWidth,}) =>{
+    
+    const [isGroupFocused, setisGroupFocused] = useState(null);
+    const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST,{
+        fetchPolicy: 'network-only',
+        skip: !isGroupFocused
+    });
 
+    useEffect(()=>{
+        if(basicInfo?.groupId){
+            setisGroupFocused(true);
+        }
+    },[basicInfo?.groupId]);
+    
 
     return(
         <React.Fragment>
@@ -33,14 +46,22 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLo
                 <Select 
                     className="custom-select"
                     labelInValue
-                    onChange={(e)=>{setBasicInfo({...basicInfo, groupId:e.value, groupName: e.label})}}
-                    value={basicInfo?.groupId}
-                    disabled={groupLoading}
+                    onFocus={()=>setisGroupFocused(true)}
+                    onChange={(e)=>{
+                        if(!groupLoading){
+
+                            setBasicInfo({...basicInfo, groupId:e.value, groupName: e.label});
+                        }
+                        
+                    }}
+                    value={groupLoading ? null : basicInfo?.groupId}
                     suffixIcon={groupLoading ? <Spin indicator={<LoadingOutlined />} />: <span className="dropdowncaret"></span>}
                 >
-                    {!groupLoading && groupList?.groupList?.map((group, index)=>(
+                    {!groupLoading ? groupList?.groupList?.map((group, index)=>(
                         <Select.Option value={group.key} key={index}>{group.name}</Select.Option>
-                    ))}
+                    )):
+                        <Select.Option>Loading ...</Select.Option>
+                    }
                 </Select>
             </Form.Item>
 

@@ -4,7 +4,7 @@ import { CreateField } from './dynamicField';
 import {
     SearchOutlined,
   } from '@ant-design/icons';
-import { resetFieldState, setGlobalFieldType } from '../../middleware/redux/reducers/createField.reducer';
+import { resetRules, setGlobalFieldType } from '../../middleware/redux/reducers/createField.reducer';
 import { useDispatch } from 'react-redux';
 
 
@@ -20,8 +20,6 @@ export const FieldType = ({basicInfo, setWidth, fieldType, setFieldType})=>{
     const [search, setSearchKeyword] = useState(null);
     const [fieldTypeFocused, setFieldTypeFocused] = useState(false);
 
-    const dispatch = useDispatch();
-
     useEffect(()=>{
         sessionStorage.setItem('fieldType', fieldType);
         if(multi.includes(fieldType)){
@@ -35,13 +33,12 @@ export const FieldType = ({basicInfo, setWidth, fieldType, setFieldType})=>{
         return()=>{
           document.getElementById("nextBtn")?.classList?.remove("disabled-btn");
         }
-      },[])
+      },[]);
+
+    const dispatch = useDispatch();
 
     return(
         <React.Fragment>
-            <Typography className='label'>
-                <Typography.Title level={4}>{basicInfo?.label}</Typography.Title>
-            </Typography>
             <Form.Item>
                 <label>Field type</label>
                 <Select 
@@ -50,7 +47,9 @@ export const FieldType = ({basicInfo, setWidth, fieldType, setFieldType})=>{
                     onChange={(e)=>{
                         setFieldType(e);
                         if(fieldTypeFocused){
+
                             dispatch(setGlobalFieldType(e));
+                            dispatch(resetRules());
                         }
                     }}
                     placeholder="Select field type"

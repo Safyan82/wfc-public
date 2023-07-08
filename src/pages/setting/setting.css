@@ -266,7 +266,7 @@
 }
 
 /* tabs */
-.ant-tabs-tab{
+.setting-body-inner .ant-tabs-tab{
     -webkit-font-smoothing: auto;
     font-family: var(--uicomponents-font-family,"Lexend Deca",Helvetica,Arial,sans-serif);
     font-weight: 400;
@@ -282,32 +282,32 @@
     border-bottom: 1px solid rgb(203, 214, 226) !important;
 }
 
-.ant-tabs-tab:nth-last-child(2){
+.setting-body-inner .ant-tabs-tab:nth-last-child(2){
     border-right: 1px solid rgb(203, 214, 226) !important;
 }
 
-.ant-tabs .ant-tabs-ink-bar{
+.setting-body-inner .ant-tabs .ant-tabs-ink-bar{
     background: none !important;
 }
 
-.ant-tabs-tab-active{
+.setting-body-inner .ant-tabs-tab-active{
     border-bottom: 0px !important;
     background: white !important;
 }
 
-.ant-tabs-tab:hover{
+.setting-body-inner .ant-tabs-tab:hover{
     color: rgb(124, 152, 182) !important;
 }
 
-.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
+.setting-body-inner .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
     color: black !important;
     font-weight: 500;
 }
 
-.ant-tabs-nav-list{
+.setting-body-inner .ant-tabs-nav-list{
     border-top: 1px solid rgb(203, 214, 226) !important;
 }
-.ant-tabs-nav::before{
+.setting-body-inner .ant-tabs-nav::before{
     border-top: 1px solid rgb(203, 214, 226) !important;
 
 }
@@ -622,4 +622,50 @@
 .archive-btn:hover{
     background-color: #ff5962;
     border-color: #ff5962;
+}
+
+
+/* editField tabs */
+
+.editFieldTabs{
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
+}
+
+.editFieldTabs .ant-tabs-tab{
+    -webkit-font-smoothing: auto;
+     font-weight: 400;
+    font-size: 14px;
+    padding: 12px 28px !important;
+    margin: 0 !important;
+    color: rgb(51, 71, 91);
+    position: relative;
+    white-space: nowrap;
+    transition: background-color 200ms cubic-bezier(0.25, 0.1, 0.25, 1) 0s;
+}
+
+.editFieldTabs .ant-tabs-tab:hover{
+    font-weight: 400;
+    font-size: 14px;
+    padding: 12px 28px !important;
+    margin: 0 !important;
+    color: rgb(124, 152, 182);;
+    position: relative;
+    white-space: nowrap;
+    transition: background-color 200ms cubic-bezier(0.25, 0.1, 0.25, 1) 0s;
+}
+
+.editFieldTabs :where(.css-dev-only-do-not-override-12jzuas).ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: rgb(51, 71, 91) !important;
+    text-shadow: 0 0 0.25px currentcolor;
+    /* letter-spacing: 0.3px; */
+    font-size: 14px !important;
+}
+
+.editFieldTabs .ant-tabs .ant-tabs-ink-bar{
+    position: absolute;
+    background: rgb(51, 71, 91) !important;
+    pointer-events: none;
+    height: 4px;
+    border-radius: 24px;
 }
