@@ -2,15 +2,57 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Modal, Select, Button, notification, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
-import { CREATE_GROUP } from '../../util/mutation/group.mutation';
+import { CREATE_GROUP, UPDATE_GROUP } from '../../../util/mutation/group.mutation';
 import { useMutation } from '@apollo/client';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { resetGroup } from '../../../middleware/redux/reducers/group.reducer';
 
 export const GroupModal = ({ visible, onClose, groupRefetch}) => {
 
-  const [groupName, setGroupName] = useState("");
+  const {group} = useSelector(state=>state.groupReducer);
+  const [groupName, setGroupName] = useState(group?.name || "");
+
   const [api, contextHolder] = notification.useNotification();
   const [btn, setbtn] = useState(true);
   const [createGroup, { loading, error }] = useMutation(CREATE_GROUP);
+  const dispatch = useDispatch();
+
+  const [updateGroup,{loading:updateGroupLoading}] = useMutation(UPDATE_GROUP);
+
+  useEffect(()=>{
+    setGroupName(group?.name);
+    setbtn(true);
+  },[group]);
+
+  const editGroup = async ()=>{
+    if(Object.keys(group)){
+      try{
+
+        const {data:{updateGroup:{success, message}}} = await updateGroup({variables:{ input: {groupId: group?.key, name: groupName}}});
+        await groupRefetch();
+        
+        setGroupName(null);
+
+        dispatch((resetGroup({})));
+        api.success({
+          message,
+          placement:"top",
+          className: 'notification-without-close',
+        });
+        onClose();
+      }
+      catch(err){
+        
+        api.error({
+          message: err.message,
+          placement:"top",
+          className: 'notification-without-close',
+        });
+        // onClose();
+      }
+    }
+  };
 
   const handelChange = (e)=>{
     setGroupName(e.target.value);
@@ -52,7 +94,13 @@ export const GroupModal = ({ visible, onClose, groupRefetch}) => {
       width={500}
       footer={
         <div style={{padding:'26px 40px', textAlign:'left', display:'flex', columnGap:'16px', marginTop:'-25px' }}>
-            <button  disabled={btn || loading || groupName?.length<3 && true} className={btn || loading ||  groupName?.length < 3 ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handelSubmit}>Save</button>
+            <button  
+              disabled={btn || loading || groupName?.length<3 && true} 
+              className={btn || loading ||  groupName?.length < 3 ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
+              onClick={group?.key ? editGroup :handelSubmit}
+            >
+              Save
+            </button>
             <button  disabled={loading} className='drawer-outlined-btn' onClick={onClose}>Cancel</button>
         </div>
       }
@@ -62,7 +110,7 @@ export const GroupModal = ({ visible, onClose, groupRefetch}) => {
       <React.Fragment>
         {contextHolder}
         <div className='modal-header-title'>
-            <span>Create a new property group</span>
+            <span>{group?.name ? 'Edit  ' : 'Create a new' } property group</span>
             <span className='close' onClick={onClose}><FontAwesomeIcon icon={faClose}/></span>
         </div>
         <div className='modal-body'>

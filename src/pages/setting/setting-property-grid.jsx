@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Popover, Space, Table, notification } from 'antd';
 import { useEffect, useState } from 'react';
 import { ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
-import { ArchiveConfirmationModal } from './archeiveConfirmation.modal';
+import { ArchiveConfirmationModal } from './modal/archeiveConfirmation.modal';
 import { useDispatch } from 'react-redux';
 import { setEditPropertyId } from '../../middleware/redux/reducers/createField.reducer';
 import { useSelector } from 'react-redux';
@@ -203,7 +203,7 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
       {contextHolder}
       <Table 
         columns={columns} 
-        dataSource={propertyList?.propertyList} 
+        dataSource={propertyList} 
         rowSelection={rowSelection}
         onChange={handleChange} 
         

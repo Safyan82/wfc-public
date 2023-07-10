@@ -12,11 +12,15 @@ import { useNavigate } from 'react-router-dom';
 import { ArcheiveFilter } from './archeiveFilter';
 import { ArcheivePropertyGrid } from './archeiveGrid';
 import { CreateFieldDrawer } from '../../components/createFields/index';
-import { GroupModal } from './group.modal';
+import { GroupModal } from './modal/group.modal';
 import { GROUPLIST } from '../../util/query/group.query';
 import { useQuery } from '@apollo/client';
-import { ARCHIVE_PROPERTY_LIST, PROPERTYLIST } from '../../util/query/properties.query';
+import { ARCHIVE_PROPERTY_LIST, GetProptyByGroupId, PROPERTYLIST } from '../../util/query/properties.query';
 import { EditFieldDrawer } from '../../components/editField/editField.drawer';
+import { resetGroup } from '../../middleware/redux/reducers/group.reducer';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { resetPropertyFilterByGroup } from '../../middleware/redux/reducers/properties.reducer';
 
 export const Setting=()=>{
     const  { TabPane } = Tabs;
@@ -47,16 +51,39 @@ export const Setting=()=>{
     const { loading, error, data, refetch } = useQuery(ARCHIVE_PROPERTY_LIST);
     const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST);
     const { loading:propertyListLoading, error:propertyListError, data:propertyList , refetch:propertyListRefetch } = useQuery(PROPERTYLIST);
+    
+    const { groupFilterId } = useSelector(state=>state.propertyReducer);
+    const { data: propertyByGroupId } = useQuery(GetProptyByGroupId, {
+        variables: { groupId: (groupFilterId)?.toString() || null },
+        skip: !groupFilterId,
+        fetchPolicy: 'network-only'
+  
+    });
 
-    const handelTabChange = async ()=>{
-        
+
+    const [activeTab, setActiveTab] = useState('1');
+    const handelTabChange = async (e)=>{
+        setActiveTab(e);
         setGroupPopover(false);
         setuserPopover(false);
         setfieldTypePopover(false);
         setArchivePopover(false);
         await propertyListRefetch();
         await refetch();
+        if(e=='2'){
+            dispatch(resetPropertyFilterByGroup());
+        }
     };
+
+    const dispatch = useDispatch();
+
+    const resetToPropertyTab = async(tab) =>{
+        if(tab==1){
+
+            dispatch(resetPropertyFilterByGroup());
+            await propertyListRefetch();
+        }
+    }
 
     return(
         <Row>
@@ -152,8 +179,8 @@ export const Setting=()=>{
 
                             {/* propertie views */}
                             <div className="propertyTab"></div>
-                            <Tabs defaultActiveKey="1" onChange={handelTabChange}>
-                                <TabPane tab={`Properties (${propertyList?.propertyList?.length || 0})`} key="1">
+                            <Tabs defaultActiveKey="1" onTabClick={resetToPropertyTab} activeKey={activeTab } onChange={handelTabChange}>
+                                <TabPane tab={`Properties (${groupFilterId?.length ? propertyByGroupId?.getPropertyByGroupId?.length || 0 :  propertyList?.propertyList?.length || 0})`} key="1">
                                     <Filter 
                                         group={group}
                                         groupPopover={groupPopover}
@@ -174,7 +201,7 @@ export const Setting=()=>{
                                         editProperty={()=>setFieldModal(true)}
                                     />
                                     <SettingPropertyGrid
-                                        propertyList={propertyList}
+                                        propertyList={groupFilterId? propertyByGroupId?.getPropertyByGroupId :propertyList?.propertyList}
                                         propertyListRefetch={propertyListRefetch}
                                         propertyListLoading={propertyListLoading}
                                         refetch={refetch}
@@ -188,6 +215,8 @@ export const Setting=()=>{
                                     groupList={groupList}
                                     groupLoading={groupLoading}
                                     groupRefetch={groupRefetch}
+                                    editGroup={()=>setGroupModal(true)}
+                                    setActiveTab={setActiveTab}
                                 />
                             </TabPane>
                             <TabPane tab={`Archived Properties (${data?.getArchiveProperties?.length || 0})`} key="3" onClick={(e)=>console.log(e)}>
@@ -234,7 +263,11 @@ export const Setting=()=>{
                 onClose={()=>setEditFieldModal(false)}
             />}
             
-            <GroupModal groupRefetch={groupRefetch} visible={groupmodal} onClose={()=>setGroupModal(false)} />
+            <GroupModal 
+                groupRefetch={groupRefetch} 
+                visible={groupmodal} 
+                onClose={()=>{setGroupModal(false); dispatch(resetGroup({}))}} 
+            />
 
         </Row>
     );

@@ -3,6 +3,7 @@ import { Button, Space, Table, notification } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { DELETE_PROPERTY, UN_ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
+import { DeleteConfirmationModal } from './modal/deleteConfirmation.modal';
 
 export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
@@ -34,6 +35,7 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch}) => {
 
   const [unArchiveProperty, {loading: unArchiveProperyLoading,}] = useMutation(UN_ARCHIVE_PROPERTY);
   const [deleteProperty, {loading: deleteProperyLoading,}] = useMutation(DELETE_PROPERTY);
+  const [confirmationModal, setConfirmationModal] = useState(false);
 
   const handelRestore= async(id, label) => {
     await unArchiveProperty({variables:{input: {id}}});
@@ -46,14 +48,29 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch}) => {
     });
   };
 
-  const handelDelete= async (id, label) => {
-    await deleteProperty({variables:{input: {id}}});
-    await refetch();
-    api.success({
-      message:`${label} property was deleted`,
-      placement:'top',
-      className:'notification-without-close',
-    });
+  const [propertyName, setPropertyName] = useState("");
+  const [propertyId, setPropertyId] = useState("");
+
+  const handelDelete= async () => {
+    if(propertyId){
+
+      await deleteProperty({variables:{input: {id:propertyId}}});
+      await refetch();
+      setConfirmationModal(false);
+      api.success({
+        message:`${propertyName} property was deleted`,
+        placement:'top',
+        className:'notification-without-close',
+      });
+      setPropertyName("");
+      setPropertyId("");
+    }
+  }
+
+  const setProperties = (key,label)=>{
+    setPropertyName(label);
+    setConfirmationModal(true);
+    setPropertyId(key);
   }
 
   const columns = [
@@ -79,7 +96,7 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch}) => {
               <button style={{marginLeft:'10%'}} className="grid-sm-btn" type="link" onClick={()=>handelRestore(record.key, record.label)} >
                 Restore
               </button>
-              <button  className="grid-sm-btn" type="link" onClick={()=>handelDelete(record.key, record.label)} >
+              <button  className="grid-sm-btn" type="link" onClick={()=>setProperties(record.key, record.label)} >
                 Delete
               </button>
             </div>
@@ -142,6 +159,18 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch}) => {
 
 
         />
+
+        {
+          confirmationModal &&
+          <DeleteConfirmationModal
+            visible={confirmationModal}
+            onClose={()=>setConfirmationModal(false)}
+            deleteRecord={handelDelete}
+            label={propertyName}
+            title={"property"}
+
+          />
+        }
 
     </div>
   );

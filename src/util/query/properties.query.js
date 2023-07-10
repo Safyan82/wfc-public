@@ -50,3 +50,23 @@ export const GetProptyById = gql`
         } 
     }
 `;
+
+
+export const GetProptyByGroupId = gql`
+    query($groupId: String!){
+        getPropertyByGroupId(groupId: $groupId) {
+            _id
+            options
+            key
+            objectType
+            label
+            fieldType
+            useIn
+            groupName
+            createdAt
+            description
+            groupId
+            rules
+        } 
+    }
+`;
