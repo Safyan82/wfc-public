@@ -180,7 +180,7 @@ export const Setting=()=>{
                             {/* propertie views */}
                             <div className="propertyTab"></div>
                             <Tabs defaultActiveKey="1" onTabClick={resetToPropertyTab} activeKey={activeTab } onChange={handelTabChange}>
-                                <TabPane tab={`Properties (${groupFilterId?.length ? propertyByGroupId?.getPropertyByGroupId?.length || '' :  propertyList?.propertyList?.length || 0})`} key="1">
+                                <TabPane tab={`Properties (${groupFilterId?.length ?  propertyByGroupId?.getPropertyByGroupId?.length || 0 :  propertyList?.propertyList?.length || 0})`} key="1">
                                     <Filter 
                                         group={group}
                                         groupPopover={groupPopover}
