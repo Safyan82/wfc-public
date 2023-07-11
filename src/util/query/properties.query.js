@@ -95,8 +95,7 @@ export const PROPERTYWITHFILTER = gql `
 export const ArchivePropertyFilter = gql `
     query($endDate: String!, $startDate: String!){
         archivePropertyFilter(endDate: $endDate, startDate: $startDate) {
-            _id
-            options
+            
             key
             objectType
             label
@@ -104,9 +103,8 @@ export const ArchivePropertyFilter = gql `
             useIn
             groupName
             createdAt
-            description
-            groupId
-            rules
+            archiveTime
+            createdBy
         }
     }
 `;

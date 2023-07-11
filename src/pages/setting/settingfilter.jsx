@@ -65,6 +65,10 @@ export const Filter = ({
 
     const [localGroup, setLocalGroup] = useState(groupList);
 
+    useEffect(()=>{
+        setLocalGroup(groupList);
+    },[groupList]);
+
     return(
         <div className="filter"  >
                                 <div className="filter-inner">
