@@ -149,7 +149,7 @@ export const Filter = ({
                                                         </div>
 
                                                         <div className="popover-data" ref={popoverRef} style={{
-                                                            height:'300px',
+                                                            height:'240px',
                                                             overflowY:'scroll',
                                                         }}>
                                                             <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>
