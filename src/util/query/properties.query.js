@@ -70,3 +70,43 @@ export const GetProptyByGroupId = gql`
         } 
     }
 `;
+
+export const PROPERTYWITHFILTER = gql `
+    query($field: String, $value: String){
+        getPropertywithFilters(field: $field,value: $value) {
+            _id
+            options
+            key
+            objectType
+            label
+            fieldType
+            useIn
+            groupName
+            createdAt
+            description
+            groupId
+            rules
+        }
+    }
+`;
+
+
+
+export const ArchivePropertyFilter = gql `
+    query($endDate: String!, $startDate: String!){
+        archivePropertyFilter(endDate: $endDate, startDate: $startDate) {
+            _id
+            options
+            key
+            objectType
+            label
+            fieldType
+            useIn
+            groupName
+            createdAt
+            description
+            groupId
+            rules
+        }
+    }
+`;

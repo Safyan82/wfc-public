@@ -146,7 +146,7 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch}) => {
       {contextHolder}
       <Table 
         columns={columns} 
-        dataSource={data?.getArchiveProperties} 
+        dataSource={data} 
         rowSelection={rowSelection}
         onChange={handleChange} 
         

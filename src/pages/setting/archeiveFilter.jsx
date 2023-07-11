@@ -6,6 +6,11 @@ import { Button, Checkbox, Col, DatePicker, Input, Popover, Row, Select, Tabs, T
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faCalendarAlt, faCalendarDays, faCalendarWeek, faChevronLeft, faChevronRight, faLock, faLongArrowRight, faRightLong, faSearch } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
+import { useQuery } from '@apollo/client';
+import { ArchivePropertyFilter } from '../../util/query/properties.query';
+import { useDispatch } from 'react-redux';
+import { setArchivePropertyFilter, setArchivePropertyFilteredData } from '../../middleware/redux/reducers/archiveProperty.reducer';
+import { useSelector } from 'react-redux';
 
 export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archivePopover})=>{
     
@@ -16,8 +21,35 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
         return current && current > dayjs().endOf('day');
     };
 
+    const {isFilterActive} = useSelector(state=>state.archiveReducer);
+
+    const [startDate, setStartDate] = useState((dayjs().subtract(3, 'month')).startOf('day').add(1, 'day').valueOf());
+    const [endDate, setEndDate] = useState(dayjs().endOf('day').valueOf());
+    useEffect(()=>{
+        if(!isFilterActive){
+            setStartDate((dayjs().subtract(3, 'month')).startOf('day').add(1, 'day').valueOf());
+            setEndDate(dayjs().endOf('day').valueOf());
+        }
+    },[isFilterActive])
 
 
+    const {data:archivePropertyFilter} = useQuery(ArchivePropertyFilter,{
+        variables:{
+            startDate: startDate.toString(),
+            endDate: endDate.toString()
+        },
+        skip: !startDate && !endDate,
+        fetchPolicy: 'network-only'
+    });
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        if(archivePropertyFilter?.archivePropertyFilter){
+            dispatch(setArchivePropertyFilteredData(archivePropertyFilter?.archivePropertyFilter));
+            dispatch(setArchivePropertyFilter(true));
+        }
+    },[archivePropertyFilter?.archivePropertyFilter]);
 
     const dateFormat = 'MM/DD/YYYY';
 
@@ -68,10 +100,10 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
                     >
                         <DatePicker
                             className='generic-input-control'
-                            onChange={(e)=>console.log(e)}
+                            onChange={(e, dateString)=>setStartDate(dayjs(dateString).startOf('day').valueOf())}
                             disabledDate={disabledDate}
                             dateFormat={dateFormat}
-                            defaultValue={(dayjs().subtract(3, 'month')).add(1, 'day')}
+                            defaultValue={(dayjs().subtract(3, 'month')).startOf('day').add(1, 'day')}
                             suffixIcon={<FontAwesomeIcon icon={faCalendarDays} />}
                         />
                         
@@ -79,8 +111,9 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
 
                         <DatePicker
                             className='generic-input-control'
-                            onChange={(e)=>console.log(e)}
+                            onChange={(e, dateString)=>setEndDate(dayjs(dateString).endOf('day').valueOf())}
                             disabledDate={disabledDate}
+                            
                             suffixIcon={<FontAwesomeIcon icon={faCalendarDays} />}
                             defaultValue={dayjs()}
                         />

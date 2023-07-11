@@ -482,6 +482,10 @@
     cursor: pointer;
 }
 
+.popoverdataitem-active{
+    background-color:#e5f5f8;
+
+}
 
 .right-filter-inner{
     -webkit-box-align: center;
@@ -668,4 +672,14 @@
     pointer-events: none;
     height: 4px;
     border-radius: 24px;
+}
+
+
+.custom-dropdown-label{
+    color: black;
+    margin-left: 6px;
+    min-height: 30px;
+    padding: 8px 0px 0px 6px;
+    font-weight: bold;
+    letter-spacing: 0.1px;
 }

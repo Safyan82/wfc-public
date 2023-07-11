@@ -9,10 +9,11 @@ import { faChevronLeft, faChevronRight, faLock, faSearch } from '@fortawesome/fr
 export const Filter = ({
     editProperty, group, groupPopover,fieldType, fieldTypePopover,
     user, userPopover, setGroupPopover, setGroupInput,
-    setFieldType, setfieldTypePopover, setUser, setuserPopover
+    setFieldType, setfieldTypePopover, setUser, setuserPopover, propertyList, setPropertyList,
+    groupList
 })=>{
-    
-    
+   
+
     const popoverRef = useRef(null);
 
     useEffect(() => {
@@ -58,6 +59,12 @@ export const Filter = ({
         }
     },[userPopover])
 
+    const handelSearch = (keyword)=>{
+        setPropertyList(propertyList.filter((property)=> property.label.toLowerCase().includes(keyword.toLowerCase())));
+    };
+
+    const [localGroup, setLocalGroup] = useState(groupList);
+
     return(
         <div className="filter"  >
                                 <div className="filter-inner">
@@ -78,17 +85,34 @@ export const Filter = ({
                                                                 className='generic-input-control' 
                                                                 placeholder="Search..."
                                                                 autoFocus
+                                                                onChange={(e)=> setLocalGroup(groupList?.filter((group)=> (group.name)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
                                                                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                                                             />
                                                         </div>
 
                                                         <div className="popover-data"  ref={popoverRef}>
-                                                            <div className="popoverdataitem" onClick={(e)=>{setGroupInput(e.target.innerText); setGroupPopover(false)}}>
-                                                                Branch
+                                                            {localGroup?.length ?
+                                                            <div 
+                                                                className={group=="All groups"? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
+                                                                onClick={(e)=>{setGroupInput(e.target.innerText); setGroupPopover(false)}}>
+                                                                {"All groups"}
                                                             </div>
-                                                            <div className="popoverdataitem" onClick={(e)=>{setGroupInput(e.target.innerText); setGroupPopover(false)}}>
-                                                                Other
+                                                            :
+                                                            
+                                                            <div 
+                                                                className={group=="All groups"? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
+                                                                onClick={(e)=>{setGroupPopover(false)}}>
+                                                                {"No group found"}
                                                             </div>
+                                                            }
+                                                            {localGroup && localGroup?.map((gl)=>(
+
+                                                                <div 
+                                                                    className={group==gl.name? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
+                                                                    onClick={(e)=>{setGroupInput(e.target.innerText); setGroupPopover(false)}}>
+                                                                    {gl.name}
+                                                                </div>
+                                                            ))}
                                                         </div>
 
                                                     </div>
@@ -96,7 +120,7 @@ export const Filter = ({
                                                 trigger="click"
                                                 placement='bottom'
                                             >
-                                                <span ref={popoverRef} onClick={()=>setGroupPopover(!groupPopover)}>{group? group :"All groups"}
+                                                <span ref={popoverRef} className='truncated-text' onClick={()=>setGroupPopover(!groupPopover)}>{group? group :"All groups"}
                                                 <span className='caret'></span>
                                                 </span>
                                             </Popover>
@@ -120,10 +144,31 @@ export const Filter = ({
                                                             />
                                                         </div>
 
-                                                        <div className="popover-data" ref={popoverRef} >
-                                                            <div className="popoverdataitem" ref={popoverRef} onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>
-                                                                All field type
+                                                        <div className="popover-data" ref={popoverRef} style={{
+                                                            height:'300px',
+                                                            overflowY:'scroll',
+                                                        }}>
+                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>
+                                                                All field types
                                                             </div>
+                                                            
+                                                            <div className='custom-dropdown-label'> Meta Field</div>
+                                                            <div className="popoverdataitem"  onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Email</div>
+                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Password</div>
+                                                 
+
+                                                            <div className="custom-dropdown-label">Text Field</div>
+                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Single-line text</div>
+                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Multi-line text</div>
+                                                        
+                                                            <div className='custom-dropdown-label'> Number </div>
+                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Number</div>
+
+                                                            <div className="custom-dropdown-label">Date & Time</div>
+                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Date picker</div>
+                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Time picker</div>
+                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Date & Time picker</div>
+
                                                         </div>
 
                                                     </div>
@@ -131,7 +176,7 @@ export const Filter = ({
                                                 trigger="click"
                                                 placement='bottom'
                                             >
-                                                <span ref={popoverRef} onClick={()=>setfieldTypePopover(!fieldTypePopover)}>{fieldType? fieldType :"All field types"}
+                                                <span ref={popoverRef} className='truncated-text' onClick={()=>setfieldTypePopover(!fieldTypePopover)}>{fieldType? fieldType :"All field types"}
                                                 <span className='caret'></span>
                                                 </span>
                                             </Popover>
@@ -165,7 +210,7 @@ export const Filter = ({
                                                 trigger="click"
                                                 placement='bottom'
                                             >
-                                                <span ref={popoverRef} onClick={()=>setuserPopover(!userPopover)}>{user? "1 user" :"All users"}
+                                                <span ref={popoverRef}  className='truncated-text'  onClick={()=>setuserPopover(!userPopover)}>{user? "1 user" :"All users"}
                                                 <span className='caret'></span>
                                                 </span>
                                             </Popover>
@@ -179,6 +224,7 @@ export const Filter = ({
                                             style={{width:'250px'}} 
                                             className='generic-input-control' 
                                             placeholder="Search..."
+                                            onChange={(e)=>handelSearch(e.target.value)}
                                             
                                             suffix={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faSearch}/>}
                                         />

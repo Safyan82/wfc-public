@@ -15,12 +15,13 @@ import { CreateFieldDrawer } from '../../components/createFields/index';
 import { GroupModal } from './modal/group.modal';
 import { GROUPLIST } from '../../util/query/group.query';
 import { useQuery } from '@apollo/client';
-import { ARCHIVE_PROPERTY_LIST, GetProptyByGroupId, PROPERTYLIST } from '../../util/query/properties.query';
+import { ARCHIVE_PROPERTY_LIST, GetProptyByGroupId, PROPERTYLIST, PROPERTYWITHFILTER } from '../../util/query/properties.query';
 import { EditFieldDrawer } from '../../components/editField/editField.drawer';
 import { resetGroup } from '../../middleware/redux/reducers/group.reducer';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { resetPropertyFilterByGroup } from '../../middleware/redux/reducers/properties.reducer';
+import { resetArchivePropertyFilteredData } from '../../middleware/redux/reducers/archiveProperty.reducer';
 
 export const Setting=()=>{
     const  { TabPane } = Tabs;
@@ -47,11 +48,69 @@ export const Setting=()=>{
 
     //  tab change
  
+    
+    const [field, setField] = useState(null);
+    const [value, setValue] = useState(null);
+
+
+    useEffect(()=>{
+        if(group!="All groups"){
+            setField('groupName');
+            setValue(group);
+        }else{
+            setField(null);
+            setValue(null);
+        }
+    },[group])
+
+    useEffect(()=>{
+        if(fieldType!=="All field types"){
+            const f = ((fieldType?.replaceAll("-",""))?.replaceAll(" ",""))?.toLowerCase();
+            setField('fieldType');
+            setValue(f=="multilinetext"? "multilineText" : f);
+        }else{
+            setField(null);
+            setValue(null);
+        }
+    },[fieldType])
+
+
+    const [archiveList, setArchiveList] = useState([]);
 
     const { loading, error, data, refetch } = useQuery(ARCHIVE_PROPERTY_LIST);
     const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST);
-    const { loading:propertyListLoading, error:propertyListError, data:propertyList , refetch:propertyListRefetch } = useQuery(PROPERTYLIST);
+    const { loading:propertyListLoading, error:propertyListError, data:propertyDataList , refetch:propertyListRefetch } = useQuery(PROPERTYWITHFILTER,{
+        variables:{
+            field,
+            value,
+        },
+        fetchPolicy: 'network-only'
+    });
+
+    useEffect(()=>{
+        setArchiveList(data);
+    },[data]);
+
+    const {archiveFilteredData, isFilterActive} = useSelector(state=>state.archiveReducer);
+
+    useEffect(()=>{
+        if(isFilterActive){
+            setArchiveList(archiveFilteredData);
+        }else{
+            setArchiveList(data);
+        }
+    },[isFilterActive]);
+
     
+    const [propertyList, setPropertyList] = useState(propertyDataList?.getPropertywithFilters);
+    useEffect(()=>{
+        if(propertyDataList && Object.keys(propertyDataList?.getPropertywithFilters)){
+            setPropertyList(propertyDataList?.getPropertywithFilters);
+        }
+    },[propertyDataList]);
+
+
+
     const { groupFilterId } = useSelector(state=>state.propertyReducer);
     const { data: propertyByGroupId } = useQuery(GetProptyByGroupId, {
         variables: { groupId: (groupFilterId)?.toString() || null },
@@ -79,11 +138,17 @@ export const Setting=()=>{
 
     const resetToPropertyTab = async(tab) =>{
         if(tab==1){
-
+            
             dispatch(resetPropertyFilterByGroup());
             await propertyListRefetch();
         }
+        
+        if(tab=='3'){
+            dispatch(resetArchivePropertyFilteredData(false));
+        }
     }
+
+
 
     return(
         <Row>
@@ -180,7 +245,7 @@ export const Setting=()=>{
                             {/* propertie views */}
                             <div className="propertyTab"></div>
                             <Tabs defaultActiveKey="1" onTabClick={resetToPropertyTab} activeKey={activeTab } onChange={handelTabChange}>
-                                <TabPane tab={`Properties (${groupFilterId?.length ?  propertyByGroupId?.getPropertyByGroupId?.length || 0 :  propertyList?.propertyList?.length || 0})`} key="1">
+                                <TabPane tab={`Properties (${groupFilterId?.length ?  propertyByGroupId?.getPropertyByGroupId?.length || 0 :  propertyList?.length || 0})`} key="1">
                                     <Filter 
                                         group={group}
                                         groupPopover={groupPopover}
@@ -188,9 +253,10 @@ export const Setting=()=>{
                                         fieldTypePopover={fieldTypePopover}
                                         user={user}
                                         userPopover={userPopover}
-
+                                        groupList={groupList?.groupList}
                                         propertyListRefetch={propertyListRefetch}
-                                        
+                                        propertyList={propertyDataList?.getPropertywithFilters}
+                                        setPropertyList={setPropertyList}
                                         setGroupPopover={setGroupPopover}
                                         setGroupInput={setGroupInput}
                                         setFieldType={setFieldType}
@@ -201,7 +267,7 @@ export const Setting=()=>{
                                         editProperty={()=>setFieldModal(true)}
                                     />
                                     <SettingPropertyGrid
-                                        propertyList={groupFilterId? propertyByGroupId?.getPropertyByGroupId :propertyList?.propertyList}
+                                        propertyList={groupFilterId? propertyByGroupId?.getPropertyByGroupId :propertyList}
                                         propertyListRefetch={propertyListRefetch}
                                         propertyListLoading={propertyListLoading}
                                         refetch={refetch}
@@ -234,7 +300,7 @@ export const Setting=()=>{
                                     closeText={<FontAwesomeIcon style={{fontSize: '16px',color: '#7c98b6'}} icon={faTimes}/>}
                                 />
                                 <ArcheivePropertyGrid 
-                                    data={data}
+                                    data={archiveFilteredData || data?.getArchiveProperties}
                                     refetch={refetch}
                                     propertyListRefetch={propertyListRefetch}
 
