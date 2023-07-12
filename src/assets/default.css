@@ -640,3 +640,30 @@ a:visited{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-table-wrapper .ant-table-thead th.ant-table-column-sort{
+    background: rgb(234, 240, 246) !important;
+}
+
+.ant-table-column-has-sorters {
+    background: rgb(245, 248, 250) !important;
+}
+.ant-table-column-has-sorters:hover {
+    background: rgb(229, 245, 248) !important;
+}
+:where(.css-dev-only-do-not-override-12jzuas).ant-table-wrapper .ant-table-thead th.ant-table-column-sort:hover{
+    background: rgb(229, 245, 248) !important;
+}
+
+.ant-table-thead th.ant-table-selection-column{
+    background: rgb(245, 248, 250) !important;
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-table-wrapper td.ant-table-column-sort{
+    background-color: inherit !important;
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-table-wrapper td.ant-table-column-sort:hover{
+    background-color: #fafafa !important;
+}

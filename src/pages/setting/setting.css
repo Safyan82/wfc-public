@@ -103,6 +103,24 @@
     cursor: pointer;
 }
 
+.setting-sidebar-nav-list-item:hover{
+    background-color:#e5f5f8;
+}
+
+.setting-navbar-active{
+    background-color:#e5f5f8;
+}
+
+.setting-navbar-active:before{
+    content: "";
+    border-left: 4px solid rgb(0, 164, 189);
+    height: 100%;
+    left: 0px;
+    position: absolute;
+    top: 0px;
+    border-radius: 3px;
+}
+
 .nav-divider{
     
     margin-top: 33px;
@@ -377,7 +395,7 @@
 /* custom popover */
 
 .settingCustomPopover .ant-popover-inner{
-    width: 300px;
+    width: 250px;
     /* border: 1px solid #cbd6e2; */
 }
 
@@ -683,3 +701,18 @@
     font-weight: bold;
     letter-spacing: 0.1px;
 }
+
+/*  */
+
+.ant-tooltip-inner {
+    background: #425b76 !important
+}
+
+.ant-tooltip-arrow::after{
+    background: #425b76 !important
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-table-wrapper .ant-table-column-sorter-up.active, :where(.css-dev-only-do-not-override-12jzuas).ant-table-wrapper .ant-table-column-sorter-down.active {
+    color: rgb(0, 164, 189);
+}
+

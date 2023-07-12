@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Modal, Select, Button, notification, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { LoadingOutlined } from '@ant-design/icons';
 
-export const DeleteConfirmationModal = ({ visible, onClose, deleteRecord, label, additionalText, title}) => {
+export const DeleteConfirmationModal = ({ visible, onClose, deleteRecord, label, additionalText, title, loading}) => {
+ 
 
   return (
     <Modal
@@ -12,30 +14,28 @@ export const DeleteConfirmationModal = ({ visible, onClose, deleteRecord, label,
       style={{borderRadius:'3px'}}
       footer={
         <div style={{padding:'0px 40px 26px 40px', textAlign:'left', display:'flex', columnGap:'16px', marginTop:'-25px' }}>
-            <button  className={'archive-btn'} onClick={deleteRecord}>Delete</button>
-            <button  className='dim-btn' onClick={onClose}>Cancel</button>
+            <button  disabled={loading} className={loading? 'disabled-btn archive-btn': 'archive-btn'} onClick={deleteRecord}>{loading? <Spin style={{color:'white'}} indicator={<LoadingOutlined/>}/> :"Delete"}</button>
+            <button  disabled={loading}  className={loading? 'disabled-btn dim-btn': 'dim-btn'} onClick={onClose}>Cancel</button>
         </div>
       }
       closable={false}
     >
-      
       <React.Fragment>
         <div className='archive-modal-header modal-header-title'>
             <span className='archive-font'>
-                Delete the {title} <br/>
-                {label} ?
+                Delete {additionalText ? label + " ?": 'the ' + title +" "}
+                {!additionalText && label + " ?"}
             </span>
             <span className='close' onClick={onClose}><FontAwesomeIcon icon={faClose}/></span>
         </div>
         <div className='modal-body'>
           
           <div className="text">
-            Are you sure you want to delete this {title}?.
-            {additionalText && 
-            <b>
-              <br/>
-              <span style={{color: 'red'}}>{additionalText}</span>
-            </b>
+            {additionalText ? 
+              "This group will be permanently deleted from your CRM. This action can't be undone."
+              :
+            
+             `Are you sure you want to delete this ${title}?`
             }
           </div>
 

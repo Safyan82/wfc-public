@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Modal, Select, Button, notification, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
+import Spinner from '../../../components/spinner';
 
-export const ArchiveConfirmationModal = ({ visible, onClose, ArcheivePropertyGrid, propertyName}) => {
+export const ArchiveConfirmationModal = ({ visible, onClose, ArcheivePropertyGrid, propertyName, loading}) => {
 
   return (
     <Modal
@@ -12,8 +13,12 @@ export const ArchiveConfirmationModal = ({ visible, onClose, ArcheivePropertyGri
       style={{borderRadius:'3px'}}
       footer={
         <div style={{padding:'0px 40px 26px 40px', textAlign:'left', display:'flex', columnGap:'16px', marginTop:'-25px' }}>
-            <button  className={'archive-btn'} onClick={ArcheivePropertyGrid}>Archive</button>
-            <button  className='dim-btn' onClick={onClose}>Cancel</button>
+            <button disabled={loading} className={loading?'disabled-btn archive-btn':'archive-btn'} onClick={ArcheivePropertyGrid}>
+              {loading?
+                <Spinner />
+              :"Archive"}
+            </button>
+            <button disabled={loading} className={loading?'disabled-btn dim-btn':'dim-btn'} onClick={onClose}>Cancel</button>
         </div>
       }
       closable={false}

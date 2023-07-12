@@ -4,7 +4,7 @@ import '../../components/createFields/createFieldDrawer.css';
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Checkbox, Col, Input, Popover, Row, Select, Tabs, Typography } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faLock, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight, faClose, faLock, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 export const Filter = ({
     editProperty, group, groupPopover,fieldType, fieldTypePopover,
@@ -15,6 +15,7 @@ export const Filter = ({
    
 
     const popoverRef = useRef(null);
+    const inputRef = useRef(null);
 
     useEffect(() => {
         // Function to handle clicks outside the box
@@ -59,7 +60,10 @@ export const Filter = ({
         }
     },[userPopover])
 
+    const[searchInput, setSearchInput]=useState('');
+
     const handelSearch = (keyword)=>{
+        setSearchInput(keyword);
         setPropertyList(propertyList.filter((property)=> property.label.toLowerCase().includes(keyword.toLowerCase())));
     };
 
@@ -68,6 +72,7 @@ export const Filter = ({
     useEffect(()=>{
         setLocalGroup(groupList);
     },[groupList]);
+
 
     return(
         <div className="filter"  >
@@ -78,17 +83,20 @@ export const Filter = ({
                                         
                                         <div className='filter-item' ref={popoverRef}>
                                             <Popover
-                                                visible={groupPopover}
+                                                open={groupPopover}
                                                 overlayClassName='settingCustomPopover'
+                                                afterOpenChange={()=>{inputRef.current.focus()}}
                                                 content={
                                                     <div ref={popoverRef}>
-                                                        <div className="popover-search"  ref={popoverRef}>
+                                                        <div className="popover-search" ref={popoverRef}>
                                                             <Input type="text" 
-                                                                name="popoverSearch"
+                                                                ref={inputRef}
+                                                                name='popoverSearch'
                                                                 style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
                                                                 className='generic-input-control' 
                                                                 placeholder="Search..."
-                                                                autoFocus
+                                                                autoFocus={groupPopover}
+                                                                autoComplete="off"
                                                                 onChange={(e)=> setLocalGroup(groupList?.filter((group)=> (group.name)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
                                                                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                                                             />
@@ -133,23 +141,26 @@ export const Filter = ({
                                         
                                         <div className='filter-item' ref={popoverRef}>
                                             <Popover
-                                                visible={fieldTypePopover}
+                                                open={fieldTypePopover}
+                                                afterOpenChange={()=>{inputRef.current.focus()}}
                                                 overlayClassName='settingCustomPopover'
                                                 content={
                                                     <div ref={popoverRef}>
                                                         <div className="popover-search">
                                                             <Input type="text" 
                                                                 name="popoverSearch"
+                                                                ref={inputRef}
                                                                 style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
                                                                 className='generic-input-control' 
                                                                 placeholder="Search..."
                                                                 autoFocus
+                                                                autoComplete="off"
                                                                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                                                             />
                                                         </div>
 
                                                         <div className="popover-data" ref={popoverRef} style={{
-                                                            height:'200px',
+                                                            height:'170px',
                                                             overflowY:'scroll',
                                                         }}>
                                                             <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>
@@ -188,16 +199,19 @@ export const Filter = ({
                                         
                                         <div className='filter-item' ref={popoverRef}>
                                             <Popover
-                                                visible={userPopover}
+                                                open={userPopover}
+                                                afterOpenChange={()=>{inputRef.current.focus()}}
                                                 overlayClassName='settingCustomPopover'
                                                 content={
                                                     <div>
                                                         <div className="popover-search">
                                                             <Input type="text" 
+                                                                ref={inputRef}
                                                                 name="popoverSearch"
                                                                 style={{ width: '-webkit-fill-available', backgroundColor: 'white' }} 
                                                                 className='generic-input-control' 
                                                                 placeholder="Search..."
+                                                                autoComplete="off"
                                                                 autoFocus
                                                                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                                                             />
@@ -227,10 +241,13 @@ export const Filter = ({
                                         <Input type="text" 
                                             style={{width:'250px'}} 
                                             className='generic-input-control' 
-                                            placeholder="Search..."
+                                            placeholder="Search properties"
                                             onChange={(e)=>handelSearch(e.target.value)}
-                                            
-                                            suffix={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faSearch}/>}
+                                            value={searchInput}
+                                            autoComplete="off"
+                                            suffix={searchInput? 
+                                            <FontAwesomeIcon style={{color:'#7c98b6', cursor:'pointer', fontSize: '20px'}} onClick={()=>{setSearchInput('');handelSearch('');}} icon={faClose}/> : 
+                                            <FontAwesomeIcon style={{color:'#0091ae'}} icon={faSearch}/> }
                                         />
                                         <button className='drawer-filled-btn' onClick={editProperty} style={{height:'40px'}}> Create Property </button>
                                     </div>

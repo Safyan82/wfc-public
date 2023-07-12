@@ -54,7 +54,7 @@ export const Setting=()=>{
 
 
     useEffect(()=>{
-        if(group!="All groups"){
+        if(group && group!="All groups"){
             setField('groupName');
             setValue(group);
         }else{
@@ -64,7 +64,7 @@ export const Setting=()=>{
     },[group])
 
     useEffect(()=>{
-        if(fieldType!=="All field types"){
+        if(fieldType && fieldType!=="All field types"){
             const f = ((fieldType?.replaceAll("-",""))?.replaceAll(" ",""))?.toLowerCase();
             setField('fieldType');
             setValue(f=="multilinetext"? "multilineText" : f);
@@ -77,7 +77,9 @@ export const Setting=()=>{
 
     const [archiveList, setArchiveList] = useState([]);
 
-    const { loading, error, data, refetch } = useQuery(ARCHIVE_PROPERTY_LIST);
+    const { loading:archiveloading, error, data, refetch } = useQuery(ARCHIVE_PROPERTY_LIST,{
+        fetchPolicy: 'network-only'
+    });
     const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST);
     const { loading:propertyListLoading, error:propertyListError, data:propertyDataList , refetch:propertyListRefetch } = useQuery(PROPERTYWITHFILTER,{
         variables:{
@@ -91,7 +93,7 @@ export const Setting=()=>{
         setArchiveList(data);
     },[data]);
 
-    const {archiveFilteredData, isFilterActive} = useSelector(state=>state.archiveReducer);
+    const {archiveFilteredData, isFilterActive, isloading} = useSelector(state=>state.archiveReducer);
 
     useEffect(()=>{
         if(isFilterActive){
@@ -102,10 +104,10 @@ export const Setting=()=>{
     },[isFilterActive]);
 
     
-    const [propertyList, setPropertyList] = useState(propertyDataList?.getPropertywithFilters);
+    const [propertyList, setPropertyList] = useState([]);
     useEffect(()=>{
         if(propertyDataList && Object.keys(propertyDataList?.getPropertywithFilters)){
-            setPropertyList(propertyDataList?.getPropertywithFilters);
+            setPropertyList([...propertyDataList?.getPropertywithFilters]);
         }
     },[propertyDataList]);
 
@@ -188,7 +190,7 @@ export const Setting=()=>{
                         <nav className='nav-divider'>
                             <div className='setting-sidebar-nav'>Data Management</div>
                             <ul className='setting-sidebar-nav-list'>
-                                <li className='setting-sidebar-nav-list-item'>Properties</li>
+                                <li className='setting-sidebar-nav-list-item setting-navbar-active'>Properties</li>
                                 <li className='setting-sidebar-nav-list-item'>Objects</li>
                                 <li className='setting-sidebar-nav-list-item'>Import & Export</li>
                             </ul>
@@ -301,6 +303,7 @@ export const Setting=()=>{
                                 />
                                 <ArcheivePropertyGrid 
                                     data={archiveFilteredData || data?.getArchiveProperties}
+                                    loading={isloading || archiveloading}
                                     refetch={refetch}
                                     propertyListRefetch={propertyListRefetch}
 
@@ -318,7 +321,7 @@ export const Setting=()=>{
             {fieldModal && <CreateFieldDrawer 
                 visible={fieldModal}  
                 propertyListRefetch={propertyListRefetch}
-                onClose={()=>setFieldModal(false)}
+                onClose={()=>{propertyListRefetch();setFieldModal(false);}}
             />}
             
             {editfieldModal && <EditFieldDrawer 
@@ -326,7 +329,10 @@ export const Setting=()=>{
                 groupLoading={groupLoading}
                 visible={editfieldModal}  
                 propertyListRefetch={propertyListRefetch}
-                onClose={()=>setEditFieldModal(false)}
+                onClose={()=>{
+                    propertyListRefetch();
+                    setEditFieldModal(false);
+                }}
             />}
             
             <GroupModal 

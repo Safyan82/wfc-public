@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 import { useQuery } from '@apollo/client';
 import { ArchivePropertyFilter } from '../../util/query/properties.query';
 import { useDispatch } from 'react-redux';
-import { setArchivePropertyFilter, setArchivePropertyFilteredData } from '../../middleware/redux/reducers/archiveProperty.reducer';
+import { setArchivePropertyFilter, setArchivePropertyFilteredData, setArchivePropertyLoading, setRefetchFilteredProperty } from '../../middleware/redux/reducers/archiveProperty.reducer';
 import { useSelector } from 'react-redux';
 
 export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archivePopover})=>{
@@ -33,7 +33,7 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
     },[isFilterActive])
 
 
-    const {data:archivePropertyFilter} = useQuery(ArchivePropertyFilter,{
+    const {data:archivePropertyFilter, loading, refetch} = useQuery(ArchivePropertyFilter,{
         variables:{
             startDate: startDate.toString(),
             endDate: endDate.toString()
@@ -45,9 +45,14 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
     const dispatch = useDispatch();
 
     useEffect(()=>{
+        dispatch(setArchivePropertyLoading(loading))
+    },[loading])
+
+    useEffect(()=>{
         if(archivePropertyFilter?.archivePropertyFilter){
             dispatch(setArchivePropertyFilteredData(archivePropertyFilter?.archivePropertyFilter));
             dispatch(setArchivePropertyFilter(true));
+            dispatch(setRefetchFilteredProperty(refetch))
         }
     },[archivePropertyFilter?.archivePropertyFilter]);
 

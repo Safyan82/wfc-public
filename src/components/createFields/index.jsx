@@ -15,6 +15,8 @@ import { CREATE_PROPERTIES } from '../../util/mutation/properties.mutation';
 import { GetProptyById } from '../../util/query/properties.query';
 import { setEditPropertyId, setPropertyTobeEdit } from '../../middleware/redux/reducers/createField.reducer';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
+import { Loader } from '../loader';
+import Spinner from '../spinner';
 
 
 const { Step } = Steps;
@@ -39,8 +41,11 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
     const {propertyToBeEditId} = useSelector(state => state.createFieldReducer);
     const { loading: propertyLoading, data } =  useQuery(GetProptyById, {
       variables: { getPropertyById: (propertyToBeEditId)?.toString() || null },
-      skip: !propertyToBeEditId
-    },);
+      skip: !propertyToBeEditId,
+      fetchPolicy: 'network-only'
+      },
+      
+    );
 
     const dispatch = useDispatch();
 
@@ -205,8 +210,8 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
                     </button>
                   } 
                   {currentStep == steps.length - 1 && 
-                    <button onClick={handelSubmit} className={currentStep ==0 && basicInfoCheck ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
-                    {'Create'}
+                    <button onClick={handelSubmit} className={(currentStep ==0 && basicInfoCheck) || loading ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
+                    {loading? <Spinner/> :'Create'}
                     </button>
                   }
 
@@ -216,16 +221,21 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
 
 
 
-            {/* stepper header */}
-            <Steps current={currentStep} progressDot={customDot}>
-              {steps.map((step, index) => (
-                <Step key={index} title={step.title} />
-              ))}
-            </Steps>
 
             {/* stepper body */}
-
-            <div className='stepperBody'>{steps[currentStep].component}</div>
+            {propertyLoading?
+              <Loader/>
+              :  
+              <>
+                {/* stepper header */}
+                <Steps current={currentStep} progressDot={customDot}>
+                  {steps.map((step, index) => (
+                    <Step key={index} title={step.title} />
+                  ))}
+                </Steps>
+                <div className='stepperBody'>{steps[currentStep].component}</div>
+              </>
+            }
         </Drawer>
         </div>
       );

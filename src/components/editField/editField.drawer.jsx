@@ -1,6 +1,6 @@
 import './editField.css';
 import React,{ useEffect, useState } from 'react';
-import { Form, Input, Drawer, Button, notification, Steps, Popover, Tabs } from 'antd';
+import { Form, Input, Drawer, Button, notification, Steps, Popover, Tabs, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faClose, faCode} from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +16,8 @@ import { GetProptyById } from '../../util/query/properties.query';
 import { setEditPropertyId, setPropertyTobeEdit } from '../../middleware/redux/reducers/createField.reducer';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 import TabPane from 'antd/es/tabs/TabPane';
+import { Loader } from '../loader';
+import Spinner from '../spinner';
 
 
 export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoading, propertyListRefetch }) => {
@@ -170,8 +172,8 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
             footer={
               <div className='drawer-footer' style={{display:'flex', }}>
                   
-                <button onClick={handelSubmit} className={'drawer-filled-btn'}>
-                {'Save'}
+                <button onClick={handelSubmit} className={updatePropertyLoading? 'disabled-btn drawer-filled-btn': 'drawer-filled-btn'}>
+                {updatePropertyLoading? <Spinner/> :'Save'}
                 </button>
                 <button className='drawer-outlined-btn' onClick={clearandClose} >Cancel</button>
                   
@@ -180,7 +182,8 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
             }
           >
 
-
+            {data?.getPropertyById?
+             
             <div className='stepperBody ' style={{paddingTop:'0px'}}>
                 <Form.Item >
                     <label>Label <sup>*</sup></label>
@@ -236,6 +239,9 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
                     </Tabs>
                 </div>
             </div>
+            :
+             <Loader/>
+            }
         </Drawer>
         </div>
       );

@@ -17,7 +17,6 @@ const multi=[
 ];
 
 const hideinForm = () =>{
-    alert();
     const origin = document.querySelector('.ant-drawer');
     const checkBoxes = origin.querySelectorAll('td > button');
     Array.from(checkBoxes).forEach((checkBox)=>{

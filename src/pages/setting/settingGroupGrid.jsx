@@ -124,7 +124,7 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
     onChange: onSelectChange,
   };
 
-  const [deleteGroup] = useMutation(DELETE_GROUP);
+  const [deleteGroup, {loading:deleteLoading}] = useMutation(DELETE_GROUP);
 
   const [api, contextHolder] = notification.useNotification();
   const deleteRecord = async ()=>{
@@ -164,9 +164,10 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
         visible={deleteGroupConfirmationModal}
         onClose={()=>setDeleteConfirmationModal(false)}
         label={groupToBeDelete?.name}
+        loading={deleteLoading}
         deleteRecord={deleteRecord}
         title={"group"}
-        additionalText={"All the properties that associate with this group will also be deleted"}
+        additionalText={true}
       /> }
     </div>
   );

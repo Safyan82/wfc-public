@@ -1,11 +1,13 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Button, Space, Table, notification } from 'antd';
+import { Button, Space, Spin, Table, notification } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { DELETE_PROPERTY, UN_ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
 import { DeleteConfirmationModal } from './modal/deleteConfirmation.modal';
+import { Loader } from '../../components/loader';
+import { useSelector } from 'react-redux';
 
-export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch}) => {
+export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loading}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
 
@@ -37,10 +39,15 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch}) => {
   const [deleteProperty, {loading: deleteProperyLoading,}] = useMutation(DELETE_PROPERTY);
   const [confirmationModal, setConfirmationModal] = useState(false);
 
+  const { refetchedFiltered } = useSelector(state => state.archiveReducer);
+
   const handelRestore= async(id, label) => {
     await unArchiveProperty({variables:{input: {id}}});
     await refetch();
     await propertyListRefetch();
+    if(refetchedFiltered){
+      refetchedFiltered();
+    }
     api.success({
       message:`${label} property was restored`,
       placement:'top',
@@ -144,21 +151,25 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch}) => {
     <div 
     className='setting-grid'>
       {contextHolder}
-      <Table 
-        columns={columns} 
-        dataSource={data} 
-        rowSelection={rowSelection}
-        onChange={handleChange} 
-        
-        
-        onRow={(record) => ({
-          onMouseEnter: () => handleRowMouseEnter(record),
-          onMouseLeave: () => handleRowMouseLeave(),
-        })}
-        rowClassName={rowClassName}
+      {loading ?
+        <Loader/>        
+      :
+        <Table 
+          columns={columns} 
+          dataSource={data} 
+          rowSelection={rowSelection}
+          onChange={handleChange} 
+          
+          
+          onRow={(record) => ({
+            onMouseEnter: () => handleRowMouseEnter(record),
+            onMouseLeave: () => handleRowMouseLeave(),
+          })}
+          rowClassName={rowClassName}
 
 
-        />
+          />
+        }
 
         {
           confirmationModal &&

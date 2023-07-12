@@ -7,6 +7,8 @@ import { useMutation } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { resetGroup } from '../../../middleware/redux/reducers/group.reducer';
+import { LoadingOutlined } from '@ant-design/icons';
+
 
 export const GroupModal = ({ visible, onClose, groupRefetch}) => {
 
@@ -95,13 +97,15 @@ export const GroupModal = ({ visible, onClose, groupRefetch}) => {
       footer={
         <div style={{padding:'26px 40px', textAlign:'left', display:'flex', columnGap:'16px', marginTop:'-25px' }}>
             <button  
-              disabled={btn || loading || groupName?.length<3 && true} 
-              className={btn || loading ||  groupName?.length < 3 ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
+              disabled={btn || loading || updateGroupLoading ||  groupName?.length<3 && true} 
+              className={btn || loading || updateGroupLoading ||  groupName?.length < 3 ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
               onClick={group?.key ? editGroup :handelSubmit}
             >
-              Save
+              {loading || updateGroupLoading? <Spin indicator={<LoadingOutlined/>}/> : "Save"}
             </button>
-            <button  disabled={loading} className='drawer-outlined-btn' onClick={onClose}>Cancel</button>
+            <button  disabled={loading || updateGroupLoading} className={loading || updateGroupLoading? 'disabled-btn drawer-outlined-btn':'drawer-outlined-btn'} onClick={onClose}>
+              Cancel
+            </button>
         </div>
       }
       closable={false}

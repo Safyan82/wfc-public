@@ -61,6 +61,8 @@ export const Rules = ({basicInfo, setWidth})=>{
     useEffect(()=>{
         if(tags?.length>0){
             handelRuleChange(tags, 'emailDomain');
+        }else{
+            handelRuleChange(null, 'emailDomain');
         }
     },[tags])
 

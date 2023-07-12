@@ -8,8 +8,9 @@ import { ArchiveConfirmationModal } from './modal/archeiveConfirmation.modal';
 import { useDispatch } from 'react-redux';
 import { setEditPropertyId } from '../../middleware/redux/reducers/createField.reducer';
 import { useSelector } from 'react-redux';
+import { Loader } from '../../components/loader';
 
-export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRefetch, refetch, setEditFieldModal}) => {
+export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRefetch, refetch, setEditFieldModal, propertyListLoading}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
@@ -66,7 +67,7 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
       title: 'Name',
       dataIndex: 'label',
       key: 'label',
-      sorter: (a, b) => a.name.length - b.name.length,
+      sorter: (a, b) => a.label.length - b.label.length,
       sortOrder: sortedInfo.columnKey === 'label' ? sortedInfo.order : null,
       width:400,
       render: (_, record) => {
@@ -79,7 +80,7 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
             </div>
 
           {showActions && 
-          <div style={{width:'100%', display:'flex', justifyContent:'flex-end' ,alignItems:'center', columnGap:'10px'}}>
+          <div style={{width:'60%', display:'flex', justifyContent:'flex-end' ,alignItems:'center', columnGap:'10px'}}>
             <button style={{marginLeft:'10%'}} className="grid-sm-btn" type="link" onClick={() => { dispatch(setEditPropertyId(record.key)); setEditFieldModal(true);}}>
               Edit
             </button>
@@ -93,10 +94,10 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
                   visible={moreOption}
                   content={
                     <div className="popover-data">
-                      <div className="popoverdataitem" >
+                      <div className="popoverdataitem"  onClick={() => { setMoreoption(!moreOption); dispatch(setEditPropertyId(record.key)); setEditFieldModal(true);}} >
                           Edit
                       </div>
-                      <div className="popoverdataitem" >
+                      <div className="popoverdataitem" onClick={() => { setMoreoption(!moreOption); setFieldModal(true); dispatch(setEditPropertyId(record.key))}} >
                           Clone
                       </div>
                       <div className="popoverdataitem" >
@@ -139,6 +140,8 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
       sorter: (a, b) => a.age - b.age,
       sortOrder: sortedInfo.columnKey === 'groupName' ? sortedInfo.order : null,
       ellipsis: true,
+      width:200,
+
     },
     {
       title: 'Created BY',
@@ -147,6 +150,8 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
       sorter: (a, b) => a.address.length - b.address.length,
       sortOrder: sortedInfo.columnKey === 'createdBy' ? sortedInfo.order : null,
       ellipsis: true,
+      width:150,
+
       // render: (_, record) => {
       //   console.log(dayjs(record.createdAt).format('DD-MM-YY'), "rrr");
       //   return dayjs(record.createdAt).format('DD-MM-YY')
@@ -189,6 +194,7 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
   
   const handleRowMouseEnter = (record) => {
     setHoveredRow(record.key);
+    console.log(record.key);
   };
 
 
@@ -196,31 +202,40 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
     setHoveredRow(null);
     setMoreoption(false);
   };
-  
+
   return (
     <div 
     className='setting-grid'>
-      {contextHolder}
-      <Table 
-        columns={columns} 
-        dataSource={propertyList} 
-        rowSelection={rowSelection}
-        onChange={handleChange} 
-        
-        onRow={(record) => ({
-          onMouseEnter: () => handleRowMouseEnter(record),
-          onMouseLeave: () => handleRowMouseLeave(),
-        })}
-        rowClassName={rowClassName}
+      {!propertyListLoading && propertyList?
+      <>
+        {contextHolder}
+        <Table 
+          columns={columns} 
+          dataSource={propertyList} 
+          rowSelection={rowSelection}
+          onChange={handleChange} 
+          
+          onRow={(record) => ({
+            onMouseEnter: () => handleRowMouseEnter(record),
+            onMouseLeave: () => handleRowMouseLeave(),
+          })}
+          rowClassName={rowClassName}
 
-        />
+          />
 
         <ArchiveConfirmationModal 
           visible={archiveConfirmationModal}
           propertyName={propertyName}
           onClose={()=>setArchiveConfirmationModal(false)}
           ArcheivePropertyGrid={ArcheivePropertyGrid}
+          loading={loading}
         />
+      </>
+      : 
+      <div style={{marginTop:'10%'}} >
+        <Loader />
+      </div>
+      }
     </div>
   );
 };

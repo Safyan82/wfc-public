@@ -61,6 +61,8 @@ export const Rules = ({basicInfo, setWidth})=>{
     useEffect(()=>{
         if(tags?.length>0){
             handelRuleChange(tags, 'emailDomain');
+        }else{
+            handelRuleChange(null, 'emailDomain');
         }
     },[tags])
 
@@ -156,7 +158,10 @@ export const Rules = ({basicInfo, setWidth})=>{
         }
        
         
-    }
+    }   
+
+
+    useEffect(()=>{console.log(localRule)},[localRule])
 
 
 
@@ -179,6 +184,7 @@ export const Rules = ({basicInfo, setWidth})=>{
     
     const handelTag = (index)=>{
         setTags(tags.filter((tag, i)=> i !=index));
+        console.log(tags);
     }
 
     return(
@@ -302,7 +308,8 @@ export const Rules = ({basicInfo, setWidth})=>{
             {/* generic */}
             <div className="propertyCheckbox">
                 <div style={{color: 'black',marginTop:'5%', marginBottom: '2%'}} >Property visibility</div>
-                <Checkbox name="propertyVisibility" defaultChecked={propertyToBeEdit?.rules?.propertyVisibility || rules?.propertyVisibility} onChange={handelRuleChange} style={{fontWeight:'300'}} >Show in forms, pop-up forms, and bots</Checkbox>
+                <Checkbox name="propertyVisibility" defaultChecked={propertyToBeEdit?.rules?.propertyVisibility || rules?.propertyVisibility} 
+                onChange={(e)=>dispatch(setRules({'propertyVisibility':e.target.checked}))} style={{fontWeight:'300'}} >Show in forms, pop-up forms, and bots</Checkbox>
             </div>
 
 

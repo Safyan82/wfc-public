@@ -6,6 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { useSelector } from "react-redux";
 import { useQuery } from "@apollo/client";
 import { GROUPLIST } from "../../util/query/group.query";
+import Spinner from "../spinner";
 
 export const BasicInfo = ({basicInfo, setBasicInfo, setWidth,}) =>{
     
@@ -60,7 +61,7 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth,}) =>{
                     {!groupLoading ? groupList?.groupList?.map((group, index)=>(
                         <Select.Option value={group.key} key={index}>{group.name}</Select.Option>
                     )):
-                        <Select.Option>Loading ...</Select.Option>
+                        <Select.Option hidden disabled>Loading ...</Select.Option>
                     }
                 </Select>
             </Form.Item>

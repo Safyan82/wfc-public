@@ -4,7 +4,9 @@ const archiveReducer = createSlice({
   name: 'archiveReducer',
   initialState: {
     archiveFilteredData: null,
-    isFilterActive: false
+    isFilterActive: false,
+    isloading: false,
+    refetchedFiltered:null
   },
   reducers: {
     setArchivePropertyFilteredData: (state, action) => {
@@ -19,10 +21,27 @@ const archiveReducer = createSlice({
         isFilterActive: action.payload,
       }
     },
-    resetArchivePropertyFilteredData:()=>{ return {archiveFilteredData: null, isFilterActive:false}}
+    setArchivePropertyLoading: (state, action) =>{
+      return{
+        ...state,
+        isloading: action.payload
+      }
+    },
+    resetArchivePropertyFilteredData:()=>{ return {archiveFilteredData: null, isFilterActive:false}},
+    setRefetchFilteredProperty: (state, action)=>{
+      return{
+        ...state,
+        refetchedFiltered: action.payload
+      }
+    }
   },
 });
 
 
-export const { setArchivePropertyFilteredData, setArchivePropertyFilter, resetArchivePropertyFilteredData } = archiveReducer.actions;
+export const { setArchivePropertyLoading, 
+  setArchivePropertyFilteredData, 
+  setArchivePropertyFilter, 
+  resetArchivePropertyFilteredData,
+  setRefetchFilteredProperty
+} = archiveReducer.actions;
 export default archiveReducer.reducer;

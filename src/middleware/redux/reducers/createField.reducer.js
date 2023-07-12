@@ -6,8 +6,8 @@ const createFieldReducer = createSlice({
     labelValue: [],
     propertyToBeEditId: null,
     rules:{
-        propertyVisibility:true,
-        dateType: 'anyDate',
+        // propertyVisibility:true,
+        // dateType: 'anyDate',
     },
     toggleSaveBtn: false,
     globalFieldType: '',
@@ -43,8 +43,8 @@ const createFieldReducer = createSlice({
         return {
             ...state,
             rules:{
-                propertyVisibility:true,
-                dateType: 'anyDate',
+                // propertyVisibility:true,
+                // dateType: 'anyDate',
             },
             propertyToBeEdit:{
                 ...state.propertyToBeEdit,
@@ -73,8 +73,8 @@ const createFieldReducer = createSlice({
             ...state,
             globalFieldType: action.payload,
             rules:{
-                propertyVisibility:true,
-                dateType: 'anyDate',
+                // propertyVisibility:true,
+                // dateType: 'anyDate',
             }, 
         }
     },
@@ -82,8 +82,8 @@ const createFieldReducer = createSlice({
         labelValue: [],
         propertyToBeEditId: null,
         rules:{
-            propertyVisibility:true,
-            dateType: 'anyDate',
+            // propertyVisibility:true,
+            // dateType: 'anyDate',
         },
         toggleSaveBtn: false,
         globalFieldType: '',
