@@ -30,7 +30,7 @@ export const ArchiveConfirmationModal = ({ visible, onClose, ArcheivePropertyGri
                 Archive the property <br/>
                 {propertyName} ?
             </span>
-            <span className='close' onClick={onClose}><FontAwesomeIcon icon={faClose}/></span>
+            <span onClick={onClose}><FontAwesomeIcon className='close' icon={faClose}/></span>
         </div>
         <div className='modal-body'>
           

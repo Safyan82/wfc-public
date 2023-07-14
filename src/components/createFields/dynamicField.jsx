@@ -78,8 +78,9 @@ export function CreateField({sortType,fieldType,label,search}){
     // sort values based on the option
     useEffect(()=>{
         if(sortType == "alphabetical"){
-            const l = labelValue.sort((a, b) => a?.key?.localeCompare(b?.key));
-            setLabelValue(l);
+            const l = labelValue?.slice()?.sort((a, b) => a?.key?.localeCompare(b?.key));
+            // setLabelValue(l);
+            console.log(l);
         }
     },[sortType]);
 
@@ -93,8 +94,8 @@ export function CreateField({sortType,fieldType,label,search}){
                 (labelValue?.filter((lv, i)=>( lv?.key?.toLocaleLowerCase().includes(search?.toLocaleLowerCase()))).map((lv,i)=>{
                     return{
                         key: i,
-                        label: <Input id={"key"+i} className='generic-input-control' value={lv.key}  placeholder='Enter label' name="key" onChange={(e) => handelValue(e, i)} />,
-                        value: <Input className='generic-input-control' value={lv.value} onBlur={sort} placeholder='Enter value' name="value" onChange={(e) => handelValue(e, i)} />,
+                        label: <Input id={"key"+i} className='generic-input-control' value={lv.key}  placeholder='Enter label' onPressEnter={createOption} name="key" onChange={(e) => handelValue(e, i)} />,
+                        value: <Input className='generic-input-control' value={lv.value} onBlur={sort} placeholder='Enter value' name="value" onPressEnter={createOption} onChange={(e) => handelValue(e, i)} />,
                         toggle: <Switch defaultChecked  checked={lv.showFormIn} onClick={syncFormVisibility}  onChange={(e) => handelValue(e, i, 'showInForm')}  id={"switch-"+i} />
                     }
                 }))
@@ -103,8 +104,8 @@ export function CreateField({sortType,fieldType,label,search}){
             setTableData(labelValue?.map((lv, i)=>{
                 return{
                     key: i,
-                    label: <Input id={"key"+i} className='generic-input-control' value={lv.key}  placeholder='Enter label' name="key" onChange={(e) => handelValue(e, i)} />,
-                    value: <Input className='generic-input-control' value={lv.value} onBlur={sort} placeholder='Enter value' name="value" onChange={(e) => handelValue(e, i)} />,
+                    label: <Input id={"key"+i} className='generic-input-control' value={lv.key}  placeholder='Enter label'  onPressEnter={createOption} name="key" onChange={(e) => handelValue(e, i)} />,
+                    value: <Input className='generic-input-control' value={lv.value} onBlur={sort} placeholder='Enter value' onPressEnter={createOption} name="value" onChange={(e) => handelValue(e, i)} />,
                     toggle: <Switch defaultChecked checked={lv.showFormIn} onClick={syncFormVisibility}  onChange={(e) => handelValue(e, i, 'showInForm')}   id={"switch-"+i} />
                 };
             }));
@@ -381,8 +382,8 @@ export function CreateField({sortType,fieldType,label,search}){
         setTableData(labelValue?.map((lv, i)=>{
             return{
                 key: i,
-                label: <Input id={"key"+i} className='generic-input-control' value={lv.key} placeholder='Enter label' name="key" onBlur={(e)=>checkLabelBlur(e)} onChange={(e) => handelValue(e, i)} />,
-                value: <Input id={"value"+i} className='generic-input-control' value={lv.value} onBlur={(e)=>{sort();checkLabelBlur(e); }} placeholder='Enter value' name="value" onChange={(e) => handelValue(e, i)} />,
+                label: <Input id={"key"+i} className='generic-input-control'  onPressEnter={createOption} value={lv.key} placeholder='Enter label' name="key" onBlur={(e)=>checkLabelBlur(e)} onChange={(e) => handelValue(e, i)} />,
+                value: <Input id={"value"+i} className='generic-input-control' value={lv.value} onBlur={(e)=>{sort();checkLabelBlur(e); }} placeholder='Enter value'  onPressEnter={createOption} name="value" onChange={(e) => handelValue(e, i)} />,
                 toggle: <Switch defaultChecked onClick={syncFormVisibility} checked={lv.showFormIn} name="showFormIn"  id={"switch-"+i}  onChange={(e) => handelValue(e, i, 'showFormIn')}  />
             }}));
 

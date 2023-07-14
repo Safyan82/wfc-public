@@ -63,6 +63,7 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
 
       await deleteProperty({variables:{input: {id:propertyId}}});
       await refetch();
+      await propertyListRefetch();
       setConfirmationModal(false);
       api.success({
         message:`${propertyName} property was deleted`,
@@ -177,6 +178,10 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
             visible={confirmationModal}
             onClose={()=>setConfirmationModal(false)}
             deleteRecord={handelDelete}
+            refresh = {async()=>{
+              await refetch();
+              await propertyListRefetch();
+            }} 
             label={propertyName}
             title={"property"}
 

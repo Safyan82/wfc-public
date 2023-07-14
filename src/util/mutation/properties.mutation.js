@@ -45,3 +45,12 @@ export const DELETE_PROPERTY = gql`
     }
 `;
 
+export const MOVE_GROUP = gql`
+    mutation($input: MoveGroupInput!){
+        moveGroup(input: $input) {
+        success
+        message
+        }
+    }
+`;
+

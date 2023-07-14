@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const groupReducer = createSlice({
   name: 'groupReducer',
   initialState: {
-    group: {}
+    group: {},
+    propertiesToBeMoved:[]
   },
   reducers: {
     setGroupData: (state, action) => {
@@ -12,10 +13,16 @@ const groupReducer = createSlice({
         group: {...action.payload}
        }     
     },
-    resetGroup:()=>{ return {group:{}}}
+    resetGroup:()=>{ return {group:{}}},
+    moveToGroup:(state,action)=>{
+      return{
+        ...state,
+        propertiesToBeMoved: action.payload
+      }
+    }
   },
 });
 
 
-export const { setGroupData,resetGroup } = groupReducer.actions;
+export const { setGroupData, resetGroup, moveToGroup } = groupReducer.actions;
 export default groupReducer.reducer;

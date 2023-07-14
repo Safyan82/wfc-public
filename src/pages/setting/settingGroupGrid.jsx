@@ -130,8 +130,8 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
   const deleteRecord = async ()=>{
     if(Object.keys(groupToBeDelete)){
       await deleteGroup({variables:{deleteGroupId: groupToBeDelete?.key }});
-      await groupRefetch();
       setDeleteConfirmationModal(false);
+      await groupRefetch();
       setGroupToBeDelete(null);
       api.success({
         message: "Group was deleted",
@@ -148,8 +148,8 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
       {contextHolder}
       <Table 
         columns={columns} 
-        dataSource={[...groupList.groupList]} 
-        rowSelection={rowSelection}
+        dataSource={[...groupList?.groupList]} 
+        // rowSelection={rowSelection}
         onChange={handleChange}
         
         onRow={(record) => ({

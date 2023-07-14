@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faTrash, faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Popover, Space, Table, notification } from 'antd';
 import { useEffect, useState } from 'react';
@@ -9,8 +9,9 @@ import { useDispatch } from 'react-redux';
 import { setEditPropertyId } from '../../middleware/redux/reducers/createField.reducer';
 import { useSelector } from 'react-redux';
 import { Loader } from '../../components/loader';
+import { moveToGroup } from '../../middleware/redux/reducers/group.reducer';
 
-export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRefetch, refetch, setEditFieldModal, propertyListLoading}) => {
+export const SettingPropertyGrid = ({setMoveGroup, propertyList, setFieldModal, propertyListRefetch, refetch, setEditFieldModal, propertyListLoading}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
@@ -43,9 +44,9 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
       if(archivedId){
 
         await archiveProperty({variables:{input:{id: archivedId}}});
+        setArchiveConfirmationModal(false);
         await propertyListRefetch();
         await refetch();
-        setArchiveConfirmationModal(false);
         api.success({
           message: `${propertyName} was archived`,
           placement:"top",
@@ -75,7 +76,17 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
         return (          
           <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
             <div style={{lineHeight:'35px', width:'auto'}} className='truncated-text'>
-              <span className='record-title'>{record.label}</span>
+              <Popover 
+              overlayClassName='settingGridPopover'
+              content={
+                <div>
+                  <div className='popover-record-title' style={{color:'white'}}>{record.label}</div>
+                  <span>{record.description}</span>
+                </div>
+              }
+              >
+                <span className='record-title'>{record.label}</span>
+              </Popover>
               <div className='record-subtitle'>{record.fieldType}</div>
             </div>
 
@@ -100,7 +111,7 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
                       <div className="popoverdataitem" onClick={() => { setMoreoption(!moreOption); setFieldModal(true); dispatch(setEditPropertyId(record.key))}} >
                           Clone
                       </div>
-                      <div className="popoverdataitem" >
+                      <div className="popoverdataitem" onClick={()=>{ setMoreoption(!moreOption); dispatch(moveToGroup([record])); setMoveGroup(true)}}>
                           Move to group
                       </div>
                       <div className="popoverdataitem" >
@@ -147,7 +158,7 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
       title: 'Created BY',
       dataIndex: 'createdBy',
       key: 'createdBy',
-      sorter: (a, b) => a.address.length - b.address.length,
+      sorter: (a, b) => a.address - b.address,
       sortOrder: sortedInfo.columnKey === 'createdBy' ? sortedInfo.order : null,
       ellipsis: true,
       width:150,
@@ -161,14 +172,15 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
       title: 'USED IN',
       dataIndex: 'useIn',
       key: 'useIn',
-      sorter: (a, b) => a.use.length - b.use.length,
+      sorter: (a, b) => a.use - b.use,
       sortOrder: sortedInfo.columnKey === 'useIn' ? sortedInfo.order : null,
       ellipsis: true,
       width:100
     },
   ];
   
-  const [selectedRowKeys, setSelectedRowKeys]=useState([])
+  const [selectedRowKeys, setSelectedRowKeys]=useState([]);
+
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -180,8 +192,11 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
   };
   
   
-  const handleEdit = (record) => {
+  const handelBulkGroup = () => {
     // handle edit action for the selected record
+    dispatch(moveToGroup(propertyList.filter((property)=> selectedRowKeys.includes(property.key))));
+    setMoveGroup(true)
+
   };
 
   const handleDelete = (record) => {
@@ -203,6 +218,43 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
     setMoreoption(false);
   };
 
+
+  const customHeader =(
+
+      <div className='table-footer' id="selection-options"
+      // style={{
+      //   height: '44px',
+      //   fontSize: '12px',
+      //   color: 'rgb(51, 71, 91)',
+      //   padding:' 8px 24px 4px',
+      //   textAlign: 'left',
+      //   textTransform: 'uppercase',
+      //   verticalAlign: 'middle',
+      // }}
+      >
+        
+
+        {selectedRowKeys?.length>0 &&
+        <>
+            <small class='small-text'> {selectedRowKeys?.length} selected</small>
+
+            <div  onClick={handelBulkGroup}>
+                <FontAwesomeIcon icon={faPlus} style={{marginRight:'5px'}}/> <span>Add to group</span>
+            </div>
+
+            <div  disabled>
+                <FontAwesomeIcon icon={faTrashCan} style={{marginRight:'5px'}}/> <span>Archive</span>
+            </div>
+
+            <div  >
+                 <span>Assign Users & Team</span> <FontAwesomeIcon icon={faLock} style={{marginLeft:'5px'}}/>
+            </div>
+
+        </>
+    }
+      </div>
+    )
+
   return (
     <div 
     className='setting-grid'>
@@ -210,6 +262,8 @@ export const SettingPropertyGrid = ({propertyList, setFieldModal, propertyListRe
       <>
         {contextHolder}
         <Table 
+          title={selectedRowKeys?.length>0 ? () => customHeader : null}
+          className='moveGroupTable'
           columns={columns} 
           dataSource={propertyList} 
           rowSelection={rowSelection}

@@ -70,11 +70,11 @@
 
   .ant-checkbox-indeterminate .ant-checkbox-inner:after {
     background-color: #0091ae !important;
-    height: 8px !important;
-    width: 8px !important;
+    height: 3px !important;
+    width: 12px !important;
   }
 
-  .ant-table-title{
+  .customizedTable  .ant-table-title{
     position: absolute;
     top: 0%;
     z-index: 1;

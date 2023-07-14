@@ -22,6 +22,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { resetPropertyFilterByGroup } from '../../middleware/redux/reducers/properties.reducer';
 import { resetArchivePropertyFilteredData } from '../../middleware/redux/reducers/archiveProperty.reducer';
+import { MoveGroupModal } from './modal/moveGroup.modal';
 
 export const Setting=()=>{
     const  { TabPane } = Tabs;
@@ -148,9 +149,13 @@ export const Setting=()=>{
         if(tab=='3'){
             dispatch(resetArchivePropertyFilteredData(false));
         }
+        if(tab==2){
+            await groupRefetch();
+        }
     }
 
 
+    const [moveGroup, setMoveGroup] = useState(false);
 
     return(
         <Row>
@@ -274,6 +279,7 @@ export const Setting=()=>{
                                         propertyListLoading={propertyListLoading}
                                         refetch={refetch}
                                         setFieldModal={setFieldModal}
+                                        setMoveGroup={setMoveGroup}
                                         setEditFieldModal={setEditFieldModal}
                                     />
                                 </TabPane>
@@ -339,6 +345,13 @@ export const Setting=()=>{
                 groupRefetch={groupRefetch} 
                 visible={groupmodal} 
                 onClose={()=>{setGroupModal(false); dispatch(resetGroup({}))}} 
+            />
+
+            <MoveGroupModal
+                groupList={groupList}
+                visible={moveGroup}
+                propertyListRefetch={propertyListRefetch}
+                onClose={()=>setMoveGroup(false)}
             />
 
         </Row>

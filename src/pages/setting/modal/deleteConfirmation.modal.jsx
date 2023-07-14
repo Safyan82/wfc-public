@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { LoadingOutlined } from '@ant-design/icons';
 
-export const DeleteConfirmationModal = ({ visible, onClose, deleteRecord, label, additionalText, title, loading}) => {
+export const DeleteConfirmationModal = ({ refresh, visible, onClose, deleteRecord, label, additionalText, title, loading}) => {
  
 
   return (
@@ -26,7 +26,7 @@ export const DeleteConfirmationModal = ({ visible, onClose, deleteRecord, label,
                 Delete {additionalText ? label + " ?": 'the ' + title +" "}
                 {!additionalText && label + " ?"}
             </span>
-            <span className='close' onClick={onClose}><FontAwesomeIcon icon={faClose}/></span>
+            <span  onClick={onClose}><FontAwesomeIcon className='close' icon={faClose}/></span>
         </div>
         <div className='modal-body'>
           

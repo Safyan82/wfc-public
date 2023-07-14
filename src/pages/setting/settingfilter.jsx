@@ -6,6 +6,41 @@ import { Button, Checkbox, Col, Input, Popover, Row, Select, Tabs, Typography } 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faClose, faLock, faSearch } from '@fortawesome/free-solid-svg-icons';
 
+const localfieldTypes = [
+    {
+        id:1,
+        header: true,
+        label: 'Meta Field',
+    },
+    { 
+        parent:1,
+        label: 'Email',
+        value: 'email'
+    }, 
+    {
+        parent:1,
+        label: 'Password',
+        value: 'password'
+    },
+    {
+        id: 2,
+        header: true,
+        label: 'Text Field'
+    },
+    { 
+        parent:2, label: 'Single-line text', value:'single line text'},
+    { 
+        parent:2, label: 'Multi-line text', value:'multi line text'},
+    { header: true, label: 'Number'},
+    { label: 'Number', value:'number'},
+    { header: true, label: 'Date & Time'},
+    { label: 'Date picker', value:'date picker'},
+    { label: 'Time picker', value:'time picer'},
+    { label: 'Date & Time picker', value:'date time/ date & time/ date & time picker'},
+
+
+]
+
 export const Filter = ({
     editProperty, group, groupPopover,fieldType, fieldTypePopover,
     user, userPopover, setGroupPopover, setGroupInput,
@@ -16,6 +51,17 @@ export const Filter = ({
 
     const popoverRef = useRef(null);
     const inputRef = useRef(null);
+    const [fieldTypeList, setfieldTypeList] = useState([...localfieldTypes]);
+    const [groupSearch, setGroupSearch] = useState();
+    const [userSearch, setUserSearch] = useState();
+    const [fieldSearch, setFieldSearch] = useState();
+
+
+    useEffect(()=>{
+        if(fieldSearch?.length==0){
+            setfieldTypeList([...localfieldTypes]);
+        }
+    },[fieldSearch]);
 
     useEffect(() => {
         // Function to handle clicks outside the box
@@ -44,6 +90,7 @@ export const Filter = ({
         else{
             setGroupPopover(false)
         }
+        setGroupSearch('');
     },[groupPopover])
 
     useEffect(()=>{
@@ -51,6 +98,7 @@ export const Filter = ({
         else{
             setfieldTypePopover(false)
         }
+        setFieldSearch('');
     },[fieldTypePopover])
 
     useEffect(()=>{
@@ -58,6 +106,7 @@ export const Filter = ({
         else{
             setuserPopover(false)
         }
+        setUserSearch('');
     },[userPopover])
 
     const[searchInput, setSearchInput]=useState('');
@@ -85,19 +134,24 @@ export const Filter = ({
                                             <Popover
                                                 open={groupPopover}
                                                 overlayClassName='settingCustomPopover'
-                                                afterOpenChange={()=>{inputRef.current.focus()}}
+                                                afterOpenChange={()=>{inputRef.current.focus();}}
                                                 content={
                                                     <div ref={popoverRef}>
                                                         <div className="popover-search" ref={popoverRef}>
                                                             <Input type="text" 
                                                                 ref={inputRef}
+                                                                id="inputSearch"
                                                                 name='popoverSearch'
                                                                 style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
                                                                 className='generic-input-control' 
                                                                 placeholder="Search..."
                                                                 autoFocus={groupPopover}
                                                                 autoComplete="off"
-                                                                onChange={(e)=> setLocalGroup(groupList?.filter((group)=> (group.name)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
+                                                                value={groupSearch}
+                                                                onChange={(e)=> {
+                                                                    setLocalGroup(groupList?.filter((group)=> (group.name)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))
+                                                                    setGroupSearch(e.target.value);
+                                                                }}
                                                                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                                                             />
                                                         </div>
@@ -154,6 +208,8 @@ export const Filter = ({
                                                                 className='generic-input-control' 
                                                                 placeholder="Search..."
                                                                 autoFocus
+                                                                value={fieldSearch}
+                                                                onChange={(e)=>{setFieldSearch(e.target.value); setfieldTypeList(localfieldTypes.filter((field)=> field?.value?.includes(e.target.value)))}}
                                                                 autoComplete="off"
                                                                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                                                             />
@@ -163,27 +219,20 @@ export const Filter = ({
                                                             height:'170px',
                                                             overflowY:'scroll',
                                                         }}>
-                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>
+                                                            {fieldSearch?.length<1 &&
+                                                            <div className="default-option" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>
                                                                 All field types
                                                             </div>
+                                                            }
                                                             
-                                                            <div className='custom-dropdown-label'> Meta Field</div>
-                                                            <div className="popoverdataitem"  onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Email</div>
-                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Password</div>
-                                                 
-
-                                                            <div className="custom-dropdown-label">Text Field</div>
-                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Single-line text</div>
-                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Multi-line text</div>
-                                                        
-                                                            <div className='custom-dropdown-label'> Number </div>
-                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Number</div>
-
-                                                            <div className="custom-dropdown-label">Date & Time</div>
-                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Date picker</div>
-                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Time picker</div>
-                                                            <div className="popoverdataitem" onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>Date & Time picker</div>
-
+                                                            {fieldTypeList?.map((field)=>{
+                                                                if(field?.header){
+                                                                    return(<div className='custom-dropdown-label'> {field.label} </div>)
+                                                                }else{
+                                                                    return <div className="custom-dropdown-option"  onClick={(e)=>{setFieldType(e.target.innerText); setfieldTypePopover(false)}}>{field?.label}</div>
+                                                                }
+                                                            })}
+                                                           
                                                         </div>
 
                                                     </div>
@@ -212,6 +261,8 @@ export const Filter = ({
                                                                 className='generic-input-control' 
                                                                 placeholder="Search..."
                                                                 autoComplete="off"
+                                                                value={userSearch}
+                                                                onChange={(e)=>setUserSearch(e.target.value)}
                                                                 autoFocus
                                                                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                                                             />

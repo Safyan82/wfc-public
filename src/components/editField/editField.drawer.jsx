@@ -112,6 +112,7 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
 
         const {data} = await updateProperty({variables:{input:{...field}}});
   
+        clearandClose();
         await propertyListRefetch();
         
         dispatch(setNotification({
@@ -122,7 +123,6 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
         
 
 
-        clearandClose();
       }
       catch(err){
         clearandClose();

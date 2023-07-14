@@ -105,7 +105,7 @@ const AddBranch = ({ visible, onCancel, refetch }) => {
       <React.Fragment>
         <div className='modal-header-title'>
             <span>Add Branch</span>
-            <span className='close' onClick={onCancel}><FontAwesomeIcon icon={faClose}/></span>
+            <span  onClick={onCancel}><FontAwesomeIcon className='close' icon={faClose}/></span>
         </div>
         <div className='modal-body'>
           <div className='title' onClick={()=>navigate('/editform',{

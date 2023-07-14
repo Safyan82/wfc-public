@@ -73,8 +73,8 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
       // await dispatch(setEditPropertyId(''));
       // await dispatch(resetRules({}));
       await dispatch(resetFieldState());
-      setBasicInfo(null);
       onClose();
+      setBasicInfo(null);
       sessionStorage.clear();
       setCurrentStep(0)
     }
@@ -151,6 +151,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
         // call mutation 
 
         const {data} = await createProperty({variables:{input:{...field}}});
+        clearandClose();
   
         await propertyListRefetch();
         
@@ -162,7 +163,6 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
         
 
 
-        clearandClose();
       }
       catch(err){
         clearandClose();
