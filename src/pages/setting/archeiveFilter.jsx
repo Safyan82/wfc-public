@@ -21,6 +21,26 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
         return current && current > dayjs().endOf('day');
     };
 
+    useEffect(() => {
+        // Function to handle clicks outside the box
+        const handleClickOutside = (event) => {
+          if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+            // Perform your desired action here
+            setArchivePopover(false);
+          }
+        };
+    
+        // Attach the event listener when the component mounts
+        document.addEventListener('click', handleClickOutside);
+    
+        // Clean up the event listener when the component unmounts
+        return () => {
+          document.removeEventListener('click', handleClickOutside);
+        };
+      }, []);
+    
+
+
     const {isFilterActive} = useSelector(state=>state.archiveReducer);
 
     const [startDate, setStartDate] = useState((dayjs().subtract(3, 'month')).startOf('day').add(1, 'day').valueOf());
