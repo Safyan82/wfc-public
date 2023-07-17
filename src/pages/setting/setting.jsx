@@ -50,30 +50,61 @@ export const Setting=()=>{
     //  tab change
  
     
-    const [field, setField] = useState(null);
+    const [field, setField] = useState([
+        {field:'groupId', value: ''},
+        {field:'fieldType', value: '' }
+    ]);
     const [value, setValue] = useState(null);
 
 
     useEffect(()=>{
-        if(group && group!="All groups"){
-            setField('groupName');
-            setValue(group);
+        // alert(group?.id);
+        if(group && group?.name!="All groups"){
+            setField(field?.map((f)=> {
+                if(f.field=='groupId'){
+                    return {...f, value: group?.id};
+                }else{
+                    return f;
+                }
+            }))
+            
         }else{
-            setField(null);
-            setValue(null);
+            setField(field?.map((f)=> {
+                if(f.field=='groupId'){
+                    return {field:'groupId', value: ''};
+                }else{
+                    return f;
+                }
+            }))
         }
     },[group])
 
     useEffect(()=>{
         if(fieldType && fieldType!=="All field types"){
-            const f = ((fieldType?.replaceAll("-",""))?.replaceAll(" ",""))?.toLowerCase();
-            setField('fieldType');
-            setValue(f=="multilinetext"? "multilineText" : f);
+            let  selectedType = ((fieldType?.replaceAll("-",""))?.replaceAll(" ",""))?.toLowerCase();
+            selectedType= selectedType=="multilinetext"? "multilineText" : selectedType;
+            
+            setField(field?.map((f)=> {
+                if(f.field=='fieldType'){
+                    return {...f, value: selectedType};
+                }else{
+                    return f;
+                }
+            }));
+
         }else{
-            setField(null);
-            setValue(null);
+            
+            setField(field?.map((f)=> {
+                if(f.field=='fieldType'){
+                    return {field:'fieldType', value: ''};
+                }else{
+                    return f;
+                }
+            }));
         }
     },[fieldType])
+
+    useEffect(()=>{console.log(field)},[field])
 
 
     const [archiveList, setArchiveList] = useState([]);
@@ -84,8 +115,7 @@ export const Setting=()=>{
     const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST);
     const { loading:propertyListLoading, error:propertyListError, data:propertyDataList , refetch:propertyListRefetch } = useQuery(PROPERTYWITHFILTER,{
         variables:{
-            field,
-            value,
+            input:{fields: field}
         },
         fetchPolicy: 'network-only'
     });
@@ -115,13 +145,14 @@ export const Setting=()=>{
 
 
     const { groupFilterId } = useSelector(state=>state.propertyReducer);
-    const { data: propertyByGroupId } = useQuery(GetProptyByGroupId, {
-        variables: { groupId: (groupFilterId)?.toString() || null },
-        skip: !groupFilterId,
-        fetchPolicy: 'network-only'
-  
-    });
 
+    useEffect(()=>{
+        if(groupFilterId && Object.keys(groupFilterId)){
+            setGroupInput({id: groupFilterId?.key, name: groupFilterId?.name});
+        }
+    }, [groupFilterId]);
+
+   
 
     const [activeTab, setActiveTab] = useState('1');
     const handelTabChange = async (e)=>{
@@ -140,9 +171,15 @@ export const Setting=()=>{
     const dispatch = useDispatch();
 
     const resetToPropertyTab = async(tab) =>{
-        if(tab==1){
+        if(tab=='1'){
             
+            setField([
+                {field:'groupId', value: ''},
+                {field:'fieldType', value: '' }
+            ]);
             dispatch(resetPropertyFilterByGroup());
+            setGroupInput({name: 'All groups', id: null});
+            setFieldType('All field types');
             await propertyListRefetch();
         }
         
@@ -251,7 +288,7 @@ export const Setting=()=>{
                             {/* propertie views */}
                             <div className="propertyTab"></div>
                             <Tabs defaultActiveKey="1" onTabClick={resetToPropertyTab} activeKey={activeTab } onChange={handelTabChange}>
-                                <TabPane tab={`Properties (${groupFilterId?.length ?  propertyByGroupId?.getPropertyByGroupId?.length || 0 :  propertyList?.length || 0})`} key="1">
+                                <TabPane tab={`Properties (${propertyList?.length || 0})`} key="1">
                                     <Filter 
                                         group={group}
                                         groupPopover={groupPopover}
@@ -261,7 +298,7 @@ export const Setting=()=>{
                                         userPopover={userPopover}
                                         groupList={groupList?.groupList}
                                         propertyListRefetch={propertyListRefetch}
-                                        propertyList={propertyDataList?.getPropertywithFilters}
+                                        propertyList={propertyList}
                                         setPropertyList={setPropertyList}
                                         setGroupPopover={setGroupPopover}
                                         setGroupInput={setGroupInput}
@@ -273,7 +310,7 @@ export const Setting=()=>{
                                         editProperty={()=>setFieldModal(true)}
                                     />
                                     <SettingPropertyGrid
-                                        propertyList={groupFilterId? propertyByGroupId?.getPropertyByGroupId :propertyList}
+                                        propertyList={propertyList}
                                         propertyListRefetch={propertyListRefetch}
                                         propertyListLoading={propertyListLoading}
                                         refetch={refetch}
@@ -324,13 +361,15 @@ export const Setting=()=>{
                     </div>
                 </div>
         
-            {fieldModal && <CreateFieldDrawer 
+            <CreateFieldDrawer 
                 visible={fieldModal}  
                 propertyListRefetch={propertyListRefetch}
-                onClose={()=>{propertyListRefetch();setFieldModal(false);}}
-            />}
+                onClose={()=>{propertyListRefetch(); groupRefetch(); setFieldModal(false);}}
+            />
             
-            {editfieldModal && <EditFieldDrawer 
+            
+
+            <EditFieldDrawer 
                 groupList={groupList}
                 groupLoading={groupLoading}
                 visible={editfieldModal}  
@@ -339,7 +378,7 @@ export const Setting=()=>{
                     propertyListRefetch();
                     setEditFieldModal(false);
                 }}
-            />}
+            />
             
             <GroupModal 
                 groupRefetch={groupRefetch} 

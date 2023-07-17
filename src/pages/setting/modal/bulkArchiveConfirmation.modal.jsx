@@ -69,12 +69,12 @@ export const BulkArchiveConfirmationModal = ({ refreshAll, visible, onClose, sel
       style={{borderRadius:'3px'}}
       footer={
         <div style={{padding:'0px 40px 26px 40px', textAlign:'left', display:'flex', columnGap:'16px', marginTop:'-25px' }}>
-            <button disabled={loading || isDisabled} className={loading || isDisabled?'disabled-btn archive-btn':'archive-btn'} onClick={handelBulkArchive}>
-              {loading?
+            <button disabled={loading || isDisabled || bulkArchivePropertiesLoading} className={loading || isDisabled || bulkArchivePropertiesLoading?'disabled-btn archive-btn':'archive-btn'} onClick={handelBulkArchive}>
+              {loading || bulkArchivePropertiesLoading?
                 <Spinner />
               :"Archive"}
             </button>
-            <button disabled={loading} className={loading?'disabled-btn dim-btn':'dim-btn'} onClick={onClose}>Cancel</button>
+            <button disabled={loading || bulkArchivePropertiesLoading} className={loading || bulkArchivePropertiesLoading?'disabled-btn dim-btn':'dim-btn'} onClick={onClose}>Cancel</button>
         </div>
       }
       closable={false}

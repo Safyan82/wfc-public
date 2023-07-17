@@ -151,8 +151,8 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
         // call mutation 
 
         const {data} = await createProperty({variables:{input:{...field}}});
-        clearandClose();
   
+        clearandClose();
         await propertyListRefetch();
         
         dispatch(setNotification({

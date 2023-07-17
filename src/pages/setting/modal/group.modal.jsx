@@ -32,17 +32,17 @@ export const GroupModal = ({ visible, onClose, groupRefetch}) => {
       try{
 
         const {data:{updateGroup:{success, message}}} = await updateGroup({variables:{ input: {groupId: group?.key, name: groupName}}});
-        await groupRefetch();
-        
-        setGroupName(null);
-
-        dispatch((resetGroup({})));
+        onClose();
         api.success({
           message,
           placement:"top",
           className: 'notification-without-close',
         });
-        onClose();
+        await groupRefetch();
+        
+        setGroupName(null);
+
+        dispatch((resetGroup({})));
       }
       catch(err){
         

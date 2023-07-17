@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { LoadingOutlined } from '@ant-design/icons';
 
-export const DeleteConfirmationModal = ({ refresh, visible, onClose, deleteRecord, label, additionalText, title, loading}) => {
+export const DeleteGroupModal = ({ refresh, visible, onClose, deleteRecord, label, additionalText, title, loading}) => {
  
 
   return (

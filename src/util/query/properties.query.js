@@ -72,8 +72,8 @@ export const GetProptyByGroupId = gql`
 `;
 
 export const PROPERTYWITHFILTER = gql `
-    query($field: String, $value: String){
-        getPropertywithFilters(field: $field,value: $value) {
+    query($input: PropertyWithFilterInput!){
+        getPropertywithFilters(input: $input) {
             _id
             options
             key

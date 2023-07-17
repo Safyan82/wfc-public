@@ -139,9 +139,9 @@ export const MoveGroupModal = ({ visible, onClose, propertyListRefetch, groupLis
               className={!groupInput?.id || moveGroupLoading? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
               onClick={handelSubmit}
             >
-              {loading ? <Spin indicator={<LoadingOutlined/>}/> : "Save"}
+              {loading || moveGroupLoading ? <Spin indicator={<LoadingOutlined/>}/> : "Save"}
             </button>
-            <button  disabled={loading } className={loading ? 'disabled-btn drawer-outlined-btn':'drawer-outlined-btn'} onClick={onClose}>
+            <button  disabled={loading || moveGroupLoading } className={loading || moveGroupLoading ? 'disabled-btn drawer-outlined-btn':'drawer-outlined-btn'} onClick={onClose}>
               Cancel
             </button>
         </div>

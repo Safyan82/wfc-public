@@ -9,7 +9,7 @@ const propertyReducer = createSlice({
     setPropertyFilterByGroup: (state, action) => {
        return {
         ...state,
-        groupFilterId: action.payload?.key,
+        groupFilterId: action.payload,
        }     
     },
     resetPropertyFilterByGroup:()=>{ return {groupFilterId: null}}

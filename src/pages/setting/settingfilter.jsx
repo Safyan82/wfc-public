@@ -128,7 +128,7 @@ export const Filter = ({
                                 <div className="filter-inner">
 
                                     <div className='left-filter-inner'>
-                                        <div className="">Filter by:</div>
+                                        <div style={{width: 'max-content'}}>Filter by:</div>
                                         
                                         <div className='filter-item' ref={popoverRef}>
                                             <Popover
@@ -160,7 +160,7 @@ export const Filter = ({
                                                             {localGroup?.length ?
                                                             <div 
                                                                 className={group=="All groups"? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
-                                                                onClick={(e)=>{setGroupInput(e.target.innerText); setGroupPopover(false)}}>
+                                                                onClick={(e)=>{setGroupInput({name:e.target.innerText, id: null}); setGroupPopover(false)}}>
                                                                 {"All groups"}
                                                             </div>
                                                             :
@@ -175,7 +175,7 @@ export const Filter = ({
 
                                                                 <div 
                                                                     className={group==gl.name? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
-                                                                    onClick={(e)=>{setGroupInput(e.target.innerText); setGroupPopover(false)}}>
+                                                                    onClick={(e)=>{setGroupInput({name: e.target.innerText, id: gl.key}); setGroupPopover(false)}}>
                                                                     {gl.name}
                                                                 </div>
                                                             ))}
@@ -186,7 +186,7 @@ export const Filter = ({
                                                 trigger="click"
                                                 placement='bottom'
                                             >
-                                                <span ref={popoverRef} className='truncated-text' onClick={()=>setGroupPopover(!groupPopover)}>{group? group :"All groups"}
+                                                <span ref={popoverRef} className='truncated-text' onClick={()=>setGroupPopover(!groupPopover)}>{group? group?.name :"All groups"}
                                                 <span className='caret'></span>
                                                 </span>
                                             </Popover>
