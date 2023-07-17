@@ -12,6 +12,17 @@ import { notification } from 'antd';
 
 function App() {
   
+  useEffect(()=>{
+    
+    setInterval(() => {  
+      if (navigator.onLine) {
+        // console.log("online");
+      } else {
+        // console.log("offline");
+      }
+    }, 100);
+
+  },[]);
   
   const {notificationToast} = useSelector(state => state.notificationReducer);
   const [api, contextHolder] = notification.useNotification();

@@ -54,3 +54,19 @@ export const MOVE_GROUP = gql`
     }
 `;
 
+export const BULK_ARCHIVE_PROPERTIES = gql `
+    mutation($ids: BulkPropertiesArchive!){
+        bulkPropertiesArchive(ids: $ids) {
+        success
+        }
+    }
+`;
+
+export const BULK_UNARCHIVE_PROPERTIES = gql `
+    mutation($ids: BulkPropertiesArchive!){
+        bulkPropertiesunArchive(ids: $ids) {
+        success
+        message
+        }
+    }
+`;

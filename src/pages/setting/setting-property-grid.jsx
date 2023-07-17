@@ -10,8 +10,12 @@ import { setEditPropertyId } from '../../middleware/redux/reducers/createField.r
 import { useSelector } from 'react-redux';
 import { Loader } from '../../components/loader';
 import { moveToGroup } from '../../middleware/redux/reducers/group.reducer';
+import { BulkArchiveConfirmationModal } from './modal/bulkArchiveConfirmation.modal';
+import { MoveGroupModal } from './modal/moveGroup.modal';
 
-export const SettingPropertyGrid = ({setMoveGroup, propertyList, setFieldModal, propertyListRefetch, refetch, setEditFieldModal, propertyListLoading}) => {
+export const SettingPropertyGrid = ({propertyList,
+  setFieldModal, propertyListRefetch, 
+  refetch, setEditFieldModal, propertyListLoading, groupList}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
@@ -30,6 +34,7 @@ export const SettingPropertyGrid = ({setMoveGroup, propertyList, setFieldModal, 
   // property archive mutation
   const [archiveProperty, {loading, error}] = useMutation(ARCHIVE_PROPERTY);
   const [archiveConfirmationModal, setArchiveConfirmationModal] = useState(false);
+  const [bulkArchiveConfirmationModal, setBulkArchiveConfirmation] = useState(false);
   const [archivedId, setArchivedId] = useState(null);
 
   const [api, contextHolder] = notification.useNotification();
@@ -38,6 +43,7 @@ export const SettingPropertyGrid = ({setMoveGroup, propertyList, setFieldModal, 
   const [moreOption, setMoreoption]=useState(false);
   const [propertyName, setPropertyName] = useState("");
 
+  const [moveGroup, setMoveGroup] = useState(false);
 
   const ArcheivePropertyGrid = async() => {
     try{
@@ -50,7 +56,7 @@ export const SettingPropertyGrid = ({setMoveGroup, propertyList, setFieldModal, 
         api.success({
           message: `${propertyName} was archived`,
           placement:"top",
-          className: 'notification-without-close'        
+          className: 'notification-without-close',
         });
       }
 
@@ -75,7 +81,7 @@ export const SettingPropertyGrid = ({setMoveGroup, propertyList, setFieldModal, 
         const showActions = hoveredRow === record.key;
         return (          
           <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
-            <div style={{lineHeight:'35px', width:'auto'}} className='truncated-text'>
+            <div style={{lineHeight:'35px', width:'auto'}} className='truncated-text' onClick={() => { dispatch(setEditPropertyId(record.key)); setEditFieldModal(true);}}>
               <Popover 
               overlayClassName='settingGridPopover'
               content={
@@ -242,7 +248,7 @@ export const SettingPropertyGrid = ({setMoveGroup, propertyList, setFieldModal, 
                 <FontAwesomeIcon icon={faPlus} style={{marginRight:'5px'}}/> <span>Add to group</span>
             </div>
 
-            <div  disabled>
+            <div onClick={()=>setBulkArchiveConfirmation(true)}>
                 <FontAwesomeIcon icon={faTrashCan} style={{marginRight:'5px'}}/> <span>Archive</span>
             </div>
 
@@ -283,7 +289,39 @@ export const SettingPropertyGrid = ({setMoveGroup, propertyList, setFieldModal, 
           onClose={()=>setArchiveConfirmationModal(false)}
           ArcheivePropertyGrid={ArcheivePropertyGrid}
           loading={loading}
+          
         />
+
+        {bulkArchiveConfirmationModal &&
+          <BulkArchiveConfirmationModal
+            visible={bulkArchiveConfirmationModal}
+            properties={selectedRowKeys?.length}
+            selectedRowKeys={selectedRowKeys}
+            setSelectedRowKeys={setSelectedRowKeys}
+            refreshAll = {
+              async() => {
+                await propertyListRefetch();
+                await refetch();
+              }
+            }
+
+
+            onClose={()=>setBulkArchiveConfirmation(false)}
+            ArcheivePropertyGrid={ArcheivePropertyGrid}
+            loading={loading}
+          />
+        }
+
+
+      <MoveGroupModal
+          groupList={groupList}
+          visible={moveGroup}
+          propertyListRefetch={propertyListRefetch}
+          setSelectedRowKeys={setSelectedRowKeys}
+          onClose={()=>setMoveGroup(false)}
+        />
+
+
       </>
       : 
       <div style={{marginTop:'10%'}} >

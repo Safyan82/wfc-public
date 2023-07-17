@@ -74,7 +74,7 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
       key: 'name',
       sorter: (a, b) => a.name.length - b.name.length,
       sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
-      width:300,
+      // width:300,
       render: (_, record) => {
         const showActions = hoveredRow === record.key;
         return (
@@ -84,11 +84,11 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
               </div>
 
               {showActions && 
-              <div style={{width:'100%', display:'flex', justifyContent:'flex-end' ,alignItems:'center', columnGap:'10px'}}>
-                <button style={{marginLeft:'10%'}} className="grid-sm-btn" type="link" onClick={() => handleEdit(record)}>
+              <div style={{width:'100%', display:'flex', justifyContent:'flex-end' ,alignItems:'center', columnGap:'5px'}}>
+                <button  className="grid-sm-btn" type="link" onClick={() => handleEdit(record)}>
                   Edit
                 </button>
-                <button  className="grid-sm-btn" type="link" onClick={() => handleViewProperty(record)}>
+                <button  className="grid-sm-btn" style={{width:'max-content'}} type="link" onClick={() => handleViewProperty(record)}>
                   View properties
                 </button>
 

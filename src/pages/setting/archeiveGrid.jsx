@@ -2,10 +2,12 @@ import { useMutation, useQuery } from '@apollo/client';
 import { Button, Space, Spin, Table, notification } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import { DELETE_PROPERTY, UN_ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
+import { BULK_UNARCHIVE_PROPERTIES, DELETE_PROPERTY, UN_ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
 import { DeleteConfirmationModal } from './modal/deleteConfirmation.modal';
 import { Loader } from '../../components/loader';
 import { useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLock, faPlus, faRecycle, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loading}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
@@ -43,16 +45,16 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
 
   const handelRestore= async(id, label) => {
     await unArchiveProperty({variables:{input: {id}}});
-    await refetch();
-    await propertyListRefetch();
-    if(refetchedFiltered){
-      refetchedFiltered();
-    }
     api.success({
       message:`${label} property was restored`,
       placement:'top',
       className:'notification-without-close',
     });
+    await propertyListRefetch();
+    await refetch();
+    if(refetchedFiltered){
+      refetchedFiltered();
+    }
   };
 
   const [propertyName, setPropertyName] = useState("");
@@ -124,12 +126,16 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
     {
       title: 'Property type',
       dataIndex: 'fieldType',
-      key: 'fieldType',
+      key: 'fieldType',      
+      sorter: (a, b) => a.fieldType.length - b.fieldType.length,
+      sortOrder: sortedInfo.columnKey === 'fieldType' ? sortedInfo.order : null,
     },
     {
       title: 'time archived',
       dataIndex: 'archiveTime',
       key: 'archiveTime',
+      sorter: (a, b) => a.archiveTime - b.archiveTime,
+      sortOrder: sortedInfo.columnKey === 'archiveTime' ? sortedInfo.order : null,
       render:(_,record)=>{
         return (dayjs(Number(record.archiveTime)).format('DD-MM-YY hh:mm A'))
       }
@@ -147,17 +153,58 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
     onChange: onSelectChange,
   };
   
-  
+  const [restoreProperties, {loading: restorePropertiesLoading}] = useMutation(BULK_UNARCHIVE_PROPERTIES)
+  const bulkRestore= async()=>{
+    await restoreProperties({variables:{ids: {ids: selectedRowKeys}}});
+    api.success({
+      message:`${selectedRowKeys.length<2 ?  selectedRowKeys.length +' property was restored' : selectedRowKeys.length + ' properties were restored'} `,
+      placement:'top',
+      className:'notification-without-close',
+    });
+    setSelectedRowKeys([]);
+    await propertyListRefetch();
+    await refetch();
+    if(refetchedFiltered){
+      refetchedFiltered();
+    }
+  };
+
+  const customHeader =(
+
+    <div className='table-footer' id="selection-options">
+      
+
+      {selectedRowKeys?.length>0 &&
+      <>
+          <small class='small-text'> {selectedRowKeys?.length} selected</small>
+
+          <div  onClick={bulkRestore}>
+              <FontAwesomeIcon icon={faRecycle} style={{marginRight:'5px'}}/> <span>Restore</span>
+          </div>
+
+          <div onClick={()=>console.log(true)}>
+              <FontAwesomeIcon icon={faTrashCan} style={{marginRight:'5px'}}/> <span>Delete</span>
+          </div>
+
+
+      </>
+  }
+    </div>
+  )
+
+
   return (
     <div 
     className='setting-grid'>
       {contextHolder}
-      {loading ?
+      {loading || restorePropertiesLoading ?
         <Loader/>        
       :
         <Table 
           columns={columns} 
+          className='moveGroupTable'
           dataSource={data} 
+          title={selectedRowKeys?.length>0 ? () => customHeader : null}
           rowSelection={rowSelection}
           onChange={handleChange} 
           

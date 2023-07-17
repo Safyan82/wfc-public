@@ -1,0 +1,13 @@
+.bulkArchiveInput{
+    padding: 16px;
+    line-height: 40px;
+    height: 80px;
+    color: rgb(51, 71, 91);
+    font-size: 32px;
+    margin-bottom: 16px;
+}
+
+.bulkArchiveInput::placeholder{
+    color: rgb(51, 71, 91) !important;
+    opacity: 0.7;
+}

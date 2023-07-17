@@ -2,7 +2,7 @@
 
 *{
     font-family: 'Lexend Deca', sans-serif;
-    user-select: none;
+    /* user-select: none; */
 }
 
 body{
@@ -675,4 +675,58 @@ a:visited{
 
 :where(.css-dev-only-do-not-override-12jzuas).ant-table-wrapper td.ant-table-column-sort:hover{
     /* background-color: #fafafa !important; */
+}
+
+
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-notification .ant-notification-notice .ant-notification-notice-close{
+    padding: 12px;
+    position: absolute;
+    border-radius: 100%;
+    width: 36px;
+    height: 36px;
+    color: rgb(124, 152, 182);
+    display: flex;
+    top: 11px;
+    align-items: center;
+    right: 10px; 
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-notification .ant-notification-notice .ant-notification-notice-close:hover{
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 100%;
+    width: 36px;
+    height: 36px;
+    color: rgb(124, 152, 182);
+    display: flex;
+    align-items: center;
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-notification .ant-notification-notice .ant-notification-notice-with-icon .ant-notification-notice-message{
+    font-weight: bold;
+}
+
+.ant-notification-notice-with-icon{
+    display: flex !important;
+}
+
+.alert-close-icon{
+    transition: background 150ms ease-out 0s !important;
+    font-size: 22px !important;
+    padding: 12px;
+    height: 22px;
+    width: 22px;
+    border-radius: 100%;
+    font-size: 14px;
+    color: #7c98b6;
+}
+
+
+.alert-close-icon:hover{
+    background: rgba(255, 255, 255, 0.1);
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-alert-with-description {
+    padding: 10px !important;
 }

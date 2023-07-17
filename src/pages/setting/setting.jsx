@@ -155,7 +155,6 @@ export const Setting=()=>{
     }
 
 
-    const [moveGroup, setMoveGroup] = useState(false);
 
     return(
         <Row>
@@ -221,7 +220,7 @@ export const Setting=()=>{
                                 </div>
                             </div>
                             <div className="text">
-                                Properties are used to collect and store information about your records in Wfc. For example, a contact might have properties like First Name or Lead Status.
+                                Properties are used to collect and store information about your records in WorkForce City. For example, a contact might have properties like First Name or Lead Status.
                             </div>
                             {/* object selection box */}
                             <div className="object-selection-box">
@@ -279,8 +278,9 @@ export const Setting=()=>{
                                         propertyListLoading={propertyListLoading}
                                         refetch={refetch}
                                         setFieldModal={setFieldModal}
-                                        setMoveGroup={setMoveGroup}
                                         setEditFieldModal={setEditFieldModal}
+                                        groupList={groupList}
+
                                     />
                                 </TabPane>
                             <TabPane tab="Group" key="2">
@@ -302,14 +302,14 @@ export const Setting=()=>{
 
                                 />
                                 <Alert
-                                    description={<b>After 90 days your custom properties will be deleted and can no longer be restored.</b>}
+                                    description={<b className='info-alert'>After 90 days your custom properties will be deleted and can no longer be restored.</b>}
                                     type="info"
                                     closable
-                                    closeText={<FontAwesomeIcon style={{fontSize: '16px',color: '#7c98b6'}} icon={faTimes}/>}
+                                    closeText={<FontAwesomeIcon  className='alert-close-icon' icon={faTimes}/>}
                                 />
                                 <ArcheivePropertyGrid 
                                     data={archiveFilteredData || data?.getArchiveProperties}
-                                    loading={isloading || archiveloading}
+                                    loading={isloading || archiveloading || propertyListLoading}
                                     refetch={refetch}
                                     propertyListRefetch={propertyListRefetch}
 
@@ -347,12 +347,6 @@ export const Setting=()=>{
                 onClose={()=>{setGroupModal(false); dispatch(resetGroup({}))}} 
             />
 
-            <MoveGroupModal
-                groupList={groupList}
-                visible={moveGroup}
-                propertyListRefetch={propertyListRefetch}
-                onClose={()=>setMoveGroup(false)}
-            />
 
         </Row>
     );

@@ -56,7 +56,7 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
         }
     },[archivePropertyFilter?.archivePropertyFilter]);
 
-    const dateFormat = 'MM/DD/YYYY';
+    const dateFormat = 'DD-MM-YYYY';
 
     return(
         <div className="filter"  >
@@ -79,7 +79,7 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
                                             Custom
                                         </div>
                                         <div className="popoverdataitem" onClick={(e)=>{setArchive(e.target.innerText); setArchivePopover(false)}}>
-                                            Work force city
+                                            Workforce City
                                         </div>
                                     </div>
 
@@ -107,8 +107,8 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
                             className='generic-input-control'
                             onChange={(e, dateString)=>setStartDate(dayjs(dateString).startOf('day').valueOf())}
                             disabledDate={disabledDate}
-                            dateFormat={dateFormat}
-                            defaultValue={(dayjs().subtract(3, 'month')).startOf('day').add(1, 'day')}
+                            format={dateFormat}
+                            defaultValue={dayjs((dayjs().subtract(3, 'month')).startOf('day').add(1, 'day'), dateFormat)}
                             suffixIcon={<FontAwesomeIcon icon={faCalendarDays} />}
                         />
                         
@@ -118,9 +118,9 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
                             className='generic-input-control'
                             onChange={(e, dateString)=>setEndDate(dayjs(dateString).endOf('day').valueOf())}
                             disabledDate={disabledDate}
-                            
+                            format={dateFormat}                            
                             suffixIcon={<FontAwesomeIcon icon={faCalendarDays} />}
-                            defaultValue={dayjs()}
+                            defaultValue={dayjs(dayjs(),dateFormat)}
                         />
                     </div>
                     

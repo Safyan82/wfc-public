@@ -12,7 +12,7 @@ import { Loader } from '../../../components/loader';
 import { MOVE_GROUP } from '../../../util/mutation/properties.mutation';
 
 
-export const MoveGroupModal = ({ visible, onClose, propertyListRefetch, groupList}) => {
+export const MoveGroupModal = ({ visible, onClose, propertyListRefetch, groupList, setSelectedRowKeys}) => {
   console.log(groupList, "groupListgroupList");
   const {group} = useSelector(state=>state.groupReducer);
   const [groupName, setGroupName] = useState(group?.name || "");
@@ -106,13 +106,15 @@ export const MoveGroupModal = ({ visible, onClose, propertyListRefetch, groupLis
           }
         }
       });
+      setSelectedRowKeys([]);
       onClose();
-      await propertyListRefetch();
       api.success({
-        message:"haha",
+        message:"Group moved successfully",
         placement:"top",
         className: 'notification-without-close',
       });
+      await propertyListRefetch();
+
     }
     catch(err){
       setGroupName(null);
@@ -133,8 +135,8 @@ export const MoveGroupModal = ({ visible, onClose, propertyListRefetch, groupLis
       footer={
         <div style={{padding:'6px 40px', paddingBottom:'16px', textAlign:'left', display:'flex', columnGap:'16px', marginTop:'-25px' }}>
             <button  
-              disabled={groupInput?.id? false : true} 
-              className={!groupInput?.id? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
+              disabled={groupInput?.id || moveGroupLoading? false : true} 
+              className={!groupInput?.id || moveGroupLoading? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
               onClick={handelSubmit}
             >
               {loading ? <Spin indicator={<LoadingOutlined/>}/> : "Save"}
