@@ -106,7 +106,7 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
       title: 'Number of properties',
       dataIndex: 'properties',
       key: 'properties',
-      sorter: (a, b) => a.use.length - b.use.length,
+      sorter: (a, b) => a.properties - b.properties,
       sortOrder: sortedInfo.columnKey === 'properties' ? sortedInfo.order : null,
       ellipsis: true,
       width:100
