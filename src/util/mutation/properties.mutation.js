@@ -70,3 +70,12 @@ export const BULK_UNARCHIVE_PROPERTIES = gql `
         }
     }
 `;
+
+
+export const BULK_DELETE_PROPERTIES = gql`
+mutation($input: BulkPropertiesDelete!){
+    bulkDeleteProperties(input: $input) {
+      success
+    }
+  }
+`;

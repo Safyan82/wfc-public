@@ -68,6 +68,21 @@ export const SettingPropertyGrid = ({propertyList,
 
   const dispatch = useDispatch();
 
+  function truncateText(text, maxWords) {
+    // Split the text into an array of words
+    const words = text.split(' ');
+  
+    if(words[0]?.length >15){maxWords=1}
+
+    // If the number of words is less than or equal to the maximum allowed, return the original text
+    if (words.length <= maxWords) {
+      return text;
+    }
+  
+    // Otherwise, join the first "maxWords" words and add ellipsis at the end
+    return words.slice(0, maxWords).join(' ') + '...';
+  }
+  
 
   const columns = [
     {
@@ -77,11 +92,13 @@ export const SettingPropertyGrid = ({propertyList,
       sorter: (a, b) => a.label.length - b.label.length,
       sortOrder: sortedInfo.columnKey === 'label' ? sortedInfo.order : null,
       width:400,
+      ellipsis:true,
       render: (_, record) => {
         const showActions = hoveredRow === record.key;
         return (          
           <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
-            <div style={{lineHeight:'35px', width:'auto'}} className='truncated-text' onClick={() => { dispatch(setEditPropertyId(record.key)); setEditFieldModal(true);}}>
+                <div style={{display:'flex', flexDirection:'column'}} className='truncated-text' onClick={() => { dispatch(setEditPropertyId(record.key)); setEditFieldModal(true);}}>
+
               <Popover 
               overlayClassName='settingGridPopover'
               content={
@@ -91,12 +108,12 @@ export const SettingPropertyGrid = ({propertyList,
                 </div>
               }
               >
-                <span className='record-title'>{record.label}</span>
+                <div className='record-title'>{showActions?truncateText(record.label,3):truncateText(record.label,4)}</div>
               </Popover>
               <div className='record-subtitle'>{record.fieldType}</div>
-            </div>
+              </div>
 
-          {showActions && 
+          {showActions && selectedRowKeys?.length===0 &&
           <div style={{width:'60%', display:'flex', justifyContent:'flex-end' ,alignItems:'center', columnGap:'10px'}}>
             <button style={{marginLeft:'10%'}} className="grid-sm-btn" type="link" onClick={() => { dispatch(setEditPropertyId(record.key)); setEditFieldModal(true);}}>
               Edit

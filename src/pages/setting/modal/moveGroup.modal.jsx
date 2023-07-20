@@ -206,7 +206,7 @@ export const MoveGroupModal = ({ visible, onClose, propertyListRefetch, groupLis
                             <div ref={popoverRef}>
                                 {localGroup?.length ? localGroup?.map((gl)=>(
                                     <div 
-                                        className={groupInput==gl.name? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
+                                        className={groupInput.name==gl.name? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
                                         onClick={(e)=>{setGroupInput({name:gl.name, id:gl.key}); setGroupPopover(false)}}>
                                         {gl.name}
                                     </div>

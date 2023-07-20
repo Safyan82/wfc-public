@@ -82,7 +82,7 @@ export const Setting=()=>{
     useEffect(()=>{
         if(fieldType && fieldType!=="All field types"){
             let  selectedType = ((fieldType?.replaceAll("-",""))?.replaceAll(" ",""))?.toLowerCase();
-            selectedType= selectedType=="multilinetext"? "multilineText" : selectedType;
+            selectedType= selectedType=="multilinetext"? "multilineText" : selectedType==="singlelinetext"? "singlelineText": selectedType;
             
             setField(field?.map((f)=> {
                 if(f.field=='fieldType'){
@@ -185,8 +185,9 @@ export const Setting=()=>{
         
         if(tab=='3'){
             dispatch(resetArchivePropertyFilteredData(false));
+            await refetch()
         }
-        if(tab==2){
+        if(tab=='2'){
             await groupRefetch();
         }
     }

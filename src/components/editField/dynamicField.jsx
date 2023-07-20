@@ -8,6 +8,7 @@ import DraggableTable from '../shuffle/DraggeableTable';
 import { useDispatch } from 'react-redux';
 import { setLabelValueForField } from '../../middleware/redux/reducers/createField.reducer';
 import { useSelector } from 'react-redux';
+import { setBtnState } from '../../middleware/redux/reducers/editProperty.reducer';
 const { Option } = Select;
 
 const multi=[
@@ -410,7 +411,7 @@ export function CreateField({sortType,fieldType,label,search}){
         const selected = JSON.parse(sessionStorage.getItem('selectedRowKeys'));
         const origin = document.querySelector('.ant-drawer');
         if(selected.length>0){
-          
+            dispatch(setBtnState(false)) ;
           setTimeout(()=>{
             const checkBoxes = origin.querySelectorAll('td > button');
             const checkBoxesFiltered =  Array.from(checkBoxes).filter((checkBox)=> selected?.includes(Number(checkBox.id.split("-")[1])));
@@ -435,7 +436,6 @@ export function CreateField({sortType,fieldType,label,search}){
             setSelectedRowKeys([]);
         }
         dispatch(setLabelValueForField(labelValue));
-
     }, [labelValue]);
 
     useEffect(()=>{
@@ -445,6 +445,7 @@ export function CreateField({sortType,fieldType,label,search}){
 
 
     const hideInForm = ()=>{
+        dispatch(setBtnState(false)) ;
         const origin = document.querySelector('.ant-drawer');
         const checkBoxes = origin.querySelectorAll('td > button');
         const checkBoxesFiltered =  Array.from(checkBoxes).filter((checkBox)=> selectedRowKeys?.includes(Number(checkBox.id.split("-")[1])));
@@ -458,6 +459,7 @@ export function CreateField({sortType,fieldType,label,search}){
     }
 
     const showInForm = async()=>{
+        dispatch(setBtnState(false)) ;
         const origin = document.querySelector('.ant-drawer');
         const checkBoxes = origin.querySelectorAll('td > button');
         const checkBoxesFiltered =  Array.from(checkBoxes).filter((checkBox)=> selectedRowKeys?.includes(Number(checkBox.id.split("-")[1])));
@@ -510,6 +512,7 @@ export function CreateField({sortType,fieldType,label,search}){
                 async()=>{
                     await setLabelValue([{id:0}]); 
                     document.getElementById("key0").value=null;
+                    dispatch(setBtnState(false)) ;
             }}>
               <FontAwesomeIcon icon={faTrash}/> <span>Clear all</span>
             </div>

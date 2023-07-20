@@ -19,8 +19,8 @@ export const UPDATE_GROUP = gql`
 `;
 
 export const DELETE_GROUP = gql`
-    mutation($deleteGroupId: String!){
-        deleteGroup(id: $deleteGroupId) {
+    mutation($groupIdToMoveIn: String!, $deleteGroupId: String!) {
+        deleteGroup(groupIdToMoveIn: $groupIdToMoveIn, id: $deleteGroupId) {
             success
             message
         }

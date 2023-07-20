@@ -4,6 +4,7 @@ import notificationReducer from './reducers/notification.reducer';
 import groupReducer from './reducers/group.reducer';
 import propertiesReducer from './reducers/properties.reducer';
 import archivePropertyReducer from './reducers/archiveProperty.reducer';
+import editPropertyReducer from './reducers/editProperty.reducer';
 
 const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
     notificationReducer: notificationReducer,
     groupReducer: groupReducer,
     propertyReducer: propertiesReducer,
-    archiveReducer: archivePropertyReducer
+    archiveReducer: archivePropertyReducer,
+    editPropertyReducer: editPropertyReducer
   },
 });
 

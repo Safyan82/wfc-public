@@ -27,6 +27,7 @@ export const ARCHIVE_PROPERTY_LIST = gql`
             createdAt
             archiveTime
             createdBy
+            groupId
             
         }
     }
@@ -102,6 +103,7 @@ export const ArchivePropertyFilter = gql `
             fieldType
             useIn
             groupName
+            groupId
             createdAt
             archiveTime
             createdBy

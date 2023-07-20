@@ -19,18 +19,24 @@ export const BulkArchiveConfirmationModal = ({ refreshAll, visible, onClose, sel
 
 
   const handelProperties = (e)=>{
+    const p =properties.toString()
+    if(e.target.value.length==1 && e.target.value[0]==p[0]){  
+        setPropertyConfirmation(e.target.value);
+        setDisabled(true);
+    }
 
-        
-        if(Number(e.target.value)===properties){
-            setPropertyConfirmation(e.target.value);
-            setDisabled(false);
-        }
-        else if(e.target.value==''){
-            setDisabled(true);
-            setPropertyConfirmation('');
-        }else{
-            return;
-        }
+    if(Number(e.target.value)===properties){
+        setPropertyConfirmation(e.target.value);
+        setDisabled(false);
+        return
+    }
+    else if(e.target.value==''){
+        setDisabled(true);
+        setPropertyConfirmation('');
+    }
+    else{
+        return;
+    }
   };
 
   const handelBulkArchive = async()=>{

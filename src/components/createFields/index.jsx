@@ -50,6 +50,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
     const dispatch = useDispatch();
 
     useEffect(()=>{
+      if(propertyToBeEditId){
       dispatch(setPropertyTobeEdit(data?.getPropertyById));
       if(data?.getPropertyById){
 
@@ -62,7 +63,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
           options: data?.getPropertyById?.options
         });
         setFieldType(data?.getPropertyById?.fieldType);
-      };
+      };};
     },[data]);
 
 
@@ -84,6 +85,14 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
       sessionStorage.clear();
     },[]);
 
+    useEffect(()=>{
+      if(!propertyToBeEditId){
+        dispatch(resetFieldState());  
+        setBasicInfo(null);
+        sessionStorage.clear();
+        setCurrentStep(0)
+      }
+    },[propertyToBeEditId])
     
     useEffect(()=>{
       if(
@@ -137,8 +146,10 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
     const [createProperty, {loading, error}] = useMutation(CREATE_PROPERTIES);
     const {labelValue, rules} = useSelector((state) => state.createFieldReducer);
     
+    const [disableBtn, setDisabledBtn] = useState(false);
 
     const handelSubmit= async ()=>{
+      setDisabledBtn(true);
       const field = {
         ...basicInfo,
         fieldType,
@@ -151,8 +162,8 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
         // call mutation 
 
         const {data} = await createProperty({variables:{input:{...field}}});
-  
         clearandClose();
+  
         await propertyListRefetch();
         
         dispatch(setNotification({
@@ -160,6 +171,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
           message:"Property was created successfully",
           error: false,
         }))
+        setDisabledBtn(false);
         
 
 
@@ -173,6 +185,9 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
             error: true,
           }
         ));
+
+      setDisabledBtn(false);
+
 
       }
 
@@ -204,14 +219,14 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
                     <button className='drawer-btn' onClick={clearandClose} >Cancel</button>
                   </div>
                   
-                  {currentStep < steps.length - 1 && 
+                  {(currentStep < steps.length - 1) && !disableBtn &&
                     <button id="nextBtn" className={currentStep ==0 && basicInfoCheck ?' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handleNext}>
                     {'Next'} <FontAwesomeIcon className='next-btn-icon' icon={faChevronRight}/>
                     </button>
                   } 
                   {currentStep == steps.length - 1 && 
-                    <button onClick={handelSubmit} className={(currentStep ==0 && basicInfoCheck) || loading ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
-                    {loading? <Spinner/> :'Create'}
+                    <button disabled={loading || disableBtn} onClick={handelSubmit} className={(currentStep ==0 && basicInfoCheck) || loading || disableBtn ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
+                    {loading || disableBtn? <Spinner/> :'Create'}
                     </button>
                   }
 

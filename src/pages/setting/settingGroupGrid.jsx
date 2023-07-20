@@ -8,6 +8,7 @@ import { setGroupData } from '../../middleware/redux/reducers/group.reducer';
 import { DeleteConfirmationModal } from './modal/deleteConfirmation.modal';
 import { DELETE_GROUP } from '../../util/mutation/group.mutation';
 import { setPropertyFilterByGroup } from '../../middleware/redux/reducers/properties.reducer';
+import { Loader } from '../../components/loader';
 
 const data = [
   {
@@ -23,6 +24,7 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
   const [hoveredRow, setHoveredRow] = useState(null);
   const [deleteGroupConfirmationModal, setDeleteConfirmationModal] = useState(false);
   const [groupToBeDelete, setGroupToBeDelete] = useState({});
+  const [groupIdToMoveIn, setGroupIdToMoveIn] = useState();
 
   const dispatch = useDispatch();
 
@@ -129,7 +131,7 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
   const [api, contextHolder] = notification.useNotification();
   const deleteRecord = async ()=>{
     if(Object.keys(groupToBeDelete)){
-      await deleteGroup({variables:{deleteGroupId: groupToBeDelete?.key }});
+      await deleteGroup({variables:{deleteGroupId: groupToBeDelete?.key, groupIdToMoveIn: groupIdToMoveIn?.id }});
       setDeleteConfirmationModal(false);
       await groupRefetch();
       setGroupToBeDelete(null);
@@ -146,6 +148,8 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
     <div 
     className='setting-grid'>
       {contextHolder}
+      {!groupLoading? 
+      <>
       <Table 
         columns={columns} 
         dataSource={[...groupList?.groupList]} 
@@ -164,11 +168,20 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
         visible={deleteGroupConfirmationModal}
         onClose={()=>setDeleteConfirmationModal(false)}
         label={groupToBeDelete?.name}
+        properties={groupToBeDelete?.properties}
         loading={deleteLoading}
         deleteRecord={deleteRecord}
+        groupList={[...groupList?.groupList.filter((group)=>group.name!==groupToBeDelete?.name)]}
         title={"group"}
         additionalText={true}
+        setGroupIdToMoveIn={setGroupIdToMoveIn}
       /> }
+      </>
+      : 
+      <div style={{marginTop:'10%'}} >
+        <Loader/>
+      </div>
+      }
     </div>
   );
 };

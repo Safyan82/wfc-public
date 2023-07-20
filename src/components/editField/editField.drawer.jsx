@@ -18,6 +18,7 @@ import { setNotification } from '../../middleware/redux/reducers/notification.re
 import TabPane from 'antd/es/tabs/TabPane';
 import { Loader } from '../loader';
 import Spinner from '../spinner';
+import { setBtnState } from '../../middleware/redux/reducers/editProperty.reducer';
 
 
 export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoading, propertyListRefetch }) => {
@@ -62,9 +63,10 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
     
 
     const clearandClose=async()=>{
-      await dispatch(resetFieldState());
+      dispatch(resetFieldState());
       setBasicInfo(null);
       onClose();
+      dispatch(setBtnState(true)) ;
       sessionStorage.clear();
       setCurrentStep(0)
     }
@@ -153,8 +155,8 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
     //     setNRules(rules && Object.values(rules)?.filter((property) => property == true)?.length);
     //   }
     // },[globalFieldType]);
-
-    
+    const {isbtnEnabled}  = useSelector((state) => state.editPropertyReducer);
+    console.log(isbtnEnabled, "setBtnStatesetBtnState");
     return (
         <div>
 
@@ -172,10 +174,10 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
             footer={
               <div className='drawer-footer' style={{display:'flex', }}>
                   
-                <button onClick={handelSubmit} className={updatePropertyLoading? 'disabled-btn drawer-filled-btn': 'drawer-filled-btn'}>
+                <button onClick={handelSubmit} disabled={updatePropertyLoading || isbtnEnabled} className={updatePropertyLoading || isbtnEnabled? 'disabled-btn drawer-filled-btn': 'drawer-filled-btn'}>
                 {updatePropertyLoading? <Spinner/> :'Save'}
                 </button>
-                <button className='drawer-outlined-btn' onClick={clearandClose} >Cancel</button>
+                <button disabled={updatePropertyLoading} className='drawer-outlined-btn' onClick={clearandClose} >Cancel</button>
                   
 
               </div>
@@ -190,7 +192,7 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
                     <div style={{display:'flex', columnGap:'16px'}}>
                         <Input className="generic-input-control"  
                         value={basicInfo?.label}
-                        onChange={(e)=>setBasicInfo({...basicInfo, label:e.target.value})} />
+                        onChange={(e)=>{dispatch(setBtnState(false));setBasicInfo({...basicInfo, label:e.target.value})}} />
                         <Popover 
                             overlayClassName="custom-popover"
                             content={<div>If you are using this property <br/> for an integration, you can <br/> access its internal name here.</div>} 

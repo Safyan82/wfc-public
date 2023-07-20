@@ -4,10 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { LoadingOutlined } from '@ant-design/icons';
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setBtnState } from "../../middleware/redux/reducers/editProperty.reducer";
 
 export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLoading}) =>{
     useEffect(()=>{setWidth(false)},[]);
-
+    const dispatch = useDispatch();
 
     return(
         <React.Fragment>
@@ -22,7 +24,7 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLo
                 <Select 
                     className="custom-select"
                     labelInValue
-                    onChange={(e)=>{setBasicInfo({...basicInfo, groupId:e.value, groupName: e.label})}}
+                    onChange={(e)=>{dispatch(setBtnState(false)) ;setBasicInfo({...basicInfo, groupId:e.value, groupName: e.label})}}
                     value={basicInfo?.groupId}
                     disabled={groupLoading}
                     suffixIcon={groupLoading ? <Spin indicator={<LoadingOutlined />} />: <span className="dropdowncaret"></span>}
@@ -38,7 +40,7 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLo
                 <label>Description</label>
                 <Input className="generic-input-control" 
                   value={basicInfo?.description}
-                  onChange={(e)=>setBasicInfo({...basicInfo, description:e.target.value})} 
+                  onChange={(e)=>{dispatch(setBtnState(false)); setBasicInfo({...basicInfo, description:e.target.value})}} 
                 />
 
             </Form.Item>

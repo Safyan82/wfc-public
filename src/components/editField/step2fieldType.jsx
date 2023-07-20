@@ -6,6 +6,7 @@ import {
   } from '@ant-design/icons';
 import { resetRules, setGlobalFieldType } from '../../middleware/redux/reducers/createField.reducer';
 import { useDispatch } from 'react-redux';
+import { setBtnState } from '../../middleware/redux/reducers/editProperty.reducer';
 
 
 const multi=[
@@ -46,6 +47,7 @@ export const FieldType = ({basicInfo, setWidth, fieldType, setFieldType})=>{
                     suffixIcon={<span className="dropdowncaret"></span>}
                     onChange={(e)=>{
                         setFieldType(e);
+                        dispatch(setBtnState(false));
                         if(fieldTypeFocused){
 
                             dispatch(setGlobalFieldType(e));
@@ -96,7 +98,7 @@ export const FieldType = ({basicInfo, setWidth, fieldType, setFieldType})=>{
                     <Select
                         className="custom-select"
                         suffixIcon={<span className="dropdowncaret"></span>}
-                        onChange={(e)=>setSortType(e)}
+                        onChange={(e)=>{dispatch(setBtnState(false)) ;setSortType(e)}}
                         defaultValue="custom">
                             <Option value="custom">Custom</Option>
                             <Option value="alphabetical">Alphabetical</Option>

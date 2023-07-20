@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { resetRules, setRules } from "../../middleware/redux/reducers/createField.reducer";
+import { setBtnState } from "../../middleware/redux/reducers/editProperty.reducer";
 
 export const Rules = ({basicInfo, setWidth})=>{
 
@@ -92,6 +93,7 @@ export const Rules = ({basicInfo, setWidth})=>{
    
 
     const handelRuleChange = (event,name) =>{
+        dispatch(setBtnState(false)) ;
         if(!event?.target?.name && !name){
             return;
         }
@@ -169,6 +171,7 @@ export const Rules = ({basicInfo, setWidth})=>{
         localRule.map((rule)=>{
             dispatch(setRules({[rule.name]:rule.value}))
         });
+        dispatch(setBtnState(false)) ;
     },[localRule]);
 
     
@@ -179,6 +182,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                 dispatch(setRules({[rule]:propertyToBeEdit?.rules[rule]}))
             });
         }
+        dispatch(setBtnState(false)) ;
     },[propertyToBeEdit?.rules]);
 
     

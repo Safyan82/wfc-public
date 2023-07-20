@@ -114,7 +114,7 @@ export const GroupModal = ({ visible, onClose, groupRefetch}) => {
       <React.Fragment>
         {contextHolder}
         <div className='modal-header-title'>
-            <span>{group?.name ? 'Edit  ' : 'Create a new' } property group</span>
+            <span>{group?.name || updateGroupLoading ? 'Edit  ' : 'Create a new' } property group</span>
             <span  onClick={onClose}><FontAwesomeIcon className='close' icon={faClose}/></span>
         </div>
         <div className='modal-body'>

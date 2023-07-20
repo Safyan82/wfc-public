@@ -2,12 +2,13 @@ import { useMutation, useQuery } from '@apollo/client';
 import { Button, Space, Spin, Table, notification } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import { BULK_UNARCHIVE_PROPERTIES, DELETE_PROPERTY, UN_ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
+import { BULK_DELETE_PROPERTIES, BULK_UNARCHIVE_PROPERTIES, DELETE_PROPERTY, UN_ARCHIVE_PROPERTY } from '../../util/mutation/properties.mutation';
 import { DeleteConfirmationModal } from './modal/deleteConfirmation.modal';
 import { Loader } from '../../components/loader';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faPlus, faRecycle, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { BulkDeleteConfirmationModal } from './modal/bulkDeleteConfirmation.modal';
 
 export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loading}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
@@ -59,21 +60,49 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
 
   const [propertyName, setPropertyName] = useState("");
   const [propertyId, setPropertyId] = useState("");
-
+  const [deleteBulkProperty, {loading: deleteBulkPropertyloading}] = useMutation(BULK_DELETE_PROPERTIES)
   const handelDelete= async () => {
-    if(propertyId){
-
-      await deleteProperty({variables:{input: {id:propertyId}}});
+    if(selectedRowKeys?.length>0){
+      const properties = data?.filter((data)=> selectedRowKeys.find((key)=>data.key == key));
+      await deleteBulkProperty({
+        variables:{
+          input: {properties}
+        }
+      });
+      
+      setConfirmationModal(false);
+      api.success({
+        message:`${selectedRowKeys?.length>1 ? selectedRowKeys?.length+" properties were deleted" : "1 property was deleted"}`,
+        placement:'top',
+        className:'notification-without-close',
+      });
+      setSelectedRowKeys([]);
       await refetch();
       await propertyListRefetch();
+      if(refetchedFiltered){
+        refetchedFiltered();
+      }
+      setPropertyName("");
+      setPropertyId("");
+
+
+    }else{
+      
+      await deleteProperty({variables:{input: {id:propertyId}}});
       setConfirmationModal(false);
       api.success({
         message:`${propertyName} property was deleted`,
         placement:'top',
         className:'notification-without-close',
       });
+      await refetch();
+      await propertyListRefetch();
+      if(refetchedFiltered){
+        refetchedFiltered();
+      }
       setPropertyName("");
       setPropertyId("");
+
     }
   }
 
@@ -81,6 +110,21 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
     setPropertyName(label);
     setConfirmationModal(true);
     setPropertyId(key);
+  }
+
+  function truncateText(text, maxWords) {
+    // Split the text into an array of words
+    const words = text.split(' ');
+  
+    
+    if(words[0]?.length >15){maxWords=2}
+    // If the number of words is less than or equal to the maximum allowed, return the original text
+    if (words.length <= maxWords) {
+      return text;
+    }
+  
+    // Otherwise, join the first "maxWords" words and add ellipsis at the end
+    return words.slice(0, maxWords).join(' ') + '...';
   }
 
   const columns = [
@@ -98,10 +142,10 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
         return (
           <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
             <div style={{lineHeight:'35px'}} className='truncated-text'>
-              {record.label}
+              {showActions?truncateText(record.label,3):truncateText(record.label,3)}
             </div>
 
-            {showActions && 
+            {showActions && selectedRowKeys?.length==0 &&
             <div style={{width:'100%', display:'flex', justifyContent:'flex-end' ,alignItems:'center', columnGap:'10px'}}>
               <button style={{marginLeft:'10%'}} className="grid-sm-btn" type="link" onClick={()=>handelRestore(record.key, record.label)} >
                 Restore
@@ -178,11 +222,11 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
       <>
           <small class='small-text'> {selectedRowKeys?.length} selected</small>
 
-          <div  onClick={bulkRestore}>
+          <div onClick={bulkRestore}  style={{cursor:'pointer'}}>
               <FontAwesomeIcon icon={faRecycle} style={{marginRight:'5px'}}/> <span>Restore</span>
           </div>
 
-          <div onClick={()=>console.log(true)}>
+          <div onClick={()=> setConfirmationModal(true)} style={{cursor:'pointer'}}>
               <FontAwesomeIcon icon={faTrashCan} style={{marginRight:'5px'}}/> <span>Delete</span>
           </div>
 
@@ -192,6 +236,7 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
     </div>
   )
 
+  
 
   return (
     <div 
@@ -221,7 +266,7 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
 
         {
           confirmationModal &&
-          <DeleteConfirmationModal
+          <BulkDeleteConfirmationModal
             visible={confirmationModal}
             onClose={()=>setConfirmationModal(false)}
             deleteRecord={handelDelete}
@@ -229,8 +274,10 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
               await refetch();
               await propertyListRefetch();
             }} 
+            loading={deleteProperyLoading || deleteBulkPropertyloading}
             label={propertyName}
-            title={"property"}
+            title={""}
+            properties={selectedRowKeys}
 
           />
         }

@@ -616,6 +616,7 @@
     color: #0091ae;
     font-weight: 600;
     font-size: 14px;
+    width: min-content;
 }
 
 .record-title:hover{    
@@ -638,8 +639,8 @@
 .record-subtitle{
     color: #516f90!important;
     font-size: 12px;
-    line-height: 9px;
-    margin-top: -4%;
+    /* line-height: 9px;
+    margin-top: -4%; */
 }
 
 .text-decore:hover{
@@ -649,7 +650,7 @@
 
 .archive-modal-header{
     background-image: repeating-linear-gradient(135deg,#f04b51,#f04b51 24px,#f2545b 0,#f2545b 48px) !important;
-    padding: 40px 40px !important;
+    padding: 20px 40px !important;
 }
 
 .archive-font{

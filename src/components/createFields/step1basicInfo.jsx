@@ -32,7 +32,8 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth,}) =>{
                     className="custom-select"
                     onChange={(e)=>setBasicInfo({...basicInfo, objectType:e})}
                     value={basicInfo?.objectType}
-                    defaultValue={"branches"}
+                    placeholder="Select a object"
+                    // defaultValue={"branches"}
                     suffixIcon={<span className="dropdowncaret"></span>}
                 >
                     <Select.Option value="branches">Branches</Select.Option>
@@ -47,6 +48,7 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth,}) =>{
                 <Select 
                     className="custom-select"
                     labelInValue
+                    placeholder="Select a group"
                     onFocus={()=>setisGroupFocused(true)}
                     onChange={(e)=>{
                         if(!groupLoading){
