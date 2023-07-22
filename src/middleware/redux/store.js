@@ -5,6 +5,7 @@ import groupReducer from './reducers/group.reducer';
 import propertiesReducer from './reducers/properties.reducer';
 import archivePropertyReducer from './reducers/archiveProperty.reducer';
 import editPropertyReducer from './reducers/editProperty.reducer';
+import branchReducer from './reducers/branch.reducer';
 
 const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
     groupReducer: groupReducer,
     propertyReducer: propertiesReducer,
     archiveReducer: archivePropertyReducer,
-    editPropertyReducer: editPropertyReducer
+    editPropertyReducer: editPropertyReducer,
+    branchReducer: branchReducer
   },
 });
 

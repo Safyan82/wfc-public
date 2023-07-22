@@ -1,13 +1,16 @@
-import React,{ useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import { Form, Input, Drawer, Button, notification, Spin } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose, faExternalLink } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_BRACNH } from '../../util/mutation/branch.mutation';
 
 import './drawer.css';
 import Spinner from '../../components/spinner';
+import { GetBranchObject } from '../../util/query/branch.query';
+import { useDispatch } from 'react-redux';
+import { setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
 
 export const FormDrawer = ({ visible, onClose, refetch }) => {
     const [drawerVisible, setDrawerVisible] = useState(false);
@@ -18,6 +21,17 @@ export const FormDrawer = ({ visible, onClose, refetch }) => {
       const [createBranch, { loading, error }] = useMutation(CREATE_BRACNH);
       const [api, contextHolder] = notification.useNotification();
       const [isoverlay, setIsOverlay] = useState(true);
+
+      
+  
+      const {data:branchObjectData, loading: branchObjectLoading} = useQuery(GetBranchObject);
+
+      const [branchProperties, setBranchProperties] = useState([]);
+      const dispatch = useDispatch();
+
+      useEffect(()=>{
+        setBranchProperties(branchObjectData?.getBranchProperty?.response);
+      },[branchObjectData]);
     
     
       const handelSubmit=async ()=>{
@@ -130,10 +144,12 @@ export const FormDrawer = ({ visible, onClose, refetch }) => {
             }
           >
             <div className='title' 
+                style={branchObjectLoading?{opacity:0.4}:{opacity:1}}
                 onClick={()=>navigate('/editform',{
                     state: {
                     title: 'Branch',
                     url:'/user/branch',
+                    branchProperties,
                     }
                 })}
             ><FontAwesomeIcon icon={faExternalLink} style={{ marginLeft: 4 }} /> Edit this form </div>

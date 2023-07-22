@@ -10,3 +10,11 @@ export const CREATE_BRACNH = gql`
     }
   }
 `;
+
+export const BulkBranchObjectMutation = gql`
+mutation($input: BulkBranchObjectInput!){
+  createBranchObject(input: $input) {
+    response
+  }
+}
+`;

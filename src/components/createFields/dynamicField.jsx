@@ -79,8 +79,8 @@ export function CreateField({sortType,fieldType,label,search}){
     useEffect(()=>{
         if(sortType == "alphabetical"){
             const l = labelValue?.slice()?.sort((a, b) => a?.key?.localeCompare(b?.key));
-            // setLabelValue(l);
-            console.log(l);
+            setLabelValue(l);
+         
         }
     },[sortType]);
 

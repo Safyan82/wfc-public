@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Divider } from 'antd';
 import { GridHeader } from '../../components/tablegrid/header';
 import DataTable from '../../components/table';
-import AddBranch from './addBranch';
 import { useQuery } from '@apollo/client';
 import { GET_BRANCHES } from '../../util/query/branch.query';
 import { FormDrawer } from '../formDrawer';
@@ -19,7 +18,6 @@ export const Branch = () =>{
             <Divider/>
             <DataTable data={data} />
             <FormDrawer visible={false || branchModal} refetch={refetch} onClose={()=>setBranchModal(!branchModal)} />
-            <CreateFieldDrawer visible={fieldModal} onClose={()=>setFieldModal(false)}/>
         </React.Fragment>
     )
 }

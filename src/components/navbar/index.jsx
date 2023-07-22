@@ -5,6 +5,7 @@ import {
   MoreOutlined,
   LogoutOutlined,
   WechatOutlined,
+  CloseOutlined,
 } from '@ant-design/icons';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -75,7 +76,8 @@ export function Navbar(){
                 </Menu.Item> */}
             </SubMenu>
 
-            {/* <Menu.Item key="minimize" className='minimize' id="minimize" itemRef='minimize'> <FontAwesomeIcon icon={faWindowMinimize} /> </Menu.Item>
+            {/* mini max btn */}
+            {/* <Menu.Item style={{marginTop:'-1%'}}  key="minimize" className='minimize' id="minimize" itemRef='minimize'> <FontAwesomeIcon icon={faWindowMinimize} /> </Menu.Item>
             
             <Menu.Item key="maximize" id="maximize" onClick={()=>setWindowMaximized(!isWindowMaximized)}> 
             {isWindowMaximized ? 
@@ -85,8 +87,8 @@ export function Navbar(){
             }
             </Menu.Item>
 
-            <Menu.Item key="close" className='menu-close' id="close"> <CloseOutlined /> </Menu.Item> */}
-
+            <Menu.Item key="close" className='menu-close' id="close"> <CloseOutlined /> </Menu.Item>
+             */}
         </Menu>
 
     </Layout> 

@@ -9,3 +9,11 @@ export const GET_BRANCHES = gql`
         }
     }
 `;
+
+export const GetBranchObject = gql`
+    query{
+        getBranchProperty {
+        response
+        }
+    }
+`;

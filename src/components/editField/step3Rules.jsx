@@ -316,6 +316,12 @@ export const Rules = ({basicInfo, setWidth})=>{
                 onChange={(e)=>dispatch(setRules({'propertyVisibility':e.target.checked}))} style={{fontWeight:'300'}} >Show in forms, pop-up forms, and bots</Checkbox>
             </div>
 
+            <div className="propertyCheckbox">
+                <div style={{color: 'black',marginTop:'3%', marginBottom: '2%'}} >Owned by</div>
+                <Checkbox name="ownedby" defaultChecked={propertyToBeEdit?.rules?.ownedby || rules?.ownedby}  
+                onChange={(e)=>dispatch(setRules({'ownedby':e.target.checked}))} style={{fontWeight:'300'}} >This property owned by Workforce City</Checkbox>
+            </div>
+
 
             {/* single field validation */}
             {(fieldType=="singlelineText" || fieldType=="multilineText" || fieldType=="password") &&

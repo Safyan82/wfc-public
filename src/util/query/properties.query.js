@@ -92,6 +92,14 @@ export const PROPERTYWITHFILTER = gql `
 `;
 
 
+export const GetPropertyByGroupQuery = gql`
+    query{
+        getPropertyByGroup {
+        data
+        }
+    }
+`
+
 
 export const ArchivePropertyFilter = gql `
     query($endDate: String!, $startDate: String!){

@@ -4,7 +4,7 @@ import { Login } from "./pages/login";
 import { DefaultLayout } from "./layout/defaultLayout";
 import { Employee } from "./pages/employee";
 import { Branch } from "./pages/branch";
-import { EditForm } from "./pages/editForm";
+import { EditForm } from "./pages/editForm/editForm.page";
 import React, { useEffect } from "react";
 import { Setting } from './pages/setting/setting';
 import { useSelector } from 'react-redux';

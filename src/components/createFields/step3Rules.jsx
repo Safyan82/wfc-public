@@ -317,6 +317,10 @@ export const Rules = ({basicInfo, setWidth})=>{
                 <div style={{color: 'black',marginTop:'5%', marginBottom: '2%'}} >Property visibility</div>
                 <Checkbox name="propertyVisibility" defaultChecked={propertyToBeEdit?.rules?.propertyVisibility || rules?.propertyVisibility} onChange={handelRuleChange} style={{fontWeight:'300'}} >Show in forms, pop-up forms, and bots</Checkbox>
             </div>
+            <div className="propertyCheckbox">
+                <div style={{color: 'black',marginTop:'5%', marginBottom: '2%'}} >Owned by</div>
+                <Checkbox name="ownedby"   defaultChecked={propertyToBeEdit?.rules?.ownedby || rules?.ownedby}  onChange={handelRuleChange} style={{fontWeight:'300'}} >This property owned by Workforce City</Checkbox>
+            </div>
 
 
             {/* single field validation */}

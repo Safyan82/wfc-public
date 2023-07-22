@@ -1,10 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { ApartmentOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faAsterisk, faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { Popover } from "antd";
+import { addFieldToBranchSchema, removeFieldFromBranchSchema, setPropertyToBeRemoveFromSchema } from "../../middleware/redux/reducers/branch.reducer";
+import { useDispatch } from "react-redux";
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -17,75 +19,79 @@ const reorder = (list, startIndex, endIndex) => {
 
 
 
-export default class DraggableList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      items: this.props.list
-    };
-    this.onDragEnd = this.onDragEnd.bind(this);
-  }
+const DraggableList = ({list}) => {
+ console.log(list, "safyan listtt");
+  const [items, setItems] = useState(list)
+  useEffect(()=>{
+    setItems(list?.filter((l)=>l.isLocalDeleted!=1));
+  }, [list]);
 
-  onDragEnd(result) {
-    console.log(result);
+
+  const onDragEnd = (result) => {
     // dropped outside the list
     if (!result.destination) {
       return;
     }
+    
 
-    const items = reorder(
-      this.state.items,
+    setItems(reorder(
+      items,
       result.source.index,
       result.destination.index
-    );
-
-    this.setState({
-      items
-    });
+      ));
   }
+
 
   // Normally you would want to split things out into separate components.
   // But in this example everything is just done in one place for simplicity
-  render() {
+  const dispatch = useDispatch();
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {this.state.items.map((item, index) => (
-                <Draggable key={item.id.toString()} draggableId={item.id.toString()} index={index}
+              {items.map((item, index) => (
+                item?.isLocalDeleted ? null :
+                <Draggable key={item._id} draggableId={item._id} index={index}
                  
                 >
                   {(provided, snapshot) => (
                     <div className="icon-wrapper">
                       <div className="delete-icon">
-                        <Popover 
+                        {/* <Popover 
                           overlayClassName="custom-popover"
                           content={"This Property is a part of object schema"} 
                           placement='top'
-                        >
-                          <FontAwesomeIcon icon={faTrashAlt} />
-                        </Popover>
+                        > */}
+            
+                          <FontAwesomeIcon onClick={async()=>{
+                            await dispatch(setPropertyToBeRemoveFromSchema(item._id));
+                            }} className="active" icon={faTrashAlt} />
+                        {/* </Popover> */}
                         
-                        <Popover 
+                        {/* <Popover 
                           overlayClassName="custom-popover"
                           content={"Conditional logic is not available for non-enumerated properties."} 
                           placement='top'
-                        >
+                        > */}
                           <ApartmentOutlined />
-                        </Popover>
+                        {/* </Popover> */}
 
                         
-                        <Popover 
+                        {/* <Popover 
                         overlayClassName="custom-popover"
                         content={"Change the label of this property"} 
                         placement='top'
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </Popover>
+                        > */}
+                          <FontAwesomeIcon 
+                            className={item?.isMandatory? "mandatory" : "active"} 
+                            icon={faAsterisk} 
+                            onClick={()=>dispatch(addFieldToBranchSchema({_id:item._id, isMandatory: item?.isMandatory ? false : true}))} 
+                          />
+                        {/* </Popover> */}
 
                       </div>
                       <div
@@ -94,14 +100,14 @@ export default class DraggableList extends Component {
                         {...provided.dragHandleProps}
                         id={"item-"+index}
                         itemRef={"item-"+index}
-                        key={item.id}
+                        key={item._id}
                         className="edit-form-input-control input inputItemList"
                         style={{
                           opacity: snapshot.isDragging ? 0.5 : 1,
                           ...provided.draggableProps.style
                         }}
                       >
-                          {item.content}
+                          {item.label}
                       </div>
                     </div>
 
@@ -114,5 +120,6 @@ export default class DraggableList extends Component {
         </Droppable>
       </DragDropContext>
     );
-  }
 }
+
+export default DraggableList;
