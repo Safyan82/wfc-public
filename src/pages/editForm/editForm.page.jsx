@@ -205,7 +205,7 @@ export const EditForm=()=>{
                             
                             <Popover 
                             overlayClassName="custom-popover"
-                            content={"Change the label of this property"} 
+                            content={"Make this property mandatory"} 
                             placement='top'
                             >
                               <FontAwesomeIcon icon={faAsterisk} />

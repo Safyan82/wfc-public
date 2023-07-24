@@ -679,7 +679,7 @@ a:visited{
 
 
 
-/* :where(.css-dev-only-do-not-override-12jzuas).ant-notification .ant-notification-notice .ant-notification-notice-close{
+:where(.css-dev-only-do-not-override-12jzuas).ant-notification .ant-notification-notice .ant-notification-notice-close{
     padding: 12px;
     position: absolute;
     border-radius: 100%;
@@ -709,7 +709,7 @@ a:visited{
 
 .ant-notification-notice-with-icon{
     display: flex !important;
-} */
+}
 
 .alert-close-icon{
     transition: background 150ms ease-out 0s !important;

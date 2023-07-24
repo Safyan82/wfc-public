@@ -116,10 +116,11 @@ export const AddProperty=({back})=>{
     };
     
     const [rawlist, setRawList] = useState([]);
+    const [dataToSearch, setDataToSearch] = useState();
+
     useEffect(()=>{
         if(data?.getPropertyByGroup?.data){
-
-            setRawList(data.getPropertyByGroup.data?.map((data)=>{
+            const rawData = data.getPropertyByGroup.data?.map((data)=>{
                 const properties = data?.properties?.map((property)=>{
                     const isExist = branchSchema.find((field)=>field.propertyId===property._id);
                     const isLocalExist = branchSchemaNewFields.find((field)=>field._id===property._id && field.isLocalDeleted==0)
@@ -136,7 +137,10 @@ export const AddProperty=({back})=>{
                     ...data,
                     properties
                 }
-            }));
+            });
+
+            setRawList([...rawData]);
+            setDataToSearch([...rawData]);
         }
     }, [data?.getPropertyByGroup]);
 
@@ -150,7 +154,26 @@ export const AddProperty=({back})=>{
         setList(d);
     },[rawlist]);
 
-   
+    const [activeKeys, setActiveKeys] = useState([]);
+    const [query, setQuery] = useState("");
+    const handelSearch = (e) =>{
+        if(e.target.value.length>0){
+
+            const queryData = dataToSearch?.map((parent)=>{
+                const properties = parent?.properties?.filter((property)=>((property.label.toLowerCase()).includes(e.target.value.toLowerCase())));
+                return {
+                    ...parent,
+                    properties: [...properties],
+                }
+            });
+            const finalData = queryData?.filter((data)=> data?.properties?.length>0);
+            console.log(finalData);
+            setRawList([...finalData]);
+            setActiveKeys(finalData?.map(data=>data._id));
+        }else{
+            setRawList([...dataToSearch])
+        }
+    };  
 
     return(
         <>
@@ -176,6 +199,11 @@ export const AddProperty=({back})=>{
                         className='generic-input-control search-prop'
                         suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                         placeholder='Search properties'
+                        onChange={(e)=>{
+                            handelSearch(e);
+                            setQuery(e.target.value);
+                        }}
+                        value={query}
                     />
                 <div style={{marginTop:'5%'}}>
                     {loading?
@@ -184,7 +212,11 @@ export const AddProperty=({back})=>{
                         <Loader />
                         </>
                         :
-                        <Collapse accordion items={list}/>
+                        
+                        query?.length>0 ?
+                        <Collapse activeKey={activeKeys}  items={list}/>
+                        :
+                        <Collapse  accordion items={list}/>
                     }
                 </div>
 

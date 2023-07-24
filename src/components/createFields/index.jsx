@@ -163,14 +163,14 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
 
         const {data} = await createProperty({variables:{input:{...field}}});
         clearandClose();
-  
-        await propertyListRefetch();
-        
         dispatch(setNotification({
           notificationState:true, 
           message:"Property was created successfully",
           error: false,
         }))
+  
+        await propertyListRefetch();
+        
         setDisabledBtn(false);
         
 
