@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAsterisk, faChevronLeft, faChevronRight, faStar } from "@fortawesome/free-solid-svg-icons";
-import { Button, Divider, Form, Input } from "antd";
+import { Button, Divider, Form, Input, notification } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import DraggableList from '../../components/shuffle/draggeableList';
 import { AddProperty } from './addProperty.modal';
@@ -12,26 +12,27 @@ import { Popover } from "antd";
 import { ApartmentOutlined } from "@ant-design/icons";
 import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from 'react-redux';
-import { setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
+import { addFieldToBranchSchema, removeFieldFromBranchSchema, setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
-import { BulkBranchObjectMutation } from '../../util/mutation/branch.mutation';
+import { BulkBranchObjectMutation, BulkDeleteBranchObjectMutation } from '../../util/mutation/branch.mutation';
 import { Loader } from '../../components/loader';
 import Spinner from '../../components/spinner';
 import { GetBranchObject } from '../../util/query/branch.query';
+import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 
 export const EditForm=()=>{
     const location = useLocation();
     const navigate = useNavigate();
     const {title, url} = location.state;
     const [modalState, setModalState] = useState(false);
+
     const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject);
+    const [createBulkProperties, {loading: createBulkPropertiesLoading, error}] = useMutation(BulkBranchObjectMutation);
     
     const [mandatory, setMandatory] = useState([]);
 
     const { branchSchemaNewFields } = useSelector(state=>state.branchReducer);
-
-    const [createBulkProperties, {loading, error}] = useMutation(BulkBranchObjectMutation);
 
     const dispatch = useDispatch();
     useEffect(()=>{
@@ -41,28 +42,77 @@ export const EditForm=()=>{
         setMandatory(mandatoryFields);
         dispatch(setBranchSchema(branchProperties?.getBranchProperty?.response));
 
-        console.log()
+        branchProperties?.getBranchProperty?.response?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
+          const propData = {
+            label:field?.propertyDetail?.label,
+            _id:field?.propertyId,
+            isMandatory:field?.isMandatory,
+            isLocalDeleted: 0
+          }
+          dispatch(addFieldToBranchSchema (propData));
+        });
+
+        
       }
     },[branchProperties]);
 
     const[isPropOpen, setProp]=useState(false);
 
+    const [deleteProperties, {loading: deletePropertiesLoading}] = useMutation(BulkDeleteBranchObjectMutation);
+
+    const [loading, setLoading] = useState(false);
+
+    useEffect(()=>{
+      if(deletePropertiesLoading || createBulkPropertiesLoading || branchObjectLoading){
+        setLoading(true);
+      }else{
+        setLoading(false);
+      }
+    },[deletePropertiesLoading, createBulkPropertiesLoading, branchObjectLoading ]); 
+
+    const [api, contextHolder] = notification.useNotification();
+
     const handelSave = async() => {
       if(branchSchemaNewFields?.length>0){
-        const props = branchSchemaNewFields.map((schema)=>({propertyId: schema?._id, isMandatory: schema?.isMandatory || false}))
-        await createBulkProperties({
-          variables:{
-            input:{
-              fields: props
+        const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0));
+        const deletedProps = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==1));
+        if(deletedProps?.length>0){
+          await deleteProperties({
+            variables:{
+              input: {properties: deletedProps?.map((props)=>(props._id))}
             }
-          }
-        });
+          })
+        }
+        if(props?.length>0){
+          await createBulkProperties({
+            variables:{
+              input:{
+                fields: props.map((schema)=>({propertyId: schema?._id, isMandatory: schema?.isMandatory || false}))
+              }
+            }
+          });
+        }
+        dispatch(setNotification({
+          notificationState:true, 
+          message:"Changes were saved",
+          error: false,
+        }));
         await branchObjectRefetch();
       }
     }
 
+
+    const {propertyToBeRemoveFromSchema} = useSelector((state)=>state.branchReducer);
+    
+    useEffect(()=>{
+      if(propertyToBeRemoveFromSchema){
+          dispatch(removeFieldFromBranchSchema({_id: propertyToBeRemoveFromSchema}));
+      }
+    },[propertyToBeRemoveFromSchema]);
+
     return(
         <React.Fragment>
+          {contextHolder}
             <section className="section">
                 <div className="toolbar">
                     <div className="toolbar-inner">
@@ -112,15 +162,25 @@ export const EditForm=()=>{
             </div>
 
             {/* main body */}
+            
             <div className="form-section">
                 <div className="form-section-inner">
                     <div className="modal-header-title">
                         Create {title}
                     </div>
-                    {loading?
-                    <Loader/>
-                    :
-                      <div className="form-section-body form"> 
+                    
+                    <div className="form-section-body form"> 
+                    {loading &&
+                     <div style={{
+                      height:'100%',
+                      width: "90%",
+                      background: "white",position:'absolute',
+                      opacity: 0.8,}}>
+                        <Loader/>
+                      </div>
+                    }
+
+                    
 
                       {/* branch name */}
                       {mandatory?.map((field)=>(
@@ -161,23 +221,16 @@ export const EditForm=()=>{
                         </div>
                       ))}
 
-                      <DraggableList list={branchSchemaNewFields?.length>0 ? branchSchemaNewFields :
-                         branchProperties?.getBranchProperty?.response?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
-                          return {
-                            label:field?.propertyDetail?.label,
-                            _id:field?._id,
-                            isMandatory:field?.isMandatory
-                          }
-                        }) || []
-                        }
-
-                         />        
+                      <DraggableList list={branchSchemaNewFields?.length>0 ? branchSchemaNewFields : []} />        
                                     
                       </div>
-                    }
+                    
+                    
 
                 </div>
             </div>
         </React.Fragment>
     );
 }
+
+

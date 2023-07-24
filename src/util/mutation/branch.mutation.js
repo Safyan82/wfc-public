@@ -16,5 +16,12 @@ mutation($input: BulkBranchObjectInput!){
   createBranchObject(input: $input) {
     response
   }
+}`;
+
+export const BulkDeleteBranchObjectMutation = gql`
+mutation($input: DeleteBranchObjectInput!){
+  deleteBranchObject(input: $input) {
+    response
+  }
 }
 `;

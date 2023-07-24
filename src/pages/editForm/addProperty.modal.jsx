@@ -118,27 +118,12 @@ export const AddProperty=({back})=>{
     const [rawlist, setRawList] = useState([]);
     useEffect(()=>{
         if(data?.getPropertyByGroup?.data){
-            // console.log(data.getPropertyByGroup.data?.map((data)=>{
-            //     const properties = data?.properties?.map((property)=>{
-            //         const isExist = branchSchema.find((field)=>field.propertyId===property._id);
-            //         if(isExist){
-            //             return {
-            //                 ...property,
-            //                 isChecked:true
-            //             }
-            //         }else{
-            //             return property
-            //         }
-            //     });
-            //     return {
-            //         ...data,
-            //         properties
-            //     }
-            // }), "log");
+
             setRawList(data.getPropertyByGroup.data?.map((data)=>{
                 const properties = data?.properties?.map((property)=>{
                     const isExist = branchSchema.find((field)=>field.propertyId===property._id);
-                    if(isExist){
+                    const isLocalExist = branchSchemaNewFields.find((field)=>field._id===property._id && field.isLocalDeleted==0)
+                    if(isExist && isLocalExist){
                         return {
                             ...property,
                             isChecked:true
