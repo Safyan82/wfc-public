@@ -319,7 +319,7 @@ export const Rules = ({basicInfo, setWidth})=>{
             </div>
             <div className="propertyCheckbox">
                 <div style={{color: 'black',marginTop:'5%', marginBottom: '2%'}} >Owned by</div>
-                <Checkbox name="ownedby"   defaultChecked={propertyToBeEdit?.rules?.ownedby || rules?.ownedby}  onChange={handelRuleChange} style={{fontWeight:'300'}} >This property owned by Workforce City</Checkbox>
+                <Checkbox name="ownedby"   defaultChecked={propertyToBeEdit?.rules?.ownedby || rules?.ownedby}  onChange={(e)=>dispatch(setRules({'ownedby': e.target.checked}))} style={{fontWeight:'300'}} >This property owned by Workforce City</Checkbox>
             </div>
 
 

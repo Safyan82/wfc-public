@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {SearchOutlined} from '@ant-design/icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faClose, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Checkbox, Collapse, Input } from "antd";
 import './editform.css';
 import { useQuery } from '@apollo/client';
@@ -197,7 +197,9 @@ export const AddProperty=({back})=>{
                 
                     <Input 
                         className='generic-input-control search-prop'
-                        suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
+                        suffix={query? 
+                            <FontAwesomeIcon style={{color:'#7c98b6', cursor:'pointer', fontSize: '20px'}} onClick={()=>{setQuery('');handelSearch('');}} icon={faClose}/> : 
+                            <FontAwesomeIcon style={{color:'#0091ae'}} icon={faSearch}/> }
                         placeholder='Search properties'
                         onChange={(e)=>{
                             handelSearch(e);
@@ -216,7 +218,7 @@ export const AddProperty=({back})=>{
                         query?.length>0 ?
                         <Collapse activeKey={activeKeys}  items={list}/>
                         :
-                        <Collapse  accordion items={list}/>
+                        <Collapse   items={list}/>
                     }
                 </div>
 
