@@ -157,7 +157,7 @@ export const AddProperty=({back})=>{
     const [activeKeys, setActiveKeys] = useState([]);
     const [query, setQuery] = useState("");
     const handelSearch = (e) =>{
-        if(e.target.value.length>0){
+        if(e?.target?.value?.length>0){
 
             const queryData = dataToSearch?.map((parent)=>{
                 const properties = parent?.properties?.filter((property)=>((property.label.toLowerCase()).includes(e.target.value.toLowerCase())));
