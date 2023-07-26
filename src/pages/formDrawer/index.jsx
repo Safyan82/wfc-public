@@ -11,13 +11,13 @@ import Spinner from '../../components/spinner';
 import { GetBranchObject } from '../../util/query/branch.query';
 import { useDispatch } from 'react-redux';
 import { setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
+import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 
 export const FormDrawer = ({ visible, onClose, refetch }) => {
     const [drawerVisible, setDrawerVisible] = useState(false);
       const navigate = useNavigate();
       
       const branchOrder = JSON.parse(localStorage.getItem("branchOrder"));
-      
       const [createBranch, { loading, error }] = useMutation(CREATE_BRACNH);
       const [api, contextHolder] = notification.useNotification();
       const [isoverlay, setIsOverlay] = useState(true);
@@ -25,8 +25,9 @@ export const FormDrawer = ({ visible, onClose, refetch }) => {
       
   
       const {data:branchObjectData, loading: branchObjectLoading} = useQuery(GetBranchObject);
-
+    
       const [branchProperties, setBranchProperties] = useState([]);
+
       const dispatch = useDispatch();
 
       useEffect(()=>{
@@ -73,18 +74,16 @@ export const FormDrawer = ({ visible, onClose, refetch }) => {
     
       const branchMutation=async (branch)=>{
         try{
-          await createBranch({variables: {input: branch}});
-          await refetch();
-          const openNotification = (message) => {
-            api.success({
-              message,
-              placement:"topCenter",
-              className: 'notification-without-close',
-            });
-          };
-          openNotification("Branch created");
-    
+          const {message} = await createBranch({variables: {input: branch}});
+          dispatch(setNotification({
+            notificationState:true, 
+            message: "Branch was added successfully",
+            error: false,
+          }))
           onClose();
+          await refetch();
+          
+    
         }
         catch(err){
           const openNotification = (description) => {
@@ -98,15 +97,17 @@ export const FormDrawer = ({ visible, onClose, refetch }) => {
         }
       }
     
+
       const handelChange=(e)=>{
+        console.log(e.name, "eeeeeeeeeee");
         if(e.value.length>2){
-            if(e.name=="branchName"){
+            if(e.name=="branchname"){
                 setIsOverlay(false);
             }
           e.style.borderColor="rgba(0,208,228,.5)";
           e.style.boxShadow="0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4";
         }else{
-            if(e.name=="branchName"){
+            if(e.name=="branchname"){
                 setIsOverlay(true);
             }
         }
@@ -149,7 +150,6 @@ export const FormDrawer = ({ visible, onClose, refetch }) => {
                     state: {
                     title: 'Branch',
                     url:'/user/branch',
-                    branchProperties,
                     }
                 })}
             ><FontAwesomeIcon icon={faExternalLink} style={{ marginLeft: 4 }} /> Edit this form </div>
@@ -158,20 +158,14 @@ export const FormDrawer = ({ visible, onClose, refetch }) => {
                 <div className={isoverlay? 'overlay' : 'overlay hidden'}>
                     <div className='overlay-text'>Start by entering the Branch's name</div>
                 </div>
-                <Form.Item>
-                <label>Branch Name <sup className='mandatory'>*</sup></label>
-                <Input className='input-control' onBlur={(e)=>onBlurDesign(e.target)} onChange={(e)=>handelChange(e.target)} name="branchName" />
-                </Form.Item>
-                <Form.Item>
-                <label>Post Code <sup className='mandatory'>*</sup></label>
-                <Input className='input-control' onBlur={(e)=>onBlurDesign(e.target)} onChange={(e)=>handelChange(e.target)} name="postCode" />
-                </Form.Item>
-            {branchOrder?.map((branch)=>(
-                <Form.Item>
-                <label>{branch.content}</label>
-                <Input className='input-control' onBlur={(e)=>onBlurDesign(e.target)} onChange={(e)=>handelChange(e.target)} name={branch.content.replaceAll(" ","")} />
-                </Form.Item>
-                ))}            
+                {branchProperties?.map((property)=>{
+                  return(
+                    <Form.Item>
+                      <label>{property?.propertyDetail?.label} <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
+                      <Input className='generic-input-control' onBlur={(e)=>onBlurDesign(e.target)} onChange={(e)=>handelChange(e.target)} name={property?.propertyDetail?.label.replaceAll(" ","").toLowerCase()} />
+                    </Form.Item>           
+                  )
+                })}
             </form>
             
         </Drawer>

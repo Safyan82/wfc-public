@@ -72,6 +72,19 @@ export const EditForm=()=>{
 
     const [api, contextHolder] = notification.useNotification();
 
+    const [btnDisabled, setBtnDisabled] = useState(true);
+    useEffect(()=>{
+      
+      const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0 && schema?.isNew==1));
+      const deletedProps = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==1));
+      if(props?.length>0 || deletedProps?.length>0){
+        setBtnDisabled(true);
+      }else{
+        setBtnDisabled(true);
+      }
+    },[branchSchemaNewFields]);
+
+    
     const handelSave = async() => {
       if(branchSchemaNewFields?.length>0){
         const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0));
@@ -123,7 +136,7 @@ export const EditForm=()=>{
                         <div className="toolbar-inner-title">Edit {title} form</div>
                         <div className="btn-group">
                             <button disabled={loading} className={loading?"drawer-outlined-btn disabled-btn": "drawer-outlined-btn"} onClick={()=>setModalState(!modalState)}>Preview</button>
-                            <button disabled={loading} className={loading?"drawer-filled-btn disabled-btn":"drawer-filled-btn "} onClick={handelSave}> {loading? <Spinner/> : "Save"}</button>
+                            <button disabled={loading || btnDisabled} className={loading || btnDisabled? "drawer-filled-btn disabled-btn":"drawer-filled-btn "} onClick={handelSave}> {loading? <Spinner/> : "Save"}</button>
                         </div>
                     </div>
                 </div>

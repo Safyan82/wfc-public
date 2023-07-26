@@ -47,7 +47,7 @@ export const AddProperty=({back})=>{
 
     const handelProperty = (e, propertyData)=>{
         if(e.target.checked){
-            dispatch(addFieldToBranchSchema({...propertyData, isLocalDeleted: 0}));
+            dispatch(addFieldToBranchSchema({...propertyData, isLocalDeleted: 0, isNew: 1,}));
             const isExist = rawlist?.map((list)=>{
 
                 const properties = list?.properties.map((property)=> {

@@ -2,41 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { Layout, theme, Table, Input, Popover } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
 import TabsComponent from '../tab';
+import { Loader } from '../loader';
+import { GetBranchObject } from '../../util/query/branch.query';
+import { useQuery } from '@apollo/client';
 
   
 const { Header, Content, Footer } = Layout;
 
-const DataTable = ({header, data}) => {
+const DataTable = ({header, data, loading}) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [sortedInfo, setSortedInfo] = useState({});
-  const [loading, setLoading]= useState(false);
-  const [dynamicColumn, setDynamicColumn] = useState([
-    {
-      title: 'Branch Name',
-      dataIndex: 'branchName',
-      key: 'branchName',
-    },
-    {
-      title: 'Post code',
-      dataIndex: 'postCode',
-      key: 'postCode',
-    },
-    {
-      title: 'Address Line 1',
-      dataIndex: 'AddressLine1',
-      key: 'AddressLine1'
-    },
-    {
-      title: 'Address Line 2',
-      dataIndex: 'AddressLine2',
-      key: 'AddressLine2',
-    },
-    {
-      title: 'City',
-      dataIndex: 'City',
-      key: 'City',
-    },
-  ]);
+  const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject);
+  const [dynamicColumn, setDynamicColumn]=useState([]);
+  useEffect(()=>{
+    if(branchProperties?.getBranchProperty?.response){
+
+      const col = branchProperties?.getBranchProperty.response?.map((prop)=>({
+        title: prop.propertyDetail.label,
+        dataIndex: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
+        key: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
+      }));
+      setDynamicColumn([...col])
+    }
+  }, [branchProperties?.getBranchProperty?.response]);
 
   const [dataSource, setDataSource] = useState([]);
 
@@ -76,13 +64,15 @@ const DataTable = ({header, data}) => {
       <Content className="site-layout" style={{ padding: '0 42px' }}>
         <div style={{ padding: 5, minHeight: 450, background: colorBgContainer }}>
             {/* <TabsComponent/> */}
-            {!loading &&
+            {loading || branchObjectLoading?
+            <Loader/>
+            :
             <Table  
               bordered
               rowSelection={rowSelection}
               columns={dynamicColumn} 
               dataSource={dataSource} 
-              pagination={{pageSize:5}}
+              pagination={{pageSize:5,}}
               title={!header? null : () => {
                 if(header){
                 return(

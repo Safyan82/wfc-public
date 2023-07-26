@@ -301,6 +301,7 @@ export const Setting=()=>{
                                         propertyListRefetch={propertyListRefetch}
                                         propertyList={propertyList}
                                         setPropertyList={setPropertyList}
+                                        resetSearch={propertyDataList?.getPropertywithFilters}
                                         setGroupPopover={setGroupPopover}
                                         setGroupInput={setGroupInput}
                                         setFieldType={setFieldType}

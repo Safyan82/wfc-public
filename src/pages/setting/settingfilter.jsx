@@ -45,7 +45,7 @@ export const Filter = ({
     editProperty, group, groupPopover,fieldType, fieldTypePopover,
     user, userPopover, setGroupPopover, setGroupInput,
     setFieldType, setfieldTypePopover, setUser, setuserPopover, propertyList, setPropertyList,
-    groupList
+    groupList, resetSearch
 })=>{
    
 
@@ -112,8 +112,13 @@ export const Filter = ({
     const[searchInput, setSearchInput]=useState('');
 
     const handelSearch = (keyword)=>{
-        setSearchInput(keyword);
-        setPropertyList(propertyList.filter((property)=> property.label.toLowerCase().includes(keyword.toLowerCase())));
+        if(keyword?.length>0){
+            setSearchInput(keyword);
+            setPropertyList(propertyList.filter((property)=> property.label.toLowerCase().includes(keyword.toLowerCase())));
+        }else{
+            setSearchInput(keyword);
+            setPropertyList([...resetSearch]);
+        }
     };
 
     const [localGroup, setLocalGroup] = useState(groupList);

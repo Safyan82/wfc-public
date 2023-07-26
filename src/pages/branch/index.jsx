@@ -16,7 +16,11 @@ export const Branch = () =>{
         <React.Fragment>
             <GridHeader title={"Branch(es)"} record={0} editProperty={()=>setFieldModal(true)} createAction={()=>setBranchModal(true)}/>
             <Divider/>
-            <DataTable data={data} />
+            <DataTable 
+                data={data}
+                loading={loading} 
+                refetch={refetch}
+            />
             <FormDrawer visible={false || branchModal} refetch={refetch} onClose={()=>setBranchModal(!branchModal)} />
         </React.Fragment>
     )
