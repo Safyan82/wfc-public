@@ -72,15 +72,15 @@ export const EditForm=()=>{
 
     const [api, contextHolder] = notification.useNotification();
 
-    const [btnDisabled, setBtnDisabled] = useState(true);
+    const [btnDisabled, setBtnDisabled] = useState(false);
     useEffect(()=>{
       
       const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0 && schema?.isNew==1));
       const deletedProps = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==1));
       if(props?.length>0 || deletedProps?.length>0){
-        setBtnDisabled(true);
+        setBtnDisabled(false);
       }else{
-        setBtnDisabled(true);
+        setBtnDisabled(false);
       }
     },[branchSchemaNewFields]);
 
