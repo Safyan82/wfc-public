@@ -122,6 +122,7 @@ export const AddProperty=({back})=>{
         if(data?.getPropertyByGroup?.data){
             const rawData = data.getPropertyByGroup.data?.map((data)=>{
                 const properties = data?.properties?.map((property)=>{
+                    
                     const isExist = branchSchema.find((field)=>field.propertyId===property._id);
                     const isLocalExist = branchSchemaNewFields.find((field)=>field._id===property._id && field.isLocalDeleted==0)
                     if(isExist && isLocalExist){

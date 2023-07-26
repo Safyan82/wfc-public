@@ -13,7 +13,6 @@ const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
-  localStorage.setItem("branchOrder", JSON.stringify(result))
   return result;
 };
 
@@ -26,6 +25,9 @@ const DraggableList = ({list}) => {
     setItems(list?.filter((l)=>l.isLocalDeleted!=1));
   }, [list]);
 
+  useEffect(()=>{
+    console.log(items, "itemm");
+  },[items]);
 
   const onDragEnd = (result) => {
     // dropped outside the list
@@ -38,7 +40,8 @@ const DraggableList = ({list}) => {
       items,
       result.source.index,
       result.destination.index
-      ));
+    ));
+
   }
 
 
