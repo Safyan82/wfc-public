@@ -136,10 +136,16 @@ export const Setting=()=>{
 
     
     const [propertyList, setPropertyList] = useState([]);
+    const [jerkLoad, setJerkLoad] = useState(false);
     useEffect(()=>{
+        setJerkLoad(true);
         if(propertyDataList && Object.keys(propertyDataList?.getPropertywithFilters)){
             setPropertyList([...propertyDataList?.getPropertywithFilters]);
-        }
+        };
+        setTimeout(()=>{
+
+            setJerkLoad(false);
+        },500);
     },[propertyDataList]);
 
 
@@ -314,7 +320,7 @@ export const Setting=()=>{
                                     <SettingPropertyGrid
                                         propertyList={propertyList}
                                         propertyListRefetch={propertyListRefetch}
-                                        propertyListLoading={propertyListLoading}
+                                        propertyListLoading={propertyListLoading || jerkLoad}
                                         refetch={refetch}
                                         setFieldModal={setFieldModal}
                                         setEditFieldModal={setEditFieldModal}

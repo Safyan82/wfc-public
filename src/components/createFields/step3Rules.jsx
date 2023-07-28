@@ -335,7 +335,12 @@ export const Rules = ({basicInfo, setWidth})=>{
 
                     <div>
 
-                        <Checkbox checked={min} onChange={(e)=>{setMin(e.target.checked);dispatch(setRules({'minRange':e.target.checked}))}}>
+                        <Checkbox checked={min} onChange={(e)=>{
+                            setMin(e.target.checked);
+                            dispatch(setRules({'minRange':e.target.checked}));
+                            dispatch(setRules({'minimumCharacter':1}));
+                            
+                        }}>
                             Set min character limit
                         </Checkbox>
                         {min &&
@@ -359,13 +364,17 @@ export const Rules = ({basicInfo, setWidth})=>{
                         <Checkbox 
                         
                         checked={max}
-                        onChange={(e)=>{setMax(e.target.checked);dispatch(setRules({'maxRange':e.target.checked}))}}>
+                        onChange={(e)=>{
+                            setMax(e.target.checked);
+                            dispatch(setRules({'maxRange':e.target.checked}));
+                            dispatch(setRules({'maximumCharacter':100}));
+                        }}>
                             Set max character limit
                         </Checkbox>
                         {max &&
                         <div className="numberInput">
                             <InputNumber
-                                min={100}
+                                min={minCharacter}
                                 name="maximumCharacter"
                                 defaultValue={propertyToBeEdit?.rules?.maximumCharacter || maxCharacter}                          
                                 upHandler={<FontAwesomeIcon style={{color:'#0091ae'}} icon={faChevronUp} />}

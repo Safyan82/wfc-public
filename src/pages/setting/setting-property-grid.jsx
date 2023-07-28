@@ -115,12 +115,25 @@ export const SettingPropertyGrid = ({propertyList,
 
           {showActions && selectedRowKeys?.length===0 &&
           <div style={{width:'60%', display:'flex', justifyContent:'flex-end' ,alignItems:'center', columnGap:'10px'}}>
-            <button style={{marginLeft:'10%'}} className="grid-sm-btn" type="link" onClick={() => { dispatch(setEditPropertyId(record.key)); setEditFieldModal(true);}}>
+           
+            <button  style={{marginLeft:'10%'}} className={"grid-sm-btn"} type="link" onClick={() => { dispatch(setEditPropertyId(record.key)); setEditFieldModal(true);}}>
               Edit
             </button>
-            <button  className="grid-sm-btn" type="link" onClick={() => { setFieldModal(true); dispatch(setEditPropertyId(record.key))}}>
-              Clone
-            </button>
+            {record?.rules?.ownedby ?
+            <Popover
+            overlayClassName='settingGridPopover'
+            content={"You can't clone this property because it was defined by Workforce City"}
+            >
+              <button className={record?.rules?.ownedby? "grid-sm-btn-disabled" :"grid-sm-btn"}  type="link" >
+                Clone
+              </button>
+            </Popover>
+            :
+            
+              <button className={"grid-sm-btn"}  type="link" onClick={() => { setFieldModal(true); dispatch(setEditPropertyId(record.key))}}>
+                Clone
+              </button>
+            }
 
             <Popover
                   overlayClassName='settingCustomPopover'
@@ -131,9 +144,24 @@ export const SettingPropertyGrid = ({propertyList,
                       <div className="popoverdataitem"  onClick={() => { setMoreoption(!moreOption); dispatch(setEditPropertyId(record.key)); setEditFieldModal(true);}} >
                           Edit
                       </div>
+                      
+                      {record?.rules?.ownedby ?
+                      <Popover
+                      overlayClassName='settingGridPopover'
+                      placement='left'
+                      content={"You can't clone this property because it was defined by Workforce City"}
+                      >
+                      <div className="popoverdataitem-disabled" >
+                          Clone
+                      </div>
+                      </Popover>:
+                      
                       <div className="popoverdataitem" onClick={() => { setMoreoption(!moreOption); setFieldModal(true); dispatch(setEditPropertyId(record.key))}} >
                           Clone
                       </div>
+                      }
+
+
                       <div className="popoverdataitem" onClick={()=>{ setMoreoption(!moreOption); dispatch(moveToGroup([record])); setMoveGroup(true)}}>
                           Move to group
                       </div>
@@ -143,14 +171,28 @@ export const SettingPropertyGrid = ({propertyList,
                       <div className="popoverdataitem" >
                           Assign Users & Teams &nbsp;<FontAwesomeIcon icon={faLock}/>
                       </div>
-                      <div className="popoverdataitem" onClick={()=>{
+                      
+                      {record?.rules?.ownedby ?
+                      <Popover
+                      overlayClassName=''
+                      placement='left'
+                      content={record?.label+" can't be archived."}
+                      >
+
+                        <div className="popoverdataitem-disabled">
+                            Archive
+                        </div>
+                      </Popover>
+                      :
+                         <div className="popoverdataitem" onClick={()=>{
                           setArchiveConfirmationModal(true);
                           setMoreoption(false);
                           setPropertyName(record.label);
                           setArchivedId(record.key);
                         }}>
                           Archive
-                      </div>
+                        </div>
+                      }
                     </div>
                   }
                 >

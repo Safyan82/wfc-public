@@ -145,7 +145,14 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
     useEffect(()=>{
       if(propertyToBeEdit?.rules){
 
-        setNRules(propertyToBeEdit && Object.values(propertyToBeEdit?.rules)?.filter((property) => property == true)?.length);
+        setNRules(propertyToBeEdit && Object.values(propertyToBeEdit?.rules)?.filter((property) => 
+        property === true 
+        || property=="bufferTime" 
+        || property=="anyFutureDate" 
+        || property=="rollingDate"
+        || property=="pastDate"
+        || property=="customDate"
+        )?.length);
       }
     },[propertyToBeEdit]);
 

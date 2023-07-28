@@ -80,6 +80,7 @@
     padding-top: 80px;
     padding-bottom: 60px;
     margin-left: -1%;
+    cursor: not-allowed;
 }
 
 .overlay-text{
@@ -158,4 +159,17 @@
 
 .mandatory{
     color:black;
+}
+
+.ant-tree-select .ant-select-selection-item{
+    margin-top: 13% !important;
+}
+
+.ant-tree-select .ant-select-selection-overflow-item .ant-select-selection-overflow-item-suffix{
+    margin-top: 13% !important;
+}
+
+#branchForm svg {
+    fill: rgb(0, 145, 174) !important; /* Change the color to your desired color */
+    color: rgb(0, 145, 174) !important; /* Change the color to your desired color */
 }
