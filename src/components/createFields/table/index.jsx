@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Checkbox, Button } from 'antd';
 
-const CheckboxTable = ({tableData, footerContent, onSelectChange, selectedRowKeys}) => {
+const CheckboxTable = ({tableData,customHeader, footerContent, onSelectChange, selectedRowKeys}) => {
  
 
   const columns = [
@@ -31,6 +31,7 @@ const CheckboxTable = ({tableData, footerContent, onSelectChange, selectedRowKey
   return (
     <div>
       <Table
+        title={selectedRowKeys?.length>0 ? () => customHeader : null}
         className='customizedTable'
         rowSelection={rowSelection}
         columns={columns}

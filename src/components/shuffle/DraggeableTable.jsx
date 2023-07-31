@@ -27,7 +27,7 @@ import { New } from '../createFields/dynamicField';
   ];
 const getIndexInParent = (el) => Array.from(el.parentNode.children).indexOf(el);
 
-export default function DraggableTable({tableData, footerContent, onSelectChange, selectedRowKeys}) {
+export default function DraggableTable({tableData, footerContent, onSelectChange, selectedRowKeys, customHeader}) {
   const [data, setData] = React.useState([...tableData]);
   React.useEffect(()=>{
     setData([...tableData]);
@@ -84,10 +84,11 @@ export default function DraggableTable({tableData, footerContent, onSelectChange
     onChange: onSelectChange,
   };
 
+ 
+
   return (
     <Table
-      showHeader={true}
-      title={()=><New/>}
+      title={selectedRowKeys?.length>0 ? () => customHeader : null}
       className='customizedTable draggeableTable'
       rowSelection={rowSelection}
       columns={columns}

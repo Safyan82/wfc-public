@@ -9,6 +9,7 @@ import React, { useEffect } from "react";
 import { Setting } from './pages/setting/setting';
 import { useSelector } from 'react-redux';
 import { notification } from 'antd';
+import { FormView } from './pages/formView/formView';
 
 function App() {
   
@@ -63,6 +64,7 @@ function App() {
           <Route path='setting' element={<Setting />} />
         </Route>
         <Route path='/editform' element={<EditForm />} />
+        <Route path='/formview' element={<FormView/>} />
       </Routes>
     </BrowserRouter>
     {/* <Navbar/> */}

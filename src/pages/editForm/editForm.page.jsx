@@ -20,11 +20,13 @@ import { Loader } from '../../components/loader';
 import Spinner from '../../components/spinner';
 import { GetBranchObject } from '../../util/query/branch.query';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
+import { FormHeader } from '../../components/header/header';
 
 export const EditForm=()=>{
     const location = useLocation();
+    console.log(location, "locationnnn");
     const navigate = useNavigate();
-    const {title, url} = location.state;
+    const {title, url} = location?.state;
     const [modalState, setModalState] = useState(false);
 
     const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject);
@@ -33,7 +35,17 @@ export const EditForm=()=>{
     const [mandatory, setMandatory] = useState([]);
 
     const { branchSchemaNewFields } = useSelector(state=>state.branchReducer);
+    const [branchSchemaLocal, setBranchSchemaLocal] = useState([...branchSchemaNewFields]);
 
+    useEffect(()=>{
+      setBranchSchemaLocal([...branchSchemaNewFields]);
+    }, [branchSchemaNewFields]);
+
+    useEffect(()=>{
+
+      console.log(branchSchemaLocal.sort((a, b) => a?.order - b?.order), "sort", branchSchemaLocal)
+    },[branchSchemaLocal]);
+    
     const dispatch = useDispatch();
     useEffect(()=>{
       if(!branchObjectLoading){
@@ -47,7 +59,8 @@ export const EditForm=()=>{
             label:field?.propertyDetail?.label,
             _id:field?.propertyId,
             isMandatory:field?.isMandatory,
-            isLocalDeleted: 0
+            isLocalDeleted: 0,
+            order: field?.order
           }
           dispatch(addFieldToBranchSchema (propData));
         });
@@ -126,122 +139,118 @@ export const EditForm=()=>{
     return(
         <React.Fragment>
           {contextHolder}
-            <section className="section">
-                <div className="toolbar">
-                    <div className="toolbar-inner">
-                        <div className="toolbar-inner-link"  onClick={()=>navigate(url)}>
-                            <div><FontAwesomeIcon icon={faChevronLeft} style={{fontSize:'20px'}} /></div>
-                            <div>Back</div>
-                        </div>
-                        <div className="toolbar-inner-title">Edit {title} form</div>
-                        <div className="btn-group">
-                            <button disabled={loading} className={loading?"drawer-outlined-btn disabled-btn": "drawer-outlined-btn"} onClick={()=>setModalState(!modalState)}>Preview</button>
-                            <button disabled={loading || btnDisabled} className={loading || btnDisabled? "drawer-filled-btn disabled-btn":"drawer-filled-btn "} onClick={handelSave}> {loading? <Spinner/> : "Save"}</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+              <FormHeader
+                title={"Edit " +title+ " Form"}
+                loading={loading}
+                btnDisabled={btnDisabled}
+                setModalState={setModalState}
+                modalState={modalState}
+                handelSave={handelSave}
+                url={url}
+                
+                btnVisibility={true}
+              />
+              {/* left side properties */}
+              <div className="left-sidebar">
+                  <div className="left-sidebar-inner">
 
-            {/* left side properties */}
-            <div className="left-sidebar">
-                <div className="left-sidebar-inner">
+                      {
+                      isPropOpen?
+                      
+                      <AddProperty back={()=>setProp(false)}/>
+                      
+                      :
+                      <>
+                          {/* main content of property */}
+                          <div className="left-sidebar-item">
+                              <div className="left-sidebar-item-text" onClick={()=>setProp(true)} >Add properties</div>
+                              <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                          </div>
+                          <Divider/>
+                          <div className="left-sidebar-item">
+                              <div className="left-sidebar-item-text">Add conditional logic</div>
+                              <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                          </div>
+                          <Divider/>
+                          <div className="left-sidebar-item">
+                              <div className="left-sidebar-item-text">Add associations </div>
+                              <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                          </div>
+                      </>
+                      }
 
-                    {
-                    isPropOpen?
-                    
-                    <AddProperty back={()=>setProp(false)}/>
-                    
-                    :
-                    <>
-                        {/* main content of property */}
-                        <div className="left-sidebar-item">
-                            <div className="left-sidebar-item-text" onClick={()=>setProp(true)} >Add properties</div>
-                            <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                        </div>
-                        <Divider/>
-                        <div className="left-sidebar-item">
-                            <div className="left-sidebar-item-text">Add conditional logic</div>
-                            <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                        </div>
-                        <Divider/>
-                        <div className="left-sidebar-item">
-                            <div className="left-sidebar-item-text">Add associations </div>
-                            <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                        </div>
-                    </>
-                    }
+                  </div>
+              </div>
 
-                </div>
-            </div>
+              {/* main body */}
+              
+              <div className="form-section">
+                  <div className="form-section-inner">
+                      <div className="modal-header-title">
+                          Create {title}
+                      </div>
+                      
+                      <div className="form-section-body form"> 
+                      {loading &&
+                      <div style={{
+                        height:'100%',
+                        width: "90%",
+                        background: "white",position:'absolute',
+                        opacity: 0.8,}}>
+                          <Loader/>
+                        </div>
+                      }
 
-            {/* main body */}
+                      
+
+                        {/* branch name */}
+                        {mandatory?.map((field)=>(
+                          <div className="icon-wrapper">
+                            <div className="delete-icon">
+                              <Popover 
+                                overlayClassName="custom-popover"
+                                content={"This Property is a part of object schema"} 
+                                placement='top'
+                              >
+                                <FontAwesomeIcon icon={faTrashAlt} />
+                              </Popover>
+                              
+                              <Popover 
+                                overlayClassName="custom-popover"
+                                content={"Conditional logic is not available for non-enumerated properties."} 
+                                placement='top'
+                              >
+                                <ApartmentOutlined />
+                              </Popover>
+
+                              
+                              <Popover 
+                              overlayClassName="custom-popover"
+                              content={"Make this property mandatory"} 
+                              placement='top'
+                              >
+                                <FontAwesomeIcon icon={faAsterisk} />
+                              </Popover>
+
+                            </div>
+                            <div
+                              className="edit-form-input-control input inputItemList"   
+                              style={{backgroundImage: "none", cursor: "auto"}}                    
+                            >
+                              {field?.propertyDetail?.label}
+                            </div>
+                          </div>
+                        ))}
+
+                        <DraggableList list={branchSchemaNewFields?.length>0 ? branchSchemaLocal.sort((a, b) => a?.order - b?.order) : []} />        
+                                      
+                        </div>
+                      
+                      
+
+                  </div>
+              </div>
             
-            <div className="form-section">
-                <div className="form-section-inner">
-                    <div className="modal-header-title">
-                        Create {title}
-                    </div>
-                    
-                    <div className="form-section-body form"> 
-                    {loading &&
-                     <div style={{
-                      height:'100%',
-                      width: "90%",
-                      background: "white",position:'absolute',
-                      opacity: 0.8,}}>
-                        <Loader/>
-                      </div>
-                    }
-
-                    
-
-                      {/* branch name */}
-                      {mandatory?.map((field)=>(
-                        <div className="icon-wrapper">
-                          <div className="delete-icon">
-                            <Popover 
-                              overlayClassName="custom-popover"
-                              content={"This Property is a part of object schema"} 
-                              placement='top'
-                            >
-                              <FontAwesomeIcon icon={faTrashAlt} />
-                            </Popover>
-                            
-                            <Popover 
-                              overlayClassName="custom-popover"
-                              content={"Conditional logic is not available for non-enumerated properties."} 
-                              placement='top'
-                            >
-                              <ApartmentOutlined />
-                            </Popover>
-
-                            
-                            <Popover 
-                            overlayClassName="custom-popover"
-                            content={"Make this property mandatory"} 
-                            placement='top'
-                            >
-                              <FontAwesomeIcon icon={faAsterisk} />
-                            </Popover>
-
-                          </div>
-                          <div
-                            className="edit-form-input-control input inputItemList"   
-                            style={{backgroundImage: "none", cursor: "auto"}}                    
-                          >
-                            {field?.propertyDetail?.label}
-                          </div>
-                        </div>
-                      ))}
-
-                      <DraggableList list={branchSchemaNewFields?.length>0 ? branchSchemaNewFields : []} />        
-                                    
-                      </div>
-                    
-                    
-
-                </div>
-            </div>
         </React.Fragment>
     );
 }

@@ -45,9 +45,9 @@ export const AddProperty=({back})=>{
     }, [propertyToBeRemoveFromSchema]);
 
 
-    const handelProperty = (e, propertyData)=>{
+    const handelProperty = (e, propertyData, order)=>{
         if(e.target.checked){
-            dispatch(addFieldToBranchSchema({...propertyData, isLocalDeleted: 0, isNew: 1,}));
+            dispatch(addFieldToBranchSchema({...propertyData, isLocalDeleted: 0, isNew: 1, order}));
             const isExist = rawlist?.map((list)=>{
 
                 const properties = list?.properties.map((property)=> {
@@ -94,20 +94,19 @@ export const AddProperty=({back})=>{
     const { branchSchemaNewFields } = useSelector(state=>state.branchReducer);
     
 
-    const renderProperties = (property, id, propertyData, isChecked)=>{
+    const renderProperties = (property, id, propertyData, isChecked, order)=>{
 
         const isExist = branchSchema.find((field)=>field.propertyId===id);
-        console.log(isExist);
         const isReadOnlyExist = branchSchema.find((field)=>field.propertyId===id && field.isReadOnly==true);
         if(isExist && !isReadOnlyExist){
-            dispatch(addFieldToBranchSchema ({...propertyData, isMandatory: isExist?.isMandatory}));
+            dispatch(addFieldToBranchSchema ({...propertyData, isMandatory: isExist?.isMandatory, order: isExist?.order}));
             
         }
         
             
         return(
             <div style={{marginBottom:'16px'}} className='propertiesCheckboxes'>
-                <Checkbox id={id} defaultChecked={isReadOnlyExist? isExist : isChecked} checked={isReadOnlyExist? isExist : isChecked} disabled={isReadOnlyExist} onChange={(e)=>handelProperty(e, propertyData)}>{property}</Checkbox>
+                <Checkbox id={id} defaultChecked={isReadOnlyExist? isExist : isChecked} checked={isReadOnlyExist? isExist : isChecked} disabled={isReadOnlyExist} onChange={(e)=>handelProperty(e, propertyData, isExist?.order)}>{property}</Checkbox>
             </div>
         );
         
@@ -150,7 +149,7 @@ export const AddProperty=({back})=>{
         const d = rawlist?.map((data)=>({
             key: data._id,
             label: data._id,
-            children: data?.properties?.map((property)=>renderProperties(property?.label, property?._id, property, property?.isChecked)) ,
+            children: data?.properties?.map((property)=>renderProperties(property?.label, property?._id, property, property?.isChecked, data?.order)) ,
         }));
         setList(d);
     },[rawlist]);
@@ -208,7 +207,7 @@ export const AddProperty=({back})=>{
                         }}
                         value={query}
                     />
-                <div style={{marginTop:'5%'}}>
+                <div style={{marginTop:'5%', marginBottom:'5%'}}>
                     {loading?
                         <>
                         <br/>

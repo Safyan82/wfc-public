@@ -1,9 +1,9 @@
 import './editField.css';
 import React,{ useEffect, useState } from 'react';
-import { Form, Input, Drawer, Button, notification, Steps, Popover, Tabs, Spin } from 'antd';
+import { Form, Input, Drawer, Button, notification, Steps, Popover, Tabs, Spin, Collapse } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faClose, faCode} from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { faChevronLeft, faChevronRight, faClose, faCode, faExternalLink, faLink} from '@fortawesome/free-solid-svg-icons';
+import { Link, useNavigate } from 'react-router-dom';
 import { BasicInfo } from './step1basicInfo';
 import { FieldType } from './step2fieldType';
 import { Rules } from './step3Rules';
@@ -31,6 +31,7 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
 
     
     const {propertyToBeEditId} = useSelector(state => state.createFieldReducer);
+    
     const { loading: propertyLoading, data } =  useQuery(GetProptyById, {
       variables: { getPropertyById: (propertyToBeEditId)?.toString() || null },
       skip: !propertyToBeEditId,
@@ -63,9 +64,10 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
     
 
     const clearandClose=async()=>{
+      onClose();
+      dispatch(setPropertyTobeEdit(null));
       dispatch(resetFieldState());
       setBasicInfo(null);
-      onClose();
       dispatch(setBtnState(true)) ;
       sessionStorage.clear();
       setCurrentStep(0)
@@ -115,14 +117,12 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
         const {data} = await updateProperty({variables:{input:{...field}}});
   
         clearandClose();
-        await propertyListRefetch();
-        
+        // await propertyListRefetch();
         dispatch(setNotification({
           notificationState:true, 
-          message:"Property was created successfully",
+          message:"Property was updated successfully",
           error: false,
-        }))
-        
+        }))      
 
 
       }
@@ -163,7 +163,9 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
     //   }
     // },[globalFieldType]);
     const {isbtnEnabled}  = useSelector((state) => state.editPropertyReducer);
-    console.log(isbtnEnabled, "setBtnStatesetBtnState");
+
+    const navigate = useNavigate();
+
     return (
         <div>
 
@@ -220,7 +222,7 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
                 <div className='editFieldTabs'>
                     <Tabs defaultActiveKey="1" onChange={(key)=>setTabKey(key)}>
                         <TabPane tab={`Basic Info`} key="1">
-                            <BasicInfo groupList={groupList} groupLoading={groupLoading} basicInfo={basicInfo} setWidth={setWidth} setBasicInfo={setBasicInfo} />
+                            <BasicInfo groupList={groupList} useIn={data?.getPropertyById?.useIn || 0} groupLoading={groupLoading} basicInfo={basicInfo} setWidth={setWidth} setBasicInfo={setBasicInfo} />
                         </TabPane>
                         <TabPane tab={`Field Type`} key="2">
                             <FieldType fieldType={fieldType} setFieldType={setFieldType} basicInfo={basicInfo} setWidth={setWidth}/>
@@ -233,16 +235,38 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
                                 basicInfo={basicInfo} setWidth={setWidth} />
                             } 
                         </TabPane>
-                        <TabPane tab={`Used in (${0})`} key="4">
+                        <TabPane tab={`Used in (${data?.getPropertyById?.useIn || 0})`} key="4">
                           
                           <div className="editProperty-info-box">
-                              <div className="head">0 <span className="microText">&nbsp; (out of 5)</span></div>
+                              <div className="head">{data?.getPropertyById?.useIn} <span className="microText">&nbsp; (out of 5)</span></div>
                               <span className="text">Number of branches with a value for this property</span>
                           </div>
-
+                        {data?.getPropertyById?.useIn? 
+                          <Collapse className='useIn-icon'>
+                            <Collapse.Panel  header={"Required In ("+ data?.getPropertyById?.useIn+")"} key="">
+                              <p  onClick={()=>{
+                                dispatch(setPropertyTobeEdit(null));
+                                dispatch(resetFieldState());
+                                setBasicInfo(null);
+                                dispatch(setBtnState(true)) ;
+                                sessionStorage.clear();
+                                setCurrentStep(0);
+                                navigate('/editform',{
+                                  state: {
+                                  title: 'Branch',
+                                  url:'/user/setting',
+                                  }
+                              })}} className='useIn-Header'>Create Branch Form 
+                              <FontAwesomeIcon icon={faExternalLink} style={{fontSize:'13px', marginLeft:'5px', color: '#7c98b'}} />
+                  
+                              </p>
+                            </Collapse.Panel>
+                          </Collapse>
+                        :
                           <div className="text">
-                          This property isn’t used by any other assets, like forms, workflows, or lists.”
+                            This property isn’t used by any other assets, like forms, workflows, or lists.”
                           </div>
+                        }
             
                         </TabPane>
                     </Tabs>

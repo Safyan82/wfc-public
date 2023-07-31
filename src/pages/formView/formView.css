@@ -1,0 +1,131 @@
+.form-view-inner{
+    padding: 20px
+}
+
+.form-view-body{
+    -webkit-box-align: center;
+    align-items: center;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    justify-content: center;
+    gap: 0px;
+    display: flex;
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    max-width: 100%;
+    width: 100%;
+}
+
+.form-view-header{
+    margin-top: 80px!important;
+    margin-bottom: 20px!important;
+    min-width: 650px;
+}
+
+.h2{
+    font-weight: 600;
+    font-size: 24px;
+    text-align: left;
+}
+
+.spacer{
+    margin-top: 20px!important;
+    margin-bottom: 20px!important;
+}
+
+.form-view{
+    width: 650px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(203, 214, 226);
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(45, 62, 80, 0.12) 0px 1px 5px 0px;
+    border-radius: 3px;
+}
+
+.form-head-btn{
+    height: 26px;
+    background-color: rgb(245, 248, 250);
+    border-bottom: 1px solid rgb(203, 214, 226);
+    padding-left: 10px;
+}
+
+.btn-skt{
+    color: white;
+    padding: 3px;
+    height: 5px;
+    width: 5px;
+    font-size: 18px;
+}
+
+
+.form-view-innerheader{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+    flex-shrink: 0;
+    background-color: #00bda5;
+    background-image: linear-gradient(-303deg,#00a4bd,#00afb2 56%,#00bda5);
+    color: #fff;
+}
+
+.form-view-innerheader-wrap{
+    align-items: center;
+    display: flex;
+    min-height: 68px;
+    padding: 4px 56px 4px 40px;
+    font-size: 20px;
+}
+
+.form-view-inner-body{
+    padding: 40px;
+}
+
+.form-view-label{
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.form-view-footer{
+    min-height: 70px;
+    background-color: rgb(245, 248, 250);
+    border-top: 1px solid rgb(203, 214, 226);
+}
+
+.form-view-btn-layout{
+    padding-left: 40px;
+    padding-top: 17px;
+    padding-bottom: 17px;
+    align-items: flex-start;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+    gap: 0px;
+    display: flex;
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    max-width: 100%;
+    width: 100%;
+}
+
+.form-view-btn-layout-btn{
+    width: 55px;
+    /* height: 26px; */
+    background-color: rgb(234, 240, 246);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(223, 227, 235);
+    margin-right: 20px;
+    padding: 8px 15px;
+    box-shadow: rgba(45, 62, 80, 0.12) 0px 1px 5px 0px;
+    border-radius: 3px;
+}
+.btn-inner{
+    /* width: 60px; */
+    height: 20px;
+    background-color: rgb(217, 225, 235);
+}

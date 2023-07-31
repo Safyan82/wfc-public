@@ -479,25 +479,7 @@ export function CreateField({sortType,fieldType,label,search}){
           <div className='table-footer' id="selection-options">
             
 
-            {selectedRowKeys?.length>0 ?
-            <>
-                <small class='small'> {selectedRowKeys?.length} selected</small>
-
-                <div onClick={createOption} >
-                    <FontAwesomeIcon icon={faPlus}/> <span>Add an option</span>
-                </div>
-
-                <div>
-                    {isAnyChecked ?<FontAwesomeIcon icon={faEyeSlash}/> :<FontAwesomeIcon style={{marginRight: '4px'}} icon={faEye}/>} 
-                     {isAnyChecked ? <span onClick={hideInForm}> Hide in forms</span> : <span onClick={showInForm}> Show in forms</span>} 
-                </div>
-
-                <div>
-                    <FontAwesomeIcon style={{marginLeft: '10px'}} icon={faTrash}/>
-                    <span onClick={formFieldDelete}> Delete</span>
-                </div>
-            </>
-          :
+           
           <>
           
             <div onClick={createOption}>
@@ -517,11 +499,41 @@ export function CreateField({sortType,fieldType,label,search}){
               <FontAwesomeIcon icon={faTrash}/> <span>Clear all</span>
             </div>
          </>
-        }
+        
           </div>
         )
       }
 
+      const customHeader =(
+
+        <div className='table-footer' id="selection-options"
+        style={{
+          paddingTop:'5px'
+        }}
+        >
+          
+    
+          {selectedRowKeys?.length>0 &&
+           <>
+           <small class='small' style={{color:'#7c98b6'}}> {selectedRowKeys?.length} selected</small>
+    
+           {/* <div onClick={createOption} >
+               <FontAwesomeIcon icon={faPlus}/> <span>Add an option</span>
+           </div> */}
+    
+           <div>
+               {isAnyChecked ?<FontAwesomeIcon icon={faEyeSlash}/> :<FontAwesomeIcon style={{marginRight: '4px'}} icon={faEye}/>} 
+                {isAnyChecked ? <span onClick={hideInForm}> Hide in forms</span> : <span onClick={showInForm}> Show in forms</span>} 
+           </div>
+    
+           <div>
+               <FontAwesomeIcon style={{marginLeft: '10px'}} icon={faTrash}/>
+               <span onClick={formFieldDelete}> Delete</span>
+           </div>
+          </>
+      }
+        </div>
+      )
 
     return(
 
@@ -531,12 +543,14 @@ export function CreateField({sortType,fieldType,label,search}){
                 <CheckboxTable tableData={tableData}
                 selectedRowKeys={selectedRowKeys}
                 onSelectChange={onSelectChange} 
-                 footerContent={footerContent} />
+                customHeader={customHeader}
+                footerContent={footerContent} />
             }
 
             {multi.includes(fieldType) && sortType=="custom" &&
                 <DraggableTable tableData={tableData}
                  selectedRowKeys={selectedRowKeys}
+                 customHeader={customHeader}
                  onSelectChange={onSelectChange} 
                  footerContent={footerContent} 
                 />

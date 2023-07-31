@@ -29,3 +29,31 @@
     font-weight: 500;
 
 }
+
+.useInLink a{
+}
+
+
+.useIn-Header{
+    color: #0091ae !important;
+    padding:0px 12px;
+    cursor: auto;
+    width: max-content;
+}
+
+.useIn-Header:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.editFieldTabs :where(.css-dev-only-do-not-override-12jzuas).ant-collapse .ant-collapse-content>.ant-collapse-content-box{
+    padding: 0 16px;
+}
+
+.editFieldTabs :where(.css-dev-only-do-not-override-12jzuas).ant-collapse>.ant-collapse-item >.ant-collapse-header:hover{
+    color: rgb(0, 122, 140) !important;
+}
+
+.useIn-icon svg{
+    color: #7c98b6 !important
+}

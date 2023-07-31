@@ -78,7 +78,8 @@ const createFieldReducer = createSlice({
             }, 
         }
     },
-    resetFieldState : ()=> ({
+    resetFieldState : (state)=> ({
+        ...state,
         labelValue: [],
         propertyToBeEditId: null,
         rules:{

@@ -22,10 +22,12 @@ export const SettingPropertyGrid = ({propertyList,
   
   useEffect(()=>{
     propertyListRefetch();
-  },[propertyListRefetch])
+  },[propertyListRefetch]);
 
+  const [currentPage, setCurrentPage] = useState(Number(localStorage.getItem("currPropPage")) || 1);
   const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter);
+    setCurrentPage(pagination.current)
+    localStorage.setItem("currPropPage", pagination.current)
     setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
@@ -264,10 +266,6 @@ export const SettingPropertyGrid = ({propertyList,
 
   };
 
-  const handleDelete = (record) => {
-    // handle delete action for the selected record
-  };
-
   const rowClassName = (record) => {
     return record.key === hoveredRow ? 'hovered-row' : '';
   };
@@ -320,6 +318,11 @@ export const SettingPropertyGrid = ({propertyList,
       </div>
     )
 
+    const handlePaginationChange = (pagination) => {
+      setCurrentPage(pagination.current);
+    };
+    
+    
   return (
     <div 
     className='setting-grid'>
@@ -339,8 +342,12 @@ export const SettingPropertyGrid = ({propertyList,
             onMouseLeave: () => handleRowMouseLeave(),
           })}
           rowClassName={rowClassName}
-
-          />
+          pagination={{     
+            current: currentPage || 1, 
+            // pageSize: 10, // Set your desired page size
+            onChange: handlePaginationChange,
+          }}
+        />
 
         <ArchiveConfirmationModal 
           visible={archiveConfirmationModal}

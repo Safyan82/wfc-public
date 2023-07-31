@@ -17,7 +17,7 @@ export const Branch = () =>{
 
     return(
         <React.Fragment>
-            <GridHeader title={"Branch(es)"} record={0} editProperty={()=>setFieldModal(true)} createAction={()=>{schemaRefetch(); setBranchModal(true);}}/>
+            <GridHeader title={"Branch(es)"} record={0} editProperty={()=>setFieldModal(true)} createAction={async()=>{setBranchModal(true);await schemaRefetch();}}/>
             <Divider/>
             <DataTable 
                 data={data}

@@ -149,7 +149,7 @@
 /* table footer */
 .table-footer{
   display: flex;
-  column-gap: 40px;
+  column-gap: 30px;
   font-size: 14px !important;
   font-weight: 800;
   color: #0091ae;
@@ -309,6 +309,23 @@
 
 .customizedTable th{
   font-size: 11px;
+}
+
+.customizedTable :where(.css-dev-only-do-not-override-12jzuas).ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:first-child{
+  border-start-start-radius: 0px;
+  text-align: center;
+}
+
+.customizedTable .ant-table-title{
+  width: -webkit-fill-available;
+  position: absolute;
+  margin-top: 6px;
+  background: rgb(245, 248, 250);
+  z-index: 23;
+  margin-left: 5%;
+  padding: 7px 16px;
+  opacity: 1 !important;
+  left: 30px !important;
 }
 
 .ant-switch.ant-switch-checked {

@@ -20,6 +20,8 @@ export const FieldType = ({basicInfo, setWidth, fieldType, setFieldType})=>{
     const [sortType, setSortType] = useState('custom');
     const [search, setSearchKeyword] = useState(null);
     const [fieldTypeFocused, setFieldTypeFocused] = useState(false);
+    
+ 
 
     useEffect(()=>{
         sessionStorage.setItem('fieldType', fieldType);

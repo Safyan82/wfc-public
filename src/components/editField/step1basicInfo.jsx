@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setBtnState } from "../../middleware/redux/reducers/editProperty.reducer";
 
-export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLoading}) =>{
+export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLoading, useIn}) =>{
     useEffect(()=>{setWidth(false)},[]);
     const dispatch = useDispatch();
 
@@ -15,7 +15,7 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, groupList, groupLo
         <React.Fragment>
 
             <div className="editProperty-info-box">
-                <div className="head">0 <span className="microText">&nbsp; (out of 5)</span></div>
+                <div className="head">{useIn} <span className="microText">&nbsp; (out of 5)</span></div>
                 <span className="text">Number of branches with a value for this property</span>
             </div>
             

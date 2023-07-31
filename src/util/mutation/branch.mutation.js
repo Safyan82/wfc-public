@@ -24,3 +24,12 @@ mutation($input: DeleteBranchObjectInput!){
   }
 }
 `;
+
+
+export const ReorderBranchSchema = gql`
+mutation($input: BulkBranchObjectInput!){
+  updateBranchObjectOrder(input: $input) {
+    response
+  }
+}
+`;

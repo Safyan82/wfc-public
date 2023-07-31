@@ -7,6 +7,8 @@ import { faAsterisk, faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawes
 import { Popover } from "antd";
 import { addFieldToBranchSchema, removeFieldFromBranchSchema, setPropertyToBeRemoveFromSchema } from "../../middleware/redux/reducers/branch.reducer";
 import { useDispatch } from "react-redux";
+import { useMutation } from "@apollo/client";
+import { ReorderBranchSchema } from "../../util/mutation/branch.mutation";
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -19,17 +21,20 @@ const reorder = (list, startIndex, endIndex) => {
 
 
 const DraggableList = ({list}) => {
- console.log(list, "safyan listtt");
+  //  console.log(list, "safyan listtt");
+  const [reorderBranchSchema,{loading: rearragementLoading}] = useMutation(ReorderBranchSchema);
+
   const [items, setItems] = useState(list)
   useEffect(()=>{
     setItems(list?.filter((l)=>l.isLocalDeleted!=1));
   }, [list]);
 
   useEffect(()=>{
+   
     console.log(items, "itemm");
   },[items]);
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     // dropped outside the list
     if (!result.destination) {
       return;
@@ -41,6 +46,16 @@ const DraggableList = ({list}) => {
       result.source.index,
       result.destination.index
     ));
+
+    await reorderBranchSchema({
+      variables:{
+        input:{fields: reorder(
+          items,
+          result.source.index,
+          result.destination.index
+        ).map((item)=>({propertyId: item._id}))}
+      }
+    });
 
   }
 

@@ -70,7 +70,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
     
 
     const clearandClose=async()=>{
-      // await dispatch(setPropertyTobeEdit(null));
+      await dispatch(setPropertyTobeEdit(null));
       // await dispatch(setEditPropertyId(''));
       // await dispatch(resetRules({}));
       await dispatch(resetFieldState());
@@ -78,11 +78,13 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
       setBasicInfo(null);
       sessionStorage.clear();
       setCurrentStep(0)
+      setFieldType(null);
     }
 
 
     useEffect(()=>{
       sessionStorage.clear();
+      setWidth(false);
     },[]);
 
     useEffect(()=>{

@@ -29,6 +29,7 @@ export const Setting=()=>{
     const navigate = useNavigate();
     const [fieldModal, setFieldModal] = useState(false);
     const [editfieldModal, setEditFieldModal] = useState(false);
+    const [propertyFakeLoad, setPropertyFakeLoading] = useState(false);
     const [groupmodal, setGroupModal] = useState(false);
 
     // setting popover 
@@ -104,7 +105,8 @@ export const Setting=()=>{
         }
     },[fieldType])
 
-    useEffect(()=>{console.log(field)},[field])
+    // clear pagination
+    useEffect(()=>{localStorage.clear()},[]);
 
 
     const [archiveList, setArchiveList] = useState([]);
@@ -123,6 +125,8 @@ export const Setting=()=>{
     useEffect(()=>{
         setArchiveList(data);
     },[data]);
+
+    
 
     const {archiveFilteredData, isFilterActive, isloading} = useSelector(state=>state.archiveReducer);
 
@@ -149,6 +153,16 @@ export const Setting=()=>{
     },[propertyDataList]);
 
 
+    
+    useEffect(()=>{
+        if(editfieldModal==false && (propertyListLoading==false && jerkLoad==false)){
+           
+            console.log(propertyListLoading, jerkLoad, "Lllllllll")
+           setPropertyFakeLoading(false);
+           
+        }
+    },[propertyListLoading, jerkLoad])
+
 
     const { groupFilterId } = useSelector(state=>state.propertyReducer);
 
@@ -158,6 +172,9 @@ export const Setting=()=>{
         }
     }, [groupFilterId]);
 
+    useEffect(()=>{
+        console.log("mounted again");
+    },[]);
    
 
     const [activeTab, setActiveTab] = useState('1');
@@ -171,6 +188,10 @@ export const Setting=()=>{
         await refetch();
         if(e=='2'){
             dispatch(resetPropertyFilterByGroup());
+        }
+        if(e=='3'){
+            dispatch(resetArchivePropertyFilteredData(false));
+            await refetch()
         }
     };
 
@@ -320,7 +341,7 @@ export const Setting=()=>{
                                     <SettingPropertyGrid
                                         propertyList={propertyList}
                                         propertyListRefetch={propertyListRefetch}
-                                        propertyListLoading={propertyListLoading || jerkLoad}
+                                        propertyListLoading={propertyFakeLoad? false : propertyListLoading || jerkLoad}
                                         refetch={refetch}
                                         setFieldModal={setFieldModal}
                                         setEditFieldModal={setEditFieldModal}
@@ -372,7 +393,7 @@ export const Setting=()=>{
             <CreateFieldDrawer 
                 visible={fieldModal}  
                 propertyListRefetch={propertyListRefetch}
-                onClose={()=>{propertyListRefetch(); groupRefetch(); setFieldModal(false);}}
+                onClose={()=>{propertyListRefetch();setPropertyFakeLoading(true); groupRefetch(); setFieldModal(false);}}
             />
             
             
@@ -383,8 +404,10 @@ export const Setting=()=>{
                 visible={editfieldModal}  
                 propertyListRefetch={propertyListRefetch}
                 onClose={()=>{
-                    propertyListRefetch();
+                    setPropertyFakeLoading(true);
+                    propertyListRefetch();                    
                     setEditFieldModal(false);
+
                 }}
             />
             

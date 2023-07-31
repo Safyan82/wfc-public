@@ -19,59 +19,57 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
     const [drawerVisible, setDrawerVisible] = useState(false);
       const navigate = useNavigate();
       
-      const branchOrder = JSON.parse(localStorage.getItem("branchOrder"));
       const [createBranch, { loading, error }] = useMutation(CREATE_BRACNH);
       const [api, contextHolder] = notification.useNotification();
       const [isoverlay, setIsOverlay] = useState(true);
 
-      
+      const [data, setData] = useState([]);
   
     
       const [branchProperties, setBranchProperties] = useState([]);
+      const [mandatoryProperties, setMandatoryProperties] = useState([]);
 
       const dispatch = useDispatch();
 
       useEffect(()=>{
-        setBranchProperties(branchObjectData?.getBranchProperty?.response);
-      },[branchObjectData]);
+        const preFields = branchObjectData?.getBranchProperty?.response.filter((branch)=>branch?.order == undefined) || [];
+        const orderedFields = branchObjectData?.getBranchProperty?.response.filter((branch)=>branch?.order !==undefined).sort((a,b)=>a.order-b.order) || [];
+        const mandatoryFields = branchObjectData?.getBranchProperty?.response.filter((branch)=>branch?.isMandatory) || [];
+        setBranchProperties([...preFields, ...orderedFields]);
+        setMandatoryProperties([...mandatoryFields]);
+        console.log(mandatoryFields, "mandatoryFieldsmandatoryFields");
+      },[branchObjectData, visible]);
+
+      
+      useEffect(()=>{
+        checkMandatoryField();
+      },[data]);
     
-    
-      const handelSubmit=async ()=>{
-        const branchForm = document.getElementById("branchForm");
-        const inputs = (branchForm.querySelectorAll("input"));
-        let i = [];
-        inputs.forEach((input)=>{
-          i.push(input);
-          if(input.value.length<2 && input.name=="BranchName" || input.name=="postCode"){
-            input.style.borderColor="red";
-            input.style.boxShadow="0 0 4px 1px red, 0 0 0 1px red";
-            return
-          }else{
-            
-            input.style.borderColor="#cbd6e2";
-            input.style.boxShadow="none";
-            return
-          }
-        });
-    
-        const isValidatedata = i?.some((input) => input.value.length>1)
-        if(isValidatedata){
-          const rawData = i?.map((d)=>({[d.name]:d.value}));
-          let data = {};
-          for(let i=2;i<rawData.length;i++){
-            Object.assign(data,rawData[i]);
-          }
-    
+      const handelSubmit=async (isCloseAble)=>{
+          const branchName = data?.find((d)=>(Object.keys(d)[0]=="branchname"));
+          const postcode = data?.find((d)=>(Object.keys(d)[0]==="postcode"));
+          
+          let metadata = {};
+          data?.map(d=>{
+            if(Object.keys(d)[0]!=="postcode" && Object.keys(d)[0]!=="branchname"){
+              metadata[Object.keys(d)[0]]= Object.values(d)[0]
+            }
+          });
           const branch = {
-            ...rawData[0],
-            ...rawData[1],
-            metadata:data,
+            ...branchName,
+            ...postcode,
+            metadata,
           }
           // handel mutation
-          await branchMutation(branch)
-        }
-    
+          await branchMutation(branch);
+
+          if(isCloseAble){
+            close();
+          }
+
       }
+    
+      
     
       const branchMutation=async (branch)=>{
         try{
@@ -81,9 +79,10 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
             message: "Branch was added successfully",
             error: false,
           }))
-          onClose();
+          setData([]);
+          setBtn(true);
+          setIsOverlay(true);
           await refetch();
-          
     
         }
         catch(err){
@@ -290,8 +289,26 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
 
       }
 
+
+      const handelDataValue=(e)=>{
+        console.log(e)
+        const isExist = data?.find((d)=>Object.keys(d)[0]==e.name);
+        
+          setData(isExist? data?.map((d)=>{
+            if(Object.keys(d)[0]==e.name){
+              return {
+                [e.name]: e.value,
+              }
+            }else{
+              return d;
+            }
+          }): [...data, {[e.name]: e.value}]);
+      }
+
       const handelChange=(e, propertyDetail)=>{
         handelRules(propertyDetail?.rules, e);
+        handelDataValue(e);       
+
         if(e.value.length>0){
             if(e.name=="branchname"){
                 setIsOverlay(false);
@@ -305,6 +322,8 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
               e.style.borderColor="rgba(0,208,228,.5)";
               e.style.boxShadow="0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4";
         }
+
+        checkMandatoryField();
       }
 
       const onBlurDesign = (e) =>{
@@ -453,6 +472,24 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
         }
       }
 
+      const checkMandatoryField = ()=>{
+        const isMandatoryFieldFilled = mandatoryProperties?.every((field)=>data.find(d=>Object.keys(d)[0]==field?.propertyDetail?.label.replaceAll(" ","").toLowerCase()));
+        const isErrorExist = Array.from(document.getElementsByClassName("errorMsg"));
+        // console.log(isErrorExist);
+        if(isMandatoryFieldFilled && isErrorExist?.length==0){
+          // console.log("pass");
+          setBtn(false);
+        }else{
+          setBtn(true);
+          // checkMandatoryField();
+        }
+      }
+
+      const close = ()=>{
+        onClose(); setData([]);
+        setIsOverlay(true);
+      };
+
       const {Option} = Select;
       return (
         <div>
@@ -461,7 +498,7 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
             placement="right"
             closable={true}
             onClose={onClose}
-            closeIcon={<FontAwesomeIcon icon={faClose} onClick={onClose} className='close-icon'/>}
+            closeIcon={<FontAwesomeIcon icon={faClose} onClick={()=>{close();setTimeout(()=>setBranchProperties([]),100)}} className='close-icon'/>}
             visible={visible}
             width={600}
             
@@ -469,13 +506,13 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
             mask={true}
             footer={
               <div className='drawer-footer'>
-                  <button disabled={isBtnEnable || loading} className={isBtnEnable || loading ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handelSubmit}>
+                  <button disabled={isBtnEnable || loading} className={isBtnEnable || loading ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={()=>handelSubmit(true)}>
                    {loading? <Spinner color={"#ff7a53"}/> : 'Create'} 
                   </button>
-                  <button disabled={isBtnEnable || loading} className={isBtnEnable || loading ? 'disabled-btn drawer-outlined-btn' : 'drawer-outlined-btn'} >
-                    Create and add another
+                  <button  onClick={()=>handelSubmit(false)} disabled={isBtnEnable || loading} className={isBtnEnable || loading ? 'disabled-btn drawer-outlined-btn' : 'drawer-outlined-btn'} >
+                    {loading? <Spinner color={"#ff7a53"}/> : 'Create and add another'} 
                   </button>
-                  <button disabled={loading} className='drawer-outlined-btn' onClick={onClose}>Cancel</button>
+                  <button disabled={loading} className='drawer-outlined-btn' onClick={()=>{close();setTimeout(()=>setBranchProperties([]),100)}}>Cancel</button>
               </div>
             }
           >
@@ -489,11 +526,15 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
                 })}
             ><FontAwesomeIcon icon={faExternalLink} style={{ marginLeft: 4 }} /> Edit this form </div>
           
-            <form id="branchForm" className='form' >
+            <form id="branchForm" className='form'>
                 <div className={isoverlay? 'overlay' : 'overlay hidden'}>
                     <div className='overlay-text'>Start by entering the Branch's name</div>
                 </div>
                 {branchProperties?.map((property)=>{
+                  const name = property?.propertyDetail?.label.replaceAll(" ","").toLowerCase();
+                  const localValue = data?.find((d)=>Object.keys(d)[0] == name);
+                  const value = localValue && localValue[name];
+
                   return(
                     
                     property?.propertyDetail?.fieldType==="singlelineText" || property?.propertyDetail?.fieldType==="password" || property?.propertyDetail?.fieldType==="email" ?
@@ -504,9 +545,12 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
                         className='generic-input-control' 
                         onBlur={(e)=>onBlurDesign(e.target)} 
                         onFocus={(e)=>onFocusDesign(e.target)}
-                        onChange={(e)=>handelChange(e.target, property?.propertyDetail)} 
+                        value={value}
+                        onChange={(e)=>{checkMandatoryField(); handelChange(e.target, property?.propertyDetail);}} 
                         type={property?.propertyDetail?.fieldType==="password"? "password" : "text"}
-                        name={property?.propertyDetail?.label.replaceAll(" ","").toLowerCase()} />
+                        name={name} 
+                        id={name} 
+                      />
                     </Form.Item>  
                     
                     : property?.propertyDetail?.fieldType==="multilineText"?
@@ -517,8 +561,11 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
                       className='generic-input-control' 
                       onBlur={(e)=>onBlurDesign(e.target)} 
                       onFocus={(e)=>onFocusDesign(e.target)}
-                      onChange={(e)=>handelChange(e.target, property?.propertyDetail)} 
-                      name={property?.propertyDetail?.label.replaceAll(" ","").toLowerCase()} />
+                      value={value}
+                      onChange={(e)=>{checkMandatoryField();handelChange(e.target, property?.propertyDetail);}} 
+                      name={name} 
+                      id={name} 
+                      />
                     </Form.Item>  
 
                     : property?.propertyDetail?.fieldType=="singleCheckbox" ?
@@ -526,7 +573,13 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
                     <Form.Item>
                       <label>{property?.propertyDetail?.label} <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
                       <Select
-                        name={property?.propertyDetail?.label.replaceAll(" ","").toLowerCase()}
+                        name={name}
+                        id={name}
+                        value={value}
+                        onChange={(e)=>{handelDataValue({
+                          name: property?.propertyDetail?.label.replaceAll(" ","").toLowerCase(),
+                          value: e
+                        });checkMandatoryField()}}
                       >
                           <Option value="yes">Yes</Option>
                           <Option value="no">No</Option>
@@ -536,11 +589,19 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
                     : property?.propertyDetail?.fieldType == 'selectDropdown' || property?.propertyDetail?.fieldType == 'radioDropdown' ?
                     
                     <Form.Item>
-                        <label>{property?.propertyDetail?.label}</label>
+                        <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
                             <Select 
                               className='custom-select'  
                               suffixIcon={<span className='dropdowncaret'></span>}
-                              name={property?.propertyDetail?.label.replaceAll(" ","").toLowerCase()}
+                              name={name}
+                              id={name}
+                              value={value}
+
+                              onChange={(e)=>{handelDataValue({
+                                name,
+                                value: e
+                              });checkMandatoryField()}}
+
                             >
                                 {property?.propertyDetail?.options?.map((option)=>(<Option value={option.value}> {option.key} </Option>))}
                             </Select>
@@ -548,13 +609,20 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
                     
                     : property?.propertyDetail?.fieldType == 'multiCheckbox' ?
                     <Form.Item>
-                        <label>{property?.propertyDetail?.label}</label>
+                        <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
                       <TreeSelect 
                           multiple
                           treeCheckable
                           className='custom-select'   
-                          name={property?.propertyDetail?.label.replaceAll(" ","").toLowerCase()}
+                          name={name}
+                          id={name}
+                          value={value}
+
                           suffixIcon={<span className='dropdowncaret'></span>}
+                          onChange={(e)=>{handelDataValue({
+                            name,
+                            value:e
+                          });checkMandatoryField()}}
                       >
                           {property?.propertyDetail?.options?.map((option)=>(
                               option?.value?.length > 0 && option?.showFormIn && <TreeSelect.TreeNode value={option.value} title={option.key}/>
@@ -564,9 +632,17 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
                     </Form.Item>  
                     : property?.propertyDetail?.fieldType == 'date' || property?.propertyDetail?.fieldType == 'datetime-local'?
                     <Form.Item>
-                      <label>{property?.propertyDetail?.label}</label>
+                      <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
                       <DatePicker
                         showTime={property?.propertyDetail?.fieldType == "datetime-local"}
+                        name={name}
+                        value={value && dayjs(value)}
+                        id={name}
+                        onChange={(e, dateString)=>{handelDataValue({
+                          name,
+                          value: dateString
+                      });checkMandatoryField()}}
+
                         className='generic-input-control'
                         disabledDate={
                           (current)=>handelDateRule(property?.propertyDetail?.rules, current)
@@ -576,17 +652,23 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
                     </Form.Item>
                     : property?.propertyDetail?.fieldType == 'time' ?
                     <Form.Item>
-                      <label>{property?.propertyDetail?.label}</label>
+                      <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
                       <TimePicker
+                        id={name}
                         className='generic-input-control'
+                        value={value}
+                        onChange={(e)=>{handelDataValue(e.target);checkMandatoryField()}}
                         suffixIcon={<FontAwesomeIcon style={{color:'rgb(0, 145, 174) !important'}} icon={faClock} />}
                       />
                     </Form.Item>
                     :
                     <Form.Item>
-                        <label>{property?.propertyDetail?.label}</label>
+                        <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
                         <Input 
-                          name={property?.propertyDetail?.label.replaceAll(" ","").toLowerCase()} 
+                          id={name}
+                          name={name} 
+                          value={value}
+                          onChange={(e)=>{handelDataValue(e.target);checkMandatoryField()}}
                           type={property?.propertyDetail?.fieldType} className='generic-input-control'
                         /> 
                         

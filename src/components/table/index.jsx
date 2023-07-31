@@ -17,11 +17,14 @@ const DataTable = ({header, data, loading}) => {
   useEffect(()=>{
     if(branchProperties?.getBranchProperty?.response){
 
-      const col = branchProperties?.getBranchProperty.response?.map((prop)=>({
-        title: prop.propertyDetail.label,
-        dataIndex: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
-        key: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
-      }));
+      const col = branchProperties?.getBranchProperty.response?.map((prop)=>{
+        // if(prop.propertyDetail.label=="Branch name" || prop.propertyDetail.label=="Post code"){
+
+          return {title: prop.propertyDetail.label,
+          dataIndex: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
+          key: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),}
+        // }
+      })||[];
       setDynamicColumn([...col])
     }
   }, [branchProperties?.getBranchProperty?.response]);
