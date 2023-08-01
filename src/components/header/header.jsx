@@ -17,7 +17,7 @@ export const FormHeader = (
                     </div>
                     <div className="toolbar-inner-title">{title}</div>
                     <div className="btn-group" style={btnVisibility? null : {visibility:'hidden'}}>
-                        <button disabled={loading} className={loading?"drawer-outlined-btn disabled-btn": "drawer-outlined-btn"} onClick={()=>setModalState(!modalState)}>Preview</button>
+                        <button disabled={loading} className={loading?"drawer-outlined-btn disabled-btn": "drawer-outlined-btn"} onClick={()=>navigate("/formview")}>Preview</button>
                         <button disabled={loading || btnDisabled} className={loading || btnDisabled? "drawer-filled-btn disabled-btn":"drawer-filled-btn "} onClick={handelSave}> {loading? <Spinner/> : "Save"}</button>
                     </div>
                 </div>

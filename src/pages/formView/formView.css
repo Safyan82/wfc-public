@@ -49,18 +49,22 @@
 }
 
 .form-head-btn{
-    height: 26px;
+    height: 25px;
     background-color: rgb(245, 248, 250);
     border-bottom: 1px solid rgb(203, 214, 226);
-    padding-left: 10px;
+    padding-left: 15px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
 .btn-skt{
-    color: white;
-    padding: 3px;
+    background: rgb(223, 227, 235);
+    padding: 5px;
     height: 5px;
     width: 5px;
     font-size: 18px;
+    border-radius: 50%;
 }
 
 
@@ -128,4 +132,9 @@
     /* width: 60px; */
     height: 20px;
     background-color: rgb(217, 225, 235);
+}
+
+.form-view-inner-body label{
+    font-size: 14;
+    font-weight: 600;
 }
