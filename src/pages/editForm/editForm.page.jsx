@@ -36,7 +36,9 @@ export const EditForm=()=>{
 
     const { branchSchemaNewFields } = useSelector(state=>state.branchReducer);
     const [branchSchemaLocal, setBranchSchemaLocal] = useState([...branchSchemaNewFields]);
-
+    useEffect(()=>{
+      branchObjectRefetch();
+    }, []);
     useEffect(()=>{
       setBranchSchemaLocal([...branchSchemaNewFields]);
     }, [branchSchemaNewFields]);
