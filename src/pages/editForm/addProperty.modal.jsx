@@ -14,10 +14,16 @@ import { Loader } from '../../components/loader';
 
 export const AddProperty=({back})=>{
 
-    const {data, loading, error} = useQuery(GetPropertyByGroupQuery);
+    const {data, loading, refetch} = useQuery(GetPropertyByGroupQuery,{
+        fetchPolicy:'network-only'
+    });
     const [list, setList] = useState([]);
     const {branchSchema, propertyToBeRemoveFromSchema} = useSelector((state)=>state.branchReducer);
     const dispatch = useDispatch();
+
+    useEffect(()=>{
+        refetch()
+    }, []);
 
     useEffect(()=>{
         if(propertyToBeRemoveFromSchema){
