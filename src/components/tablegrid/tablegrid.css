@@ -1,0 +1,52 @@
+.addView{
+    margin-top: 2px;
+    border-bottom: 1px solid rgb(203, 214, 226);
+    padding-left: 30px;
+    flex-grow: 1;
+}
+
+.addView button{
+    top: -9px;
+    color: #0091ae;
+    font-weight: 600;
+}
+
+.addView button:hover{
+    color: #007a8c !important;
+    background-color: transparent !important;
+}
+
+.addViewfooter{
+    padding: 16px 20px;
+    border-top: 1px solid #cbd6e2;
+    color: #0091ae;
+    font-weight: 600;
+}
+
+.addViewfooter span{
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.addViewfooter span:hover{
+    
+    text-decoration: underline;
+}
+
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-radio-group{
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    font-weight: 400;
+    margin-top: 3%;
+    /* width: max-content; */
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-radio-wrapper .ant-radio-checked .ant-radio-inner{
+    background-color: transparent !important;
+}
+
+.tablegrid .ant-drawer-title{
+    margin-left: 14px !important;
+}

@@ -319,7 +319,8 @@ a:visited{
 .grid-outlined-btn{
     border-color: #fb8c5f;
     color:#fb8c5f;
-    border-radius: 3px !important;
+    border-radius: 2px !important;
+    font-size: 12px;
 }
 
 .grid-outlined-btn:hover{
@@ -332,7 +333,8 @@ a:visited{
     border: none;
     background-color: #fb8c5f;
     color: white !important;
-    border-radius: 3px !important;
+    border-radius: 2px !important;
+    font-size: 12px;
 }
 
 .grid-head-right-btn{
@@ -342,6 +344,7 @@ a:visited{
     font-size: 12px;
     line-height: 14px;
     padding: 8px 16px;
+    border-radius: 0px;
 }
 
 .grid-filed-btn:hover{
@@ -355,17 +358,24 @@ a:visited{
     padding: 0 !important;
     color:#0091ae !important;
     font-size: 14px;
-    font-weight: 600;
-    
+    font-weight: 600;  
+    cursor: pointer;  
 }
+
 .grid-text-btn:hover {
     background: none !important;
     color:#33475b !important;
+    text-decoration: underline;
 }
 
 .grid-head-left-btn-section{
     display: flex;
-    column-gap: 20px;
+    column-gap: 40px;
+    align-items: center;
+}
+
+.grid-head-left-btn-section .ant-popover-inner{
+    margin-left: 10% !important;
 }
 
 
@@ -424,10 +434,15 @@ a:visited{
     font-weight: 600;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     color: white;
     background-color: #00bda5;
-    background-image:  linear-gradient(-303deg,#00a4bd,#00afb2 56%,#00bda5);
-    padding: 20px 24px;
+    background-image: linear-gradient(-303deg,#00a4bd,#00afb2 56%,#00bda5);
+    padding: 10px 24px;
+}
+
+.modal-header-title span{
+    letter-spacing: 0.5px;
 }
 
 .modal-header-title .close{
@@ -437,10 +452,12 @@ a:visited{
     height: 22px;
     width: 22px;
     border-radius: 100%;
+    margin-top: 6px;
 }
 
 .modal-header-title .close:hover{
     background-color: rgba(255, 255, 255, 0.1);
+    
 }
 
 .ant-modal-content{

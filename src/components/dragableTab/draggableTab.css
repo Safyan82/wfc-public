@@ -1,0 +1,17 @@
+.dragContent{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: -25px;
+    width: 100%;
+}
+
+.dragimg{
+    visibility: hidden;;
+}
+.ant-tabs-tab{
+    user-select: none !important;
+}
+.ant-tabs-tab:hover .dragimg{
+    visibility: visible;
+}
