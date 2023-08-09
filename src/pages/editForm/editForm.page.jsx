@@ -29,7 +29,9 @@ export const EditForm=()=>{
     const {title, url} = location?.state;
     const [modalState, setModalState] = useState(false);
 
-    const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject);
+    const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
+      fetchPolicy: 'network-only',
+    });
     const [createBulkProperties, {loading: createBulkPropertiesLoading, error}] = useMutation(BulkBranchObjectMutation);
     
     const [mandatory, setMandatory] = useState([]);

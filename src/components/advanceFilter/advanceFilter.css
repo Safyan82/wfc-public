@@ -1,0 +1,111 @@
+
+.h5{
+    font-size: 16px;
+    color: #33475b;
+}
+
+.advanceFilter .ant-drawer-title{
+    margin-left: 14px !important;
+}
+
+.filter-header{
+    margin-top: -10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.filterBox{
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 16px;
+    padding-right: 8px;
+    color: #33475b;
+
+    font-weight: 100;
+    border-radius: 3px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(223, 227, 235);
+}
+
+.dividerline{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    margin-top: 32px;
+    border-color: rgb(223, 227, 235);
+    border: 1px solid rgb(223, 227, 235);
+}
+
+.advanceFilter-inner{
+    margin-top: 70px;
+}
+
+.filter-btn{
+    background-color: #425b76;
+    border-color: #425b76;
+    color: #fff;
+    font-size: 12px;
+    line-height: 14px;
+    padding: 8px 16px;
+
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px;
+
+    cursor: pointer;
+}
+
+.proplistHead{
+    /* height: 40px; */
+    color: #33475b;
+    font-size: 13px;
+    /* padding-top: 18px; */
+    padding-bottom: 12px;
+}
+
+.list-item{
+    color: #33475b;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+
+.proplistView{
+    min-height: 55px;
+    height: 400px;
+    overflow: auto;
+    margin-top: 5%;
+}
+
+.filtermask{
+    background: none !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+}
+
+.advanceFilterRadio .ant-radio-wrapper .ant-radio-checked .ant-radio-inner::after{
+    background-color: rgb(0, 164, 189) !important;
+    width: 38px !important;
+    height: 38px !important;
+    margin-block-start: -19px !important;
+    border-radius: 50px;
+    margin-inline-start: -19px !important;
+  }
+  
+.advanceFilterRadio :where(.css-dev-only-do-not-override-12jzuas).ant-radio-wrapper .ant-radio-inner{
+width: 22px !important;
+height: 22px !important;
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-select-multiple .ant-select-selection-overflow{
+    padding-top: 4% !important;
+}
+
+.createOption{
+    background-color:#e5f5f8;
+    cursor: pointer;
+    color: #33475b;
+    display: block;
+    min-height: 30px;
+    padding: 8px 20px;
+}

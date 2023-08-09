@@ -9,7 +9,7 @@ import { useQuery } from '@apollo/client';
   
 const { Header, Content, Footer } = Layout;
 
-const DataTable = ({header, data, loading}) => {
+export const DataTable = ({header, data, loading}) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [sortedInfo, setSortedInfo] = useState({});
   const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject);
@@ -99,5 +99,3 @@ const DataTable = ({header, data, loading}) => {
     </Layout>
   );
 };
-
-export default DataTable;
