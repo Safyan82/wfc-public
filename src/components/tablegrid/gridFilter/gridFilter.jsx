@@ -6,11 +6,51 @@ import { Button, Input, Popover } from "antd";
 const createdDateList = [
     {
         title: 'Today',
-        subtitle: '',
+        subtitle: 'Today from midnight until the current time',
+    },
+    {
+        title: 'Yesterday',
+        subtitle: 'The previous 24 hours day',
     },
     {
         title: 'Tomorrow',
-        subtitle: '',
+        subtitle: 'The next 24 hours day',
+    },
+    {
+        title: 'This week',
+        subtitle: 'The current calendar week',
+    },
+    {
+        title: 'This week so far',
+        subtitle: 'The current calendar week up to now',
+    },
+    {
+        title: 'Last Week',
+        subtitle: 'The previous calendar week',
+    },
+    {
+        title: 'Next Week',
+        subtitle: 'The next calendar week',
+    },
+    {
+        title: 'This month',
+        subtitle: 'The current calendar month',
+    },
+    {
+        title: 'This month so far',
+        subtitle: 'The current calendar month up to now',
+    },
+    {
+        title: 'Last month',
+        subtitle: 'The previous calendar month up to now',
+    },
+    {
+        title: 'Next month',
+        subtitle: 'The next calendar month',
+    },
+    {
+        title: 'This quarter',
+        subtitle: 'The current quarter',
     },
 ]
 
@@ -79,14 +119,16 @@ export const GridFilter = ({openAdvanceFilter})=>{
                                     />
                                 </div>
 
-                                <div className="popover-data"  ref={popoverRef}>
+                                <div className="popover-data "  ref={popoverRef}>
                                     
-                                    {createdDate && createdDate?.map((datelist)=>(
+                                    {createdDate && createdDate?.map((datalist)=>(
 
                                         <div 
-                                            className={createdDateFilter==datelist.title? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
+                                            className={createdDateFilter==datalist.title? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
                                             onClick={(e)=>{setCreatedDateFilter({name: e.target.innerText,}); setCreatedDatePop(false)}}>
-                                            {datelist.title}
+                                            {datalist.title}
+                                            <div className="text" style={{color: '#516f90',
+                                                fontWeight: '50'}}>{datalist.subtitle}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -133,12 +175,14 @@ export const GridFilter = ({openAdvanceFilter})=>{
 
                                 <div className="popover-data"  ref={popoverRef}>
                                     
-                                    {activityDateList && activityDateList?.map((datelist)=>(
+                                    {activityDateList && activityDateList?.map((datalist)=>(
 
                                         <div 
-                                            className={createdDateFilter==datelist.title? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
-                                            onClick={(e)=>{setActivityDateFilter({name: e.target.innerText,}); setCreatedDatePop(false)}}>
-                                            {datelist.title}
+                                        className={createdDateFilter==datalist.title? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
+                                        onClick={(e)=>{setCreatedDateFilter({name: e.target.innerText,}); setCreatedDatePop(false)}}>
+                                        {datalist.title}
+                                        <div className="text" style={{color: '#516f90',
+                                            fontWeight: '50'}}>{datalist.subtitle}</div>
                                         </div>
                                     ))}
                                 </div>

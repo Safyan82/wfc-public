@@ -171,7 +171,7 @@ const DraggableTab = () => {
         <div className='addView'>                    
             <Popover
                 open={viewPop}
-                overlayClassName='settingCustomPopover tableGridPopover'
+                overlayClassName='settingCustomPopover '
                 afterOpenChange={()=>{inputRef.current.focus();}}
                 style={{ width: 250 }}
                 content={
@@ -213,7 +213,7 @@ const DraggableTab = () => {
                                         color: 'black',
                                         fontWeight: 600,
                                     }}
-                                >Standard (2)</div>
+                                >Standard ({view?.length})</div>
                                 {view && view?.map((datelist)=>(
 
                                     <div 

@@ -345,6 +345,14 @@ a:visited{
     line-height: 14px;
     padding: 8px 16px;
     border-radius: 0px;
+    
+}
+
+.grid-head-right-btn:hover{
+    background-color: #f5f8fa !important;
+    color: #506e91 !important;
+    
+    border-color: #cbd6e2 !important;
 }
 
 .grid-filed-btn:hover{
@@ -410,11 +418,6 @@ a:visited{
 
 
 
-.grid-table-search-input{
-    margin-left:-12px;
-    width: 200px;
-    border-radius: 0px !important   ;
-}
 
 
 /* modal */

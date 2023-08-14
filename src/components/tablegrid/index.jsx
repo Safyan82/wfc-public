@@ -7,7 +7,7 @@ import { GridFilter } from './gridFilter/gridFilter';
 import { Button, Input, Popover } from 'antd';
 import { AdvanceFilter } from '../advanceFilter/advanceFilter';
 
-export const TableGrid=({createAction})=>{
+export const TableGrid=({createAction, data})=>{
 
     const [filterModal, setFilterModal] = useState(false);
 
@@ -23,7 +23,7 @@ export const TableGrid=({createAction})=>{
             <AdvanceFilter visible={filterModal} onClose={()=>setFilterModal(false)}/>
 
             <div className='tableView'>
-                <DataTable/>
+                <DataTable data={data}  header={true}/>
             </div>
 
             

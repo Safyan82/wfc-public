@@ -125,7 +125,7 @@ const DraggableList = ({list}) => {
                           ...provided.draggableProps.style
                         }}
                       >
-                          {item.label}
+                        <span className="text">{item.label}</span>  
                       </div>
                     </div>
 
