@@ -1,11 +1,12 @@
 import React,{ useEffect, useState } from 'react';
 import { Form, Input, Drawer, Button, notification, Spin, Select, TreeSelect, DatePicker, TimePicker, Radio } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAdd, faCalendar, faClose, faExternalLink, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faCalendar, faChevronLeft, faClose, faExternalLink, faSearch } from '@fortawesome/free-solid-svg-icons';
 import './advanceFilter.css';
 import { useQuery } from '@apollo/client';
 import { GetPropertyByGroupQuery } from '../../util/query/properties.query';
 import { CaretDownFilled } from '@ant-design/icons';
+import { GetBranchObject } from '../../util/query/branch.query';
 
 export const AdvanceFilter = ({visible, onClose, loading}) =>{
     const [quickFilter, setQuickFilter] = useState(false);
@@ -14,19 +15,33 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
     });
 
     const [propList, setPropList] = useState([]);
+   
+    const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
+        fetchPolicy: 'network-only',
+    });
+
 
     useEffect(()=>{
         if(data?.getPropertyByGroup?.data){
-
-            setPropList([...data?.getPropertyByGroup?.data]);
-            console.log(data?.getPropertyByGroup?.data, "data?.getPropertyByGroup?.data");
+            setPropList(data?.getPropertyByGroup?.data?.map((props)=>{
+                const properties = props?.properties?.filter((prop)=>branchProperties?.getBranchProperty.response?.find((branchProp)=>branchProp.propertyId==prop._id))
+                return {
+                    ...props,
+                    properties
+                }
+            }));
+            // setPropList([...data?.getPropertyByGroup?.data]);
+            // console.log(branchProperties?.getBranchProperty.response, data?.getPropertyByGroup?.data)
         }
     },[data]);
 
 
     const [isFilterEnable, setFilterEnable] = useState(false);
+    useEffect(()=>{
+        setFilterEnable(false);
+    },[visible]);
 
-    const [values, setValues] = useState(["asd","sad"]);
+    const [values, setValues] = useState([]);
     const [valueSearch, setValueSearch] = useState("");
     const handelOption = () =>{
         const isExist = values.find((val)=>val==valueSearch);
@@ -45,6 +60,28 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
             setValueSearch("");
         }
     };
+
+    const [filters, setFilters] = useState([]);
+    const [filterDetail, setFilterDetail] = useState(null);
+    const [selectedFilter, setSelectedFilter] = useState("");
+
+    const renderFilterOption=(prop)=>{
+        setFilters([...filters, prop]);
+        setFilterDetail('plain');
+        setSelectedFilter(prop.label)
+    };
+
+    const [singleFilter, setSingleFilter] = useState(null);
+
+    const handelFilter = (e)=>{
+        setSingleFilter(e.target.value);
+    };
+
+    const clearFilter=()=>{
+        setFilterDetail(null);
+        setSingleFilter(null);
+
+    }
 
     return(
         
@@ -103,6 +140,8 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
             </div>
         </div>
         :
+        // do render the prop list when the filter is not clicked
+        filterDetail == null ?
         <div className="propList">
             <div className="h5" style={{marginTop:'-4%', marginBottom:'2.6%',letterSpacing: '0.4px'}}>Branch Properties</div>
             <Input 
@@ -119,21 +158,52 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
                         {list?.properties?.map((prop)=>(
 
                             <div className="list-item popoverdataitem" 
-                            // onClick={()=>renderFilterOption(prop)}
+                            onClick={()=>renderFilterOption(prop)}
                             >{prop.label}</div>
                         ))}
                     </>
                 ))}
             </div>
         </div>
+        
+        //  else select the filter detail according the prop type
+        :
+        filterDetail=="plain" ?
+        <>
+        <div className='back-btn' onClick={clearFilter}> <FontAwesomeIcon style={{fontSize: '8px'}} icon={faChevronLeft}/> <span>Back</span> </div>
+        <div className="h5">{selectedFilter}</div>
+        <div className="text">All filters are in the account's time zone (EDT)</div>
+        <Radio.Group onChange={(e)=>handelFilter(e)} className='advanceFilterRadio'>
+            <Radio value={"containExactly"}>contains exactly</Radio>
+            {singleFilter=="containExactly" ? <TagString
+                handelOption={handelOption} handelChange={handelChange} setValues={setValues}
+                setValueSearch={setValueSearch} values={values} valueSearch={valueSearch}
+            /> : null}
+            <Radio value={"notcontain"}>doesn't contain exactly</Radio>
+            {singleFilter=="notcontain" ? <TagString 
+                handelOption={handelOption} handelChange={handelChange} setValues={setValues}
+                setValueSearch={setValueSearch} values={values} valueSearch={valueSearch}/> : null}
+            <Radio value={"exist"}>is known</Radio>
+            <Radio value={"notExist"}>is unknown</Radio>
+        </Radio.Group>
+        <button className='filter-btn' style={{marginTop:'10%'}} onClick={()=>setFilterEnable(true)}>
+          Apply filter
+        </button>
+        </>
+
+            
+        : null
+        
         }
 
-        
+      </Drawer>
+    );
+}
 
-        {/* <Radio.Group className='advanceFilterRadio'>
-            <Radio value={"containExactly"}>contains exactly</Radio>
-            <span style={{marginBottom:'1%'}}>
-                <Select 
+const TagString = ({handelOption, handelChange, setValues, setValueSearch, values, valueSearch})=>{
+    return(
+        <span style={{marginBottom:'1%'}}>
+            <Select 
                 mode='tags' 
                 className='custom-select ' 
                 style={{width:'100%',marginTop:"1%", marginBottom:"2%",}} 
@@ -141,21 +211,15 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
                 onSearch={(e)=>setValueSearch(e)}
                 onInputKeyDown={(e)=>{if(e.key==="Enter"){setValues([...values, valueSearch]);setValueSearch("")}}}
                 open={false}
-                suffixIcon={<CaretDownFilled/>}
+                suffixIcon={<CaretDownFilled style={{color:'#0091ae'}} />}
                 onChange={handelChange}
-                />
-                {
-                    valueSearch ?
-                    <div className='createOption text' onClick={handelOption} style={{marginBottom:'0',marginTop:'-0.6%', color: ""}}>
-                        Create option as "{valueSearch}"
-                    </div> : null
-                }
-            </span>
-            <Radio value={"notcontain"}>doesn't contain exactly</Radio>
-            <Radio value={"exist"}>is known</Radio>
-            <Radio value={"notExist"}>is unknown</Radio>
-        </Radio.Group> */}
-
-      </Drawer>
+            />
+            {
+                valueSearch ?
+                <div className='createOption text'  style={{marginBottom:'0',marginTop:'-0.6%', color: ""}}>
+                    <span onClick={handelOption}> Create option as "{valueSearch}"  </span><FontAwesomeIcon icon={faClose} onClick={()=>setValueSearch(null)}/>
+                </div> : null
+            }
+        </span>
     );
 }

@@ -431,7 +431,14 @@
 
 .tableGridPopover .ant-popover-inner{
     margin-left: 10% !important;
+    width: 340px;
 }
+
+.tableGridPopover .popover-data{
+    height: 250px;
+    overflow-y: scroll;
+}
+
 
 .settingCustomPopover .ant-popover .ant-popover-inner-content{
     color: white !important;
