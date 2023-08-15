@@ -130,3 +130,12 @@ height: 22px !important;
 .back-btn span:hover{
     text-decoration: underline;
 }
+
+.dayPopHead{
+    color:rgb(0, 164, 189);
+    font-weight:600;
+    font-size:13px;
+    cursor: pointer;
+    width: 60%;
+    text-align: right;
+}

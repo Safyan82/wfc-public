@@ -7,6 +7,8 @@ import { useQuery } from '@apollo/client';
 import { GetPropertyByGroupQuery } from '../../util/query/properties.query';
 import { CaretDownFilled } from '@ant-design/icons';
 import { GetBranchObject } from '../../util/query/branch.query';
+import { PlainFilter } from './plainFilter';
+import { DateFilter } from './dateFilter';
 
 export const AdvanceFilter = ({visible, onClose, loading}) =>{
     const [quickFilter, setQuickFilter] = useState(false);
@@ -20,7 +22,11 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
         fetchPolicy: 'network-only',
     });
 
-
+    const [isFilterEnable, setFilterEnable] = useState(false);
+    useEffect(()=>{
+        setFilterEnable(false);
+    },[visible]);
+    
     useEffect(()=>{
         if(data?.getPropertyByGroup?.data){
             setPropList(data?.getPropertyByGroup?.data?.map((props)=>{
@@ -33,13 +39,10 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
             // setPropList([...data?.getPropertyByGroup?.data]);
             // console.log(branchProperties?.getBranchProperty.response, data?.getPropertyByGroup?.data)
         }
-    },[data]);
+    },[data, branchProperties, isFilterEnable]);
 
 
-    const [isFilterEnable, setFilterEnable] = useState(false);
-    useEffect(()=>{
-        setFilterEnable(false);
-    },[visible]);
+    
 
     const [values, setValues] = useState([]);
     const [valueSearch, setValueSearch] = useState("");
@@ -67,7 +70,12 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
 
     const renderFilterOption=(prop)=>{
         setFilters([...filters, prop]);
-        setFilterDetail('plain');
+        if(prop.fieldType.includes('date')){
+            setFilterDetail('date');
+        }else{
+
+            setFilterDetail('plain');
+        }
         setSelectedFilter(prop.label)
     };
 
@@ -169,30 +177,33 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
         //  else select the filter detail according the prop type
         :
         filterDetail=="plain" ?
-        <>
-        <div className='back-btn' onClick={clearFilter}> <FontAwesomeIcon style={{fontSize: '8px'}} icon={faChevronLeft}/> <span>Back</span> </div>
-        <div className="h5">{selectedFilter}</div>
-        <div className="text">All filters are in the account's time zone (EDT)</div>
-        <Radio.Group onChange={(e)=>handelFilter(e)} className='advanceFilterRadio'>
-            <Radio value={"containExactly"}>contains exactly</Radio>
-            {singleFilter=="containExactly" ? <TagString
-                handelOption={handelOption} handelChange={handelChange} setValues={setValues}
-                setValueSearch={setValueSearch} values={values} valueSearch={valueSearch}
-            /> : null}
-            <Radio value={"notcontain"}>doesn't contain exactly</Radio>
-            {singleFilter=="notcontain" ? <TagString 
-                handelOption={handelOption} handelChange={handelChange} setValues={setValues}
-                setValueSearch={setValueSearch} values={values} valueSearch={valueSearch}/> : null}
-            <Radio value={"exist"}>is known</Radio>
-            <Radio value={"notExist"}>is unknown</Radio>
-        </Radio.Group>
-        <button className='filter-btn' style={{marginTop:'10%'}} onClick={()=>setFilterEnable(true)}>
-          Apply filter
-        </button>
-        </>
-
-            
-        : null
+            <PlainFilter
+              clearFilter={clearFilter}
+              handelFilter={handelFilter}
+              handelOption={handelOption}
+              setValueSearch={setValueSearch}
+              values={values}
+              valueSearch={valueSearch}
+              setValues={setValues}
+              handelChange={handelChange}
+              selectedFilter={selectedFilter}
+              singleFilter={singleFilter}
+              setFilterEnable={setFilterEnable}
+            />            
+        : filterDetail=="date" ? 
+        <DateFilter
+            clearFilter={clearFilter}
+            handelFilter={handelFilter}
+            handelOption={handelOption}
+            setValueSearch={setValueSearch}
+            values={values}
+            valueSearch={valueSearch}
+            setValues={setValues}
+            handelChange={handelChange}
+            selectedFilter={selectedFilter}
+            singleFilter={singleFilter}
+            setFilterEnable={setFilterEnable}
+        /> : null
         
         }
 
@@ -200,26 +211,3 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
     );
 }
 
-const TagString = ({handelOption, handelChange, setValues, setValueSearch, values, valueSearch})=>{
-    return(
-        <span style={{marginBottom:'1%'}}>
-            <Select 
-                mode='tags' 
-                className='custom-select ' 
-                style={{width:'100%',marginTop:"1%", marginBottom:"2%",}} 
-                value={values}
-                onSearch={(e)=>setValueSearch(e)}
-                onInputKeyDown={(e)=>{if(e.key==="Enter"){setValues([...values, valueSearch]);setValueSearch("")}}}
-                open={false}
-                suffixIcon={<CaretDownFilled style={{color:'#0091ae'}} />}
-                onChange={handelChange}
-            />
-            {
-                valueSearch ?
-                <div className='createOption text'  style={{marginBottom:'0',marginTop:'-0.6%', color: ""}}>
-                    <span onClick={handelOption}> Create option as "{valueSearch}"  </span><FontAwesomeIcon icon={faClose} onClick={()=>setValueSearch(null)}/>
-                </div> : null
-            }
-        </span>
-    );
-}
