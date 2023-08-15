@@ -26,7 +26,7 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
     useEffect(()=>{
         setFilterEnable(false);
     },[visible]);
-    
+
     useEffect(()=>{
         if(data?.getPropertyByGroup?.data){
             setPropList(data?.getPropertyByGroup?.data?.map((props)=>{
@@ -98,8 +98,8 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
             placement="right"
             className="advanceFilter"
             closable={true}
-            onClose={onClose}
-            closeIcon={<FontAwesomeIcon icon={faClose} onClick={onClose} className='close-icon'/>}
+            onClose={()=>{onClose();clearFilter();}}
+            closeIcon={<FontAwesomeIcon icon={faClose} onClick={()=>{onClose();clearFilter();}} className='close-icon'/>}
             open={visible}
             width={410}
             mask={true}
