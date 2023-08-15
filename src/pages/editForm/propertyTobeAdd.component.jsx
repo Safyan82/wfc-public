@@ -104,19 +104,20 @@ export const PropertyToBeAdd=({back})=>{
     const renderProperties = (property, id, propertyData, isChecked, order)=>{
 
         const isExist = branchSchema.find((field)=>field.propertyId===id);
-        console.log(isExist, "Existtttt");
+       
         const isReadOnlyExist = branchSchema.find((field)=>field.propertyId===id && field.isReadOnly==true);
         if(isExist && !isReadOnlyExist){
             dispatch(addFieldToBranchSchema ({...propertyData, isMandatory: isExist?.isMandatory, order: isExist?.order}));
             
         }
         
-            
-        return(
-            <div style={{marginBottom:'16px'}} className='propertiesCheckboxes'>
-                <Checkbox id={id} defaultChecked={isReadOnlyExist? isExist : isChecked} checked={isReadOnlyExist? isExist : isChecked} disabled={isReadOnlyExist} onChange={(e)=>handelProperty(e, propertyData, isExist?.order)}> <span className='text'>{property}</span> </Checkbox>
-            </div>
-        );
+        if(isExist){
+            return(
+                <div style={{marginBottom:'16px'}} className='propertiesCheckboxes'>
+                    <Checkbox id={id} defaultChecked={isReadOnlyExist? isExist : isChecked} checked={isReadOnlyExist? isExist : isChecked} disabled={isReadOnlyExist} onChange={(e)=>handelProperty(e, propertyData, isExist?.order)}> <span className='text'>{property}</span> </Checkbox>
+                </div>
+            );
+        }   
         
         
         

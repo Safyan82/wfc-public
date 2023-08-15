@@ -18,12 +18,6 @@ export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) =>
 
   const [loader, setLoader] = useState(true);
 
-  useEffect(()=>{
-    setTimeout(()=>{
-        setLoader(false);
-    },800);
-  },[]);
-
   return (
     <Modal
       open={visible}
@@ -59,7 +53,7 @@ export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) =>
                    {loader? <Loader/>: <PropertyToBeAdd/>}
                 </span> 
                 <span style={{width:'100%'}}>
-                    <PropertiesList/>
+                    <PropertiesList setLoader={setLoader}/>
                 </span>
             </div>
         </div>  

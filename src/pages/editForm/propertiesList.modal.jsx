@@ -22,7 +22,7 @@ import { GetBranchObject } from '../../util/query/branch.query';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 import { FormHeader } from '../../components/header/header';
 
-export const PropertiesList=()=>{
+export const PropertiesList=({setLoader})=>{
     const location = useLocation();
     console.log(location, "locationnnn");
     const navigate = useNavigate();
@@ -39,6 +39,7 @@ export const PropertiesList=()=>{
     const [branchSchemaLocal, setBranchSchemaLocal] = useState([...branchSchemaNewFields]);
     useEffect(()=>{
       branchObjectRefetch();
+      setLoader(false);
     }, []);
     useEffect(()=>{
       setBranchSchemaLocal([...branchSchemaNewFields]);

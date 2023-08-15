@@ -6,6 +6,7 @@ import './advanceFilter.css';
 import { useQuery } from '@apollo/client';
 import { GetPropertyByGroupQuery } from '../../util/query/properties.query';
 import { CaretDownFilled } from '@ant-design/icons';
+import { GetBranchObject } from '../../util/query/branch.query';
 
 export const AdvanceFilter = ({visible, onClose, loading}) =>{
     const [quickFilter, setQuickFilter] = useState(false);
@@ -15,12 +16,22 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
 
     const [propList, setPropList] = useState([]);
    
+    const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
+        fetchPolicy: 'network-only',
+    });
+
 
     useEffect(()=>{
         if(data?.getPropertyByGroup?.data){
-
-            setPropList([...data?.getPropertyByGroup?.data]);
-            console.log(data?.getPropertyByGroup?.data, "data?.getPropertyByGroup?.data");
+            setPropList(data?.getPropertyByGroup?.data?.map((props)=>{
+                const properties = props?.properties?.filter((prop)=>branchProperties?.getBranchProperty.response?.find((branchProp)=>branchProp.propertyId==prop._id))
+                return {
+                    ...props,
+                    properties
+                }
+            }));
+            // setPropList([...data?.getPropertyByGroup?.data]);
+            // console.log(branchProperties?.getBranchProperty.response, data?.getPropertyByGroup?.data)
         }
     },[data]);
 
