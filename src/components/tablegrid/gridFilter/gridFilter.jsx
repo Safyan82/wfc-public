@@ -1,8 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { CaretDownFilled, SaveFilled } from "@ant-design/icons";
-import { faSearch, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faSearch, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Input, Popover } from "antd";
+import { useDispatch } from "react-redux";
+import { setQuickFilter } from "../../../middleware/redux/reducers/quickFilter";
+import { useSelector } from "react-redux";
 const createdDateList = [
     {
         title: 'Today',
@@ -147,7 +150,7 @@ export const GridFilter = ({openAdvanceFilter})=>{
 
     const popoverRef = useRef(null);
     const inputRef = useRef(null);
-
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // Function to handle clicks outside the box
@@ -168,6 +171,9 @@ export const GridFilter = ({openAdvanceFilter})=>{
           document.removeEventListener('click', handleClickOutside);
         };
       }, []);
+
+    const {quickFilter} = useSelector(state=>state.quickFilterReducer)
+
     
     return(
         <div className='grid-head-section' style={{paddingTop:'0px', paddingBottom:'10px'}}>
@@ -205,10 +211,17 @@ export const GridFilter = ({openAdvanceFilter})=>{
 
                                         <div 
                                             className={createdDateFilter==datalist.title? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
-                                            onClick={(e)=>{setCreatedDateFilter({name: e.target.innerText,}); setCreatedDatePop(false)}}>
+                                            onClick={(e)=>{setCreatedDateFilter({name: e.target.innerText,}); 
+                                            dispatch(setQuickFilter({createdDate: datalist.title}));
+                                            setCreatedDatePop(false)}}>
                                             {datalist.title}
-                                            <div className="text" style={{color: '#516f90',
-                                                fontWeight: '50'}}>{datalist.subtitle}</div>
+                                            <div 
+                                                className="text" 
+                                                style={{color: '#516f90',
+                                                fontWeight: '50'}}
+                                            >
+                                                {datalist.subtitle}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -220,11 +233,20 @@ export const GridFilter = ({openAdvanceFilter})=>{
                         trigger="click"
                         placement='bottom'
                     >
-                        <span ref={popoverRef} className=' grid-text-btn'
-                            onClick={()=>{setCreatedDatePop(!createdDatePop);setactivityProp(false)}}
-                        >{"Create date "}
-                        <CaretDownFilled style={{color:'#0091ae'}} />
-                        </span>
+                        <div ref={popoverRef} className={quickFilter?.createdDate? 'selectedText' : 'grid-text-btn selectedTextpadding'}
+                            onClick={(e)=>{
+                                setCreatedDatePop(!createdDatePop);
+                                setactivityProp(false);
+                            }}
+                        >
+                            <span>
+                                {quickFilter?.createdDate? quickFilter?.createdDate : "Create date "} &nbsp;
+                                <CaretDownFilled style={{color:'#0091ae'}} />
+                            </span>
+                            {quickFilter?.createdDate? 
+                            <FontAwesomeIcon className="selectedTextCloseIcon" onClick={()=>{setCreatedDatePop(false);dispatch(setQuickFilter({createdDate: null}))}} icon={faClose}/>
+                            : null}
+                        </div>
                     </Popover>
                     
                     <Popover
@@ -259,11 +281,16 @@ export const GridFilter = ({openAdvanceFilter})=>{
 
                                         <div 
                                         className={createdDateFilter==datalist.title? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
-                                        onClick={(e)=>{setCreatedDateFilter({name: e.target.innerText,}); setCreatedDatePop(false)}}>
+                                        onClick={(e)=>{
+                                            setCreatedDateFilter({name: e.target.innerText,}); 
+                                            setCreatedDatePop(false);
+                                            dispatch(setQuickFilter({updatedDate: datalist.title}));
+                                        }}>
                                         {datalist.title}
                                         <div className="text" style={{color: '#516f90',
                                             fontWeight: '50'}}>{datalist.subtitle}</div>
                                         </div>
+                                        
                                     ))}
                                 </div>
 
@@ -273,11 +300,19 @@ export const GridFilter = ({openAdvanceFilter})=>{
                         trigger="click"
                         placement='bottom'
                     >
-                        <span ref={popoverRef} className=' grid-text-btn'
-                            onClick={()=>{setactivityProp(!activityProp);setCreatedDatePop(false)}}
-                        >{"Last activity date "}
-                        <CaretDownFilled/>
-                        </span>
+                            
+                            <div ref={popoverRef} className={quickFilter?.updatedDate? 'selectedText' : 'grid-text-btn selectedTextpadding'}
+                                onClick={()=>{setactivityProp(!activityProp);setCreatedDatePop(false)}}
+                                >
+                                <span>
+                                    {quickFilter?.updatedDate? quickFilter?.updatedDate :"Last activity date "} &nbsp;
+                                    <CaretDownFilled/>
+                                </span>
+                            {quickFilter?.updatedDate? 
+                                <FontAwesomeIcon className="selectedTextCloseIcon" onClick={()=>{setactivityProp(false); dispatch(setQuickFilter({updatedDate: null}))}} icon={faClose}/>
+                                : null}
+                            </div>
+                            
                     </Popover>
 
 

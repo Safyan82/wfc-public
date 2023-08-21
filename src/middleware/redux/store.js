@@ -6,6 +6,7 @@ import propertiesReducer from './reducers/properties.reducer';
 import archivePropertyReducer from './reducers/archiveProperty.reducer';
 import editPropertyReducer from './reducers/editProperty.reducer';
 import branchReducer from './reducers/branch.reducer';
+import quickFilterReducer from './reducers/quickFilter';
 
 const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
     propertyReducer: propertiesReducer,
     archiveReducer: archivePropertyReducer,
     editPropertyReducer: editPropertyReducer,
-    branchReducer: branchReducer
+    branchReducer: branchReducer,
+    quickFilterReducer: quickFilterReducer
   },
 });
 

@@ -20,6 +20,7 @@ export const TableGrid=({createAction, data})=>{
             <GridFilter
                 openAdvanceFilter={()=>setFilterModal(true)}
             />
+            
             <AdvanceFilter visible={filterModal} onClose={()=>setFilterModal(false)}/>
 
             <div className='tableView'>

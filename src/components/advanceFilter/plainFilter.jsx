@@ -6,9 +6,9 @@ import { CaretDownFilled } from "@ant-design/icons";
 
 export const PlainFilter = ({
     handelFilter, clearFilter, 
-    handelOption, setValueSearch, 
-    values, valueSearch, handelChange, 
-    setValues, selectedFilter, singleFilter,
+    handelOption, setFilterValueSearch, 
+    filtervalues, filterValueSearch, handelChange, 
+    setFilterValues, selectedFilter, singleFilter,
     setFilterEnable,
 })=>{
     return(
@@ -19,13 +19,13 @@ export const PlainFilter = ({
         <Radio.Group onChange={(e)=>handelFilter(e)} className='advanceFilterRadio'>
             <Radio value={"containExactly"}>contains exactly</Radio>
             {singleFilter=="containExactly" ? <TagString
-                handelOption={handelOption} handelChange={handelChange} setValues={setValues}
-                setValueSearch={setValueSearch} values={values} valueSearch={valueSearch}
+                handelOption={handelOption} handelChange={handelChange} setFilterValues={setFilterValues}
+                setFilterValueSearch={setFilterValueSearch} filtervalues={filtervalues} filterValueSearch={filterValueSearch}
             /> : null}
             <Radio value={"notcontain"}>doesn't contain exactly</Radio>
             {singleFilter=="notcontain" ? <TagString 
-                handelOption={handelOption} handelChange={handelChange} setValues={setValues}
-                setValueSearch={setValueSearch} values={values} valueSearch={valueSearch}/> : null}
+                handelOption={handelOption} handelChange={handelChange} setFilterValues={setFilterValues}
+                setFilterValueSearch={setFilterValueSearch} filtervalues={filtervalues} filterValueSearch={filterValueSearch}/> : null}
             <Radio value={"exist"}>is known</Radio>
             <Radio value={"notExist"}>is unknown</Radio>
         </Radio.Group>
@@ -36,24 +36,24 @@ export const PlainFilter = ({
     )
 }
 
-const TagString = ({handelOption, handelChange, setValues, setValueSearch, values, valueSearch})=>{
+const TagString = ({handelOption, handelChange, setFilterValues, setFilterValueSearch, filtervalues, filterValueSearch})=>{
     return(
         <span style={{marginBottom:'1%'}}>
             <Select 
                 mode='tags' 
                 className='custom-select ' 
                 style={{width:'100%',marginTop:"1%", marginBottom:"2%",}} 
-                value={values}
-                onSearch={(e)=>setValueSearch(e)}
-                onInputKeyDown={(e)=>{if(e.key==="Enter"){setValues([...values, valueSearch]);setValueSearch("")}}}
+                value={filtervalues}
+                onSearch={(e)=>setFilterValueSearch(e)}
+                onInputKeyDown={(e)=>{if(e.key==="Enter"){setFilterValues([...filtervalues, filterValueSearch]);setFilterValueSearch("")}}}
                 open={false}
                 suffixIcon={<CaretDownFilled style={{color:'#0091ae'}} />}
                 onChange={handelChange}
             />
             {
-                valueSearch ?
+                filterValueSearch ?
                 <div className='createOption text'  style={{marginBottom:'0',marginTop:'-0.6%', color: ""}}>
-                    <span onClick={handelOption}> Create option as "{valueSearch}"  </span><FontAwesomeIcon icon={faClose} onClick={()=>setValueSearch(null)}/>
+                    <span onClick={handelOption}> Create option as "{filterValueSearch}"  </span><FontAwesomeIcon icon={faClose} onClick={()=>setFilterValueSearch(null)}/>
                 </div> : null
             }
         </span>
