@@ -9,27 +9,39 @@ export const PlainFilter = ({
     handelOption, setFilterValueSearch, 
     filtervalues, filterValueSearch, handelChange, 
     setFilterValues, selectedFilter, singleFilter,
-    setFilterEnable,
+    setFilterEnable, upsertFilter
 })=>{
     return(
         <>
         <div className='back-btn' onClick={clearFilter}> <FontAwesomeIcon style={{fontSize: '8px'}} icon={faChevronLeft}/> <span>Back</span> </div>
-        <div className="h5">{selectedFilter}</div>
+        <div className="h5">{selectedFilter?.label}</div>
         <div className="text">All filters are in the account's time zone (EDT)</div>
         <Radio.Group onChange={(e)=>handelFilter(e)} className='advanceFilterRadio'>
-            <Radio value={"containExactly"}>contains exactly</Radio>
-            {singleFilter=="containExactly" ? <TagString
+            <Radio value={"contain_exactly"}>contains exactly</Radio>
+            {singleFilter=="contain_exactly" ? <TagString
                 handelOption={handelOption} handelChange={handelChange} setFilterValues={setFilterValues}
                 setFilterValueSearch={setFilterValueSearch} filtervalues={filtervalues} filterValueSearch={filterValueSearch}
             /> : null}
-            <Radio value={"notcontain"}>doesn't contain exactly</Radio>
-            {singleFilter=="notcontain" ? <TagString 
+            <Radio value={"not_contain"}>doesn't contain exactly</Radio>
+            {singleFilter=="not_contain" ? <TagString 
                 handelOption={handelOption} handelChange={handelChange} setFilterValues={setFilterValues}
                 setFilterValueSearch={setFilterValueSearch} filtervalues={filtervalues} filterValueSearch={filterValueSearch}/> : null}
-            <Radio value={"exist"}>is known</Radio>
-            <Radio value={"notExist"}>is unknown</Radio>
+            <Radio value={"is_known"}>is known</Radio>
+            <Radio value={"is_unknown"}>is unknown</Radio>
         </Radio.Group>
-        <button className='filter-btn' style={{marginTop:'10%'}} onClick={()=>setFilterEnable(true)}>
+        <button className='filter-btn' style={{marginTop:'10%'}} onClick={()=>{
+            upsertFilter({
+
+                operator: selectedFilter.label, 
+                filter:singleFilter, 
+                filterValue: filtervalues,
+                propId: selectedFilter.id
+
+            });
+            setFilterEnable(false);
+            setFilterValues([]);
+            clearFilter();
+        }}>
           Apply filter
         </button>
         </>

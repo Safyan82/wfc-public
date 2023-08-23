@@ -1,13 +1,13 @@
 import {gql} from "@apollo/client";
 
 export const GET_BRANCHES = gql`
-    query{
-        branches {
-            branchname
-            postcode
-            metadata
-        }
+query($input: BranchFilter!){
+    branches(input: $input) {
+        branchname
+        postcode
+        metadata
     }
+}
 `;
 
 export const GetBranchObject = gql`

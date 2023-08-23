@@ -8,6 +8,10 @@
     margin-left: 14px !important;
 }
 
+.advanceFilter .ant-drawer-mask{
+    background: transparent !important;
+}
+
 .filter-header{
     margin-top: -10px;
     display: flex;
@@ -96,6 +100,8 @@
 width: 22px !important;
 height: 22px !important;
 }
+
+
 
 :where(.css-dev-only-do-not-override-12jzuas).ant-select-multiple .ant-select-selection-overflow{
     padding-top: 4% !important;
@@ -209,4 +215,11 @@ height: 22px !important;
     width: 0px;
     height: 10px;
     margin-left: 12px;
+}
+
+.disabledFilterBtn{
+    background-color: #eaf0f6!important;
+    border-color: #eaf0f6!important;
+    color: #b0c1d4!important;
+    cursor: not-allowed;
 }

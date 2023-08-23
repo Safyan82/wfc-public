@@ -18,7 +18,7 @@ export const DateFilter = ({
     return(
         <>
         <div className='back-btn' onClick={clearFilter}> <FontAwesomeIcon style={{fontSize: '8px'}} icon={faChevronLeft}/> <span>Back</span> </div>
-        <div className="h5">{selectedFilter}</div>
+        <div className="h5">{selectedFilter.label}</div>
         <div className="text">All filters are in the account's time zone (EDT)</div>
         <Radio.Group onChange={(e)=>handelFilter(e)} className='advanceFilterRadio'>
             
@@ -27,8 +27,8 @@ export const DateFilter = ({
                 <DatePicker 
                     className="generic-input-control"
                     suffixIcon={null}
-                    placeholder="DD/MM/YYYY"
-                    format={'DD/MM/YYYY'}
+                    placeholder="YYYY-MM-DD"
+                    format={'YYYY-MM-DD'}
                     onChange={(e,date)=>setDateString(date)}
                 />
             }
@@ -38,8 +38,8 @@ export const DateFilter = ({
                 <DatePicker 
                     className="generic-input-control"
                     suffixIcon={null}
-                    placeholder="DD/MM/YYYY"
-                    format={'DD/MM/YYYY'}
+                    placeholder="YYYY-MM-DD"
+                    format={'YYYY-MM-DD'}
                     onChange={(e,date)=>setDateString(date)}
                 />
             }
@@ -50,8 +50,8 @@ export const DateFilter = ({
                 <DatePicker 
                     className="generic-input-control"
                     suffixIcon={null}
-                    placeholder="DD/MM/YYYY"
-                    format={'DD/MM/YYYY'}
+                    placeholder="YYYY-MM-DD"
+                    format={'YYYY-MM-DD'}
                     style={{marginBottom:'1%'}}
                     onChange={(e,date)=>setDateString(date)}
                 />
@@ -64,16 +64,16 @@ export const DateFilter = ({
                     <DatePicker 
                         className="generic-input-control"
                         suffixIcon={null}
-                        placeholder="DD/MM/YYYY"
-                        format={'DD/MM/YYYY'}
+                        placeholder="YYYY-MM-DD"
+                        format={'YYYY-MM-DD'}
                         onChange={(e,date)=>setDateString(date)}
                     />
                     <TagString/>
                     <DatePicker 
                         className="generic-input-control"
                         suffixIcon={null}
-                        placeholder="DD/MM/YYYY"
-                        format={'DD/MM/YYYY'}
+                        placeholder="YYYY-MM-DD"
+                        format={'YYYY-MM-DD'}
                         onChange={(e,date)=>setDateStringBetween(date)}
                     />
                 </>
@@ -96,7 +96,16 @@ export const DateFilter = ({
             <Radio value={"is_known"}>is known</Radio>
             <Radio value={"is_unknown"}>is unknown</Radio>
         </Radio.Group>
-        <button className='filter-btn' style={{marginTop:'10%'}} onClick={()=>{upsertFilter({operator: selectedFilter, filter:singleFilter, filterValue: dateString, filterValue1:dateStringBetween});setFilterEnable(false); clearFilter();}}>
+        <button disabled={!singleFilter?.includes("known") && dateString?.length<1} 
+            className={!singleFilter?.includes("known") && dateString?.length<1? 'filter-btn disabledFilterBtn' : 'filter-btn'}
+            style={{marginTop:'10%'}} 
+            onClick={()=>{upsertFilter({
+                operator: selectedFilter.label,
+                propId: selectedFilter.id, 
+                filter:singleFilter, 
+                filterValue: dateString, 
+                filterValue1:dateStringBetween});
+            setFilterEnable(false); clearFilter();}}>
           Apply filter
         </button>
         </>

@@ -6,50 +6,63 @@ import { Button, Input, Popover } from "antd";
 import { useDispatch } from "react-redux";
 import { setQuickFilter } from "../../../middleware/redux/reducers/quickFilter";
 import { useSelector } from "react-redux";
+import dayjs from "dayjs";
 const createdDateList = [
     {
         title: 'Today',
         subtitle: 'Today from midnight until the current time',
+        value: dayjs().format('YYYY-MM-DD'),
     },
     {
         title: 'Yesterday',
         subtitle: 'The previous 24 hours day',
+        value: dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
     },
     {
         title: 'Tomorrow',
         subtitle: 'The next 24 hours day',
+        value: dayjs().add(1, 'day').format('YYYY-MM-DD'),
     },
     {
         title: 'This week',
         subtitle: 'The current calendar week',
+        value: dayjs().startOf('week').format('YYYY-MM-DD') +"|"+ dayjs().startOf('week').format('YYYY-MM-DD'),
     },
     {
         title: 'This week so far',
         subtitle: 'The current calendar week up to now',
+        value: dayjs().startOf('week').format('YYYY-MM-DD')+"|"+dayjs().format('YYYY-MM-DD'),
     },
     {
         title: 'Last Week',
         subtitle: 'The previous calendar week',
+        value: dayjs().subtract(1, 'week').startOf('week').format('YYYY-MM-DD')+"|"+dayjs().subtract(1, 'week').endOf('week').format('YYYY-MM-DD'),
     },
     {
         title: 'Next Week',
         subtitle: 'The next calendar week',
+        value: dayjs().add(1, 'week').startOf('week').format('YYYY-MM-DD')+"|"+dayjs().add(1, 'week').endOf('week').format('YYYY-MM-DD'),
     },
     {
         title: 'This month',
         subtitle: 'The current calendar month',
+        value: dayjs().startOf('month').format('YYYY-MM-DD')+"|"+dayjs().endOf('month').format('YYYY-MM-DD'),
     },
     {
         title: 'This month so far',
         subtitle: 'The current calendar month up to now',
+        value: dayjs().startOf('month').format('YYYY-MM-DD')+"|"+dayjs().format('YYYY-MM-DD'),
+
     },
     {
         title: 'Last month',
         subtitle: 'The previous calendar month up to now',
+        value: dayjs().subtract(1, 'month').startOf('month').format('YYYY-MM-DD')+"|"+dayjs().subtract(1, 'month').endOf('month').format('YYYY-MM-DD'),
     },
     {
         title: 'Next month',
         subtitle: 'The next calendar month',
+        value: dayjs().add(1, 'month').startOf('month').format('YYYY-MM-DD')+"|"+dayjs().add(1, 'month').endOf('month').format('YYYY-MM-DD'),
     },
     {
         title: 'This quarter',
@@ -212,7 +225,7 @@ export const GridFilter = ({openAdvanceFilter})=>{
                                         <div 
                                             className={createdDateFilter==datalist.title? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
                                             onClick={(e)=>{setCreatedDateFilter({name: e.target.innerText,}); 
-                                            dispatch(setQuickFilter({createdDate: datalist.title}));
+                                            dispatch(setQuickFilter({createdDate: datalist.value}));
                                             setCreatedDatePop(false)}}>
                                             {datalist.title}
                                             <div 
@@ -240,7 +253,7 @@ export const GridFilter = ({openAdvanceFilter})=>{
                             }}
                         >
                             <span>
-                                {quickFilter?.createdDate? quickFilter?.createdDate : "Create date "} &nbsp;
+                                {quickFilter?.createdDate? createdDate?.find((date)=>date.value==quickFilter?.createdDate)?.title  : "Create date "} &nbsp;
                                 <CaretDownFilled style={{color:'#0091ae'}} />
                             </span>
                             {quickFilter?.createdDate? 
@@ -249,6 +262,8 @@ export const GridFilter = ({openAdvanceFilter})=>{
                         </div>
                     </Popover>
                     
+
+
                     <Popover
                         open={activityProp}
                         overlayClassName='settingCustomPopover tableGridPopover'
@@ -284,7 +299,7 @@ export const GridFilter = ({openAdvanceFilter})=>{
                                         onClick={(e)=>{
                                             setCreatedDateFilter({name: e.target.innerText,}); 
                                             setCreatedDatePop(false);
-                                            dispatch(setQuickFilter({updatedDate: datalist.title}));
+                                            dispatch(setQuickFilter({updatedDate: datalist.value}));
                                         }}>
                                         {datalist.title}
                                         <div className="text" style={{color: '#516f90',
@@ -302,14 +317,17 @@ export const GridFilter = ({openAdvanceFilter})=>{
                     >
                             
                             <div ref={popoverRef} className={quickFilter?.updatedDate? 'selectedText' : 'grid-text-btn selectedTextpadding'}
-                                onClick={()=>{setactivityProp(!activityProp);setCreatedDatePop(false)}}
+                                onClick={()=>{
+                                    setactivityProp(!activityProp);setCreatedDatePop(false)
+                                }}
                                 >
                                 <span>
-                                    {quickFilter?.updatedDate? quickFilter?.updatedDate :"Last activity date "} &nbsp;
+                                    {quickFilter?.updatedDate? createdDate?.find((date)=>date.value==quickFilter?.updatedDate)?.title  :"Last activity date "} &nbsp;
                                     <CaretDownFilled/>
                                 </span>
+                                            
                             {quickFilter?.updatedDate? 
-                                <FontAwesomeIcon className="selectedTextCloseIcon" onClick={()=>{setactivityProp(false); dispatch(setQuickFilter({updatedDate: null}))}} icon={faClose}/>
+                                <FontAwesomeIcon className="selectedTextCloseIcon" onClick={()=>{setactivityProp(false); setCreatedDatePop(false); dispatch(setQuickFilter({updatedDate: null}))}} icon={faClose}/>
                                 : null}
                             </div>
                             

@@ -11,6 +11,8 @@ import { PlainFilter } from './plainFilter';
 import { DateFilter } from './dateFilter';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setAdvanceFilter } from '../../middleware/redux/reducers/quickFilter';
 
 export const AdvanceFilter = ({visible, onClose, loading}) =>{
     const {data, loading:propertyLoading, refetch} = useQuery(GetPropertyByGroupQuery,{
@@ -54,6 +56,20 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
         }
     },[data, branchProperties, isFilterEnable]);
 
+    const [propSearch, setPropSearch] = useState("");
+    useEffect(()=>{
+        setPropList(data?.getPropertyByGroup?.data?.map((props)=>{
+            const properties = props?.properties?.filter((prop)=>branchProperties?.getBranchProperty.response?.find((branchProp)=>branchProp.propertyId==prop._id))
+            const filteredProperties = properties.filter((prop)=>prop.label.toLowerCase().includes(propSearch.toLowerCase()));
+            console.log(filteredProperties, "filter prop")
+            return {
+                ...props,
+                properties: filteredProperties
+            }
+        }));
+    }, [propSearch]);
+
+   
 
     const handelOption = () =>{
         const isExist = filtervalues.find((val)=>val==filterValueSearch);
@@ -67,7 +83,6 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
 
     const handelChange = (e) => {
         if(e.length<filtervalues?.length){
-            console.log(e, e.length, filtervalues?.length);
             setFilterValues([...e]);
             setFilterValueSearch("");
         }
@@ -78,13 +93,14 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
     const [selectedFilter, setSelectedFilter] = useState("");
 
     const renderFilterOption=(prop)=>{
+        console.log(prop, "propp", prop.label, prop._id);
         if(prop.fieldType.includes('date')){
             setFilterDetail('date');
         }else{
 
             setFilterDetail('plain');
         }
-        setSelectedFilter(prop.label)
+        setSelectedFilter({label:prop.label, id: prop._id})
     };
 
     const [singleFilter, setSingleFilter] = useState(null);
@@ -112,16 +128,15 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
             setFilters([[prop]])
         }else{
             if(conditionOperator?.operator=='and'){
-                
-                filters?.map((filter, index)=>{
-                    if(index==conditionOperator?.tag){
-                        filter.push(prop)
-                    }
+                console.log(conditionOperator?.tag, "taggg");
+                setFilters(prevData => {
+                    const newData = [...prevData]; // Clone the outer array
+                    newData[conditionOperator?.tag] = [...prevData[conditionOperator?.tag], prop]; // Clone and modify the inner array
+                    return newData;
                 });
-                setFilters([...filters]);
                 
             }else if(conditionOperator?.operator=='or'){
-                filters.push([prop]);
+                setFilters([...filters, [prop]])
             }
         }
 
@@ -143,6 +158,12 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
             mainIndex==i? mainFilter?.filter((filter,i)=> i!==index):mainFilter
         )));
     };
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{ 
+        dispatch(setAdvanceFilter(filters));
+    },[filters])
 
     return(
         
@@ -256,7 +277,11 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
                                     <div>
                                         <span className='grid-text-btn'>{filterDetail?.operator} </span> 
                                         <span className='text'> {filterDetail?.filter.split('_')[0]} {filterDetail?.filter.split('_')[1]} </span>
-                                        <strong style={{color:'black'}}>{filterDetail?.filterValue} {filterDetail?.filterValue1.includes("/") ? "To" : null} {filterDetail?.filterValue1}</strong>
+                                        <strong style={{color:'black'}}>
+                                            {(typeof(filterDetail?.filterValue) === "object")? filterDetail?.filterValue?.map((filter, index)=> (<span>{filter} {index<filterDetail?.filterValue?.length-1 ? <span className='text'> or </span> : null} </span>))  : filterDetail?.filterValue} 
+                                            {filterDetail?.filterValue1?.includes("-") ? <span className='text'> To </span> : null} 
+                                            {filterDetail?.filterValue1}
+                                        </strong>
                                     </div>
                                     <span className='trash-icon-wrapper'>
                                         <Popover content={"delete this condition"} placement='left'>
@@ -320,6 +345,8 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
                 style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }}
                 placeholder='Search'
                 className='generic-input-control'
+                value={propSearch}
+                onChange={(e)=>setPropSearch(e.target.value)}
                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
             />
             <div className="proplistView">

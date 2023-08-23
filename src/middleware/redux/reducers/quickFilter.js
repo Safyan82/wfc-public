@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const QuickFilterReducer = createSlice({
   name: 'QuickFilterReducer',
   initialState: {
-    quickFilter:{}
+    quickFilter: {},
+    advanceFilter: [],
   },
   reducers: {
     setQuickFilter: (state, action) => {
@@ -12,9 +13,15 @@ const QuickFilterReducer = createSlice({
         quickFilter: {...state.quickFilter, ...action.payload}
        }     
     },
+    setAdvanceFilter: (state, action) => {
+       return {
+        ...state,
+        advanceFilter: [...action.payload]
+       }     
+    },
   },
 });
 
 
-export const { setQuickFilter } = QuickFilterReducer.actions;
+export const { setQuickFilter, setAdvanceFilter } = QuickFilterReducer.actions;
 export default QuickFilterReducer.reducer;
