@@ -20,7 +20,7 @@ export const Branch = () =>{
     }, [advanceFilter]);
 
     const { loading, error, data: branchData, refetch } = useQuery(GET_BRANCHES,{
-        fetchPolicy: 'network-only',
+        fetchPolicy: 'cache-and-network',
         variables: {
             input: {
                 filters: Object.values(quickFilter)?.length>0 && advanceFilter?.length>0 ? 
@@ -34,7 +34,7 @@ export const Branch = () =>{
     
 
     const {data:branchObjectData, loading: branchObjectLoading, refetch: schemaRefetch} = useQuery(GetBranchObject,{
-        fetchPolicy:'network-only'
+        fetchPolicy:'cache-and-network'
     });
 
 
