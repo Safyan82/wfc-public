@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { ApartmentOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAsterisk, faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faAsterisk, faClose, faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { Popover } from "antd";
 import { addFieldToBranchSchema, removeFieldFromBranchSchema, setPropertyToBeRemoveFromSchema } from "../../middleware/redux/reducers/branch.reducer";
 import { useDispatch } from "react-redux";
@@ -20,7 +20,7 @@ const reorder = (list, startIndex, endIndex) => {
 
 
 
-const DraggableList = ({list}) => {
+const DraggableList = ({list, editColumn}) => {
   //  console.log(list, "safyan listtt");
   const [reorderBranchSchema,{loading: rearragementLoading}] = useMutation(ReorderBranchSchema);
 
@@ -78,40 +78,43 @@ const DraggableList = ({list}) => {
                 >
                   {(provided, snapshot) => (
                     <div className="icon-wrapper">
-                      <div className="delete-icon">
-                        {/* <Popover 
-                          overlayClassName="custom-popover"
-                          content={"This Property is a part of object schema"} 
-                          placement='top'
-                        > */}
-            
-                          <FontAwesomeIcon onClick={async()=>{
-                            await dispatch(setPropertyToBeRemoveFromSchema(item._id));
-                            }} className="active" icon={faTrashAlt} />
-                        {/* </Popover> */}
-                        
-                        {/* <Popover 
-                          overlayClassName="custom-popover"
-                          content={"Conditional logic is not available for non-enumerated properties."} 
-                          placement='top'
-                        > */}
-                          <ApartmentOutlined />
-                        {/* </Popover> */}
+                      {editColumn? 
+                        null :
+                        <div className="delete-icon">
+                          {/* <Popover 
+                            overlayClassName="custom-popover"
+                            content={"This Property is a part of object schema"} 
+                            placement='top'
+                          > */}
+              
+                            <FontAwesomeIcon onClick={async()=>{
+                              await dispatch(setPropertyToBeRemoveFromSchema(item._id));
+                              }} className="active" icon={faTrashAlt} />
+                          {/* </Popover> */}
+                          
+                          {/* <Popover 
+                            overlayClassName="custom-popover"
+                            content={"Conditional logic is not available for non-enumerated properties."} 
+                            placement='top'
+                          > */}
+                            <ApartmentOutlined />
+                          {/* </Popover> */}
 
-                        
-                        {/* <Popover 
-                        overlayClassName="custom-popover"
-                        content={"Change the label of this property"} 
-                        placement='top'
-                        > */}
-                          <FontAwesomeIcon 
-                            className={item?.isMandatory? "mandatory" : "active"} 
-                            icon={faAsterisk} 
-                            onClick={()=>dispatch(addFieldToBranchSchema({_id:item._id, isMandatory: item?.isMandatory ? false : true}))} 
-                          />
-                        {/* </Popover> */}
+                          
+                          {/* <Popover 
+                          overlayClassName="custom-popover"
+                          content={"Change the label of this property"} 
+                          placement='top'
+                          > */}
+                            <FontAwesomeIcon 
+                              className={item?.isMandatory? "mandatory" : "active"} 
+                              icon={faAsterisk} 
+                              onClick={()=>dispatch(addFieldToBranchSchema({_id:item._id, isMandatory: item?.isMandatory ? false : true}))} 
+                            />
+                          {/* </Popover> */}
 
-                      </div>
+                        </div>
+                      }
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
@@ -120,12 +123,29 @@ const DraggableList = ({list}) => {
                         itemRef={"item-"+index}
                         key={item._id}
                         className="edit-form-input-control input inputItemList"
-                        style={{
+                        style={editColumn? {
+                          display:'flex', 
+                          justifyContent:'space-between',
+                          direction:'ltr',
+                          alignItems:'center',
+                          opacity: snapshot.isDragging ? 0.5 : 1,
+                          ...provided.draggableProps.style,
+                        }
+                        :{
                           opacity: snapshot.isDragging ? 0.5 : 1,
                           ...provided.draggableProps.style
                         }}
                       >
-                        <span className="text">{item.label}</span>  
+                        <span className="text" style={editColumn? {marginTop:'3%'} : null}>{item.label}</span>
+                        {editColumn?
+                        <FontAwesomeIcon
+                          icon={faClose} 
+                          style={{cursor:'pointer'}}
+                          onClick={async()=>{
+                            await dispatch(setPropertyToBeRemoveFromSchema(item._id));
+                          }}
+                        />  
+                        :null}
                       </div>
                     </div>
 

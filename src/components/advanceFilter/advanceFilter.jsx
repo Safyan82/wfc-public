@@ -13,6 +13,7 @@ import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setAdvanceFilter } from '../../middleware/redux/reducers/quickFilter';
+import { createdDateList } from '../../util/date';
 
 export const AdvanceFilter = ({visible, onClose, loading}) =>{
     const {data, loading:propertyLoading, refetch} = useQuery(GetPropertyByGroupQuery,{
@@ -32,11 +33,8 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
 
     const quickFilterReducer = useSelector(state=>state.quickFilterReducer);
 
-    const [localQuickFilter, setLocalQuickFilter] = useState(quickFilterReducer?.quickFilter);
+    const [localQuickFilter, setLocalQuickFilter] = useState();
 
-    useEffect(()=>{
-        setLocalQuickFilter(quickFilterReducer?.quickFilter);
-    },[quickFilterReducer?.quickFilter]);
 
     useEffect(()=>{
         setFilterEnable(false);
@@ -87,10 +85,24 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
             setFilterValueSearch("");
         }
     };
-
-    const [filters, setFilters] = useState([]);
+    
+    const [filters, setFilters] = useState();
     const [filterDetail, setFilterDetail] = useState(null);
     const [selectedFilter, setSelectedFilter] = useState("");
+
+    
+    useEffect(()=>{
+        console.log(JSON.stringify(filters), JSON.stringify(quickFilterReducer?.advanceFilter))
+        if(quickFilterReducer?.advanceFilter && JSON.stringify(filters) !== JSON.stringify(quickFilterReducer?.advanceFilter)){
+            
+            setFilters(prev => {
+                if( JSON.stringify(prev)!==JSON.stringify(quickFilterReducer?.advanceFilter)){
+                    return quickFilterReducer?.advanceFilter;
+                }
+            });
+            console.log(quickFilterReducer?.advanceFilter, "advance filterrr");
+        }
+    },[quickFilterReducer?.advanceFilter]);
 
     const renderFilterOption=(prop)=>{
         console.log(prop, "propp", prop.label, prop._id);
@@ -162,8 +174,15 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
     const dispatch = useDispatch();
 
     useEffect(()=>{ 
-        dispatch(setAdvanceFilter(filters));
+        console.log(filters)
+        if(filters?.length){
+            dispatch(setAdvanceFilter(filters));
+        }
     },[filters])
+
+    const advanceFilterNumber = quickFilterReducer?.advanceFilter.reduce((accumulator, currentArray) => {
+        return accumulator + currentArray.length;
+    }, 0);
 
     return(
         
@@ -208,7 +227,7 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
                                 quickFilterReducer?.quickFilter?.createdDate?
                                     <div className="filterBox">
                                         <span>
-                                            <strong> Created date</strong>&nbsp; is &nbsp;<strong>{quickFilterReducer?.quickFilter?.createdDate}</strong>
+                                            <strong> Created date</strong>&nbsp; is &nbsp;<strong>{createdDateList.find((datelist)=>datelist?.value === quickFilterReducer?.quickFilter?.createdDate)?.title}</strong>
                                         </span>
                                     </div>
                                     : null
@@ -256,7 +275,7 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
             <div className="advanceFilter-inner">
                 
                 <div className="filter-header">
-                    <div className="h5" style={{letterSpacing: '0.4px'}}>Advance filters ({filters?.length})</div>
+                    <div className="h5" style={{letterSpacing: '0.4px'}}>Advance filters ({advanceFilterNumber})</div>
                 </div>
 
                 <div style={{marginTop:'16px'}}>

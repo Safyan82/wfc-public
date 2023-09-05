@@ -8,6 +8,11 @@ import { setNotification } from '../../../middleware/redux/reducers/notification
 import { PropertyToBeAdd } from '../../../pages/editForm/propertyTobeAdd.component';
 import { PropertiesList } from '../../../pages/editForm/propertiesList.modal';
 import { Loader } from '../../loader';
+import { useSelector } from 'react-redux';
+import { useMutation, useQuery } from '@apollo/client';
+import { updateBranchView } from '../../../util/mutation/branchView.mutation';
+import { refreshBranchGrid, removeAllColumns, setPropertyToBeRemoveFromSchema } from '../../../middleware/redux/reducers/branch.reducer';
+import { SingleBranchViewQuery } from '../../../util/query/branchView.query';
 
 
 export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) => {
@@ -17,6 +22,42 @@ export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) =>
   const dispatch = useDispatch();
 
   const [loader, setLoader] = useState(true);
+  const {branchSchemaNewFields} = useSelector(state => state.branchReducer);
+  const [updateBranchCloumnView] = useMutation(updateBranchView);
+  
+  const updateView = async ()=>{
+    
+    await updateBranchCloumnView({
+      variables:{
+        input:{
+          _id: sessionStorage.getItem('selectedViewId'),
+          viewFields: branchSchemaNewFields.filter((field)=>field.isLocalDeleted!=1),
+        }
+      }
+    });
+
+    dispatch(refreshBranchGrid(true));
+    dispatch(setNotification({
+      error: false,
+      notificationState:true, 
+      message: "Column updated",
+
+    }));
+
+    onClose();
+
+
+  };
+
+   
+  const {data: branchView, loading: branchViewLoading, refetch: branchViewRefetch} = useQuery(SingleBranchViewQuery,{
+    variables:{
+      id: sessionStorage.getItem("selectedViewId")
+    },
+    fetchPolicy: 'network-only'
+  });
+
+
 
   return (
     <Modal
@@ -28,6 +69,7 @@ export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) =>
             <button  
             //   disabled={name?.length<1 || access?.length<1} 
             //   className={name?.length<1 || access?.length<1 ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
+            onClick={updateView}
             className='drawer-filled-btn'
             >
               {false? <Spin indicator={<LoadingOutlined/>}/> : "Apply"}
@@ -35,7 +77,9 @@ export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) =>
             <button  disabled={false} className={false? 'disabled-btn drawer-outlined-btn':'drawer-outlined-btn'} onClick={onClose}>
               Cancel
             </button>
-            <span className='grid-text-btn'>Remove All Columns</span>
+            <span className='grid-text-btn' onClick={()=>{
+              dispatch(removeAllColumns(true));
+            }}>Remove All Columns</span>
         </div>
       }
       closable={false}

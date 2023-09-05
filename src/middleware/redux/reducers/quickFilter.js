@@ -5,6 +5,7 @@ const QuickFilterReducer = createSlice({
   initialState: {
     quickFilter: {},
     advanceFilter: [],
+    selectedViewId: null,
   },
   reducers: {
     setQuickFilter: (state, action) => {
@@ -19,9 +20,17 @@ const QuickFilterReducer = createSlice({
         advanceFilter: [...action.payload]
        }     
     },
+    resetQuickFilter : (state, action)=>{return { ...state, quickFilter:{} }},
+    resetAdvanceFilter : (state, action)=>{return { ...state, advanceFilter:[] }},
+    setSelectedViewId: (state, action) => {
+      return{
+        state,
+        selectedViewId: action.payload
+      }
+    }
   },
 });
 
 
-export const { setQuickFilter, setAdvanceFilter } = QuickFilterReducer.actions;
+export const { setQuickFilter, setAdvanceFilter, resetQuickFilter, resetAdvanceFilter, setSelectedViewId } = QuickFilterReducer.actions;
 export default QuickFilterReducer.reducer;

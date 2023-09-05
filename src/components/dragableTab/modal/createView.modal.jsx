@@ -5,22 +5,32 @@ import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { setNotification } from '../../../middleware/redux/reducers/notification.reducer';
+import { useMutation } from '@apollo/client';
+import { createBranchViewMutation } from '../../../util/mutation/branchView.mutation';
+import { useSelector } from 'react-redux';
 
 
-export const CreateView = ({ visible, onClose, setcreatedView, createdView }) => {
+export const CreateView = ({ visible, onClose, setcreatedView, createdView, branchViewRefetch }) => {
 
   const [name, setName] = useState("");
   const [access, setAccess] = useState("");
   const dispatch = useDispatch();
 
-  const handelSave = () => {
+  const[createBranchView, {loading, error}] = useMutation(createBranchViewMutation)
+  const {quickFilter, advanceFilter} = useSelector(state=>state.quickFilterReducer);
+
+  const handelSave = async () => {
     setcreatedView([...createdView, {label:name, access}]);
+    await createBranchView({variables:{input:{
+      name, visibility: access, quickFilter, advanceFilter, isManual: true
+    }}});
     dispatch(setNotification({
         error:false,
         notificationState:true, 
         message: 'View was created successfully',
     }));
     onClose();
+    await branchViewRefetch();
   };
 
   return (

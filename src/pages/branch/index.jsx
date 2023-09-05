@@ -15,17 +15,14 @@ export const Branch = () =>{
     
     const {quickFilter, advanceFilter} = useSelector(state=>state.quickFilterReducer);
 
-    useEffect(()=>{
-        console.log(advanceFilter, "advanceFilter");
-    }, [advanceFilter]);
 
     const { loading, error, data: branchData, refetch } = useQuery(GET_BRANCHES,{
         fetchPolicy: 'cache-and-network',
         variables: {
             input: {
-                filters: Object.values(quickFilter)?.length>0 && advanceFilter?.length>0 ? 
+                filters: quickFilter && Object.values(quickFilter)?.length>0 && advanceFilter?.length>0 ? 
                 {quickFilter, advanceFilter: [...advanceFilter]} :
-                Object.values(quickFilter)?.length>0 ? {quickFilter} : 
+                quickFilter && Object.values(quickFilter)?.length>0 ? {quickFilter} : 
                 advanceFilter?.length>0 ? {advanceFilter: [...advanceFilter]} : null
             }
         }

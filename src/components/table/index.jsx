@@ -11,6 +11,10 @@ import './table.css';
   
 import { Resizable } from 'react-resizable';
 import { EditColumn } from './editColumn/editColumn.modal';
+import { SingleBranchViewQuery } from '../../util/query/branchView.query';
+import { useDispatch } from 'react-redux';
+import { refreshBranchGrid } from '../../middleware/redux/reducers/branch.reducer';
+import { useSelector } from 'react-redux';
 const { Header, Content, Footer } = Layout;
 
 export const DataTable = ({header, data, loading}) => {
@@ -18,6 +22,20 @@ export const DataTable = ({header, data, loading}) => {
   const [sortedInfo, setSortedInfo] = useState({});
   const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject);
   const [dynamicColumn, setDynamicColumn]=useState([]);
+
+  const {data: branchView, loading: branchViewLoading, refetch: branchViewRefetch} = useQuery(SingleBranchViewQuery,{
+    variables:{
+      id: sessionStorage.getItem("selectedViewId")
+    },
+    fetchPolicy: 'network-only'
+  });
+
+
+  useEffect(()=>{
+    if(branchView?.singlebranchView?.viewFields){
+      console.log(branchView?.singlebranchView?.viewFields, "branchView?.singlebranchView?.viewFields", branchProperties?.getBranchProperty.response);
+    }
+  },[branchView]);
 
   const handleResize = dataIndex => (e, { size }) => {
     setDynamicColumn(prevColumns => {
@@ -30,10 +48,21 @@ export const DataTable = ({header, data, loading}) => {
       return nextColumns;
     });
   };
-  useEffect(()=>{
-    if(branchProperties?.getBranchProperty?.response){
+  const dispatch = useDispatch();
+  const branchReducer = useSelector(state => state.branchReducer);
 
-      const col = branchProperties?.getBranchProperty.response?.map((prop)=>{
+  useEffect(()=>{
+    if(branchReducer?.refreshGrid){
+
+      branchViewRefetch();
+    }
+    console.log(branchReducer, "branchReducer?.refreshGrid");
+  },[branchReducer?.refreshGrid]);
+
+  useEffect(()=>{
+    if(branchProperties?.getBranchProperty?.response && branchView?.singlebranchView?.viewFields ){
+
+      const col = branchProperties?.getBranchProperty.response.filter((prop)=>  prop?.isReadOnly || branchView?.singlebranchView?.viewFields?.find((viewProp)=>viewProp?._id==prop?.propertyId)).map((prop)=>{
         // if(prop.propertyDetail.label=="Branch name" || prop.propertyDetail.label=="Post code"){
 
           return {
@@ -48,9 +77,10 @@ export const DataTable = ({header, data, loading}) => {
           }
         // }
       })||[];
-      setDynamicColumn([...col])
+      setDynamicColumn([...col]);
+      dispatch(refreshBranchGrid(false));
     }
-  }, [branchProperties?.getBranchProperty?.response]);
+  }, [branchProperties?.getBranchProperty?.response, branchView]);
 
   const [dataSource, setDataSource] = useState([]);
 
@@ -122,7 +152,9 @@ export const DataTable = ({header, data, loading}) => {
               }} 
             />
             }
-            <EditColumn visible={editColumnModal} onClose={()=>setEditColumnModal(false)}/>
+            {editColumnModal &&
+              <EditColumn visible={editColumnModal} onClose={()=>setEditColumnModal(false)}/>
+            }
         </div>
       </Content>
       

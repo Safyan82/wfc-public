@@ -14,6 +14,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { faAdd, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { CreateView } from './modal/createView.modal';
+import { useMutation, useQuery } from '@apollo/client';
+import { BranchViewQuery } from '../../util/query/branchView.query';
+import { useDispatch } from 'react-redux';
+import { resetAdvanceFilter, resetQuickFilter, setAdvanceFilter, setQuickFilter, setSelectedViewId } from '../../middleware/redux/reducers/quickFilter';
+import { updateBranchView } from '../../util/mutation/branchView.mutation';
+import { useSelector } from 'react-redux';
+import { setRefetchBranchView } from '../../middleware/redux/reducers/branchView.reducer';
+import { resetAll } from '../../middleware/redux/reducers/reset.reducer';
 
 
 const DraggableTabNode = ({ className, ...props }) => {
@@ -39,51 +47,98 @@ const DraggableTabNode = ({ className, ...props }) => {
   });
 };
 const DraggableTab = () => {
-  const viewList = ['All branches', 'Active branches', 'Restricted branches'];
 
-  const [items, setItems] = useState([
-    {
-      key: '1',
-      label: `All branches`,
-    },
-    {
-      key: '2',
-      label: `Active branches`,
-    }
-  ]);
+  const [items, setItems] = useState([]);
 
   const popoverRef = useRef();
   const inputRef = useRef();
-  const [activeKey, setActiveKey] = useState('1');
+
+  const {data , loading: branchViewLoading, refetch: branchViewRefetch } = useQuery(BranchViewQuery);
+
+  useEffect(()=>{
+    dispatch(setRefetchBranchView(branchViewRefetch));
+  },[]);
+
+  const [activeKey, setActiveKey] = useState();
   const [createViewForm, setCreateViewForm] = useState(false);
-  const [view, setView] = useState([...viewList]);
+  const [view, setView] = useState([]);
   const [viewSearch, setViewSearch] = useState();
   const [selectedView, setSelectedView] = useState('');
   const [viewPop, setViewPop] = useState();
   const [createdView, setCreatedView] = useState([]);
   
+  const dispatch = useDispatch();
+
+  const [updateSelectedBranchView, {loading, error}] = useMutation(updateBranchView)
+  const [pinView, setPinView] = useState();
+  
+  const handelSelectedView = async(prop)=>{
+    dispatch(resetAll());
+    const selectedSingleView = data?.branchViews?.find((view)=>view._id==prop.id);
+    const isExist = items.find((item)=>item.label==prop.label);
+
+    sessionStorage.setItem("selectedViewId", prop?._id)
+
+
+    setSelectedView(prop.label);
+    setPinView(prop.key);
+    await updateSelectedBranchView({
+      variables:{
+        input: {
+          _id: prop._id,
+          isStandard: true,
+        }
+      }
+    });
+
+    if(!isExist){
+      setItems([...items, {key: (items.length+1).toString(), label: selectedSingleView.name, ...selectedSingleView}]);
+      setActiveKey((items.length+1).toString());
+    }else{
+      setActiveKey(isExist.key.toString());
+    }
+
+    if(selectedSingleView?.quickFilter){
+      dispatch(setQuickFilter(selectedSingleView?.quickFilter));
+    }else{
+      dispatch(resetQuickFilter());
+    }
+    if(selectedSingleView?.advanceFilter && selectedSingleView?.advanceFilter?.length>0){
+      dispatch(setAdvanceFilter(selectedSingleView?.advanceFilter));
+    }else{
+      dispatch(resetAdvanceFilter());
+    }
+  };
+ 
+
+  useEffect(()=>{
+    if(data?.branchViews){
+      const d = data?.branchViews?.filter((item)=>item?.isStandard)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id}))
+        
+      setItems(
+        data?.branchViews?.filter((item)=>item?.isStandard)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id}))
+      );
+      setView(data?.branchViews?.filter((branchView)=> !branchView?.isManual)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id})));
+      setCreatedView(
+        data?.branchViews?.filter((branchView)=> branchView?.isManual)?.map((list, index)=>({key: index.toString(), label:list.name, id: list._id, ...list}))
+      );
+      sessionStorage.setItem("selectedViewId", d[0]?.id);
+
+    }
+  },[data?.branchViews])
+
   const [tabs, setTabs] = useState(
-    viewList.splice(0,2)?.map((list, index)=>({key: index, label:list, id: index}))
+    data?.branchViews?.map((list, index)=>({key: index, label:list.name, id: list._id}))
   );
 
 
-  useEffect(()=>{
-    if(selectedView?.length){
-      const isExist = items.find((item)=>item.label==selectedView);
-      if(!isExist){
-        setItems([...items, {key: (items.length+1).toString(), label: selectedView}]);
-        setActiveKey((items.length+1).toString());
-      }else{
-        setActiveKey(isExist.key);
-      }
-    }
-  }, [selectedView]);
 
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 100,
     },
   });
+
   const onDragEnd = ({ active, over }) => {
     if (active.id !== over?.id) {
       setItems((prev) => {
@@ -113,21 +168,55 @@ const DraggableTab = () => {
     };
   }, []);
 
-  const removeView = (rmItm) => {
+  const removeView = async (rmItm) => {
     setItems(items?.filter(item=>item.key!=rmItm.key));
-    setActiveKey((Number(items?.length)-1).toString());
+    await updateSelectedBranchView({
+      variables:{
+        input: {
+          _id: rmItm._id,
+          isStandard: false,
+        }
+      }
+    });
+    handelActiveTab((Number(items?.length)-1).toString());
   };
+
+
+  const handelActiveTab = (e)=>{
+    dispatch(resetAll());
+    setActiveKey(e);
+    setPinView(e.toString());
+    const selectedView = items?.find((view)=>view.key==e.toString());
+    
+    // dispatch(setSelectedViewId(selectedView?._id));
+    sessionStorage.setItem("selectedViewId", selectedView?._id);
+    
+    if(selectedView?.quickFilter && Object.keys(selectedView?.quickFilter).length>0){
+      console.log(selectedView, "selectedSingleView not khali");
+      dispatch(setQuickFilter(selectedView?.quickFilter));
+    }else{
+      console.log(selectedView, "selectedSingleView khali");
+      dispatch(resetQuickFilter());
+    }
+    if(selectedView?.advanceFilter && selectedView?.advanceFilter?.length>0){
+      dispatch(setAdvanceFilter(selectedView?.advanceFilter));
+    }else{
+      dispatch(resetAdvanceFilter());
+    }
+  }
 
   return (
     <>
       <div
         className='setting-body-inner' style={{
-          padding: '25px 48px 0px', display: 'flex', alignItems:'center'
+          padding: '25px 48px 0px', 
+          display: 'flex', alignItems:'center'
         }}
       >
         <Tabs       
           closeIcon={true}
-          onChange={(e)=>setActiveKey(e)}
+          onChange={(e)=>handelActiveTab(e)}
+          style={items?.length===3?{minWidth:'35%'}:null}
           renderTabBar={(tabBarProps, DefaultTabBar) => (
             <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
               <SortableContext items={items.map((i) => i.key)} strategy={horizontalListSortingStrategy}>
@@ -153,7 +242,7 @@ const DraggableTab = () => {
                   <div>{item.label}</div> 
                   <FontAwesomeIcon 
                   style={{marginLeft:'15px',marginRight:'-15px'}} 
-                  className='dragimg' icon={faClose} 
+                  className={pinView==item.key?'':'dragimg'} icon={faClose} 
                   onClick={()=>removeView(item)}
                   />
                 </> : 
@@ -189,7 +278,7 @@ const DraggableTab = () => {
                                 autoComplete="off"
                                 value={viewSearch}
                                 onChange={(e)=> {
-                                    setView(viewList?.filter((date)=> (date.title)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))
+                                    setView(data?.branchViews?.filter((date)=> (date.name)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))
                                     setViewSearch(e.target.value);
                                 }}
                                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
@@ -218,9 +307,10 @@ const DraggableTab = () => {
 
                                     <div 
                                         style={{paddingLeft:'40px'}}
-                                        className={selectedView==datelist? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
-                                        onClick={(e)=>{setSelectedView(e.target.innerText); setViewPop(false)}}>
-                                        {datelist}
+                                        className={selectedView==datelist.label? 
+                                        "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
+                                        onClick={(e)=>{handelSelectedView(datelist);  setViewPop(false)}}>
+                                        {datelist?.label}
                                     </div>
                                 ))}
                             </div>
@@ -246,7 +336,7 @@ const DraggableTab = () => {
                                     <div 
                                         style={{paddingLeft:'40px'}}
                                         className={selectedView==datelist.label? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
-                                        onClick={(e)=>{setSelectedView(e.target.innerText); setViewPop(false)}}>
+                                        onClick={(e)=>{handelSelectedView(datelist); setViewPop(false)}}>
                                         {datelist.label}
                                     </div>
                                 ))}
@@ -266,7 +356,7 @@ const DraggableTab = () => {
                     trigger="click"
                     placement='bottom'
                 >
-                    <Button type='text' ref={popoverRef}  onClick={()=>{setViewPop(!viewPop)}}> <FontAwesomeIcon icon={faAdd} color='#7c98b6' /> &nbsp; Add view ({items?.length}/5)</Button>
+                  <Button type='text' ref={popoverRef}  onClick={()=>{setViewPop(!viewPop)}}> <FontAwesomeIcon icon={faAdd} color='#7c98b6' /> &nbsp; Add view ({items?.length}/5)</Button>
             </Popover>
 
             <Button type='text'>All views </Button>
@@ -279,6 +369,7 @@ const DraggableTab = () => {
             onClose={()=>setCreateViewForm(false)}
             setcreatedView = {setCreatedView}
             createdView={createdView}
+            branchViewRefetch={branchViewRefetch}
       />
     </>
   );
