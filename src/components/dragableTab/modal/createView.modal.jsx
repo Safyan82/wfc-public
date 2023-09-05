@@ -19,10 +19,13 @@ export const CreateView = ({ visible, onClose, setcreatedView, createdView, bran
   const[createBranchView, {loading, error}] = useMutation(createBranchViewMutation)
   const {quickFilter, advanceFilter} = useSelector(state=>state.quickFilterReducer);
 
+  const { branchSchemaNewFields } = useSelector(state => state.branchReducer);
+  
   const handelSave = async () => {
     setcreatedView([...createdView, {label:name, access}]);
     await createBranchView({variables:{input:{
-      name, visibility: access, quickFilter, advanceFilter, isManual: true
+      name, visibility: access, quickFilter, advanceFilter, isManual: true,
+      viewFields: branchSchemaNewFields
     }}});
     dispatch(setNotification({
         error:false,
