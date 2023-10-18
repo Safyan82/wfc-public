@@ -44,3 +44,25 @@
     /* justify-content: space-between;
     align-items: center; */
 }
+
+.branchCustomizedTbl td{
+    padding: 82px 16px !important;
+}
+
+.prev-btn{
+    padding: 8px 0px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0091ae;
+    letter-spacing: 0.3px;
+}
+
+.prev-btn:hover{
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0091ae;
+    letter-spacing: 0.3px;
+}

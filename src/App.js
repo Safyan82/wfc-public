@@ -1,5 +1,6 @@
 import './assets/default.css';
 import 'react-resizable/css/styles.css';
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import { Login } from "./pages/login";
 import { DefaultLayout } from "./layout/defaultLayout";
@@ -11,6 +12,7 @@ import { Setting } from './pages/setting/setting';
 import { useSelector } from 'react-redux';
 import { notification } from 'antd';
 import { FormView } from './pages/formView/formView';
+import { BranchDetailPage } from './pages/branchDetailPage/branchDetailPage';
 
 function App() {
   
@@ -59,13 +61,18 @@ function App() {
      <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login/>} />
+        
+        <Route path='/branch/editform' element={<EditForm />} />
+        <Route path='/formview' element={<FormView/>} />
+
+        {/* private routes */}
         <Route path='/user/' element={<DefaultLayout/>}>
           <Route index element={<Employee />} />
           <Route path='branch' element={<Branch />} />
           <Route path='setting' element={<Setting />} />
+          <Route path='detailPage/:id' element={<BranchDetailPage/>} />
         </Route>
-        <Route path='/editform' element={<EditForm />} />
-        <Route path='/formview' element={<FormView/>} />
+        
       </Routes>
     </BrowserRouter>
     {/* <Navbar/> */}

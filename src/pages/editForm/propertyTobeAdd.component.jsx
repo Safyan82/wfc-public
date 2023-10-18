@@ -252,17 +252,19 @@ export const PropertyToBeAdd=({back})=>{
                         </>
                         :
                         
-                        list?.map((data)=>(
-                            <div style={{
-                                maxHeight: '300px',
-                                height: '210px',
-                                overflow: 'scroll',
-                                paddingTop: '3%'
-                            }}>
+                        <div style={{
+                            maxHeight: '300px',
+                            height: '210px',
+                            overflow: 'scroll',
+                            paddingTop: '3%'
+                        }}>
+                            {list?.map((data)=>(
+                                <>
                                 <div style={{color:'black',marginBottom:'10px', letterSpacing:'0.6px'}}>{data?.key}</div>
                                 {data?.children.map((c)=>c)}
-                            </div>
-                        ))
+                                </>
+                            ))}
+                        </div>
                     }
                     <div className="text">Don't see the property you're looking for? <a href='' __blank style={{color:'#0091ae', fontWeight:'bold', letterSpacing:'0.3px'}}>Create a property <FontAwesomeIcon icon={faExternalLink}/> </a></div>
 

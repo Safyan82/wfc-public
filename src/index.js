@@ -1,5 +1,6 @@
 import 'dragula/dist/dragula.css';
 import 'react-resizable/css/styles.css';
+import 'react-phone-input-2/lib/style.css'
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';

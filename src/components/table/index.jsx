@@ -15,6 +15,7 @@ import { SingleBranchViewQuery } from '../../util/query/branchView.query';
 import { useDispatch } from 'react-redux';
 import { refreshBranchGrid } from '../../middleware/redux/reducers/branch.reducer';
 import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 const { Header, Content, Footer } = Layout;
 
 export const DataTable = ({header, data, loading}) => {
@@ -48,6 +49,7 @@ export const DataTable = ({header, data, loading}) => {
       return nextColumns;
     });
   };
+
   const dispatch = useDispatch();
   const branchReducer = useSelector(state => state.branchReducer);
 
@@ -56,9 +58,28 @@ export const DataTable = ({header, data, loading}) => {
 
       branchViewRefetch();
     }
-    console.log(branchReducer, "branchReducer?.refreshGrid");
   },[branchReducer?.refreshGrid]);
+  
+  const [hoveredRow, setHoveredRow] = useState(null);
 
+  const rowClassName = (record) => {
+    return record.key === hoveredRow ? 'hovered-row' : '';
+  };
+
+  
+  
+  const handleRowMouseEnter = (record) => {
+    setHoveredRow(record.key);
+    console.log(record.key, "keyyyyyyyyyyyy");
+  };
+
+
+  const handleRowMouseLeave = () => {
+    setHoveredRow(null);
+    // setMoreoption(false);
+  };
+
+  const history = useNavigate();
   useEffect(()=>{
     if(branchProperties?.getBranchProperty?.response && branchView?.singlebranchView?.viewFields ){
 
@@ -74,13 +95,33 @@ export const DataTable = ({header, data, loading}) => {
               width: column.width,
               onResize: handleResize(column.dataIndex),
             }),
+            ellipsis:true,
+            render: (_, record) => {
+
+              const showActions = hoveredRow === record.key && prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname";
+              return (          
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                  <div style={{display:'flex', flexDirection:'column'}} className='truncated-text' >
+                  
+                     <div className={prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname"? 'prev-btn' : null}>{record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}</div>
+                    
+                  </div>
+
+                {showActions && selectedRowKeys?.length===0 &&
+                  <button className={"grid-sm-btn"} type="link" onClick={()=>history('/user/detailPage/'+record.key)}>
+                    Preview
+                  </button>
+                }
+              </div>
+              );
+            },
           }
         // }
       })||[];
       setDynamicColumn([...col]);
       dispatch(refreshBranchGrid(false));
     }
-  }, [branchProperties?.getBranchProperty?.response, branchView]);
+  }, [branchProperties?.getBranchProperty?.response, branchView, hoveredRow]);
 
   const [dataSource, setDataSource] = useState([]);
 
@@ -88,13 +129,12 @@ export const DataTable = ({header, data, loading}) => {
   useEffect(()=>{
     setDataSource(data?.branches.map((key,index) => {
       const {metadata, ...rest} = key;
-      return {key:index ,...metadata, ...rest};
+      return {key:key?._id ,...metadata, ...rest};
     }));
-    console.log(data, "sufyan");
   },[data?.branches])
 
 
-  useState(()=>{console.log(dataSource)},[dataSource])
+  
 
 
   const {
@@ -150,6 +190,13 @@ export const DataTable = ({header, data, loading}) => {
                   </div>
                 )}else{return null}
               }} 
+              
+          
+              onRow={(record) => ({
+                onMouseEnter: () => handleRowMouseEnter(record),
+                onMouseLeave: () => handleRowMouseLeave(),
+              })}
+              rowClassName={rowClassName}
             />
             }
             {editColumnModal &&

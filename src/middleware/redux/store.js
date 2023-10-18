@@ -9,6 +9,7 @@ import branchReducer from './reducers/branch.reducer';
 import quickFilterReducer from './reducers/quickFilter';
 import branchViewReducer from './reducers/branchView.reducer';
 import resetReducer from './reducers/reset.reducer';
+import noteReducer from './reducers/note.reducer';
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     quickFilterReducer: quickFilterReducer,
     branchViewReducer: branchViewReducer,
     reset: resetReducer,
+    noteReducer: noteReducer,
   },
   middleware:[...getDefaultMiddleware()]
 });

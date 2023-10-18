@@ -518,7 +518,7 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
           >
             <div className='title' 
                 style={branchObjectLoading?{opacity:0.4}:{opacity:1}}
-                onClick={()=>navigate('/editform',{
+                onClick={()=>navigate('/branch/editform',{
                     state: {
                     title: 'Branch',
                     url:'/user/branch',
