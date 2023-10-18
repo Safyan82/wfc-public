@@ -40,7 +40,9 @@ export const GridHeader = ({title, record, createAction, editProperty})=>{
                     <Button className='grid-outlined-btn dropdown' onClick={()=>setAction(!isAction)}>Action <span className='private-dropdown__caret'></span></Button>
                         <div  class="dropdown-content" style={isAction ? {display:'block'}: {display:'none'}}>
                         <a href="" onClick={(e)=>{ e.preventDefault(); setFieldModal(true); }}
-                        >Edit properties</a>
+                        >Create properties</a>
+                        <Link to="/user/setting" target='_blank'
+                        >Edit properties</Link>
                         <a href="" onClick={(e)=>{
                             e.preventDefault();
                             navigate('/branch/editform',{
