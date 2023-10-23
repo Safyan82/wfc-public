@@ -12,7 +12,7 @@ import { Popover } from "antd";
 import { ApartmentOutlined } from "@ant-design/icons";
 import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from 'react-redux';
-import { addFieldToBranchSchema, removeFieldFromBranchSchema, setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
+import { addFieldToBranchSchema, removeAllColumns, removeFieldFromBranchSchema, resetbranchSchemaNewFields, setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { BulkBranchObjectMutation, BulkDeleteBranchObjectMutation } from '../../util/mutation/branch.mutation';
@@ -21,54 +21,88 @@ import Spinner from '../../components/spinner';
 import { GetBranchObject } from '../../util/query/branch.query';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 import { FormHeader } from '../../components/header/header';
+import { BranchViewQuery, SingleBranchViewQuery } from '../../util/query/branchView.query';
 
 export const PropertiesList=({setLoader})=>{
-    const location = useLocation();
-    console.log(location, "locationnnn");
-    const navigate = useNavigate();
-    const [modalState, setModalState] = useState(false);
+
+    useEffect(()=>{
+      dispatch(resetbranchSchemaNewFields());
+    },[]);
 
     const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
       fetchPolicy: 'network-only',
     });
-    const [createBulkProperties, {loading: createBulkPropertiesLoading, error}] = useMutation(BulkBranchObjectMutation);
+
+    const {data: branchView, loading: branchViewLoading} = useQuery(SingleBranchViewQuery,{
+      variables:{
+        id: sessionStorage.getItem("selectedViewId")
+      },
+      fetchPolicy: 'network-only'
+    });
     
+
     const [mandatory, setMandatory] = useState([]);
 
-    const { branchSchemaNewFields } = useSelector(state=>state.branchReducer);
-    const [branchSchemaLocal, setBranchSchemaLocal] = useState([...branchSchemaNewFields]);
+    const { branchSchemaNewFields, removeAllColumnsView } = useSelector(state=>state.branchReducer);
+    const [branchSchemaLocal, setBranchSchemaLocal] = useState([]);
     useEffect(()=>{
       branchObjectRefetch();
       setLoader(false);
     }, []);
+
     useEffect(()=>{
-      setBranchSchemaLocal([...branchSchemaNewFields]);
+      if(branchSchemaNewFields?.length>0){
+       
+        setBranchSchemaLocal([...branchSchemaNewFields]);
+        
+      }
     }, [branchSchemaNewFields]);
+
 
     
     
     const dispatch = useDispatch();
     useEffect(()=>{
-      if(!branchObjectLoading){
+      if(!branchObjectLoading && !branchViewLoading){
 
-        const mandatoryFields = branchProperties?.getBranchProperty?.response?.filter((property)=> property.isReadOnly===true);
+        const mandatoryFields = (branchProperties?.getBranchProperty?.response)?.filter((property)=> property.isReadOnly===true);
         setMandatory(mandatoryFields);
         dispatch(setBranchSchema(branchProperties?.getBranchProperty?.response));
+        // console.log(branchView?.singlebranchView?.viewFields, "branchView?.singlebranchView?.viewFields");
+        if(branchView?.singlebranchView?.viewFields){
+          
 
-        branchProperties?.getBranchProperty?.response?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
-          const propData = {
-            label:field?.propertyDetail?.label,
-            _id:field?.propertyId,
-            isMandatory:field?.isMandatory,
-            isLocalDeleted: 0,
-            order: field?.order
-          }
-          dispatch(addFieldToBranchSchema (propData));
-        });
+          branchView?.singlebranchView?.viewFields?.map((field)=>{
+            const propData = {
+              label:field?.label,
+              _id:field?._id,
+              isMandatory:field?.isMandatory,
+              isLocalDeleted: 0,
+              order: field?.order
+            }
+            dispatch(addFieldToBranchSchema(propData));
+          });
+          
+        }
+        else{
+
+          // (branchProperties?.getBranchProperty?.response)?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
+          //   const propData = {
+          //     label:field?.propertyDetail?.label,
+          //     _id:field?.propertyId,
+          //     isMandatory:field?.isMandatory,
+          //     isLocalDeleted: 0,
+          //     order: field?.order
+          //   };
+          //   console.log(propData, "propD");
+          // resetbranchSchemaNewFields
+            dispatch(resetbranchSchemaNewFields());
+          // });
+        }
 
         
       }
-    },[branchProperties]);
+    },[branchObjectLoading, branchViewLoading]);
 
     const[isPropOpen, setProp]=useState(false);
 
@@ -77,20 +111,20 @@ export const PropertiesList=({setLoader})=>{
     const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
-      if(deletePropertiesLoading || createBulkPropertiesLoading || branchObjectLoading){
+      if(deletePropertiesLoading  || branchObjectLoading){
         setLoading(true);
       }else{
         setLoading(false);
       }
-    },[deletePropertiesLoading, createBulkPropertiesLoading, branchObjectLoading ]); 
+    },[deletePropertiesLoading, branchObjectLoading ]); 
 
     const [api, contextHolder] = notification.useNotification();
 
     const [btnDisabled, setBtnDisabled] = useState(false);
     useEffect(()=>{
       
-      const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0 && schema?.isNew==1));
-      const deletedProps = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==1));
+      const props = branchSchemaNewFields?.filter((schema)=> (schema?.isLocalDeleted==0 && schema?.isNew==1));
+      const deletedProps = branchSchemaNewFields?.filter((schema)=> (schema?.isLocalDeleted==1));
       if(props?.length>0 || deletedProps?.length>0){
         setBtnDisabled(false);
       }else{
@@ -99,34 +133,7 @@ export const PropertiesList=({setLoader})=>{
     },[branchSchemaNewFields]);
 
     
-    const handelSave = async() => {
-      if(branchSchemaNewFields?.length>0){
-        const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0));
-        const deletedProps = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==1));
-        if(deletedProps?.length>0){
-          await deleteProperties({
-            variables:{
-              input: {properties: deletedProps?.map((props)=>(props._id))}
-            }
-          })
-        }
-        if(props?.length>0){
-          await createBulkProperties({
-            variables:{
-              input:{
-                fields: props.map((schema)=>({propertyId: schema?._id, isMandatory: schema?.isMandatory || false}))
-              }
-            }
-          });
-        }
-        dispatch(setNotification({
-          notificationState:true, 
-          message:"Changes were saved",
-          error: false,
-        }));
-        await branchObjectRefetch();
-      }
-    }
+  
 
 
     const {propertyToBeRemoveFromSchema} = useSelector((state)=>state.branchReducer);
@@ -177,7 +184,7 @@ export const PropertiesList=({setLoader})=>{
                     </div>
                 ))}
 
-                <DraggableList list={branchSchemaNewFields?.length>0 ? branchSchemaLocal.sort((a, b) => a?.order - b?.order) : []} />        
+                <DraggableList editColumn={true} list={branchSchemaNewFields?.length>0 ? branchSchemaLocal.sort((a, b) => a?.order - b?.order) : []} />        
             </div>
                             
             </div>

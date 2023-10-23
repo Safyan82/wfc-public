@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import createFieldReducer from './reducers/createField.reducer';
 import notificationReducer from './reducers/notification.reducer';
 import groupReducer from './reducers/group.reducer';
@@ -6,6 +6,10 @@ import propertiesReducer from './reducers/properties.reducer';
 import archivePropertyReducer from './reducers/archiveProperty.reducer';
 import editPropertyReducer from './reducers/editProperty.reducer';
 import branchReducer from './reducers/branch.reducer';
+import quickFilterReducer from './reducers/quickFilter';
+import branchViewReducer from './reducers/branchView.reducer';
+import resetReducer from './reducers/reset.reducer';
+import noteReducer from './reducers/note.reducer';
 
 const store = configureStore({
   reducer: {
@@ -15,8 +19,13 @@ const store = configureStore({
     propertyReducer: propertiesReducer,
     archiveReducer: archivePropertyReducer,
     editPropertyReducer: editPropertyReducer,
-    branchReducer: branchReducer
+    branchReducer: branchReducer,
+    quickFilterReducer: quickFilterReducer,
+    branchViewReducer: branchViewReducer,
+    reset: resetReducer,
+    noteReducer: noteReducer,
   },
+  middleware:[...getDefaultMiddleware()]
 });
 
 export default store;

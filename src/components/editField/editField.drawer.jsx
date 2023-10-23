@@ -251,7 +251,7 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
                                 dispatch(setBtnState(true)) ;
                                 sessionStorage.clear();
                                 setCurrentStep(0);
-                                navigate('/editform',{
+                                navigate('/branch/editform',{
                                   state: {
                                   title: 'Branch',
                                   url:'/user/setting',

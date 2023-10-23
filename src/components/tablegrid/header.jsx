@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Dropdown } from 'antd';
-
+import {Link, useNavigate} from 'react-router-dom'
 import { SelectDropdown } from '../select';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { CreateFieldDrawer } from '../createFields';
 
 export const GridHeader = ({title, record, createAction, editProperty})=>{
     const [isAction, setAction] = useState(false);
@@ -22,6 +23,8 @@ export const GridHeader = ({title, record, createAction, editProperty})=>{
         document.removeEventListener('click', handleOutsideClick);
       };
     }, []);
+    const navigate = useNavigate();
+    const [fieldModal, setFieldModal] = useState(false);
     return(
         <>
             <div className='grid-head-section'>
@@ -36,8 +39,18 @@ export const GridHeader = ({title, record, createAction, editProperty})=>{
                     <div class="dropdown" ref={containerRef}>
                     <Button className='grid-outlined-btn dropdown' onClick={()=>setAction(!isAction)}>Action <span className='private-dropdown__caret'></span></Button>
                         <div  class="dropdown-content" style={isAction ? {display:'block'}: {display:'none'}}>
-                        <a href="#" onClick={()=>{setAction(!isAction);editProperty();}}>Edit properties</a>
-                        <a href="#">View Customization</a>
+                        <a href="" onClick={(e)=>{ e.preventDefault(); setFieldModal(true); }}
+                        >Create properties</a>
+                        <Link to="/user/setting" target='_blank'
+                        >Edit properties</Link>
+                        <a href="" onClick={(e)=>{
+                            e.preventDefault();
+                            navigate('/branch/editform',{
+                                state: {
+                                title: 'Branch',
+                                url:'/user/branch',
+                                }
+                            })}}>View Customization</a>
                         <a href="#">Restore records</a>
                         </div>
                     </div>
@@ -48,6 +61,11 @@ export const GridHeader = ({title, record, createAction, editProperty})=>{
             <div className='dragable-view'>
                 {/* dragable tabs implementation */}
             </div>
+            <CreateFieldDrawer 
+                visible={fieldModal}  
+                propertyListRefetch={()=>{}}
+                onClose={()=>{setFieldModal(false);}}
+            />
         </>
     )
 }

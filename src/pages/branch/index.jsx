@@ -7,21 +7,41 @@ import { GET_BRANCHES, GetBranchObject } from '../../util/query/branch.query';
 import { FormDrawer } from '../formDrawer';
 import { CreateFieldDrawer } from '../../components/createFields/index';
 import { TableGrid } from '../../components/tablegrid';
+import { useSelector } from 'react-redux';
 
 export const Branch = () =>{
     const [branchModal, setBranchModal] = useState(false);
     const [fieldModal, setFieldModal] = useState(false);
-    const { loading, error, data, refetch } = useQuery(GET_BRANCHES);
-    const {data:branchObjectData, loading: branchObjectLoading, refetch: schemaRefetch} = useQuery(GetBranchObject,{
-        fetchPolicy:'network-only'
+    
+    const {quickFilter, advanceFilter} = useSelector(state=>state.quickFilterReducer);
+
+
+    const { loading, error, data: branchData, refetch } = useQuery(GET_BRANCHES,{
+        fetchPolicy: 'cache-and-network',
+        variables: {
+            input: {
+                filters: quickFilter && Object.values(quickFilter)?.length>0 && advanceFilter?.length>0 ? 
+                {quickFilter, advanceFilter: [...advanceFilter]} :
+                quickFilter && Object.values(quickFilter)?.length>0 ? {quickFilter} : 
+                advanceFilter?.length>0 ? {advanceFilter: [...advanceFilter]} : null
+            }
+        }
     });
+
+    
+
+    const {data:branchObjectData, loading: branchObjectLoading, refetch: schemaRefetch} = useQuery(GetBranchObject,{
+        fetchPolicy:'cache-and-network'
+    });
+
+
 
     return(
         <React.Fragment>
             {/* <GridHeader title={"Branch(es)"} record={0} editProperty={()=>setFieldModal(true)} createAction={async()=>{setBranchModal(true);await schemaRefetch();}}/> */}
             {/* <Divider/> */}
             <TableGrid 
-                data={data}
+                data={branchData}
                 loading={loading} 
                 refetch={refetch}
                 createAction={async()=>{setBranchModal(true);await schemaRefetch();}}

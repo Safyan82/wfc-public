@@ -7,6 +7,9 @@ const branchReducer = createSlice({
     branchSchemaNewFields : [],
     propertyToBeRemoveFromSchema: null,
     propertyToBeMandatory: false,
+    branchEditSchemaNewFields : [],
+    refreshGrid: false,
+    removeAllColumnsView: false,
   },
   reducers: {
     setPropertyToBeRemoveFromSchema: (state, action)=>{
@@ -43,6 +46,33 @@ const branchReducer = createSlice({
         }     
     },
 
+    addFieldToBranchEditColumn: (state, action) => {
+        const isExist = state.branchEditSchemaNewFields.find((schema)=>schema._id === action.payload._id);
+        
+        return {
+         ...state,
+         branchEditSchemaNewFields: isExist ? state.branchEditSchemaNewFields.map((schema)=>{
+                if(schema._id==action.payload._id){
+                    const {_id, ...rest} = action.payload
+                    return {
+                        ...schema,
+                        ...rest,
+                    }
+                }else{
+                    
+                    return schema
+                }  
+            }): [...state.branchEditSchemaNewFields, {isLocalDeleted:0, ...action.payload}],
+        }     
+    },
+
+    resetbranchSchemaNewFields : (state, action) => {
+        return {
+            ...state,
+            branchSchemaNewFields:[]
+        }
+    },
+
     removeFieldFromBranchSchema: (state, action) => {
         return{
             ...state,
@@ -61,10 +91,37 @@ const branchReducer = createSlice({
             propertyToBeRemoveFromSchema: null,
         }
     },
-    resetBranch:()=>{ return {branchSchema:[], propertyToBeRemoveFromSchema:null}},
+
+    resetBranch:()=>{ return {branchSchema:[], propertyToBeRemoveFromSchema:null, removeAllColumnsView:false}},
+
+    refreshBranchGrid : (state, action) => {
+        return {
+            ...state,
+            refreshGrid: action.payload
+        }
+    },
+    
+    removeAllColumns: (state, action) =>{
+        return{
+            ...state,
+            branchSchemaNewFields: state.branchSchemaNewFields.map((schema)=>{
+                
+                return {
+                    ...schema,
+                    isLocalDeleted: 1
+                }
+               
+            }),
+            removeAllColumnsView: action.payload
+        }
+    }
+
   },
+
 });
 
 
-export const { setBranchSchema, addFieldToBranchSchema, removeFieldFromBranchSchema, setPropertyToBeRemoveFromSchema } = branchReducer.actions;
+export const { setBranchSchema, addFieldToBranchSchema, refreshBranchGrid,
+    addFieldToBranchEditColumn, removeFieldFromBranchSchema, 
+    setPropertyToBeRemoveFromSchema, resetbranchSchemaNewFields, removeAllColumns } = branchReducer.actions;
 export default branchReducer.reducer;

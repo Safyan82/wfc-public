@@ -1,58 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { CaretDownFilled, SaveFilled } from "@ant-design/icons";
-import { faSearch, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faSearch, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Input, Popover } from "antd";
-const createdDateList = [
-    {
-        title: 'Today',
-        subtitle: 'Today from midnight until the current time',
-    },
-    {
-        title: 'Yesterday',
-        subtitle: 'The previous 24 hours day',
-    },
-    {
-        title: 'Tomorrow',
-        subtitle: 'The next 24 hours day',
-    },
-    {
-        title: 'This week',
-        subtitle: 'The current calendar week',
-    },
-    {
-        title: 'This week so far',
-        subtitle: 'The current calendar week up to now',
-    },
-    {
-        title: 'Last Week',
-        subtitle: 'The previous calendar week',
-    },
-    {
-        title: 'Next Week',
-        subtitle: 'The next calendar week',
-    },
-    {
-        title: 'This month',
-        subtitle: 'The current calendar month',
-    },
-    {
-        title: 'This month so far',
-        subtitle: 'The current calendar month up to now',
-    },
-    {
-        title: 'Last month',
-        subtitle: 'The previous calendar month up to now',
-    },
-    {
-        title: 'Next month',
-        subtitle: 'The next calendar month',
-    },
-    {
-        title: 'This quarter',
-        subtitle: 'The current quarter',
-    },
-]
+import { useDispatch } from "react-redux";
+import { resetAdvanceFilter, resetQuickFilter, setQuickFilter } from "../../../middleware/redux/reducers/quickFilter";
+import { useSelector } from "react-redux";
+import { createdDateList } from "../../../util/date";
+import { useMutation } from "@apollo/client";
+import { updateBranchView } from "../../../util/mutation/branchView.mutation";
+import { setNotification } from "../../../middleware/redux/reducers/notification.reducer";
+
 
 export const GridFilter = ({openAdvanceFilter})=>{
     const [createdDate, setCreatedDate] = useState([...createdDateList]);
@@ -67,7 +25,7 @@ export const GridFilter = ({openAdvanceFilter})=>{
 
     const popoverRef = useRef(null);
     const inputRef = useRef(null);
-
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // Function to handle clicks outside the box
@@ -88,7 +46,39 @@ export const GridFilter = ({openAdvanceFilter})=>{
           document.removeEventListener('click', handleClickOutside);
         };
       }, []);
+
+    const {quickFilter, advanceFilter} = useSelector(state=>state.quickFilterReducer)
+    const [upsertBranchView] = useMutation(updateBranchView);
+
+    const { refetchBranchView } = useSelector(state => state.branchViewReducer);
+
+    const [loading, setLoading] = useState(false);
     
+    const handelSaveView = async () =>{
+        setLoading(true);
+        await upsertBranchView({
+            variables:{
+                input:{
+                    _id: sessionStorage.getItem('selectedViewId'),
+                    quickFilter,
+                    advanceFilter,
+                }
+            }
+        });
+        dispatch(setNotification({
+            notificationState:true, 
+            message:"View saved successfully",
+            error: false,
+        }));
+        await refetchBranchView();
+        setLoading(false);
+    };
+    
+    const advanceFilterNumber = advanceFilter.reduce((accumulator, currentArray) => {
+        return accumulator + currentArray.length;
+    }, 0)
+
+    console.log(quickFilter?.createdDate, "quickFilter?.createdDate")
     return(
         <div className='grid-head-section' style={{paddingTop:'0px', paddingBottom:'10px'}}>
                 <div className='grid-head-left-btn-section'>
@@ -125,10 +115,17 @@ export const GridFilter = ({openAdvanceFilter})=>{
 
                                         <div 
                                             className={createdDateFilter==datalist.title? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
-                                            onClick={(e)=>{setCreatedDateFilter({name: e.target.innerText,}); setCreatedDatePop(false)}}>
+                                            onClick={(e)=>{setCreatedDateFilter({name: e.target.innerText,}); 
+                                            dispatch(setQuickFilter({createdDate: datalist.value}));
+                                            setCreatedDatePop(false)}}>
                                             {datalist.title}
-                                            <div className="text" style={{color: '#516f90',
-                                                fontWeight: '50'}}>{datalist.subtitle}</div>
+                                            <div 
+                                                className="text" 
+                                                style={{color: '#516f90',
+                                                fontWeight: '50'}}
+                                            >
+                                                {datalist.subtitle}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -140,13 +137,24 @@ export const GridFilter = ({openAdvanceFilter})=>{
                         trigger="click"
                         placement='bottom'
                     >
-                        <span ref={popoverRef} className=' grid-text-btn'
-                            onClick={()=>{setCreatedDatePop(!createdDatePop);setactivityProp(false)}}
-                        >{"Create date "}
-                        <CaretDownFilled style={{color:'#0091ae'}} />
-                        </span>
+                        <div ref={popoverRef} className={quickFilter?.createdDate? 'selectedText' : 'grid-text-btn selectedTextpadding'}
+                            onClick={(e)=>{
+                                setCreatedDatePop(!createdDatePop);
+                                setactivityProp(false);
+                            }}
+                        >
+                            <span>
+                                {quickFilter?.createdDate? createdDate?.find((date)=>date.value==quickFilter?.createdDate)?.title  : "Create date "} &nbsp;
+                                <CaretDownFilled style={{color:'#0091ae'}} />
+                            </span>
+                            {quickFilter?.createdDate? 
+                            <FontAwesomeIcon className="selectedTextCloseIcon" onClick={()=>{setCreatedDatePop(false);dispatch(setQuickFilter({createdDate: null}))}} icon={faClose}/>
+                            : null}
+                        </div>
                     </Popover>
                     
+
+
                     <Popover
                         open={activityProp}
                         overlayClassName='settingCustomPopover tableGridPopover'
@@ -179,11 +187,16 @@ export const GridFilter = ({openAdvanceFilter})=>{
 
                                         <div 
                                         className={createdDateFilter==datalist.title? "popoverdataitem popoverdataitem-active": "popoverdataitem"} 
-                                        onClick={(e)=>{setCreatedDateFilter({name: e.target.innerText,}); setCreatedDatePop(false)}}>
+                                        onClick={(e)=>{
+                                            setCreatedDateFilter({name: e.target.innerText,}); 
+                                            setCreatedDatePop(false);
+                                            dispatch(setQuickFilter({updatedDate: datalist.value}));
+                                        }}>
                                         {datalist.title}
                                         <div className="text" style={{color: '#516f90',
                                             fontWeight: '50'}}>{datalist.subtitle}</div>
                                         </div>
+                                        
                                     ))}
                                 </div>
 
@@ -193,21 +206,37 @@ export const GridFilter = ({openAdvanceFilter})=>{
                         trigger="click"
                         placement='bottom'
                     >
-                        <span ref={popoverRef} className=' grid-text-btn'
-                            onClick={()=>{setactivityProp(!activityProp);setCreatedDatePop(false)}}
-                        >{"Last activity date "}
-                        <CaretDownFilled/>
-                        </span>
+                            
+                            <div ref={popoverRef} className={quickFilter?.updatedDate? 'selectedText' : 'grid-text-btn selectedTextpadding'}
+                                onClick={()=>{
+                                    setactivityProp(!activityProp);setCreatedDatePop(false)
+                                }}
+                                >
+                                <span>
+                                    {quickFilter?.updatedDate? createdDate?.find((date)=>date.value==quickFilter?.updatedDate)?.title  :"Last activity date "} &nbsp;
+                                    <CaretDownFilled/>
+                                </span>
+                                            
+                            {quickFilter?.updatedDate? 
+                                <FontAwesomeIcon className="selectedTextCloseIcon" onClick={()=>{setactivityProp(false); setCreatedDatePop(false); dispatch(setQuickFilter({updatedDate: null}))}} icon={faClose}/>
+                                : null}
+                            </div>
+                            
                     </Popover>
 
 
                     <span onClick={openAdvanceFilter}> 
-                        <FontAwesomeIcon color='#0091ae' icon={faSliders} />&nbsp;<span className='grid-text-btn'>  Advance filters</span>
+                        <FontAwesomeIcon color='#0091ae' icon={faSliders} />&nbsp;<span className='grid-text-btn'>  Advance filters ({advanceFilterNumber}) </span>
                     </span>
-                    <span type='text' className='grid-text-btn'> Clear All </span>
+                    <span type='text' className='grid-text-btn'
+                        onClick={()=>{
+                            dispatch(resetAdvanceFilter());
+                            dispatch(resetQuickFilter());  
+                        }}
+                    > Clear All </span>
 
                 </div>
-                <Button className='grid-head-right-btn'>
+                <Button className='grid-head-right-btn' onClick={handelSaveView}>
                     <SaveFilled /> Save view
                 </Button>
             </div>

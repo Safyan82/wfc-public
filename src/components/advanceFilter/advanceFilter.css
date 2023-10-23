@@ -8,6 +8,10 @@
     margin-left: 14px !important;
 }
 
+.advanceFilter .ant-drawer-mask{
+    background: transparent !important;
+}
+
 .filter-header{
     margin-top: -10px;
     display: flex;
@@ -28,16 +32,16 @@
 }
 
 .dividerline{
-    position: absolute;
     width: 100%;
     left: 0;
     margin-top: 32px;
+    margin-bottom: 32px;
     border-color: rgb(223, 227, 235);
-    border: 1px solid rgb(223, 227, 235);
+    border: 0.1px solid rgb(223, 227, 235);
 }
 
 .advanceFilter-inner{
-    margin-top: 70px;
+    /* margin-top: 70px; */
 }
 
 .filter-btn{
@@ -97,6 +101,8 @@ width: 22px !important;
 height: 22px !important;
 }
 
+
+
 :where(.css-dev-only-do-not-override-12jzuas).ant-select-multiple .ant-select-selection-overflow{
     padding-top: 4% !important;
 }
@@ -129,4 +135,91 @@ height: 22px !important;
 
 .back-btn span:hover{
     text-decoration: underline;
+}
+
+.dayPopHead{
+    color:rgb(0, 164, 189);
+    font-weight:600;
+    font-size:13px;
+    cursor: pointer;
+    width: 60%;
+    text-align: right;
+}
+
+.filterMainBox{
+    padding: 8px!important;
+    position: relative;
+    border-radius: 3px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(223, 227, 235);
+}
+
+.filterbox-inner{
+    position: relative;
+    border-radius: 3px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(223, 227, 235);
+
+    padding-left: 16px!important;
+    padding-top: 12px!important;
+    padding-bottom: 12px!important;
+    padding-right: 8px!important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filterbox-inner:hover{
+    background-color: rgb(234, 240, 246);
+    cursor: pointer;
+}
+
+.filterbox-inner:hover  .trash-icon-wrapper{
+    visibility: visible;
+}
+
+.trash-icon-wrapper{
+    visibility: hidden;
+    height: fit-content;
+    width: 5%;
+    background-color: rgb(234, 240, 246);
+    bottom: 32px;
+    right: 5px;
+    text-align: right;
+}
+
+/* .filterbox-inner{
+    
+} */
+.conditionalBtn{
+    background-color: #eaf0f6;
+    border-color: #cbd6e2;
+    color: #506e91;
+    font-size: 12px;
+    line-height: 14px;
+    padding: 5px 12px;
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px;
+
+}
+
+.conditionalBtn:hover{
+    background-color: #f5f8fa;
+    color: #506e91;
+    cursor: pointer;
+}
+
+.verticalBorder{
+    border: 1px solid rgb(234, 240, 246);
+    width: 0px;
+    height: 10px;
+    margin-left: 12px;
+}
+
+.disabledFilterBtn{
+    background-color: #eaf0f6!important;
+    border-color: #eaf0f6!important;
+    color: #b0c1d4!important;
+    cursor: not-allowed;
 }
