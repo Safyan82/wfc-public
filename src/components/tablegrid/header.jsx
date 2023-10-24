@@ -41,8 +41,8 @@ export const GridHeader = ({title, record, createAction, editProperty})=>{
                         <div  class="dropdown-content" style={isAction ? {display:'block'}: {display:'none'}}>
                         <a href="" onClick={(e)=>{ e.preventDefault(); setFieldModal(true); }}
                         >Create properties</a>
-                        <Link to="/user/setting" target='_blank'
-                        >Edit properties</Link>
+                        {/* <Link to="/user/setting" target='_blank'
+                        >Edit properties</Link> */}
                         <a href="" onClick={(e)=>{
                             e.preventDefault();
                             navigate('/branch/editform',{
@@ -50,7 +50,7 @@ export const GridHeader = ({title, record, createAction, editProperty})=>{
                                 title: 'Branch',
                                 url:'/user/branch',
                                 }
-                            })}}>View Customization</a>
+                            })}}>Edit view</a>
                         <a href="#">Restore records</a>
                         </div>
                     </div>

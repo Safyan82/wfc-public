@@ -70,13 +70,15 @@ export const DataTable = ({header, data, loading}) => {
   
   const handleRowMouseEnter = (record) => {
     setHoveredRow(record.key);
-    console.log(record.key, "keyyyyyyyyyyyy");
+    sessionStorage.setItem('hoverItem', record.key);
   };
 
 
   const handleRowMouseLeave = () => {
     setHoveredRow(null);
     // setMoreoption(false);
+    sessionStorage.removeItem('hoverItem');
+
   };
 
   const history = useNavigate();
@@ -90,28 +92,30 @@ export const DataTable = ({header, data, loading}) => {
             title: prop.propertyDetail.label,
             dataIndex: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
             key: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(), // Initial width of the column
-            width:200,
+            width: 100,
             onHeaderCell: (column) => ({
               width: column.width,
               onResize: handleResize(column.dataIndex),
+              ellipsis: true
             }),
-            ellipsis:true,
+            ellipsis: true,
+
             render: (_, record) => {
-
-              const showActions = hoveredRow === record.key && prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname";
+              const showActions = sessionStorage.getItem('hoverItem') == record.key && prop.propertyDetail.label.replaceAll(" ","").toLowerCase() =="branchname" &&  selectedRowKeys?.length===0;
               return (          
-                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
-                  <div style={{display:'flex', flexDirection:'column'}} className='truncated-text' >
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between',}}>
                   
-                     <div className={prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname"? 'prev-btn' : null}>{record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}</div>
+                  <div 
+                    style={{}}
+                    className={prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname"? 'prev-btn' : null}
+                  >{record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}</div>
                     
-                  </div>
+                 
 
-                {showActions && selectedRowKeys?.length===0 &&
-                  <button className={"grid-sm-btn"} type="link" onClick={()=>history('/user/detailPage/'+record.key)}>
+                  <button className={"grid-sm-btn"} style={showActions?{visibility: 'visible'}:{visibility: 'hidden'}} type="link" onClick={()=>history('/user/detailPage/'+record.key)}>
                     Preview
                   </button>
-                }
+                
               </div>
               );
             },
@@ -121,7 +125,7 @@ export const DataTable = ({header, data, loading}) => {
       setDynamicColumn([...col]);
       dispatch(refreshBranchGrid(false));
     }
-  }, [branchProperties?.getBranchProperty?.response, branchView, hoveredRow]);
+  }, [branchProperties?.getBranchProperty?.response, branchView]);
 
   const [dataSource, setDataSource] = useState([]);
 
