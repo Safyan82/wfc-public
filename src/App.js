@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { notification } from 'antd';
 import { FormView } from './pages/formView/formView';
 import { BranchDetailPage } from './pages/branchDetailPage/branchDetailPage';
+import { AllProperties } from './pages/allProperties/allProperties.page';
 
 function App() {
   
@@ -62,13 +63,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Login/>} />
         
-        <Route path='/branch/editform' element={<EditForm />} />
         <Route path='/formview' element={<FormView/>} />
+        <Route path='/branch/editform' exact element={<EditForm />} />
 
         {/* private routes */}
         <Route path='/user/' element={<DefaultLayout/>}>
-          <Route index element={<Employee />} />
-          <Route path='branch' element={<Branch />} />
+          <Route  element={<Employee />} />
+          <Route path='branch' exact element={<Branch />}/>
+          <Route path='allproperties' element={<AllProperties/>} />
           <Route path='setting' element={<Setting />} />
           <Route path='detailPage/:id' element={<BranchDetailPage/>} />
         </Route>

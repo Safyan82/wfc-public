@@ -6,6 +6,10 @@ import { DetailPageRightSideBar } from './rightSideBar/rightSideBar';
 import { useParams } from 'react-router-dom';
 import { Notes } from './middleSection/notes/notes';
 import { useSelector } from 'react-redux';
+import { useQuery } from '@apollo/client';
+import { getSingleBranch } from '../../util/query/branch.query';
+import { useDispatch } from 'react-redux';
+import { setSpecificBranchData } from '../../middleware/redux/reducers/branchData.reducer';
 
 export const BranchDetailPage = ()=>{
     const param = useParams();
@@ -13,6 +17,21 @@ export const BranchDetailPage = ()=>{
     useEffect(()=>{
         console.log(noteToggle, "noteToggler");
     }, [noteToggle]);
+
+    const {data: singleBranchData, loading: singleBranchLoading} = useQuery(getSingleBranch,{
+        variables:{
+            id: param?.id
+        }
+    });
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        if(!singleBranchLoading){
+            dispatch(setSpecificBranchData(singleBranchData));
+        }
+    }, [singleBranchLoading]);
+
     return(
         <Row>
             {noteToggle?
@@ -23,7 +42,7 @@ export const BranchDetailPage = ()=>{
                 maxHeight: 'calc(100vh - 54px)',
                 overflowY: 'scroll'
             }}>
-                <DetailPageLeftSideBar id={param?.id}  />
+                <DetailPageLeftSideBar singleBranchData={singleBranchData}  />
             </Col>
             <Col span={12} style={{paddingLeft:'0px'}} >
                 <DetailPageMiddleSection  />

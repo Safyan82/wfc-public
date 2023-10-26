@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
 import './leftsidebar.css';
+import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBarsStaggered, faCalendarDay, faCheck, faChevronLeft, faClose, faCross, faDesktop, faEllipsis, faHandHolding, faHandHoldingHand, faList, faList12, faListDots, faPaw, faPen, faPencil, faPhone, faTasks, faTasksAlt } from '@fortawesome/free-solid-svg-icons';
 import { Avatar, Popover, Collapse, Panel, Form, Input, Select, Badge, Checkbox } from 'antd';
@@ -8,14 +8,11 @@ import {    EditOutlined, CopyOutlined, CopyTwoTone, PhoneOutlined, EllipsisOutl
 import { GetBranchObject, getSingleBranch } from '../../../util/query/branch.query';
 import { useQuery } from '@apollo/client';
 import PhoneInput from 'react-phone-input-2';
+import { useNavigate } from 'react-router-dom';
 
-export const DetailPageLeftSideBar = ({id})=>{
+export const DetailPageLeftSideBar = ({singleBranchData})=>{
 
-    const {data: singleBranchData, loading: singleBranchLoading} = useQuery(getSingleBranch,{
-        variables:{
-            id
-        }
-    });
+    
 
 
     const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
@@ -43,6 +40,24 @@ export const DetailPageLeftSideBar = ({id})=>{
     };
 
 
+    const [isAction, setAction] = useState(false);
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+      const handleOutsideClick = (event) => {
+        if (containerRef.current && !containerRef.current.contains(event.target)) {
+            setAction(false);
+        }
+      };
+  
+      document.addEventListener('click', handleOutsideClick);
+  
+      return () => {
+        document.removeEventListener('click', handleOutsideClick);
+      };
+    }, []);
+
+    const navigate = useNavigate();
 
     return(
         <div className='sidebar-wrapper'>
@@ -52,10 +67,25 @@ export const DetailPageLeftSideBar = ({id})=>{
                     <div>
                         <FontAwesomeIcon className='left-chevron-icon' icon={faChevronLeft}/> <span className='text-deco' style={{left: '20%', position: 'relative'}}>Branch</span> 
                     </div>
-                    <div>
-                        <Popover>
-                        <span className='text-deco'>Actions<span className='caret'></span></span> 
-                        </Popover>
+
+                    <div className="dropdown" ref={containerRef}>
+
+                        <span className='text-deco' onClick={()=>setAction(!isAction)}>Actions<span className='caret'></span></span> 
+                        
+                        <div  className="dropdown-content dropdown-content-prev" style={isAction ? {display:'block'}: {display:'none'}}>
+                            <a href="" onClick={(e)=>{ e.preventDefault(); }}>
+                                Edit view
+                            </a>
+                            <a href="" onClick={(e)=>{ e.preventDefault(); navigate("/user/allproperties")}}>
+                                Edit data fields
+                            </a>
+                            <a href="" onClick={(e)=>{ e.preventDefault(); }}>
+                                Audit log
+                            </a>
+                            <a href="" onClick={(e)=>{ e.preventDefault(); }}>
+                                Generate report
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -295,10 +325,10 @@ export const DetailPageLeftSideBar = ({id})=>{
 
 
                     {/* Bottom Button */}
-                    <div style={{display:'flex', columnGap:'10px', marginTop:'32px', marginBottom:'20px'}}>
+                    {/* <div style={{display:'flex', columnGap:'10px', marginTop:'32px', marginBottom:'20px'}}>
                         <button className='simple-btn' title="View all properties" >View all properties</button>
                         <button className='simple-btn' title='View property history'>View property history</button>
-                    </div>
+                    </div> */}
                 </Collapse.Panel>
             </Collapse>
 

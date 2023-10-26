@@ -241,7 +241,9 @@ export const EditForm=()=>{
                               className="edit-form-input-control input inputItemList"   
                               style={{backgroundImage: "none", cursor: "auto"}}                    
                             >
-                              {field?.propertyDetail?.label}
+                              <span className='draggeableTable-text'>
+                                {field?.propertyDetail?.label}
+                              </span>
                             </div>
                           </div>
                         ))}

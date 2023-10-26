@@ -108,7 +108,8 @@
 .form-section-body{
     padding: 0px 40px;
 }
-.form-section-body .input{
+
+.allprop .input, .form-section-body .input{
     cursor: grab;
     font-size: 14px !important;
     font-weight: 600 !important;
