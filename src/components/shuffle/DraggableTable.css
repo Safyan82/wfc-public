@@ -81,3 +81,10 @@
     opacity: 0;
     left: 63px;
   }
+
+  .draggeableTable-text{
+    font-weight: 400;
+    font-size: 14px;
+    color: #33475b;
+    line-height: 24px;
+  }

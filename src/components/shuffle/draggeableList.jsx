@@ -21,7 +21,7 @@ const reorder = (list, startIndex, endIndex) => {
 
 
 const DraggableList = ({list, editColumn}) => {
-  //  console.log(list, "safyan listtt");
+   console.log(list, "safyan listtt");
   const [reorderBranchSchema,{loading: rearragementLoading}] = useMutation(ReorderBranchSchema);
 
   const [items, setItems] = useState(list)
@@ -136,7 +136,7 @@ const DraggableList = ({list, editColumn}) => {
                           ...provided.draggableProps.style
                         }}
                       >
-                        <span className="text" style={editColumn? {marginTop:'3%'} : null}>{item.label}</span>
+                        <span className="draggeableTable-text" >{item.label}</span>
                         {editColumn?
                         <FontAwesomeIcon
                           icon={faClose} 

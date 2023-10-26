@@ -1,0 +1,79 @@
+.back-icon{
+    color: #7c98b6;
+    margin-right: 0.5em;
+    transform: scale(0.8);
+}
+
+.bg{
+    background:#f5f8fa;
+    padding: 16px;
+    padding-top: 50px;
+}
+
+.bg header{
+    margin-bottom:16px;
+    border-bottom: 1px solid rgb(203, 214, 226);
+}
+
+.head-h1{
+    font-size: 20px;
+    padding-bottom: 16px;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+}
+
+/* main body */
+
+.abtProp{
+    position: relative;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(45, 62, 80, 0.12) 0px 1px 5px 0px;
+    border-radius: 3px;
+    padding: 24px 24px 0px;
+    max-width: 33.333%;
+}
+
+
+
+.abtProp-Head{
+    font-size: 16px;
+    padding-bottom: 24px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.allpropList{
+    max-width: 66.66667%;
+    width: 66.66667%;
+    position: relative;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(45, 62, 80, 0.12) 0px 1px 5px 0px;
+    border-radius: 3px;
+    padding: 40px;
+}
+
+.allpropList-head{
+    font-weight: 400;
+    font-size: 24px;
+    padding-bottom: 40px;
+    color: #33475B;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.generic-input-control::placeholder{
+    font-weight: 700 !important;
+    color: red !important;
+}
+
+.allpropList-propHead{
+    color: #516f90;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-collapse .ant-collapse-content>.ant-collapse-content-box {
+    padding: 0px 12px;
+}
+

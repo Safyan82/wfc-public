@@ -21,7 +21,7 @@
 }
 
 .sidebar-wrapper .ant-collapse{
-    border-bottom: 1px solid rgb(203, 214, 226) !important;
+    /* border-bottom: 1px solid rgb(203, 214, 226) !important; */
     padding: 10px 16px;
 }
 
@@ -435,4 +435,16 @@
 
 .react-tel-input .country-list .country.highlight{
     color: black;
+}
+.dropdown-content-prev{
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 4px rgba(0,0,0,0.2);
+    z-index: 1;
+    margin-left: -87px;
+    width: 20px;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    display: none;
 }

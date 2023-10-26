@@ -50,8 +50,8 @@ export const GridHeader = ({title, record, createAction, editProperty})=>{
                                 title: 'Branch',
                                 url:'/user/branch',
                                 }
-                            })}}>Edit view</a>
-                        <a href="#">Restore records</a>
+                            })}}>View Customization</a>
+                        {/* <a href="#">Restore records</a> */}
                         </div>
                     </div>
                     <Button className='grid-outlined-btn'>Import</Button>
