@@ -9,6 +9,7 @@ import { addFieldToBranchSchema, removeFieldFromBranchSchema, setPropertyToBeRem
 import { useDispatch } from "react-redux";
 import { useMutation } from "@apollo/client";
 import { ReorderBranchSchema } from "../../util/mutation/branch.mutation";
+import Spinner from "../spinner";
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -20,7 +21,7 @@ const reorder = (list, startIndex, endIndex) => {
 
 
 
-const DraggableList = ({list, editColumn}) => {
+const DraggableList = ({list, editColumn, handelAddBranches, updateUserBranchView}) => {
    console.log(list, "safyan listtt");
   const [reorderBranchSchema,{loading: rearragementLoading}] = useMutation(ReorderBranchSchema);
 
@@ -29,10 +30,7 @@ const DraggableList = ({list, editColumn}) => {
     setItems(list?.filter((l)=>l.isLocalDeleted!=1));
   }, [list]);
 
-  useEffect(()=>{
-   
-    console.log(items, "itemm");
-  },[items]);
+
 
   const onDragEnd = async (result) => {
     // dropped outside the list
@@ -47,15 +45,24 @@ const DraggableList = ({list, editColumn}) => {
       result.destination.index
     ));
 
-    await reorderBranchSchema({
-      variables:{
-        input:{fields: reorder(
-          items,
-          result.source.index,
-          result.destination.index
-        ).map((item)=>({propertyId: item._id}))}
-      }
-    });
+    if(updateUserBranchView){
+      
+      await updateUserBranchView(reorder(
+        items,
+        result.source.index,
+        result.destination.index
+      ));
+    }else{
+      await reorderBranchSchema({
+        variables:{
+          input:{fields: reorder(
+            items,
+            result.source.index,
+            result.destination.index
+          ).map((item)=>({propertyId: item._id}))}
+        }
+      });
+    }
 
   }
 
@@ -71,7 +78,7 @@ const DraggableList = ({list, editColumn}) => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {items.map((item, index) => (
+              {items?.map((item, index) => (
                 item?.isLocalDeleted ? null :
                 <Draggable key={item._id} draggableId={item._id} index={index}
                  
@@ -141,7 +148,7 @@ const DraggableList = ({list, editColumn}) => {
                         <FontAwesomeIcon
                           icon={faClose} 
                           style={{cursor:'pointer'}}
-                          onClick={async()=>{
+                          onClick={handelAddBranches? ()=>handelAddBranches(item._id) : async()=>{
                             await dispatch(setPropertyToBeRemoveFromSchema(item._id));
                           }}
                         />  
@@ -157,6 +164,7 @@ const DraggableList = ({list, editColumn}) => {
           )}
         </Droppable>
       </DragDropContext>
+      
     );
 }
 

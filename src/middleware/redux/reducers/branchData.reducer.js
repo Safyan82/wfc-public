@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const branchDataReducer = createSlice({
   name: 'branchDataReducer',
   initialState: {
-    specificBranchData: {}
+    specificBranchData: {},
+    remvFieldSpecificBranchView: null
   },
   reducers: {
     setSpecificBranchData: (state, action)=>{
@@ -13,11 +14,32 @@ const branchDataReducer = createSlice({
         }
     },
 
+    removeDataFieldFromSpecificBranchView: (state, action) => {
+        return{
+            ...state,
+            remvFieldSpecificBranchView: action.payload
+        }
+    },
+
+    AddDataFieldFromView : (state, action) => {
+        return{
+            ...state,
+            remvFieldSpecificBranchView: action.payload,
+        }
+    },
+
+    resetDataFieldForNewView : (state, action) =>{
+        return {
+            ...state,
+            remvFieldSpecificBranchView: null,
+        }
+    }
+
 
   },
 
 });
 
 
-export const { setSpecificBranchData } = branchDataReducer.actions;
+export const { resetDataFieldForNewView, AddDataFieldFromView, setSpecificBranchData, removeDataFieldFromSpecificBranchView } = branchDataReducer.actions;
 export default branchDataReducer.reducer;

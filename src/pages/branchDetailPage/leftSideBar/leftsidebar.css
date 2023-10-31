@@ -448,3 +448,12 @@
     padding-top: 8px;
     display: none;
 }
+
+.skeleton-custom{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    column-gap: 30px;
+    height: 70px;
+    overflow: hidden;
+}

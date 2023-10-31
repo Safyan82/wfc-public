@@ -25,3 +25,13 @@ query($id: String!){
   }
 }
 `;
+
+
+export const BranchViewForSpecificUser = gql`
+  query($createdBy: String!, $createdFor: String!){
+    getUserBranchView(createdBy: $createdBy, createdFor: $createdFor) {
+      success
+      response
+    }
+  }
+`;

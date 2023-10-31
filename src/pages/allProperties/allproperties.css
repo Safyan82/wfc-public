@@ -30,7 +30,7 @@
     box-shadow: rgba(45, 62, 80, 0.12) 0px 1px 5px 0px;
     border-radius: 3px;
     padding: 24px 24px 0px;
-    max-width: 33.333%;
+    max-width: 27.333%;
 }
 
 
@@ -43,7 +43,7 @@
 }
 
 .allpropList{
-    max-width: 66.66667%;
+    max-width: 72.66667%;
     width: 66.66667%;
     position: relative;
     background-color: rgb(255, 255, 255);
@@ -67,13 +67,72 @@
     color: red !important;
 }
 
-.allpropList-propHead{
-    color: #516f90;
-    font-weight: 400;
-    font-size: 12px;
-}
 
 :where(.css-dev-only-do-not-override-12jzuas).ant-collapse .ant-collapse-content>.ant-collapse-content-box {
     padding: 0px 12px;
 }
 
+.allpropList-searchbar{
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+}
+
+.allpropList .ant-collapse-header-text{
+    font-size: 20px;
+    font-weight: 600;
+    color: #33475b;
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+}
+
+.allpropList :where(.css-dev-only-do-not-override-12jzuas).ant-collapse>.ant-collapse-item >.ant-collapse-header .ant-collapse-expand-icon {
+    color: rgb(0, 145, 174);
+    scale: 1.5;
+    margin-top: 4px;
+}
+
+.field-presentation{
+    margin-bottom: 16px;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    column-gap: 16px;
+}
+
+.field-presentation svg{
+    color: rgb(0, 189, 165);
+    transform: scale(1.3);
+}
+
+
+.allpropList-propHead{
+    color: #516f90;
+    font-weight: 400;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.field-prop-value{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.field-prop-btn-grp{
+    visibility: hidden;
+}
+
+/* .field-presentation:hover{
+    border-bottom: 1px solid #00a4bd;
+} */
+
+.field-presentation:hover .field-prop-btn-grp{
+    visibility: visible;
+    /* margin-top: -5px; */
+}
+
+.ant-input::placeholder{
+    color: #7c98b6;
+}
