@@ -28,7 +28,7 @@ export const BranchDetailPage = ()=>{
 
     useEffect(()=>{
         if(!singleBranchLoading){
-            dispatch(setSpecificBranchData(singleBranchData));
+            dispatch(setSpecificBranchData({id: param?.id, ...singleBranchData}));
         }
     }, [singleBranchLoading]);
 
@@ -42,7 +42,7 @@ export const BranchDetailPage = ()=>{
                 maxHeight: 'calc(100vh - 54px)',
                 overflowY: 'scroll'
             }}>
-                <DetailPageLeftSideBar singleBranchData={singleBranchData}  />
+                <DetailPageLeftSideBar branchId={param?.id} singleBranchData={singleBranchData}  />
             </Col>
             <Col span={12} style={{paddingLeft:'0px'}} >
                 <DetailPageMiddleSection  />

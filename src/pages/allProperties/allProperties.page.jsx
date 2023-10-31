@@ -1,31 +1,35 @@
 import './allproperties.css';
 import React, { useEffect, useState } from "react";
-import { Row, Col, Input, Collapse } from 'antd';
-import { faChevronLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { Row, Col, Input, Collapse, Checkbox } from 'antd';
+import { faCheck, faChevronLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DraggableList from '../../components/shuffle/draggeableList';
 import { GetBranchObject } from '../../util/query/branch.query';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import Spinner from '../../components/spinner';
 import { useSelector } from 'react-redux';
 import { GetPropertyByGroupQuery } from '../../util/query/properties.query';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { PropertyDetailDrawer } from './propertyDetail.drawer';
+import { AddBranchDetailViewMutation } from '../../util/mutation/branchDetailView.mutation';
+import { useDispatch } from 'react-redux';
+import { AddDataFieldFromView, removeDataFieldFromSpecificBranchView } from '../../middleware/redux/reducers/branchData.reducer';
+import { BranchViewForSpecificUser } from '../../util/query/branchView.query';
+import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 
 export const AllProperties  = () => {
     const singleBranchData = useSelector(state => state.branchDataReducer.specificBranchData);
-    console.log(singleBranchData, "singleBranchData")
+    
     const {data: branchObjectdata , loading: branchObjectLoading} = useQuery(GetBranchObject);
     const [groupedProp, setGroupedProp] = useState([]);
 
+    const [propToRemove, setPropToRemove] = useState(null);
+    
     useEffect(()=>{
+
         if(!branchObjectLoading){
-            // branchObjectdata?.getBranchProperty?.response?.map(({propertyDetail})=>{
-                
-            //     // console.log(branch, "bc bc")
-            //     console.log(singleBranchData?.branch[propertyDetail?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][propertyDetail?.label.replaceAll(" ","").toLowerCase()])
-            // });
-            const groupedData = branchObjectdata?.getBranchProperty?.response.reduce((result, item) => {
-                const key = item.propertyDetail.groupId+'-'+item.propertyDetail.groupName;
+            const groupedData = branchObjectdata?.getBranchProperty?.response?.reduce((result, item) => {
+                const key = item.propertyDetail.groupName;
                 if (!result[key]) {
                     result[key] = [];
                 }
@@ -33,45 +37,148 @@ export const AllProperties  = () => {
                 return result;
             }, {});
             setGroupedProp(groupedData);
-            console.log(groupedData, "ddd");
         }
     },[branchObjectLoading]);
+
+    const [addBranchViewDetail, {loading, error}] = useMutation(AddBranchDetailViewMutation);
+    const {data: branchViewForUser, loading: branchViewForUserLoading, refetch: branchViewForUserRefetch} = useQuery(BranchViewForSpecificUser,{
+        variables:{
+            createdBy: "M Safyan",
+            createdFor: singleBranchData?.id,
+        },
+        fetchPolicy: 'network-only'
+    });
+
+
+    const updateUserBranchView = async(properties) =>{
+        // alert(singleBranchData?.id);
+        await addBranchViewDetail({
+            variables:{
+                input:{
+                    properties,
+                    createdFor: singleBranchData?.id,
+                    createdBy: "M Safyan",
+                    _id: branchViewForUser?.getUserBranchView?.response?._id,
+                }
+            }
+        });
+        await branchViewForUserRefetch();
+        dispatch(setNotification({
+            notificationState:true, 
+            message:"Data Fields Updated",
+            error: false,
+        }));
+
+        
+    }
   
 
     const [allPropList, setAllPropList] = useState([]);
+    const [propertyDetailDrawer, setPropertyDetailDrawer] = useState(false);
+    const [propToAdd, setPropToAdd] = useState(null);
+    useEffect(()=>{
+        if(propToAdd){
+
+        console.log(propToAdd, "propToA");
+        updateUserBranchView([ ...branchViewForUser?.getUserBranchView?.response?.properties, { ...propToAdd.propertyDetail,
+            _id: propToAdd.propertyId,}])
+            setPropToAdd(null);
+        }
+    }, [propToAdd]);
 
    useEffect(()=>{
-    if(groupedProp && Object.keys(groupedProp)?.length>0){
+    if(groupedProp && Object.keys(groupedProp)?.length>0 ){
+        const existingIds = branchViewForUser?.getUserBranchView?.response?.properties?.map((prop)=> prop._id) || branchObjectdata?.getBranchProperty?.response?.map((prop)=>prop.propertyId)
         const allPropList = Object.keys(groupedProp)?.map((item, index)=>{
-            
+        
+
             return (
                 {
                     key: index,
-                    label: item.split("-")[1],
+                    label: <span>
+                            {item[0].toLocaleUpperCase()+item.slice(1)} 
+                            <small style={{fontSize:'12px'}}> {groupedProp[item]?.length} properties
+                            </small>
+                        </span>,
+                    
                     children: groupedProp[item]?.map((prop)=>(
-                        <div>
-                            <div className='allpropList-propHead'>
-                                {prop?.propertyDetail?.label} 
-                            </div>
-                            <div>
-                                {singleBranchData?.branch[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
-                                || 
-                                singleBranchData?.branch['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()]
-                                }
+                        <div className='field-presentation'>
+                            
+                            <FontAwesomeIcon 
+                                style={!existingIds.includes(prop?.propertyId) ? { visibility: 'hidden'} : {visibility:'visible'}}
+                             icon={faCheck}/>
+                            
+                            <div style={{width: '100%'}}>
+                                
+                                <div className='allpropList-propHead'>
+                                    {prop?.propertyDetail?.label} 
+                                </div>
+                                <div className='field-prop-value'>
+                                    <span>
+                                        {singleBranchData?.branch[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
+                                        || 
+                                        singleBranchData?.branch['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()]
+                                        || "--"
+                                        }
+                                    </span>
+                                    <span className='field-prop-btn-grp'>
+                                        <button className='grid-sm-btn' style={{ padding: "4px 10px" }} onClick={()=>setPropertyDetailDrawer(true)}> Details </button> &nbsp;
+                                        {!existingIds?.includes(prop?.propertyId) ?
+                                            <button className='grid-sm-btn'
+                                            onClick={()=>setPropToAdd(prop)}
+                                            
+                                            style={{ padding: "4px 10px" }}>Add to your view</button>
+                                        
+                                        :
+                                            <button className='grid-sm-btn' 
+                                                onClick={()=>handelAddBranches(prop?.propertyId)}
+                                                style={{ padding: "4px 10px" }}
+                                            >  Remove from your view</button>
+                                        }
+                                    </span>
+                                </div>
+                                
                             </div>
                         </div>
                     ))
                 }
             )
         });
-        console.log(allPropList, "allPropList");
+        console.log(allPropList, "all prop list");
         setAllPropList([...allPropList]);
     }
-   }, [groupedProp]);
+   }, [groupedProp, branchViewForUser]);
 
-    
 
     const navigate = useNavigate();
+
+    const dispatch = useDispatch();
+
+    const handelAddBranches = async (id)=>{
+        setPropToRemove(id);
+    }
+
+
+    
+    useEffect(()=>{
+        if(propToRemove !== null){
+
+            if(branchViewForUser?.getUserBranchView?.response?.properties){
+                updateUserBranchView(branchViewForUser?.getUserBranchView?.response?.properties?.filter((prop)=>prop._id != propToRemove));
+                setPropToRemove(null)
+            }else{
+
+                const newBranchViewFields = branchObjectdata?.getBranchProperty?.response?.map((prop)=>({
+                    ...prop.propertyDetail,
+                    _id: prop.propertyId,
+                })).filter((prop)=>propToRemove != (prop._id));
+                updateUserBranchView(newBranchViewFields);
+                setPropToRemove(null)
+                
+            }
+        }
+    }, [propToRemove]);
+
 
     return(
         <div className='bg'>
@@ -97,17 +204,21 @@ export const AllProperties  = () => {
                     <button className='simple-btn' style={{margin: 'auto', display:'table', marginBottom:'16px'}}> Reset to account defaults </button>
 
                     {
-                        branchObjectLoading? 
-                        <Spinner/>
+                        branchObjectLoading || branchViewForUserLoading? 
+                        <div style={{display:'flex', justifyContent:'center', paddingTop:'3%'}}><Spinner/></div>
                         :
                         <div style={{paddingLeft: '5%', paddingBottom: '5%'}} className='allprop'>
-                            <DraggableList editColumn={true} list={branchObjectdata?.getBranchProperty?.response?.map((br, index)=> { 
-                                const {propertyDetail} = br;
-                                return({
-                                    ...propertyDetail,
-                                    _id: br.propertyId,
-                                })
-                            })} />        
+                            <DraggableList editColumn={true} 
+                                handelAddBranches={handelAddBranches} 
+                                updateUserBranchView = {updateUserBranchView} 
+                                list={
+                                    branchViewForUser?.getUserBranchView?.response?.properties
+                                    || 
+                                    branchObjectdata?.getBranchProperty?.response?.map((prop)=>({
+                                    ...prop.propertyDetail,
+                                    _id: prop.propertyId,
+                                    }))
+                                } />        
                         </div>
                     }
 
@@ -124,10 +235,12 @@ export const AllProperties  = () => {
                     </div>
 
                     <div className="allpropList-searchbar">
-                        <Input type='search' style={{background: 'white', width:'70%', height:'40px'}} className='generic-input-control' placeholder='Search properties'  suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}/>
+                        <Input type='search' style={{ width:'70%', height:'40px'}} className='generic-input-control' placeholder='Search properties'  suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}/>
+                        <Checkbox><span style={{fontSize:'16px'}}>Hide blank properties</span></Checkbox>
                     </div>
 
                     <Collapse items={allPropList}/>
+                    <PropertyDetailDrawer visible={propertyDetailDrawer} close={()=>setPropertyDetailDrawer(false)} />
                 </div>
 
             </div>

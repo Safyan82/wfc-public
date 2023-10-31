@@ -2,15 +2,19 @@ import './leftsidebar.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBarsStaggered, faCalendarDay, faCheck, faChevronLeft, faClose, faCross, faDesktop, faEllipsis, faHandHolding, faHandHoldingHand, faList, faList12, faListDots, faPaw, faPen, faPencil, faPhone, faTasks, faTasksAlt } from '@fortawesome/free-solid-svg-icons';
-import { Avatar, Popover, Collapse, Panel, Form, Input, Select, Badge, Checkbox } from 'antd';
+import { Avatar, Popover, Collapse, Panel, Form, Input, Select, Badge, Checkbox, Skeleton } from 'antd';
 import { faBuilding, faCalendar, faCalendarAlt, faCalendarDays, faCopy, faEnvelope, faMeh, faNoteSticky, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import {    EditOutlined, CopyOutlined, CopyTwoTone, PhoneOutlined, EllipsisOutlined, CalendarOutlined, MediumWorkmarkOutlined, TableOutlined, TagsOutlined, ContainerOutlined, RedEnvelopeOutlined, MailOutlined, FormOutlined } from '@ant-design/icons';
 import { GetBranchObject, getSingleBranch } from '../../../util/query/branch.query';
 import { useQuery } from '@apollo/client';
 import PhoneInput from 'react-phone-input-2';
 import { useNavigate } from 'react-router-dom';
+import { BranchViewForSpecificUser } from '../../../util/query/branchView.query';
+import { useDispatch } from 'react-redux';
+import { resetDataFieldForNewView } from '../../../middleware/redux/reducers/branchData.reducer';
+import Spinner from '../../../components/spinner';
 
-export const DetailPageLeftSideBar = ({singleBranchData})=>{
+export const DetailPageLeftSideBar = ({branchId, singleBranchData})=>{
 
     
 
@@ -19,9 +23,27 @@ export const DetailPageLeftSideBar = ({singleBranchData})=>{
         fetchPolicy: 'network-only',
     });
 
+
+    const {data: branchViewForUser, loading: branchViewForUserLoading, refetch: branchViewForUserRefetch} = useQuery(BranchViewForSpecificUser,{
+        variables:{
+            createdBy: "M Safyan",
+            createdFor: branchId,
+        },
+        fetchPolicy: 'network-only'
+    });
+
+    const [objectData, setObjectData] = useState([]);
     useEffect(()=>{
-        console.log(branchProperties?.getBranchProperty?.response)
-    }, [branchProperties]);
+        // console.log(.includes(), "branchViewForUser?.getUserBranchView?.response?.properties");
+        if(!branchObjectLoading && !branchViewForUserLoading){
+        branchProperties?.getBranchProperty?.response?.filter((prop)=> prop.propertyId);
+            setObjectData(branchProperties?.getBranchProperty?.response?.map((prop)=>({id: prop.propertyId, ...prop.propertyDetail})))
+        }
+    }, [branchViewForUserLoading, branchObjectLoading]);
+  
+    const dispatch = useDispatch();
+
+
 
     const [bioPopover, setBioPopover] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('+44');
@@ -58,7 +80,7 @@ export const DetailPageLeftSideBar = ({singleBranchData})=>{
     }, []);
 
     const navigate = useNavigate();
-
+    console.log(objectData, "objectData");
     return(
         <div className='sidebar-wrapper'>
             <div className='leftsidebar'>
@@ -90,12 +112,14 @@ export const DetailPageLeftSideBar = ({singleBranchData})=>{
                 </div>
 
                 <div className='side-intro'>
+                    {singleBranchData?
                     <>
                     <Avatar size={69} style={{ background: 'rgb(81, 111, 144, 0.15)' }}>
                         <FontAwesomeIcon 
                             icon={faBuilding} 
                         />
                     </Avatar>
+                    
                     <div className='text-head'>
                         <span className='text-title'>{singleBranchData?.branch?.branchname}</span>
 
@@ -117,6 +141,13 @@ export const DetailPageLeftSideBar = ({singleBranchData})=>{
                         </span>
                     </div>
                     </>
+                    : 
+                    <div className='skeleton-custom'>
+
+                    <Skeleton.Avatar active size={69} />
+                    <Skeleton className='text-head' active/>
+                    </div>
+                    }
 
                     
                     <Popover
@@ -226,16 +257,20 @@ export const DetailPageLeftSideBar = ({singleBranchData})=>{
 
             <Collapse defaultActiveKey={['1']}>
                 <Collapse.Panel header="About this branch" key="1">
-                    
-                    {branchProperties?.getBranchProperty?.response?.map((prop)=>{
+                    {branchViewForUserLoading || branchObjectLoading ?
+                    <div style={{display: 'flex', justifyContent: 'center', paddingTop: '8%'}}>
+                        <Spinner/>
+                    </div> 
+                    :
+                    (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.map((prop)=>{
                         return(
                             <div className='detailInputParent'>
                                 <div className='detailInputHead'>
                                     <span>
-                                        {prop?.propertyDetail?.label}
+                                        {prop?.label}
                                     </span>
                                     <span className={'detail-section'}>
-                                        {prop?.propertyDetail?.label=="Phone Number"?
+                                        {prop?.label=="Phone Number"?
                                         <Popover
                                             placement='right'
                                             trigger={"click"}
@@ -292,18 +327,18 @@ export const DetailPageLeftSideBar = ({singleBranchData})=>{
                                     </span>
 
                                 </div>
-                                {prop?.propertyDetail?.label=="Phone Number"?
+                                {prop?.label=="Phone Number"?
                                 <span>
                                     <span style={{display:'flex'}}>
                                         <input type="text" defaultValue={"+447904259391"}  
                                         style={{marginBottom:'10%', marginTop:'10%'}}
-                                        className={prop?.propertyDetail?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
+                                        className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
                                         <code className='primary detail-section'>Primary</code>
                                     </span>
 
                                     <span style={{display:'flex'}}>
                                         <input type="text" defaultValue={"+447904259392"}  
-                                        className={prop?.propertyDetail?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
+                                        className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
                                         <code className='mark-primary detail-section'>
                                             <FontAwesomeIcon icon={faCheck} className='primary-check'/>    Mark as primary
                                         </code>
@@ -313,14 +348,14 @@ export const DetailPageLeftSideBar = ({singleBranchData})=>{
                                 </span>
                                 
                                 :
-                                <input type="text" defaultValue={singleBranchData?.branch[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()]}  
-                                className={prop?.propertyDetail?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
+                                <input type="text" defaultValue={singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()]}  
+                                className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
                                 }
                                
                             </div>
 
                         )
-                    })}
+                    }) }
 
 
 
