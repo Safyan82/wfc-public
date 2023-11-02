@@ -22,8 +22,7 @@ mutation($input: DeleteBranchObjectInput!){
   deleteBranchObject(input: $input) {
     response
   }
-}
-`;
+}`;
 
 
 export const ReorderBranchSchema = gql`
@@ -33,3 +32,13 @@ mutation($input: BulkBranchObjectInput!){
   }
 }
 `;
+
+export const updateBranchMutation = gql `
+mutation($input: BranchUpdateInput!){
+  updateBranch(input: $input) {
+    success
+    message
+    response
+  }
+}
+`
