@@ -14,13 +14,13 @@ import { useDispatch } from 'react-redux';
 import { resetDataFieldForNewView } from '../../../middleware/redux/reducers/branchData.reducer';
 import Spinner from '../../../components/spinner';
 
-export const DetailPageLeftSideBar = ({branchId, singleBranchData})=>{
+export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputChange, dataFields, handelScrollbar})=>{
 
     
 
 
     const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
-        fetchPolicy: 'network-only',
+        fetchPolicy: 'cache-and-network',
     });
 
 
@@ -29,7 +29,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData})=>{
             createdBy: "M Safyan",
             createdFor: branchId,
         },
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'cache-and-network'
     });
 
     const [objectData, setObjectData] = useState([]);
@@ -41,10 +41,6 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData})=>{
         }
     }, [branchViewForUserLoading, branchObjectLoading]);
   
-    const dispatch = useDispatch();
-
-
-
     const [bioPopover, setBioPopover] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('+44');
     const phoneInputRef = useRef(null);
@@ -80,9 +76,12 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData})=>{
     }, []);
 
     const navigate = useNavigate();
-    console.log(objectData, "objectData");
+
+    const dataFieldRef = useRef();
+
+
     return(
-        <div className='sidebar-wrapper'>
+        <div className='sidebar-wrapper' ref={dataFieldRef}>
             <div className='leftsidebar'>
 
                 <div className="header-navigator">
@@ -114,11 +113,13 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData})=>{
                 <div className='side-intro'>
                     {singleBranchData?
                     <>
-                    <Avatar size={69} style={{ background: 'rgb(81, 111, 144, 0.15)' }}>
-                        <FontAwesomeIcon 
-                            icon={faBuilding} 
-                        />
-                    </Avatar>
+                    <div style={{height:'70px', width: '70px'}}>
+                        <Avatar size={69} style={{ background: 'rgb(81, 111, 144, 0.15)' }}>
+                            <FontAwesomeIcon 
+                                icon={faBuilding} 
+                                />
+                        </Avatar>
+                    </div>
                     
                     <div className='text-head'>
                         <span className='text-title'>{singleBranchData?.branch?.branchname}</span>
@@ -256,15 +257,19 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData})=>{
             <div className="btm-border"></div>
 
             <Collapse defaultActiveKey={['1']}>
-                <Collapse.Panel header="About this branch" key="1">
+                <Collapse.Panel header="About this branch" key="1" style={{paddingBottom:'20%'}} onMouseEnter={handelScrollbar}>
                     {branchViewForUserLoading || branchObjectLoading ?
                     <div style={{display: 'flex', justifyContent: 'center', paddingTop: '8%'}}>
                         <Spinner/>
                     </div> 
                     :
-                    (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.map((prop)=>{
+                    (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.map((prop, index)=>{
                         return(
-                            <div className='detailInputParent'>
+                            <div className='detailInputParent' onMouseEnter={
+                                (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.length - 1 == index ?  
+                                handelScrollbar
+                                : null
+                            }>
                                 <div className='detailInputHead'>
                                     <span>
                                         {prop?.label}
@@ -348,8 +353,15 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData})=>{
                                 </span>
                                 
                                 :
-                                <input type="text" defaultValue={singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()]}  
-                                className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
+                                <input type="text" 
+                                onChange={(e) => handelInputChange(e.target)} 
+                                name={prop?.label.replaceAll(" ","").toLowerCase()}
+                                defaultValue={singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()]}  
+                                className={
+                                    dataFields?.find((dprop)=>dprop?.name==prop?.label?.replaceAll(" ","").toLowerCase())? 'detailInput-focus':
+                                    prop?.label=="Phone Number"? 
+                                    phoneDialouge?'detailInput-focus':'detailInput' 
+                                    : 'detailInput'} />
                                 }
                                
                             </div>

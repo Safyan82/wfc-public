@@ -13,7 +13,7 @@ export const TableGrid=({createAction, data})=>{
 
     return (
         <div className="tablegrid">
-            <GridHeader title={"Branch"} record={0} createAction={createAction} />
+            <GridHeader title={"Branch"} record={data?.branches?.length} createAction={createAction} />
            
             <DraggableTabs  />
 

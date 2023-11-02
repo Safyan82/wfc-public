@@ -86,22 +86,79 @@ export const AllProperties  = () => {
         }
     }, [propToAdd]);
 
+   const [blankHide, setBlankHide] = useState(false);
+
+
    useEffect(()=>{
     if(groupedProp && Object.keys(groupedProp)?.length>0 ){
         const existingIds = branchViewForUser?.getUserBranchView?.response?.properties?.map((prop)=> prop._id) || branchObjectdata?.getBranchProperty?.response?.map((prop)=>prop.propertyId)
         const allPropList = Object.keys(groupedProp)?.map((item, index)=>{
-        
+            let count = 0;
+            groupedProp[item]?.map((prop)=>(
+                blankHide?
+                singleBranchData?.branch[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
+                || 
+                singleBranchData?.branch['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] ?
+                count++
+                :null : null
+            ));
 
             return (
                 {
                     key: index,
                     label: <span>
                             {item[0].toLocaleUpperCase()+item.slice(1)} 
-                            <small style={{fontSize:'12px'}}> {groupedProp[item]?.length} properties
+                            <small style={{fontSize:'12px'}}> {blankHide? count  : groupedProp[item]?.length} data fields
                             </small>
                         </span>,
                     
                     children: groupedProp[item]?.map((prop)=>(
+                        blankHide?
+                        singleBranchData?.branch[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
+                        || 
+                        singleBranchData?.branch['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] ?
+                        
+                        <div className='field-presentation'>
+                            
+                            <FontAwesomeIcon 
+                                style={!existingIds.includes(prop?.propertyId) ? { visibility: 'hidden'} : {visibility:'visible'}}
+                             icon={faCheck}/>
+                            
+                            <div style={{width: '100%'}}>
+                                
+                                <div className='allpropList-propHead'>
+                                    {prop?.propertyDetail?.label} 
+                                </div>
+                                <div className='field-prop-value'>
+                                    <span>
+                                        {singleBranchData?.branch[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
+                                        || 
+                                        singleBranchData?.branch['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()]
+                                        || "--"
+                                        }
+                                    </span>
+                                    <span className='field-prop-btn-grp'>
+                                        <button className='grid-sm-btn' style={{ padding: "4px 10px" }} onClick={()=>setPropertyDetailDrawer(true)}> Details </button> &nbsp;
+                                        {!existingIds?.includes(prop?.propertyId) ?
+                                            <button className='grid-sm-btn'
+                                            onClick={()=>setPropToAdd(prop)}
+                                            
+                                            style={{ padding: "4px 10px" }}>Add to your view</button>
+                                        
+                                        :
+                                            <button className='grid-sm-btn' 
+                                                onClick={()=>handelAddBranches(prop?.propertyId)}
+                                                style={{ padding: "4px 10px" }}
+                                            >  Remove from your view</button>
+                                        }
+                                    </span>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        : null
+                        :
                         <div className='field-presentation'>
                             
                             <FontAwesomeIcon 
@@ -147,7 +204,7 @@ export const AllProperties  = () => {
         console.log(allPropList, "all prop list");
         setAllPropList([...allPropList]);
     }
-   }, [groupedProp, branchViewForUser]);
+   }, [groupedProp, branchViewForUser, blankHide]);
 
 
     const navigate = useNavigate();
@@ -179,7 +236,7 @@ export const AllProperties  = () => {
         }
     }, [propToRemove]);
 
-
+    
     return(
         <div className='bg'>
             <header>
@@ -187,7 +244,7 @@ export const AllProperties  = () => {
                     <FontAwesomeIcon  className="back-icon" icon={faChevronLeft} /> Back
                 </div>
                 <div className='head-h1'>
-                    Manage propertiess for Branch
+                    Manage data fields for Branch
                 </div>
             </header>
 
@@ -199,9 +256,9 @@ export const AllProperties  = () => {
                         About
                     </div>
                     <div className="text">
-                        These properties will appear when you view information about a branch. These changes will only affect you.
+                        These data fields will appear when you view information about a branch. These changes will only affect you.
                     </div>
-                    <button className='simple-btn' style={{margin: 'auto', display:'table', marginBottom:'16px'}}> Reset to account defaults </button>
+                    <button className='simple-btn grid-sm-btn-disabled' style={{margin: 'auto', display:'table', marginBottom:'16px'}} > Reset to account defaults </button>
 
                     {
                         branchObjectLoading || branchViewForUserLoading? 
@@ -228,15 +285,15 @@ export const AllProperties  = () => {
                 <div className="allpropList">
                     <div className="allpropList-head">
                         <span>
-                            All properties
+                            All data fields
                         </span>
 
-                        <button className='filter-btn' onClick={()=>navigate("/user/setting")}> Manage properties </button>
+                        <button className='filter-btn' onClick={()=>navigate("/user/setting")}> Manage data fields </button>
                     </div>
 
                     <div className="allpropList-searchbar">
-                        <Input type='search' style={{ width:'70%', height:'40px'}} className='generic-input-control' placeholder='Search properties'  suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}/>
-                        <Checkbox><span style={{fontSize:'16px'}}>Hide blank properties</span></Checkbox>
+                        <Input type='search' style={{ width:'69%', height:'40px'}} className='generic-input-control' placeholder='Search data fields'  suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}/>
+                        <Checkbox value={blankHide} onChange={(e)=>setBlankHide(e.target.checked)}><span style={{fontSize:'16px'}}>Hide blank data fields</span></Checkbox>
                     </div>
 
                     <Collapse items={allPropList}/>
