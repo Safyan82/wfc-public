@@ -257,7 +257,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
             <div className="btm-border"></div>
 
             <Collapse defaultActiveKey={['1']}>
-                <Collapse.Panel header="About this branch" key="1" style={{paddingBottom:'20%'}} onMouseEnter={handelScrollbar}>
+                <Collapse.Panel header="About this branch" key="1" style={{paddingBottom:'28%'}} >
                     {branchViewForUserLoading || branchObjectLoading ?
                     <div style={{display: 'flex', justifyContent: 'center', paddingTop: '8%'}}>
                         <Spinner/>
