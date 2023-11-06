@@ -136,3 +136,23 @@
 .ant-input::placeholder{
     color: #7c98b6;
 }
+
+.hr{
+    background-color: rgb(223, 227, 235);
+    border: 0px;
+    height: 1px;
+    min-height: 1px;
+    width: 100%;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+.prop-history{
+    font-size: 16px;
+    color: black;
+}
+
+.history-table .ant-table-cell{
+    font-size: 14px !important;
+    font-weight: normal;
+}

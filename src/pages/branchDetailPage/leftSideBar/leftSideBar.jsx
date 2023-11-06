@@ -13,16 +13,13 @@ import { BranchViewForSpecificUser } from '../../../util/query/branchView.query'
 import { useDispatch } from 'react-redux';
 import { resetDataFieldForNewView } from '../../../middleware/redux/reducers/branchData.reducer';
 import Spinner from '../../../components/spinner';
+import { PropertyDetailDrawer } from '../../allProperties/propertyDetail.drawer';
 
-export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputChange, dataFields, handelScrollbar})=>{
+export const DetailPageLeftSideBar = ({branchId, singleBranchData, 
+    handelInputChange, dataFields, 
+    handelScrollbar, branchObjectLoading, branchProperties})=>{
 
     
-
-
-    const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
-        fetchPolicy: 'cache-and-network',
-    });
-
 
     const {data: branchViewForUser, loading: branchViewForUserLoading, refetch: branchViewForUserRefetch} = useQuery(BranchViewForSpecificUser,{
         variables:{
@@ -79,6 +76,8 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
 
     const dataFieldRef = useRef();
 
+    const [propertyDetailDrawer, setPropertyDetailDrawer] = useState(false);
+    const [selectedProp, setSelectedProp] = useState(null);
 
     return(
         <div className='sidebar-wrapper' ref={dataFieldRef}>
@@ -151,7 +150,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                     }
 
                     
-                    <Popover
+                    {/* <Popover
                         trigger={"click"}
                         placement='bottom'
                         overlayClassName='bioPopover'
@@ -182,7 +181,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                             className='iconHover pen-icon'
                             style={{marginTop:'5px', marginLeft:'30px',color: '#0091ae', cursor: 'pointer', visibility: bioPopover?'visible':'inherit'}}
                         />
-                    </Popover>
+                    </Popover> */}
 
                 </div>
 
@@ -257,13 +256,14 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
             <div className="btm-border"></div>
 
             <Collapse defaultActiveKey={['1']}>
-                <Collapse.Panel header="About this branch" key="1" style={{paddingBottom:'20%'}} onMouseEnter={handelScrollbar}>
+                <Collapse.Panel header="About this branch" key="1" style={{paddingBottom:'28%'}} >
                     {branchViewForUserLoading || branchObjectLoading ?
                     <div style={{display: 'flex', justifyContent: 'center', paddingTop: '8%'}}>
                         <Spinner/>
                     </div> 
                     :
                     (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.map((prop, index)=>{
+                        const defaultVal = singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()];
                         return(
                             <div className='detailInputParent' onMouseEnter={
                                 (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.length - 1 == index ?  
@@ -314,10 +314,10 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                                                             </Select>
                                                             <Input className='generic-input-control' /> */}
                                                         </div>
-                                                    <Checkbox>Mark it primary</Checkbox>
+                                                        <Checkbox>Mark it primary</Checkbox>
                                                     </div>
                                                     <div className="bio-footer">
-                                                        <button className='middle-note-btn'>Apply</button>
+                                                        <button className='middle-note-btn' onClick={()=>{handelInputChange({name:'phonenumber', value:phoneNumber});setPhoneDialouge(false);}}>Apply</button>
                                                         <button className='light-btn' onClick={()=>setPhoneDialouge(false)}>Cancel</button>
                                                     </div>
                                                 </div>
@@ -328,40 +328,50 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                                         :
                                         <FontAwesomeIcon icon={faPencil}/>
                                         }&emsp;
-                                        <button className='grid-sm-btn' type='link' style={{padding: '4px 10px'}}>Details</button>
+                                        <button className='grid-sm-btn' type='link' style={{padding: '4px 10px'}} onClick={()=>{setPropertyDetailDrawer(true); setSelectedProp({propertyId: prop?._id, propertyName: prop?.label})}}>Details</button>
                                     </span>
 
                                 </div>
                                 {prop?.label=="Phone Number"?
                                 <span>
-                                    <span style={{display:'flex'}}>
-                                        <input type="text" defaultValue={"+447904259391"}  
-                                        style={{marginBottom:'10%', marginTop:'10%'}}
-                                        className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
-                                        <code className='primary detail-section'>Primary</code>
-                                    </span>
 
                                     <span style={{display:'flex'}}>
-                                        <input type="text" defaultValue={"+447904259392"}  
-                                        className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
+                                        <input type="text"  
+                                            style={{marginBottom:'10%', marginTop:'10%'}}
+                                            name="phonenumber"
+                                            onClick={()=>setPhoneDialouge(!phoneDialouge)}
+                                            defaultValue={defaultVal}
+                                            className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} 
+                                        />
+                                        <code className='primary detail-section'>Primary</code>
+                                        {/* <code className='primary detail-section'>
+                                            <FontAwesomeIcon icon={faCheck} className='primary-check'/>    Mark as primary
+                                        </code> */}
+                                    </span>
+
+                                    {/* <span style={{display:'flex'}}>
+                                        <input type="text"
+                                            className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} 
+                                        />
                                         <code className='mark-primary detail-section'>
                                             <FontAwesomeIcon icon={faCheck} className='primary-check'/>    Mark as primary
                                         </code>
                                     
-                                    </span>
+                                    </span> */}
                                    
                                 </span>
                                 
                                 :
                                 <input type="text" 
-                                onChange={(e) => handelInputChange(e.target)} 
-                                name={prop?.label.replaceAll(" ","").toLowerCase()}
-                                defaultValue={singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()]}  
-                                className={
-                                    dataFields?.find((dprop)=>dprop?.name==prop?.label?.replaceAll(" ","").toLowerCase())? 'detailInput-focus':
-                                    prop?.label=="Phone Number"? 
-                                    phoneDialouge?'detailInput-focus':'detailInput' 
-                                    : 'detailInput'} />
+                                    onChange={(e) => handelInputChange(e.target)} 
+                                    name={prop?.label.replaceAll(" ","").toLowerCase()}
+                                    defaultValue={singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()]}  
+                                    className={
+                                        dataFields?.find((dprop)=>dprop?.name==prop?.label?.replaceAll(" ","").toLowerCase())? 'detailInput-focus':
+                                        prop?.label=="Phone Number"? 
+                                        phoneDialouge?'detailInput-focus':'detailInput' 
+                                        : 'detailInput'} 
+                                />
                                 }
                                
                             </div>
@@ -378,7 +388,8 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                     </div> */}
                 </Collapse.Panel>
             </Collapse>
-
+            <PropertyDetailDrawer visible={propertyDetailDrawer} selectedProp={selectedProp} close={()=>setPropertyDetailDrawer(false)} />
+               
         </div>
     );
 }

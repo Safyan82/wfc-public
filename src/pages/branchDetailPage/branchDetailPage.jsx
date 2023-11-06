@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { Notes } from './middleSection/notes/notes';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
-import { getSingleBranch } from '../../util/query/branch.query';
+import { GetBranchObject, getSingleBranch } from '../../util/query/branch.query';
 import { useDispatch } from 'react-redux';
 import { setSpecificBranchData } from '../../middleware/redux/reducers/branchData.reducer';
 import { BranchViewForSpecificUser } from '../../util/query/branchView.query';
@@ -28,6 +28,12 @@ export const BranchDetailPage = ()=>{
     });
 
     const dispatch = useDispatch();
+
+
+    const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
+        fetchPolicy: 'cache-and-network',
+    });
+
 
     useEffect(()=>{
         if(!singleBranchLoading){
@@ -50,19 +56,25 @@ export const BranchDetailPage = ()=>{
         window.scrollTo(0, document.body.scrollHeight);
     }, [dataFields]);
     
+    const [phone, setPhone] = useState([]);
+    
+
+
     const handelInputChange = (target) => {
         const {name, value} = target;
         const isExist = dataFields?.find((field)=> field?.name == name);
+        const property = branchProperties?.getBranchProperty?.response.find((prop)=> prop.propertyDetail.label.replaceAll(" ","").toLowerCase() === name)
+        // console.log(property, "branchProperties");
         setDataFields(isExist? dataFields?.map((field)=> {
             if(field.name == name){
                 return {
-                    name, value
+                    name, value, propertyId: property?.propertyId,
                 }
             }else{
                 return field
             }
             
-        }): [...dataFields, {name, value}]);
+        }): [...dataFields, {name, value, propertyId: property?.propertyId}]);
     };
 
     const [updateBranch, {loading, error}]  = useMutation(updateBranchMutation);
@@ -70,13 +82,16 @@ export const BranchDetailPage = ()=>{
     const handelUpdateSave = async ()=>{
         try{
             let schemaFields = [];
+
             dataFields?.map((field)=>{
                 if(field.name==="branchname" || field.name==="postcode"){
                     schemaFields.push(field);
-                }else{
+                }
+                else{
                     schemaFields.push({...field, metadata:1})
                 }
             });
+
             await updateBranch({
                 variables:{
                     input:{
@@ -85,6 +100,7 @@ export const BranchDetailPage = ()=>{
                     }
                 }
             });
+
             dispatch(setNotification({
                 message: "Branch Updated Successfully",
                 notificationState: true,
@@ -156,6 +172,8 @@ export const BranchDetailPage = ()=>{
                         key={refreshProp}
                         dataFields={dataFields}
                         handelScrollbar={handelScrollbar}
+                        branchProperties={branchProperties}
+                        branchObjectLoading={branchObjectLoading}
                     />
 
                 </Col>

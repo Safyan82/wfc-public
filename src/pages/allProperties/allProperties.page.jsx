@@ -138,7 +138,7 @@ export const AllProperties  = () => {
                                         }
                                     </span>
                                     <span className='field-prop-btn-grp'>
-                                        <button className='grid-sm-btn' style={{ padding: "4px 10px" }} onClick={()=>setPropertyDetailDrawer(true)}> Details </button> &nbsp;
+                                        <button className='grid-sm-btn' style={{ padding: "4px 10px" }} onClick={()=>{setPropertyDetailDrawer(true); setSelectedProp({propertyId:prop?.propertyId, propertyName: prop?.propertyDetail?.label});}}> Details </button> &nbsp;
                                         {!existingIds?.includes(prop?.propertyId) ?
                                             <button className='grid-sm-btn'
                                             onClick={()=>setPropToAdd(prop)}
@@ -179,7 +179,7 @@ export const AllProperties  = () => {
                                         }
                                     </span>
                                     <span className='field-prop-btn-grp'>
-                                        <button className='grid-sm-btn' style={{ padding: "4px 10px" }} onClick={()=>setPropertyDetailDrawer(true)}> Details </button> &nbsp;
+                                        <button className='grid-sm-btn' style={{ padding: "4px 10px" }} onClick={()=>{setPropertyDetailDrawer(true);setSelectedProp({propertyId:prop?.propertyId, propertyName: prop?.propertyDetail?.label});}}> Details </button> &nbsp;
                                         {!existingIds?.includes(prop?.propertyId) ?
                                             <button className='grid-sm-btn'
                                             onClick={()=>setPropToAdd(prop)}
@@ -215,8 +215,11 @@ export const AllProperties  = () => {
         setPropToRemove(id);
     }
 
+    const [selectedProp, setSelectedProp] = useState(null);
+    useEffect(()=>{
+        console.log(selectedProp, "setSelectedProp");
+    }, [selectedProp]);
 
-    
     useEffect(()=>{
         if(propToRemove !== null){
 
@@ -297,7 +300,7 @@ export const AllProperties  = () => {
                     </div>
 
                     <Collapse items={allPropList}/>
-                    <PropertyDetailDrawer visible={propertyDetailDrawer} close={()=>setPropertyDetailDrawer(false)} />
+                    <PropertyDetailDrawer visible={propertyDetailDrawer} selectedProp={selectedProp} close={()=>setPropertyDetailDrawer(false)} />
                 </div>
 
             </div>
