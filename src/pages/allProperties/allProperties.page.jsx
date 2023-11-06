@@ -300,7 +300,12 @@ export const AllProperties  = () => {
                     </div>
 
                     <Collapse items={allPropList}/>
-                    <PropertyDetailDrawer visible={propertyDetailDrawer} selectedProp={selectedProp} close={()=>setPropertyDetailDrawer(false)} />
+                    <PropertyDetailDrawer 
+                        clearState={setSelectedProp}
+                        visible={propertyDetailDrawer} 
+                        selectedProp={selectedProp} 
+                        close={()=>setPropertyDetailDrawer(false)} 
+                    />
                 </div>
 
             </div>

@@ -388,7 +388,12 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                     </div> */}
                 </Collapse.Panel>
             </Collapse>
-            <PropertyDetailDrawer visible={propertyDetailDrawer} selectedProp={selectedProp} close={()=>setPropertyDetailDrawer(false)} />
+            <PropertyDetailDrawer
+                visible={propertyDetailDrawer}
+                selectedProp={selectedProp} 
+                branchId={branchId}
+                clearState={setSelectedProp} 
+                close={()=>setPropertyDetailDrawer(false)} />
                
         </div>
     );
