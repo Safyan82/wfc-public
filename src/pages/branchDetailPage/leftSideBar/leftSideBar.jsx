@@ -151,7 +151,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                     }
 
                     
-                    <Popover
+                    {/* <Popover
                         trigger={"click"}
                         placement='bottom'
                         overlayClassName='bioPopover'
@@ -182,7 +182,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                             className='iconHover pen-icon'
                             style={{marginTop:'5px', marginLeft:'30px',color: '#0091ae', cursor: 'pointer', visibility: bioPopover?'visible':'inherit'}}
                         />
-                    </Popover>
+                    </Popover> */}
 
                 </div>
 
@@ -264,6 +264,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                     </div> 
                     :
                     (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.map((prop, index)=>{
+                        const defaultVal = singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()];
                         return(
                             <div className='detailInputParent' onMouseEnter={
                                 (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.length - 1 == index ?  
@@ -314,10 +315,10 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                                                             </Select>
                                                             <Input className='generic-input-control' /> */}
                                                         </div>
-                                                    <Checkbox>Mark it primary</Checkbox>
+                                                        <Checkbox>Mark it primary</Checkbox>
                                                     </div>
                                                     <div className="bio-footer">
-                                                        <button className='middle-note-btn'>Apply</button>
+                                                        <button className='middle-note-btn' onClick={()=>{handelInputChange({name:'phonenumber', value:phoneNumber});setPhoneDialouge(false);}}>Apply</button>
                                                         <button className='light-btn' onClick={()=>setPhoneDialouge(false)}>Cancel</button>
                                                     </div>
                                                 </div>
@@ -334,34 +335,44 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                                 </div>
                                 {prop?.label=="Phone Number"?
                                 <span>
-                                    <span style={{display:'flex'}}>
-                                        <input type="text" defaultValue={"+447904259391"}  
-                                        style={{marginBottom:'10%', marginTop:'10%'}}
-                                        className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
-                                        <code className='primary detail-section'>Primary</code>
-                                    </span>
 
                                     <span style={{display:'flex'}}>
-                                        <input type="text" defaultValue={"+447904259392"}  
-                                        className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} />
+                                        <input type="text"  
+                                            style={{marginBottom:'10%', marginTop:'10%'}}
+                                            name="phonenumber"
+                                            onClick={()=>setPhoneDialouge(!phoneDialouge)}
+                                            defaultValue={defaultVal}
+                                            className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} 
+                                        />
+                                        <code className='primary detail-section'>Primary</code>
+                                        {/* <code className='primary detail-section'>
+                                            <FontAwesomeIcon icon={faCheck} className='primary-check'/>    Mark as primary
+                                        </code> */}
+                                    </span>
+
+                                    {/* <span style={{display:'flex'}}>
+                                        <input type="text"
+                                            className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} 
+                                        />
                                         <code className='mark-primary detail-section'>
                                             <FontAwesomeIcon icon={faCheck} className='primary-check'/>    Mark as primary
                                         </code>
                                     
-                                    </span>
+                                    </span> */}
                                    
                                 </span>
                                 
                                 :
                                 <input type="text" 
-                                onChange={(e) => handelInputChange(e.target)} 
-                                name={prop?.label.replaceAll(" ","").toLowerCase()}
-                                defaultValue={singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()]}  
-                                className={
-                                    dataFields?.find((dprop)=>dprop?.name==prop?.label?.replaceAll(" ","").toLowerCase())? 'detailInput-focus':
-                                    prop?.label=="Phone Number"? 
-                                    phoneDialouge?'detailInput-focus':'detailInput' 
-                                    : 'detailInput'} />
+                                    onChange={(e) => handelInputChange(e.target)} 
+                                    name={prop?.label.replaceAll(" ","").toLowerCase()}
+                                    defaultValue={singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()]}  
+                                    className={
+                                        dataFields?.find((dprop)=>dprop?.name==prop?.label?.replaceAll(" ","").toLowerCase())? 'detailInput-focus':
+                                        prop?.label=="Phone Number"? 
+                                        phoneDialouge?'detailInput-focus':'detailInput' 
+                                        : 'detailInput'} 
+                                />
                                 }
                                
                             </div>

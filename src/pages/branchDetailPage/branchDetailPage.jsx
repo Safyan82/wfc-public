@@ -50,6 +50,10 @@ export const BranchDetailPage = ()=>{
         window.scrollTo(0, document.body.scrollHeight);
     }, [dataFields]);
     
+    const [phone, setPhone] = useState([]);
+    
+    
+
     const handelInputChange = (target) => {
         const {name, value} = target;
         const isExist = dataFields?.find((field)=> field?.name == name);
@@ -70,13 +74,16 @@ export const BranchDetailPage = ()=>{
     const handelUpdateSave = async ()=>{
         try{
             let schemaFields = [];
+
             dataFields?.map((field)=>{
                 if(field.name==="branchname" || field.name==="postcode"){
                     schemaFields.push(field);
-                }else{
+                }
+                else{
                     schemaFields.push({...field, metadata:1})
                 }
             });
+
             await updateBranch({
                 variables:{
                     input:{
@@ -85,6 +92,7 @@ export const BranchDetailPage = ()=>{
                     }
                 }
             });
+
             dispatch(setNotification({
                 message: "Branch Updated Successfully",
                 notificationState: true,
