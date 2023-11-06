@@ -305,6 +305,7 @@ export const AllProperties  = () => {
                         visible={propertyDetailDrawer} 
                         selectedProp={selectedProp} 
                         close={()=>setPropertyDetailDrawer(false)} 
+                        branchId={singleBranchData?.id}
                     />
                 </div>
 
