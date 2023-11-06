@@ -3,16 +3,18 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Drawer, Table } from "antd";
 import { GetBranchPropertyHistoryDetail } from "../../util/query/branchPropHistory";
+import { Loader } from "../../components/loader";
 
-export const PropertyDetailDrawer = ({visible, close, selectedProp}) =>{
+export const PropertyDetailDrawer = ({visible, close, selectedProp, clearState, branchId}) =>{
 
     const {data: branchPropertyHistoryDetail, loading, error} = useQuery(GetBranchPropertyHistoryDetail,{
         variables:{
             input: {
-                propertyId: selectedProp?.propertyId
+                propertyId: selectedProp?.propertyId,
+                branchId
             }
         },
-        skip: !selectedProp?.propertyId,
+        skip: !selectedProp?.propertyId || !branchId,
         fetchPolicy: 'network-only'
     });
 
@@ -35,13 +37,15 @@ export const PropertyDetailDrawer = ({visible, close, selectedProp}) =>{
     ];
       
     return(
-        
+        loading?
+        <Loader />
+        :
         <Drawer
             title="Details"
             placement="right"
             closable={true}
-            onClose={close}
-            closeIcon={<FontAwesomeIcon icon={faClose} onClick={close} className='close-icon'/>}
+            onClose={()=>{close();clearState(null);}}
+            closeIcon={<FontAwesomeIcon icon={faClose} onClick={()=>{clearState(null); close()}} className='close-icon'/>}
             visible={visible}
             width={600}
             
