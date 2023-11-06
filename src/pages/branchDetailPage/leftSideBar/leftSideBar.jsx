@@ -13,16 +13,13 @@ import { BranchViewForSpecificUser } from '../../../util/query/branchView.query'
 import { useDispatch } from 'react-redux';
 import { resetDataFieldForNewView } from '../../../middleware/redux/reducers/branchData.reducer';
 import Spinner from '../../../components/spinner';
+import { PropertyDetailDrawer } from '../../allProperties/propertyDetail.drawer';
 
-export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputChange, dataFields, handelScrollbar})=>{
+export const DetailPageLeftSideBar = ({branchId, singleBranchData, 
+    handelInputChange, dataFields, 
+    handelScrollbar, branchObjectLoading, branchProperties})=>{
 
     
-
-
-    const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
-        fetchPolicy: 'cache-and-network',
-    });
-
 
     const {data: branchViewForUser, loading: branchViewForUserLoading, refetch: branchViewForUserRefetch} = useQuery(BranchViewForSpecificUser,{
         variables:{
@@ -79,6 +76,8 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
 
     const dataFieldRef = useRef();
 
+    const [propertyDetailDrawer, setPropertyDetailDrawer] = useState(false);
+    const [selectedProp, setSelectedProp] = useState(null);
 
     return(
         <div className='sidebar-wrapper' ref={dataFieldRef}>
@@ -329,7 +328,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                                         :
                                         <FontAwesomeIcon icon={faPencil}/>
                                         }&emsp;
-                                        <button className='grid-sm-btn' type='link' style={{padding: '4px 10px'}}>Details</button>
+                                        <button className='grid-sm-btn' type='link' style={{padding: '4px 10px'}} onClick={()=>{setPropertyDetailDrawer(true); setSelectedProp({propertyId: prop?._id, propertyName: prop?.label})}}>Details</button>
                                     </span>
 
                                 </div>
@@ -389,7 +388,8 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData, handelInputCh
                     </div> */}
                 </Collapse.Panel>
             </Collapse>
-
+            <PropertyDetailDrawer visible={propertyDetailDrawer} selectedProp={selectedProp} close={()=>setPropertyDetailDrawer(false)} />
+               
         </div>
     );
 }
