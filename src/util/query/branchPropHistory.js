@@ -7,3 +7,12 @@ query($input: BranchPropertyHistoryInput!){
     }
 }
 `;
+
+
+export const GetBranchAllPropertiesHistory = gql `
+query($branchId: String!){
+  getBranchAllPropHistory(branchId: $branchId) {
+    response
+  }
+}
+`;
