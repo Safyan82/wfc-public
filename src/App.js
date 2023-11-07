@@ -14,6 +14,7 @@ import { notification } from 'antd';
 import { FormView } from './pages/formView/formView';
 import { BranchDetailPage } from './pages/branchDetailPage/branchDetailPage';
 import { AllProperties } from './pages/allProperties/allProperties.page';
+import { BranchAllPropHistory } from './pages/branchAllPropHistory/branchAllPropHistory.page';
 
 function App() {
   
@@ -73,6 +74,7 @@ function App() {
           <Route path='allproperties' element={<AllProperties/>} />
           <Route path='setting' element={<Setting />} />
           <Route path='detailPage/:id' element={<BranchDetailPage/>} />
+          <Route path='prophistory' element={<BranchAllPropHistory/>} />
         </Route>
         
       </Routes>

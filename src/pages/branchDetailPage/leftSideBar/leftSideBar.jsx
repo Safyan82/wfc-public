@@ -99,7 +99,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                             <a href="" onClick={(e)=>{ e.preventDefault(); navigate("/user/allproperties")}}>
                                 Edit data fields
                             </a>
-                            <a href="" onClick={(e)=>{ e.preventDefault(); }}>
+                            <a href="" onClick={(e)=>{ e.preventDefault(); navigate(`/user/prophistory`)}}>
                                 Audit log
                             </a>
                             <a href="" onClick={(e)=>{ e.preventDefault(); }}>

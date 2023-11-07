@@ -239,11 +239,10 @@ export const AllProperties  = () => {
         }
     }, [propToRemove]);
 
-    
     return(
         <div className='bg'>
             <header>
-                <div className="back-btn" style={{marginBottom:'6px'}}>
+                <div className="back-btn" style={{marginBottom:'6px'}} onClick={()=>navigate(-1)}>
                     <FontAwesomeIcon  className="back-icon" icon={faChevronLeft} /> Back
                 </div>
                 <div className='head-h1'>
