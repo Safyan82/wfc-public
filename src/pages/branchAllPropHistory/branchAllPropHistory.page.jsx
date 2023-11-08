@@ -78,7 +78,7 @@ export const BranchAllPropHistory = ()=>{
     // console.log(single)
 
     return(
-        <div className="bg" style={{padding:'25px 48px'}}>
+        <div className="bg" style={{padding:'25px 48px', height: '95vh'}}>
              <header style={{border: "none"}}>
                 <div className="back-btn" onClick={()=>navigate(-1)}>
                     <FontAwesomeIcon  className="back-icon" icon={faChevronLeft} /> Back
