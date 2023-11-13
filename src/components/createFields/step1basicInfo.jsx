@@ -9,7 +9,7 @@ import { GROUPLIST } from "../../util/query/group.query";
 import Spinner from "../spinner";
 import { objectType } from "../../util/types/object.types";
 
-export const BasicInfo = ({basicInfo, setBasicInfo, setWidth,}) =>{
+export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, selectedObjectType}) =>{
     
     const [isGroupFocused, setisGroupFocused] = useState(null);
     const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST,{
@@ -35,9 +35,9 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth,}) =>{
                 <Select 
                     className="custom-select"
                     onChange={(e)=>setBasicInfo({...basicInfo, objectType:e})}
-                    value={basicInfo?.objectType}
+                    value={basicInfo?.objectType || selectedObjectType}
                     placeholder="Select a object"
-                    // defaultValue={"branches"}
+                    defaultValue={selectedObjectType}
                     suffixIcon={<span className="dropdowncaret"></span>}
                 >
                     {Object.keys(objectType)?.map((object)=>(

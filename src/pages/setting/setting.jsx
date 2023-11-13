@@ -427,6 +427,7 @@ export const Setting=()=>{
         
             <CreateFieldDrawer 
                 visible={fieldModal}  
+                objectType={objectTypelocal}
                 propertyListRefetch={propertyListRefetch}
                 onClose={()=>{propertyListRefetch();setPropertyFakeLoading(true); groupRefetch(); setFieldModal(false);}}
             />
