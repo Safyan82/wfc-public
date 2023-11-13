@@ -27,7 +27,7 @@ const customDot = (dot, { status, index }) => {
   );
 };
 
-export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefetch }) => {
+export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefetch, objectType }) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [basicInfo, setBasicInfo] = useState({objectType: 'branches'});
     const [basicInfoCheck, setBasicInfoCheck] = useState(true);
@@ -110,7 +110,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
     const steps = [
       {
         title: 'BASIC INFO',
-        component: <BasicInfo  basicInfo={basicInfo} setWidth={setWidth} setBasicInfo={setBasicInfo} />
+        component: <BasicInfo selectedObjectType={objectType}  basicInfo={basicInfo} setWidth={setWidth} setBasicInfo={setBasicInfo} />
       },
       {
         title: 'FIELD TYPE',
