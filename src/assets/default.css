@@ -223,17 +223,17 @@ body{
 
 
 
-.top-menu-layout .menu-item:focus{
+/* .top-menu-layout .menu-item:focus{
     background: #253342 !important;
-}
+} */
 
 .top-menu-layout .menu-item:hover{
     background: #253342 !important;
 }
 
 .ant-menu-submenu-selected{
-    background: #253342 !important;
-    z-index: 9999;
+    background: transparent !important;
+    /* z-index: 9999; */
 }
 a:visited{
     color: white;

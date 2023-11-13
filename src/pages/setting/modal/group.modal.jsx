@@ -10,7 +10,7 @@ import { resetGroup } from '../../../middleware/redux/reducers/group.reducer';
 import { LoadingOutlined } from '@ant-design/icons';
 
 
-export const GroupModal = ({ visible, onClose, groupRefetch}) => {
+export const GroupModal = ({ visible, onClose, groupRefetch, objectType}) => {
 
   const {group} = useSelector(state=>state.groupReducer);
   const [groupName, setGroupName] = useState(group?.name || "");
@@ -69,7 +69,7 @@ export const GroupModal = ({ visible, onClose, groupRefetch}) => {
 
   const handelSubmit = async() =>{
     try{
-      const {data:{createGroup:{success, message}}} = await createGroup({variables: {input: {name:groupName}}});
+      const {data:{createGroup:{success, message}}} = await createGroup({variables: {input: {name:groupName, objectType}}});
       groupRefetch();
       setGroupName(null);
       api.success({

@@ -13,7 +13,7 @@ import {faWindowRestore, faWindowMaximize, faWindowMinimize} from '@fortawesome/
 import WordLetterAvatar from '../avatar';
 import logo from '../../assets/img/wfc-new-logo.png';
 import { faBell, faComment, faComments, faGear, faRing } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './navbar.css';
 
 
@@ -22,6 +22,8 @@ const { SubMenu } = Menu;
 export function Navbar(){
     const [isWindowMaximized, setWindowMaximized] = useState(true);
     const [placeholder, setPlaceholder] = useState(false);
+    const navigate = useNavigate();
+
     return(
     <Layout>
         <Menu mode="horizontal" theme="dark" className='top-menu-layout' triggerSubMenuAction="click">
@@ -29,14 +31,15 @@ export function Navbar(){
                 <img src={logo} style={{width:'30px', height:'30px', borderRadius:'4px'}}  className='menu-icon' />
             </Menu.Item>
 
-            <Menu.Item key="employee" className='menu-item'>Employee</Menu.Item>
+            <Menu.Item onClick={()=>navigate("/user/employee")} key="employee" className='menu-item'>Employee</Menu.Item>
             <Menu.Item key="site" className='menu-item'>Site</Menu.Item>
             <Menu.Item key="schedule" className='menu-item'>Schedule</Menu.Item>
             <Menu.Item key="timeline" className='menu-item'>Timeline</Menu.Item>
             <SubMenu title={<span>More <span className='caret-white'></span></span>} key="more" >
-                <Link to="/user/branch">
-                    <Menu.Item key="more" className='menu-item'>Branches</Menu.Item>
-                </Link>
+                <Menu.Item onClick={()=>navigate("/user/branch")} key="more" className='menu-item'>Branches</Menu.Item>
+                <Menu.Item onClick={()=>navigate("/user/sitegroup")} key="more" className='menu-item'>Site Groups</Menu.Item>
+                <Menu.Item onClick={()=>navigate("/user/customer")} key="more" className='menu-item'>Customers</Menu.Item>
+                
             </SubMenu>
             
             <Menu.Item className='search' key="search" style={{margin: 'auto', background:"none !important", backgroundColor: 'none !important',}}>

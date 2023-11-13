@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faPlus, faRecycle, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { BulkDeleteConfirmationModal } from './modal/bulkDeleteConfirmation.modal';
 
-export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loading}) => {
+export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loading, objectType}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
 
@@ -88,7 +88,7 @@ export const ArcheivePropertyGrid = ({data, refetch, propertyListRefetch, loadin
 
     }else{
       
-      await deleteProperty({variables:{input: {id:propertyId}}});
+      await deleteProperty({variables:{input: {id:propertyId, objectType}}});
       setConfirmationModal(false);
       api.success({
         message:`${propertyName} property was deleted`,

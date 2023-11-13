@@ -16,8 +16,8 @@ export const PROPERTYLIST = gql`
 `;
 
 export const ARCHIVE_PROPERTY_LIST = gql`
-    query{
-        getArchiveProperties {
+query($objectType: String!){
+    getArchiveProperties(objectType: $objectType) {
             key
             objectType
             label
@@ -102,8 +102,8 @@ export const GetPropertyByGroupQuery = gql`
 
 
 export const ArchivePropertyFilter = gql `
-    query($endDate: String!, $startDate: String!){
-        archivePropertyFilter(endDate: $endDate, startDate: $startDate) {
+query($objectType: String!, $endDate: String!, $startDate: String!){
+    archivePropertyFilter(objectType: $objectType, endDate: $endDate, startDate: $startDate) {
             
             key
             objectType
