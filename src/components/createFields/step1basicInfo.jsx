@@ -7,13 +7,17 @@ import { useSelector } from "react-redux";
 import { useQuery } from "@apollo/client";
 import { GROUPLIST } from "../../util/query/group.query";
 import Spinner from "../spinner";
+import { objectType } from "../../util/types/object.types";
 
 export const BasicInfo = ({basicInfo, setBasicInfo, setWidth,}) =>{
     
     const [isGroupFocused, setisGroupFocused] = useState(null);
     const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST,{
         fetchPolicy: 'network-only',
-        skip: !isGroupFocused
+        variables:{
+            objectType: basicInfo?.objectType
+        },
+        skip: !isGroupFocused || !basicInfo?.objectType
     });
 
     useEffect(()=>{
@@ -36,9 +40,9 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth,}) =>{
                     // defaultValue={"branches"}
                     suffixIcon={<span className="dropdowncaret"></span>}
                 >
-                    <Select.Option value="branches">Branches</Select.Option>
-                    <Select.Option value="sites">Sites</Select.Option>
-                    <Select.Option value="customers">Customer</Select.Option>
+                    {Object.keys(objectType)?.map((object)=>(
+                        <Select.Option value={objectType[object]}>{objectType[object]}</Select.Option>
+                    ))}
                 </Select>
             </Form.Item>
 

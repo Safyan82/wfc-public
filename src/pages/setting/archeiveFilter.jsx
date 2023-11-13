@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import { setArchivePropertyFilter, setArchivePropertyFilteredData, setArchivePropertyLoading, setRefetchFilteredProperty } from '../../middleware/redux/reducers/archiveProperty.reducer';
 import { useSelector } from 'react-redux';
 
-export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archivePopover})=>{
+export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archivePopover, objectType})=>{
     
     const popoverRef = useRef(null);
 
@@ -56,9 +56,10 @@ export const ArcheiveFilter = ({archive, setArchive, setArchivePopover, archiveP
     const {data:archivePropertyFilter, loading, refetch} = useQuery(ArchivePropertyFilter,{
         variables:{
             startDate: startDate.toString(),
-            endDate: endDate.toString()
+            endDate: endDate.toString(),
+            objectType: objectType
         },
-        skip: !startDate && !endDate,
+        skip: !startDate && !endDate || !objectType,
         fetchPolicy: 'network-only'
     });
 

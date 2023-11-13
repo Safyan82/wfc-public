@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import { resetPropertyFilterByGroup } from '../../middleware/redux/reducers/properties.reducer';
 import { resetArchivePropertyFilteredData } from '../../middleware/redux/reducers/archiveProperty.reducer';
 import { MoveGroupModal } from './modal/moveGroup.modal';
+import { objectType } from '../../util/types/object.types';
 
 export const Setting=()=>{
     const  { TabPane } = Tabs;
@@ -31,6 +32,8 @@ export const Setting=()=>{
     const [editfieldModal, setEditFieldModal] = useState(false);
     const [propertyFakeLoad, setPropertyFakeLoading] = useState(false);
     const [groupmodal, setGroupModal] = useState(false);
+    const [objectTypelocal, setObjectType] = useState("Branch");
+
 
     // setting popover 
     
@@ -53,7 +56,8 @@ export const Setting=()=>{
     
     const [field, setField] = useState([
         {field:'groupId', value: ''},
-        {field:'fieldType', value: '' }
+        {field:'fieldType', value: '' },
+        {field: 'objectType', value: 'branch'},
     ]);
     const [value, setValue] = useState(null);
 
@@ -112,13 +116,23 @@ export const Setting=()=>{
     const [archiveList, setArchiveList] = useState([]);
 
     const { loading:archiveloading, error, data, refetch } = useQuery(ARCHIVE_PROPERTY_LIST,{
+        fetchPolicy: 'network-only',
+        variables:{
+            objectType: objectTypelocal
+        }
+    });
+    const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST,{
+        variables:{
+            objectType: objectTypelocal
+        },
+        skip: !objectTypelocal,
         fetchPolicy: 'network-only'
     });
-    const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST);
     const { loading:propertyListLoading, error:propertyListError, data:propertyDataList , refetch:propertyListRefetch } = useQuery(PROPERTYWITHFILTER,{
         variables:{
             input:{fields: field}
         },
+        skip: !objectTypelocal,
         fetchPolicy: 'network-only'
     });
 
@@ -184,6 +198,7 @@ export const Setting=()=>{
         setuserPopover(false);
         setfieldTypePopover(false);
         setArchivePopover(false);
+        console.log(objectTypelocal, "objectTypeLocal");
         await propertyListRefetch();
         await refetch();
         if(e=='2'){
@@ -202,7 +217,8 @@ export const Setting=()=>{
             
             setField([
                 {field:'groupId', value: ''},
-                {field:'fieldType', value: '' }
+                {field:'fieldType', value: '' },
+                {field:'objectType', value: objectTypelocal }
             ]);
             dispatch(resetPropertyFilterByGroup());
             setGroupInput({name: 'All groups', id: null});
@@ -219,7 +235,17 @@ export const Setting=()=>{
         }
     }
 
-
+    useEffect(()=>{
+        if(objectTypelocal){
+            setField(field?.map((f)=> {
+                if(f.field=='objectType'){
+                    return {...f, value: objectTypelocal};
+                }else{
+                    return f;
+                }
+            }));
+        }
+    }, [objectTypelocal]);
 
     return(
         <Row>
@@ -300,9 +326,15 @@ export const Setting=()=>{
                                                 className='custom-select'
                                                 style={{width:'250px'}}
                                                 suffixIcon={<span className="dropdowncaret"></span>}
-                                                defaultValue={"branch"}
+                                                defaultValue={"Branch"}
+                                                onChange={(e)=>setObjectType(e)}
                                             >
-                                                <Select.Option value="branch">Branch properties</Select.Option>
+                                                {
+                                                    Object.keys(objectType)?.map((object)=>(
+
+                                                        <Select.Option value={objectType[object]}>{objectType[object]} properties</Select.Option>
+                                                    ))
+                                                }
                                             </Select>
                                         </div>
                                     </div>
@@ -346,6 +378,7 @@ export const Setting=()=>{
                                         setFieldModal={setFieldModal}
                                         setEditFieldModal={setEditFieldModal}
                                         groupList={groupList}
+                                        objectType={objectTypelocal}
 
                                     />
                                 </TabPane>
@@ -365,6 +398,7 @@ export const Setting=()=>{
                                     setArchive={setArchive}
                                     archivePopover={archivePopover}
                                     setArchivePopover={setArchivePopover}
+                                    objectType={objectTypelocal}
 
                                 />
                                 <Alert
@@ -378,6 +412,7 @@ export const Setting=()=>{
                                     loading={isloading || archiveloading || propertyListLoading}
                                     refetch={refetch}
                                     propertyListRefetch={propertyListRefetch}
+                                    objectType = {objectTypelocal}
 
                                 />
                             </TabPane>
@@ -413,6 +448,7 @@ export const Setting=()=>{
             
             <GroupModal 
                 groupRefetch={groupRefetch} 
+                objectType={objectTypelocal}
                 visible={groupmodal} 
                 onClose={()=>{setGroupModal(false); dispatch(resetGroup({}))}} 
             />

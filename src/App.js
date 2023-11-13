@@ -15,6 +15,7 @@ import { FormView } from './pages/formView/formView';
 import { BranchDetailPage } from './pages/branchDetailPage/branchDetailPage';
 import { AllProperties } from './pages/allProperties/allProperties.page';
 import { BranchAllPropHistory } from './pages/branchAllPropHistory/branchAllPropHistory.page';
+import { SiteGroup } from './pages/sitegroup/sitegroup.page';
 
 function App() {
   
@@ -22,9 +23,9 @@ function App() {
     
     setInterval(() => {  
       if (navigator.onLine) {
-        // console.log("online");
+        console.log("online");
       } else {
-        // console.log("offline");
+        console.log("offline");
       }
     }, 100);
 
@@ -69,12 +70,15 @@ function App() {
 
         {/* private routes */}
         <Route path='/user/' element={<DefaultLayout/>}>
-          <Route  element={<Employee />} />
+          {/* <Route  element={<Employee />} /> */}
           <Route path='branch' exact element={<Branch />}/>
           <Route path='allproperties' element={<AllProperties/>} />
           <Route path='setting' element={<Setting />} />
           <Route path='detailPage/:id' element={<BranchDetailPage/>} />
           <Route path='prophistory' element={<BranchAllPropHistory/>} />
+          <Route path='sitegroup' element={<SiteGroup/>} />
+          <Route path='customer' element={<BranchAllPropHistory/>} />
+          <Route path='employee' element={<Employee/>} />
         </Route>
         
       </Routes>

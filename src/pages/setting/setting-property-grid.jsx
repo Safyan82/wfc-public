@@ -13,7 +13,7 @@ import { moveToGroup } from '../../middleware/redux/reducers/group.reducer';
 import { BulkArchiveConfirmationModal } from './modal/bulkArchiveConfirmation.modal';
 import { MoveGroupModal } from './modal/moveGroup.modal';
 
-export const SettingPropertyGrid = ({propertyList,
+export const SettingPropertyGrid = ({propertyList, objectType,
   setFieldModal, propertyListRefetch, 
   refetch, setEditFieldModal, propertyListLoading, groupList}) => {
   const [filteredInfo, setFilteredInfo] = useState({});
@@ -51,7 +51,7 @@ export const SettingPropertyGrid = ({propertyList,
     try{
       if(archivedId){
 
-        await archiveProperty({variables:{input:{id: archivedId}}});
+        await archiveProperty({variables:{input:{id: archivedId, objectType}}});
         setArchiveConfirmationModal(false);
         await propertyListRefetch();
         await refetch();

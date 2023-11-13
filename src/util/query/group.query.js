@@ -1,11 +1,11 @@
 import {gql} from "@apollo/client";
 
 export const GROUPLIST = gql`
-    query{
-        groupList {
+query($objectType: String!){
+    groupList(objectType: $objectType) {
             key
             name
             properties
         }
-    }
+}
 `;
