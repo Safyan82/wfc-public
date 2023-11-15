@@ -1,103 +1,57 @@
+import './drawer.css';
+import Spinner from '../../components/spinner';
 import React,{ useEffect, useState } from 'react';
-import { Form, Input, Drawer, Button, notification, Spin, Select, TreeSelect, DatePicker, TimePicker } from 'antd';
+import { Form, Input, Drawer, Select, TreeSelect, DatePicker, TimePicker } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faClose, faExternalLink } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import { useMutation, useQuery } from '@apollo/client';
-import { CREATE_BRACNH } from '../../util/mutation/branch.mutation';
 
-import './drawer.css';
-import Spinner from '../../components/spinner';
-import { GetBranchObject } from '../../util/query/branch.query';
-import { useDispatch } from 'react-redux';
-import { setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
-import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 import { faCalendarAlt, faClock } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 
-export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onClose, refetch }) => {
-    const [drawerVisible, setDrawerVisible] = useState(false);
+export const FormDrawer = ({ objectLoading, 
+  objectData, 
+  visible, 
+  onClose, 
+  refetch, //Refetch the schema object 
+  loading, // loading param while create the actual data for the provided schema
+  data, // data to pass param for the creation of actual process
+  setData, // state define in parent to set param data
+  setBtn, // set btn toggle to handel the loading req
+  isBtnEnable,
+  isoverlay,
+  setIsOverlay, // overlay on the additional fields
+  handelSubmit, // submit the actual form
+  title,
+ }) => {
       const navigate = useNavigate();
-      
-      const [createBranch, { loading, error }] = useMutation(CREATE_BRACNH);
-      const [api, contextHolder] = notification.useNotification();
-      const [isoverlay, setIsOverlay] = useState(true);
-
-      const [data, setData] = useState([]);
-  
+        
     
-      const [branchProperties, setBranchProperties] = useState([]);
+      const [schemaProperties, setSchemaProperties] = useState([]);
       const [mandatoryProperties, setMandatoryProperties] = useState([]);
 
-      const dispatch = useDispatch();
-
       useEffect(()=>{
-        const preFields = branchObjectData?.getBranchProperty?.response.filter((branch)=>branch?.order == undefined) || [];
-        const orderedFields = branchObjectData?.getBranchProperty?.response.filter((branch)=>branch?.order !==undefined).sort((a,b)=>a.order-b.order) || [];
-        const mandatoryFields = branchObjectData?.getBranchProperty?.response.filter((branch)=>branch?.isMandatory) || [];
-        setBranchProperties([...preFields, ...orderedFields]);
-        setMandatoryProperties([...mandatoryFields]);
-        console.log(mandatoryFields, "mandatoryFieldsmandatoryFields");
-      },[branchObjectData, visible]);
+        if(!objectLoading){
+          
+          const preFields = objectData?.filter((object)=>object?.order == undefined) || [];
+          const orderedFields = objectData?.filter((object)=>object?.order !==undefined).sort((a,b)=>a.order-b.order) || [];
+          const mandatoryFields = objectData?.filter((object)=>object?.isMandatory) || [];
+          setSchemaProperties([...preFields, ...orderedFields]);
+          setMandatoryProperties([...mandatoryFields]);
+          console.log(mandatoryFields, "mandatoryFieldsmandatoryFields");
+        }
+      },[objectData, visible]);
 
       
       useEffect(()=>{
         checkMandatoryField();
       },[data]);
     
-      const handelSubmit=async (isCloseAble)=>{
-          const branchName = data?.find((d)=>(Object.keys(d)[0]=="branchname"));
-          const postcode = data?.find((d)=>(Object.keys(d)[0]==="postcode"));
-          
-          let metadata = {};
-          data?.map(d=>{
-            if(Object.keys(d)[0]!=="postcode" && Object.keys(d)[0]!=="branchname"){
-              metadata[Object.keys(d)[0]]= Object.values(d)[0]
-            }
-          });
-          const branch = {
-            ...branchName,
-            ...postcode,
-            metadata,
-          }
-          // handel mutation
-          await branchMutation(branch);
-
-          if(isCloseAble){
-            close();
-          }
-
-      }
+      useEffect(()=>{
+        setBtn(true);
+      }, []);     
     
-      
-    
-      const branchMutation=async (branch)=>{
-        try{
-          const {message} = await createBranch({variables: {input: branch}});
-          dispatch(setNotification({
-            notificationState:true, 
-            message: "Branch was added successfully",
-            error: false,
-          }))
-          setData([]);
-          setBtn(true);
-          setIsOverlay(true);
-          await refetch();
-    
-        }
-        catch(err){
-          const openNotification = (description) => {
-            api.warning({
-              message: error,
-              description,
-              placement:"topCenter",
-            });
-          };
-          openNotification(err);
-        }
-      }
-    
-      const [isBtnEnable, setBtn] = useState(true);
+         
 
       const handelRules = (rules, e) =>{
         const {value} = e;
@@ -309,12 +263,15 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
         handelRules(propertyDetail?.rules, e);
         handelDataValue(e);       
 
+        const checkMandatory = mandatoryProperties?.length>0 ? mandatoryProperties[0]?.propertyDetail?.label.toLowerCase().replaceAll(" ","") : "";
+        console.log(checkMandatory, "check mandatory");
+        
         if(e.value.length>0){
-            if(e.name=="branchname"){
+            if(e.name==checkMandatory){
                 setIsOverlay(false);
             }
         }else{
-            if(e.name=="branchname"){
+            if(e.name==checkMandatory){
                 setIsOverlay(true);
                 
               }
@@ -473,7 +430,7 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
       }
 
       const checkMandatoryField = ()=>{
-        const isMandatoryFieldFilled = mandatoryProperties?.every((field)=>data.find(d=>Object.keys(d)[0]==field?.propertyDetail?.label.replaceAll(" ","").toLowerCase()));
+        const isMandatoryFieldFilled = mandatoryProperties?.every((field)=>data?.find(d=>Object.keys(d)[0]==field?.propertyDetail?.label.replaceAll(" ","").toLowerCase()));
         const isErrorExist = Array.from(document.getElementsByClassName("errorMsg"));
         // console.log(isErrorExist);
         if(isMandatoryFieldFilled && isErrorExist?.length==0){
@@ -494,11 +451,11 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
       return (
         <div>
           <Drawer
-            title="Create Branch "
+            title={"Add " + title}
             placement="right"
             closable={true}
             onClose={onClose}
-            closeIcon={<FontAwesomeIcon icon={faClose} onClick={()=>{close();setTimeout(()=>setBranchProperties([]),100)}} className='close-icon'/>}
+            closeIcon={<FontAwesomeIcon icon={faClose} onClick={()=>{close();setTimeout(()=>setSchemaProperties([]),100)}} className='close-icon'/>}
             visible={visible}
             width={600}
             
@@ -512,12 +469,12 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
                   <button  onClick={()=>handelSubmit(false)} disabled={isBtnEnable || loading} className={isBtnEnable || loading ? 'disabled-btn drawer-outlined-btn' : 'drawer-outlined-btn'} >
                     {loading? <Spinner color={"#ff7a53"}/> : 'Create and add another'} 
                   </button>
-                  <button disabled={loading} className='drawer-outlined-btn' onClick={()=>{close();setTimeout(()=>setBranchProperties([]),100)}}>Cancel</button>
+                  <button disabled={loading} className='drawer-outlined-btn' onClick={()=>{close();setTimeout(()=>setSchemaProperties([]),100)}}>Cancel</button>
               </div>
             }
           >
             <div className='title' 
-                style={branchObjectLoading?{opacity:0.4}:{opacity:1}}
+                style={objectLoading?{opacity:0.4}:{opacity:1}}
                 onClick={()=>navigate('/branch/editform',{
                     state: {
                     title: 'Branch',
@@ -528,9 +485,9 @@ export const FormDrawer = ({ branchObjectLoading, branchObjectData, visible, onC
           
             <form id="branchForm" className='form'>
                 <div className={isoverlay? 'overlay' : 'overlay hidden'}>
-                    <div className='overlay-text'>Start by entering the Branch's name</div>
+                    <div className='overlay-text'>Start by entering the {title}'s name</div>
                 </div>
-                {branchProperties?.map((property)=>{
+                {schemaProperties?.map((property)=>{
                   const name = property?.propertyDetail?.label.replaceAll(" ","").toLowerCase();
                   const localValue = data?.find((d)=>Object.keys(d)[0] == name);
                   const value = localValue && localValue[name];

@@ -9,11 +9,11 @@ import { GROUPLIST } from "../../util/query/group.query";
 import Spinner from "../spinner";
 import { objectType } from "../../util/types/object.types";
 
-export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, selectedObjectType}) =>{
+export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, selectedObjectType, visible}) =>{
     
     const [isGroupFocused, setisGroupFocused] = useState(null);
     const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST,{
-        fetchPolicy: 'network-only',
+        fetchPolicy: 'cache-and-network',
         variables:{
             objectType: basicInfo?.objectType
         },
@@ -21,10 +21,30 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, selectedObjectType
     });
 
     useEffect(()=>{
+        groupRefetch();
+        setBasicInfo({...basicInfo, objectType: selectedObjectType})
+
+    },[visible]);
+
+    useEffect(()=>{
         if(basicInfo?.groupId){
             setisGroupFocused(true);
         }
     },[basicInfo?.groupId]);
+
+    useEffect(()=>{
+        setBasicInfo({...basicInfo, objectType: selectedObjectType})
+    },[selectedObjectType]);
+
+    useEffect(()=>{
+        if(groupLoading){
+            if(basicInfo?.groupId){
+                const {groupId, groupName, ...rest} = basicInfo;
+                setBasicInfo({...rest});
+            }
+        }
+    },[groupLoading]);
+
     
 
     return(
@@ -35,7 +55,7 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, selectedObjectType
                 <Select 
                     className="custom-select"
                     onChange={(e)=>setBasicInfo({...basicInfo, objectType:e})}
-                    value={basicInfo?.objectType || selectedObjectType}
+                    value={basicInfo?.objectType}
                     placeholder="Select a object"
                     defaultValue={selectedObjectType}
                     suffixIcon={<span className="dropdowncaret"></span>}
@@ -61,7 +81,7 @@ export const BasicInfo = ({basicInfo, setBasicInfo, setWidth, selectedObjectType
                         }
                         
                     }}
-                    value={groupLoading ? null : basicInfo?.groupId}
+                    value={groupLoading ? null : basicInfo?.groupName}
                     suffixIcon={groupLoading ? <Spin indicator={<LoadingOutlined />} />: <span className="dropdowncaret"></span>}
                 >
                     {!groupLoading ? groupList?.groupList?.map((group, index)=>(

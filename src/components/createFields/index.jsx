@@ -110,7 +110,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
     const steps = [
       {
         title: 'BASIC INFO',
-        component: <BasicInfo selectedObjectType={objectType}  basicInfo={basicInfo} setWidth={setWidth} setBasicInfo={setBasicInfo} />
+        component: <BasicInfo selectedObjectType={objectType}  basicInfo={basicInfo} setWidth={setWidth} visible={visible} setBasicInfo={setBasicInfo} />
       },
       {
         title: 'FIELD TYPE',

@@ -55,7 +55,7 @@ export const GridHeader = ({title, record, createAction, editProperty})=>{
                         </div>
                     </div>
                     <Button className='grid-outlined-btn'>Import</Button>
-                    <Button className='grid-filed-btn' onClick={createAction}>Create Branch</Button>
+                    <Button className='grid-filed-btn' onClick={createAction}>Create {title}</Button>
                 </div>
             </div>
             <div className='dragable-view'>
@@ -65,6 +65,7 @@ export const GridHeader = ({title, record, createAction, editProperty})=>{
                 visible={fieldModal}  
                 propertyListRefetch={()=>{}}
                 onClose={()=>{setFieldModal(false);}}
+                objectType={title}
             />
         </>
     )

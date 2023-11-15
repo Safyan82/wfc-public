@@ -63,8 +63,8 @@
 }
 
 .generic-input-control::placeholder{
-    font-weight: 700 !important;
-    color: red !important;
+    /* font-weight: 700 !important; */
+    /* color: red !important; */
 }
 
 
