@@ -93,11 +93,11 @@ export const PROPERTYWITHFILTER = gql `
 
 
 export const GetPropertyByGroupQuery = gql`
-    query{
-        getPropertyByGroup {
-        data
-        }
+query($objectType: String!){
+    getPropertyByGroup(objectType: $objectType) {
+            data
     }
+}
 `
 
 

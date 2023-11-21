@@ -10,20 +10,19 @@ import { createBranchViewMutation } from '../../../util/mutation/branchView.muta
 import { useSelector } from 'react-redux';
 
 
-export const CreateView = ({ visible, onClose, setcreatedView, createdView, branchViewRefetch }) => {
+export const CreateView = ({ visible, onClose, setcreatedView, createdView, branchViewRefetch, createView, createViewLoading }) => {
 
   const [name, setName] = useState("");
   const [access, setAccess] = useState("");
   const dispatch = useDispatch();
 
-  const[createBranchView, {loading, error}] = useMutation(createBranchViewMutation)
   const {quickFilter, advanceFilter} = useSelector(state=>state.quickFilterReducer);
 
   const { branchSchemaNewFields } = useSelector(state => state.branchReducer);
   
   const handelSave = async () => {
     setcreatedView([...createdView, {label:name, access}]);
-    await createBranchView({variables:{input:{
+    await createView({variables:{input:{
       name, visibility: access, quickFilter, advanceFilter, isManual: true,
       viewFields: branchSchemaNewFields
     }}});
@@ -47,7 +46,7 @@ export const CreateView = ({ visible, onClose, setcreatedView, createdView, bran
               disabled={name?.length<1 || access?.length<1} 
               className={name?.length<1 || access?.length<1 ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
             >
-              {false? <Spin indicator={<LoadingOutlined/>}/> : "Save"}
+              {createViewLoading? <Spin indicator={<LoadingOutlined/>}/> : "Save"}
             </button>
             <button  disabled={false} className={false? 'disabled-btn drawer-outlined-btn':'drawer-outlined-btn'} onClick={onClose}>
               Cancel

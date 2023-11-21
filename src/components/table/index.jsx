@@ -16,27 +16,64 @@ import { useDispatch } from 'react-redux';
 import { refreshBranchGrid } from '../../middleware/redux/reducers/branch.reducer';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { setEditGridColumn } from '../../middleware/redux/reducers/properties.reducer';
 const { Header, Content, Footer } = Layout;
 
-export const DataTable = ({header, data, loading}) => {
+export const DataTable = ({
+  header, data, loading, 
+  setDynamicColumn, 
+  dynamicColumn, objectData,
+  viewRefetch, view}) => {
+
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [sortedInfo, setSortedInfo] = useState({});
-  const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject);
-  const [dynamicColumn, setDynamicColumn]=useState([]);
-
-  const {data: branchView, loading: branchViewLoading, refetch: branchViewRefetch} = useQuery(SingleBranchViewQuery,{
-    variables:{
-      id: sessionStorage.getItem("selectedViewId")
-    },
-    fetchPolicy: 'network-only'
-  });
-
-
+  
   useEffect(()=>{
-    if(branchView?.singlebranchView?.viewFields){
-      console.log(branchView?.singlebranchView?.viewFields, "branchView?.singlebranchView?.viewFields", branchProperties?.getBranchProperty.response);
+    if(objectData && view ){
+      console.log(objectData, view, "data view")
+      const col = objectData?.filter((prop)=>  prop?.isReadOnly || view?.find((viewProp)=>viewProp?._id==prop?.propertyId)).map((prop)=>{
+        // if(prop.propertyDetail.label=="Branch name" || prop.propertyDetail.label=="Post code"){
+
+          return {
+            title: prop.propertyDetail.label,
+            dataIndex: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
+            key: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(), // Initial width of the column
+            width: 100,
+            onHeaderCell: (column) => ({
+              width: column.width,
+              onResize: handleResize(column.dataIndex),
+              ellipsis: true
+            }),
+            ellipsis: true,
+
+            render: (_, record) => {
+              const showActions = sessionStorage.getItem('hoverItem') == record.key && prop.propertyDetail.label.replaceAll(" ","").toLowerCase() =="branchname" &&  selectedRowKeys?.length===0;
+              return (          
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between',}}>
+                  
+                  <div 
+                    style={{}}
+                    className={prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname"? 'prev-btn' : null}
+                  >{record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}</div>
+                    
+                
+
+                  <button className={"grid-sm-btn"} style={showActions?{visibility: 'visible'}:{visibility: 'hidden'}} type="link" onClick={()=>history('/user/detailPage/'+record.key)}>
+                    Preview
+                  </button>
+                
+              </div>
+              );
+            },
+          }
+        // }
+      })||[];
+      setDynamicColumn([...col]);
+      dispatch(refreshBranchGrid(false));
     }
-  },[branchView]);
+  }, [objectData, view]);
+
+
 
   const handleResize = dataIndex => (e, { size }) => {
     setDynamicColumn(prevColumns => {
@@ -56,7 +93,7 @@ export const DataTable = ({header, data, loading}) => {
   useEffect(()=>{
     if(branchReducer?.refreshGrid){
 
-      branchViewRefetch();
+      viewRefetch();
     }
   },[branchReducer?.refreshGrid]);
   
@@ -82,60 +119,16 @@ export const DataTable = ({header, data, loading}) => {
   };
 
   const history = useNavigate();
-  useEffect(()=>{
-    if(branchProperties?.getBranchProperty?.response && branchView?.singlebranchView?.viewFields ){
-
-      const col = branchProperties?.getBranchProperty.response.filter((prop)=>  prop?.isReadOnly || branchView?.singlebranchView?.viewFields?.find((viewProp)=>viewProp?._id==prop?.propertyId)).map((prop)=>{
-        // if(prop.propertyDetail.label=="Branch name" || prop.propertyDetail.label=="Post code"){
-
-          return {
-            title: prop.propertyDetail.label,
-            dataIndex: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
-            key: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(), // Initial width of the column
-            width: 100,
-            onHeaderCell: (column) => ({
-              width: column.width,
-              onResize: handleResize(column.dataIndex),
-              ellipsis: true
-            }),
-            ellipsis: true,
-
-            render: (_, record) => {
-              const showActions = sessionStorage.getItem('hoverItem') == record.key && prop.propertyDetail.label.replaceAll(" ","").toLowerCase() =="branchname" &&  selectedRowKeys?.length===0;
-              return (          
-                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between',}}>
-                  
-                  <div 
-                    style={{}}
-                    className={prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname"? 'prev-btn' : null}
-                  >{record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}</div>
-                    
-                 
-
-                  <button className={"grid-sm-btn"} style={showActions?{visibility: 'visible'}:{visibility: 'hidden'}} type="link" onClick={()=>history('/user/detailPage/'+record.key)}>
-                    Preview
-                  </button>
-                
-              </div>
-              );
-            },
-          }
-        // }
-      })||[];
-      setDynamicColumn([...col]);
-      dispatch(refreshBranchGrid(false));
-    }
-  }, [branchProperties?.getBranchProperty?.response, branchView]);
 
   const [dataSource, setDataSource] = useState([]);
 
   
   useEffect(()=>{
-    setDataSource(data?.branches.map((key,index) => {
+    setDataSource(data?.map((key,index) => {
       const {metadata, ...rest} = key;
       return {key:key?._id ,...metadata, ...rest};
     }));
-  },[data?.branches])
+  },[data]);
 
 
   
@@ -166,7 +159,7 @@ export const DataTable = ({header, data, loading}) => {
       <Content className="site-layout" style={{ padding: '0 42px' }}>
         <div style={{ padding: 5, minHeight: 450, background: colorBgContainer }}>
             {/* <TabsComponent/> */}
-            {loading || branchObjectLoading?
+            {loading?
             <Loader/>
             :
 
@@ -189,7 +182,7 @@ export const DataTable = ({header, data, loading}) => {
                     <Input type='search' style={{background: 'white', width:'250px', height:'33px'}} className='generic-input-control' placeholder='Search ...'  suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}/>
                     <div className="small-btn">
                       <button className='sm-btn'>Export</button> &emsp;
-                      <button className='sm-btn' onClick={()=>setEditColumnModal(true)}>Edit columns</button>
+                      <button className='sm-btn' onClick={()=>dispatch(setEditGridColumn(true))}>Edit columns</button>
                     </div>
                   </div>
                 )}else{return null}
@@ -202,9 +195,6 @@ export const DataTable = ({header, data, loading}) => {
               })}
               rowClassName={rowClassName}
             />
-            }
-            {editColumnModal &&
-              <EditColumn visible={editColumnModal} onClose={()=>setEditColumnModal(false)}/>
             }
         </div>
       </Content>

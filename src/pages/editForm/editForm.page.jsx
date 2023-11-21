@@ -24,7 +24,6 @@ import { FormHeader } from '../../components/header/header';
 
 export const EditForm=()=>{
     const location = useLocation();
-    console.log(location, "locationnnn");
     const navigate = useNavigate();
     const {title, url} = location?.state;
     const [modalState, setModalState] = useState(false);

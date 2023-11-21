@@ -46,17 +46,18 @@ const DraggableTabNode = ({ className, ...props }) => {
     ...listeners,
   });
 };
-const DraggableTab = () => {
+const DraggableTab = ({viewList, refetch, 
+  updateView, createViewLoading, createView
+}) => {
 
   const [items, setItems] = useState([]);
 
   const popoverRef = useRef();
   const inputRef = useRef();
 
-  const {data , loading: branchViewLoading, refetch: branchViewRefetch } = useQuery(BranchViewQuery);
 
   useEffect(()=>{
-    dispatch(setRefetchBranchView(branchViewRefetch));
+    dispatch(setRefetchBranchView(refetch));
   },[]);
 
   const [activeKey, setActiveKey] = useState();
@@ -69,12 +70,11 @@ const DraggableTab = () => {
   
   const dispatch = useDispatch();
 
-  const [updateSelectedBranchView, {loading, error}] = useMutation(updateBranchView)
   const [pinView, setPinView] = useState();
   
   const handelSelectedView = async(prop)=>{
     dispatch(resetAll());
-    const selectedSingleView = data?.branchViews?.find((view)=>view._id==prop.id);
+    const selectedSingleView = viewList?.find((view)=>view._id==prop.id);
     const isExist = items.find((item)=>item.label==prop.label);
 
     sessionStorage.setItem("selectedViewId", prop?._id)
@@ -82,7 +82,7 @@ const DraggableTab = () => {
 
     setSelectedView(prop.label);
     setPinView(prop.key);
-    await updateSelectedBranchView({
+    await updateView({
       variables:{
         input: {
           _id: prop._id,
@@ -112,23 +112,42 @@ const DraggableTab = () => {
  
 
   useEffect(()=>{
-    if(data?.branchViews){
-      const d = data?.branchViews?.filter((item)=>item?.isStandard)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id}))
+    if(viewList){
+      const d = viewList?.filter((item)=>item?.isStandard)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id}))
         
       setItems(
-        data?.branchViews?.filter((item)=>item?.isStandard)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id}))
+        viewList?.filter((item)=>item?.isStandard)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id}))
       );
-      setView(data?.branchViews?.filter((branchView)=> !branchView?.isManual)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id})));
+      setView(viewList?.filter((branchView)=> !branchView?.isManual)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id})));
       setCreatedView(
-        data?.branchViews?.filter((branchView)=> branchView?.isManual)?.map((list, index)=>({key: index.toString(), label:list.name, id: list._id, ...list}))
+        viewList?.filter((branchView)=> branchView?.isManual)?.map((list, index)=>({key: index.toString(), label:list.name, id: list._id, ...list}))
       );
       sessionStorage.setItem("selectedViewId", d[0]?.id);
+      
+      
+      // Handel page load first time to active tab
+
+      dispatch(resetAll());
+      setActiveKey('0');
+      setPinView('0');
+
+      if(viewList[0]?.quickFilter && Object.keys(viewList[0]?.quickFilter).length>0){
+        
+        dispatch(setQuickFilter(viewList[0]?.quickFilter));
+      }else{
+        dispatch(resetQuickFilter());
+      }
+      if(viewList[0]?.advanceFilter && viewList[0]?.advanceFilter?.length>0){
+        dispatch(setAdvanceFilter(viewList[0]?.advanceFilter));
+      }else{
+        dispatch(resetAdvanceFilter());
+      }
 
     }
-  },[data?.branchViews])
+  },[viewList])
 
   const [tabs, setTabs] = useState(
-    data?.branchViews?.map((list, index)=>({key: index, label:list.name, id: list._id}))
+    viewList?.map((list, index)=>({key: index, label:list.name, id: list._id}))
   );
 
 
@@ -170,7 +189,7 @@ const DraggableTab = () => {
 
   const removeView = async (rmItm) => {
     setItems(items?.filter(item=>item.key!=rmItm.key));
-    await updateSelectedBranchView({
+    await updateView({
       variables:{
         input: {
           _id: rmItm._id,
@@ -183,6 +202,7 @@ const DraggableTab = () => {
 
 
   const handelActiveTab = (e)=>{
+    console.log(viewList, "viewList", items)
     dispatch(resetAll());
     setActiveKey(e);
     setPinView(e.toString());
@@ -278,7 +298,7 @@ const DraggableTab = () => {
                                 autoComplete="off"
                                 value={viewSearch}
                                 onChange={(e)=> {
-                                    setView(data?.branchViews?.filter((date)=> (date.name)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))
+                                    setView(viewList?.filter((date)=> (date.name)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))
                                     setViewSearch(e.target.value);
                                 }}
                                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
@@ -369,7 +389,9 @@ const DraggableTab = () => {
             onClose={()=>setCreateViewForm(false)}
             setcreatedView = {setCreatedView}
             createdView={createdView}
-            branchViewRefetch={branchViewRefetch}
+            branchViewRefetch={refetch}
+            createView= {createView}
+            createViewLoading = {createViewLoading}
       />
     </>
   );

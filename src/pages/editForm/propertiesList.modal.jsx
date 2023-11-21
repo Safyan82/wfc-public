@@ -1,44 +1,19 @@
 import './editform.css';
 import '../../assets/default.css';
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAsterisk, faChevronLeft, faChevronRight, faStar } from "@fortawesome/free-solid-svg-icons";
-import { Button, Divider, Form, Input, notification } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import { notification } from "antd";
 import DraggableList from '../../components/shuffle/draggeableList';
-import { AddProperty } from './addProperty.modal';
-import { Popover } from "antd";
-import { ApartmentOutlined } from "@ant-design/icons";
-import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+
 import { useDispatch } from 'react-redux';
 import { addFieldToBranchSchema, removeAllColumns, removeFieldFromBranchSchema, resetbranchSchemaNewFields, setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
 import { useSelector } from 'react-redux';
-import { useMutation, useQuery } from '@apollo/client';
-import { BulkBranchObjectMutation, BulkDeleteBranchObjectMutation } from '../../util/mutation/branch.mutation';
 import { Loader } from '../../components/loader';
-import Spinner from '../../components/spinner';
-import { GetBranchObject } from '../../util/query/branch.query';
-import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
-import { FormHeader } from '../../components/header/header';
-import { BranchViewQuery, SingleBranchViewQuery } from '../../util/query/branchView.query';
 
-export const PropertiesList=({setLoader})=>{
+export const PropertiesList=({setLoader, properties, propertiesRefetch, processing, view})=>{
 
     useEffect(()=>{
       dispatch(resetbranchSchemaNewFields());
     },[]);
-
-    const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
-      fetchPolicy: 'network-only',
-    });
-
-    const {data: branchView, loading: branchViewLoading} = useQuery(SingleBranchViewQuery,{
-      variables:{
-        id: sessionStorage.getItem("selectedViewId")
-      },
-      fetchPolicy: 'network-only'
-    });
     
 
     const [mandatory, setMandatory] = useState([]);
@@ -46,7 +21,7 @@ export const PropertiesList=({setLoader})=>{
     const { branchSchemaNewFields, removeAllColumnsView } = useSelector(state=>state.branchReducer);
     const [branchSchemaLocal, setBranchSchemaLocal] = useState([]);
     useEffect(()=>{
-      branchObjectRefetch();
+      propertiesRefetch();
       setLoader(false);
     }, []);
 
@@ -63,16 +38,16 @@ export const PropertiesList=({setLoader})=>{
     
     const dispatch = useDispatch();
     useEffect(()=>{
-      if(!branchObjectLoading && !branchViewLoading){
+      if(!processing){
 
-        const mandatoryFields = (branchProperties?.getBranchProperty?.response)?.filter((property)=> property.isReadOnly===true);
+        const mandatoryFields = (properties)?.filter((property)=> property.isReadOnly===true);
         setMandatory(mandatoryFields);
-        dispatch(setBranchSchema(branchProperties?.getBranchProperty?.response));
+        dispatch(setBranchSchema(properties));
         // console.log(branchView?.singlebranchView?.viewFields, "branchView?.singlebranchView?.viewFields");
-        if(branchView?.singlebranchView?.viewFields){
+        if(view?.viewFields){
           
 
-          branchView?.singlebranchView?.viewFields?.map((field)=>{
+          view?.map((field)=>{
             const propData = {
               label:field?.label,
               _id:field?._id,
@@ -86,7 +61,7 @@ export const PropertiesList=({setLoader})=>{
         }
         else{
 
-          // (branchProperties?.getBranchProperty?.response)?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
+          // (properties)?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
           //   const propData = {
           //     label:field?.propertyDetail?.label,
           //     _id:field?.propertyId,
@@ -102,21 +77,18 @@ export const PropertiesList=({setLoader})=>{
 
         
       }
-    },[branchObjectLoading, branchViewLoading]);
+    },[processing]);
 
-    const[isPropOpen, setProp]=useState(false);
-
-    const [deleteProperties, {loading: deletePropertiesLoading}] = useMutation(BulkDeleteBranchObjectMutation);
-
+    
     const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
-      if(deletePropertiesLoading  || branchObjectLoading){
+      if(processing){
         setLoading(true);
       }else{
         setLoading(false);
       }
-    },[deletePropertiesLoading, branchObjectLoading ]); 
+    },[processing]); 
 
     const [api, contextHolder] = notification.useNotification();
 

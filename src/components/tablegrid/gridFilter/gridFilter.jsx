@@ -12,7 +12,7 @@ import { updateBranchView } from "../../../util/mutation/branchView.mutation";
 import { setNotification } from "../../../middleware/redux/reducers/notification.reducer";
 
 
-export const GridFilter = ({openAdvanceFilter})=>{
+export const GridFilter = ({openAdvanceFilter, updateView, refetch})=>{
     const [createdDate, setCreatedDate] = useState([...createdDateList]);
     const [createdDateSearch, setCreatedDateSearch] = useState();
     const [createdDatePop, setCreatedDatePop] = useState();
@@ -48,7 +48,6 @@ export const GridFilter = ({openAdvanceFilter})=>{
       }, []);
 
     const {quickFilter, advanceFilter} = useSelector(state=>state.quickFilterReducer)
-    const [upsertBranchView] = useMutation(updateBranchView);
 
     const { refetchBranchView } = useSelector(state => state.branchViewReducer);
 
@@ -56,7 +55,7 @@ export const GridFilter = ({openAdvanceFilter})=>{
     
     const handelSaveView = async () =>{
         setLoading(true);
-        await upsertBranchView({
+        await updateView({
             variables:{
                 input:{
                     _id: sessionStorage.getItem('selectedViewId'),
@@ -70,7 +69,8 @@ export const GridFilter = ({openAdvanceFilter})=>{
             message:"View saved successfully",
             error: false,
         }));
-        await refetchBranchView();
+        await refetch();
+        // await refetchBranchView();
         setLoading(false);
     };
     
