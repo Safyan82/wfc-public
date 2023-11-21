@@ -86,14 +86,18 @@ export const Employee = () =>{
     const employeeMutation=async (employee)=>{
         try{
           await addEmployeeMutation({variables: {input: employee}});
+          await viewRefetch();
+          await refetch();
+          await employeeObjectRefetch();
           dispatch(setNotification({
             notificationState:true, 
-            message: "Branch was added successfully",
+            message: "Employee was added successfully",
             error: false,
-          }))
+          }));
           setData([]);
           setBtn(true);
-          setIsOverlay(true);    
+          setIsOverlay(true);
+
         }
         catch(err){
           dispatch(setNotification({
