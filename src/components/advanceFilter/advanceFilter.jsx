@@ -15,10 +15,13 @@ import { useDispatch } from 'react-redux';
 import { setAdvanceFilter } from '../../middleware/redux/reducers/quickFilter';
 import { createdDateList } from '../../util/date';
 
-export const AdvanceFilter = ({visible, onClose, loading}) =>{
-    const {data, loading:propertyLoading, refetch} = useQuery(GetPropertyByGroupQuery,{
-        fetchPolicy:'network-only'
-    });
+export const AdvanceFilter = ({
+    visible, onClose,
+    objectData, // object data is the specific properties that are in the schema of specific module F.e Branch object schema/ employee object schema
+    groupProperty // group of all available property
+}) =>{
+
+   
 
     const [propList, setPropList] = useState([]);
     const [quickFilter, setQuickFilter] = useState(true);
@@ -27,9 +30,6 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
     const [filterValueSearch, setFilterValueSearch] = useState("");
     const [conditionOperator, setConditionOperator] = useState(null)
    
-    const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
-        fetchPolicy: 'network-only',
-    });
 
     const quickFilterReducer = useSelector(state=>state.quickFilterReducer);
 
@@ -41,23 +41,23 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
     },[visible]);
 
     useEffect(()=>{
-        if(data?.getPropertyByGroup?.data){
-            setPropList(data?.getPropertyByGroup?.data?.map((props)=>{
-                const properties = props?.properties?.filter((prop)=>branchProperties?.getBranchProperty.response?.find((branchProp)=>branchProp.propertyId==prop._id))
+        if(groupProperty){
+            setPropList(groupProperty?.map((props)=>{
+                const properties = props?.properties?.filter((prop)=>objectData?.find((branchProp)=>branchProp.propertyId==prop._id))
                 return {
                     ...props,
                     properties
                 }
             }));
             // setPropList([...data?.getPropertyByGroup?.data]);
-            // console.log(branchProperties?.getBranchProperty.response, data?.getPropertyByGroup?.data)
+            
         }
-    },[data, branchProperties, isFilterEnable]);
+    },[groupProperty, objectData, isFilterEnable]);
 
     const [propSearch, setPropSearch] = useState("");
     useEffect(()=>{
-        setPropList(data?.getPropertyByGroup?.data?.map((props)=>{
-            const properties = props?.properties?.filter((prop)=>branchProperties?.getBranchProperty.response?.find((branchProp)=>branchProp.propertyId==prop._id))
+        setPropList(groupProperty?.map((props)=>{
+            const properties = props?.properties?.filter((prop)=>objectData?.find((branchProp)=>branchProp.propertyId==prop._id))
             const filteredProperties = properties.filter((prop)=>prop.label.toLowerCase().includes(propSearch.toLowerCase()));
             console.log(filteredProperties, "filter prop")
             return {
@@ -161,7 +161,12 @@ export const AdvanceFilter = ({visible, onClose, loading}) =>{
     }
 
     const deleteFilterBlock = (index) => {
-        setFilters(filters?.filter((filter,i)=>(i!==index)))
+        if(filters?.length === 1){
+            setFilters([]);
+            dispatch(setAdvanceFilter([]));
+        }else{
+            setFilters(filters?.filter((filter,i)=>(i!==index)))
+        }
     }
 
 

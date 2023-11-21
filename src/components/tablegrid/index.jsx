@@ -7,27 +7,29 @@ import { GridFilter } from './gridFilter/gridFilter';
 import { Button, Input, Popover } from 'antd';
 import { AdvanceFilter } from '../advanceFilter/advanceFilter';
 
-export const TableGrid=({createAction, data})=>{
+export const TableGrid=({
+    data, 
+    setDynamicColumn, 
+    dynamicColumn, 
+    loading, viewRefetch, view, objectData
+})=>{
 
-    const [filterModal, setFilterModal] = useState(false);
 
     return (
-        <div className="tablegrid">
-            <GridHeader title={"Branch"} record={data?.branches?.length} createAction={createAction} />
-           
-            <DraggableTabs  />
-
-            <GridFilter
-                openAdvanceFilter={()=>setFilterModal(true)}
-            />
-
-            <AdvanceFilter visible={filterModal} onClose={()=>setFilterModal(false)}/>
-
+        
             <div className='tableView'>
-                <DataTable data={data}  header={true}/>
+                <DataTable
+                 data={data}  
+                 header={true}
+                 setDynamicColumn={setDynamicColumn}
+                 dynamicColumn={dynamicColumn}
+                 loading={loading}
+                 viewRefetch={viewRefetch}
+                 view={view}
+                 objectData={objectData}
+                />
             </div>
 
             
-        </div>
     )
 }

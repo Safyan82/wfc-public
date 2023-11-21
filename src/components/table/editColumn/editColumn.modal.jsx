@@ -12,22 +12,24 @@ import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { updateBranchView } from '../../../util/mutation/branchView.mutation';
 import { refreshBranchGrid, removeAllColumns, setPropertyToBeRemoveFromSchema } from '../../../middleware/redux/reducers/branch.reducer';
-import { SingleBranchViewQuery } from '../../../util/query/branchView.query';
+import Spinner from '../../spinner';
 
 
-export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) => {
+export const EditColumn = ({ visible, 
+  onClose, objectType, 
+  properties, propertiesRefetch,
+  loading, view, updateRenderedView, refetchView,
+}) => {
 
-  const [name, setName] = useState("");
-  const [access, setAccess] = useState("");
+  const [disabled, setDisabled] = useState(false);
   const dispatch = useDispatch();
 
   const [loader, setLoader] = useState(true);
   const {branchSchemaNewFields} = useSelector(state => state.branchReducer);
-  const [updateBranchCloumnView] = useMutation(updateBranchView);
   
   const updateView = async ()=>{
-    
-    await updateBranchCloumnView({
+    setDisabled(true);
+    await updateRenderedView({
       variables:{
         input:{
           _id: sessionStorage.getItem('selectedViewId'),
@@ -43,19 +45,13 @@ export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) =>
       message: "Column updated",
 
     }));
-
+    await refetchView();
+    setDisabled(false);
     onClose();
-
-
   };
 
    
-  const {data: branchView, loading: branchViewLoading, refetch: branchViewRefetch} = useQuery(SingleBranchViewQuery,{
-    variables:{
-      id: sessionStorage.getItem("selectedViewId")
-    },
-    fetchPolicy: 'network-only'
-  });
+
 
 
 
@@ -63,7 +59,7 @@ export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) =>
     <Modal
       open={visible}
       width={1100}
-      style={{    marginTop: '-4%' }}
+      style={{ marginTop: '-4%' }}
       footer={
         <div style={{padding:'0px 40px 26px', textAlign:'left', display:'flex', alignItems:'center', columnGap:'16px', marginTop:'-25px' }}>
             <button  
@@ -71,13 +67,14 @@ export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) =>
             //   className={name?.length<1 || access?.length<1 ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
             onClick={updateView}
             className='drawer-filled-btn'
+            disabled={disabled}
             >
-              {false? <Spin indicator={<LoadingOutlined/>}/> : "Apply"}
+              {disabled? <Spinner color={"white"} /> : "Apply"}
             </button>
-            <button  disabled={false} className={false? 'disabled-btn drawer-outlined-btn':'drawer-outlined-btn'} onClick={onClose}>
+            <button  disabled={disabled} className={false? 'disabled-btn drawer-outlined-btn':'drawer-outlined-btn'} onClick={onClose}>
               Cancel
             </button>
-            <span className='grid-text-btn' onClick={()=>{
+            <span className='grid-text-btn' disabled={disabled} onClick={()=>{
               dispatch(removeAllColumns(true));
             }}>Remove All Columns</span>
         </div>
@@ -94,10 +91,18 @@ export const EditColumn = ({ visible, onClose, setcreatedView, createdView }) =>
         <div className='modal-body'>
             <div className="editColumn-body">
                 <span style={{width:'100%'}}>
-                   {loader? <Loader/>: <PropertyToBeAdd/>}
+                   {loader? 
+                   <Loader/>: 
+                   <PropertyToBeAdd processing={loading} view={view} objectType={objectType} />}
                 </span> 
                 <span style={{width:'100%'}}>
-                    <PropertiesList setLoader={setLoader}/>
+                  <PropertiesList 
+                    propertiesRefetch={propertiesRefetch}
+                    properties={properties} 
+                    setLoader={setLoader}
+                    processing={loading}
+                    view={view}
+                  />
                 </span>
             </div>
         </div>  

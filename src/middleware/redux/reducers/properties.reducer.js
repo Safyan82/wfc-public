@@ -4,6 +4,7 @@ const propertyReducer = createSlice({
   name: 'propertyReducer',
   initialState: {
     groupFilterId: null,
+    editGridColumn: false,
   },
   reducers: {
     setPropertyFilterByGroup: (state, action) => {
@@ -12,10 +13,16 @@ const propertyReducer = createSlice({
         groupFilterId: action.payload,
        }     
     },
-    resetPropertyFilterByGroup:()=>{ return {groupFilterId: null}}
+    resetPropertyFilterByGroup:()=>{ return {groupFilterId: null}},
+    setEditGridColumn: (state, action)=>{
+      return{
+        ...state,
+        editGridColumn: action.payload,
+      }
+    }
   },
 });
 
 
-export const { setPropertyFilterByGroup,  resetPropertyFilterByGroup } = propertyReducer.actions;
+export const { setPropertyFilterByGroup,  resetPropertyFilterByGroup, setEditGridColumn } = propertyReducer.actions;
 export default propertyReducer.reducer;

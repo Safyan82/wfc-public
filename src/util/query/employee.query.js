@@ -10,8 +10,8 @@ query{
 
 
 export const GetEmployeeRecord = gql `
-query{
-  getEmployee {
+query($input: EmployeeFilter!){
+  getEmployee(input: $input) {
     response
   }
 }`;

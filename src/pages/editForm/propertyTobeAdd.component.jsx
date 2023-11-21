@@ -10,14 +10,16 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { addFieldToBranchSchema, removeAllColumns, removeFieldFromBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
 import { Loader } from '../../components/loader';
-import { Link } from 'react-router-dom';
-import { SingleBranchViewQuery } from '../../util/query/branchView.query';
 
 
-export const PropertyToBeAdd=({back})=>{
+export const PropertyToBeAdd=({objectType, view, processing})=>{
 
     const {data, loading, refetch} = useQuery(GetPropertyByGroupQuery,{
-        fetchPolicy:'network-only'
+        fetchPolicy:'network-only',
+        variables: {
+            objectType
+        }
+
     });
     const [list, setList] = useState([]);
     const {branchSchema, propertyToBeRemoveFromSchema} = useSelector((state)=>state.branchReducer);
@@ -101,17 +103,12 @@ export const PropertyToBeAdd=({back})=>{
 
     const { branchSchemaNewFields, removeAllColumnsView } = useSelector(state=>state.branchReducer);
     
-    const {data: branchView, loading: branchViewLoading, refetch: branchViewRefetch} = useQuery(SingleBranchViewQuery,{
-        variables:{
-          id: sessionStorage.getItem("selectedViewId")
-        },
-        fetchPolicy: 'network-only'
-    });
+  
 
     const renderProperties = (property, id, propertyData, isChecked, order)=>{
         const isExist =  branchSchema?.find((field)=>field.propertyId===id && field.isReadOnly);
         const isExistInSchema =  branchSchema?.find((field)=>field.propertyId===id );
-        const  isMandatoryReadOnlyExist = branchView?.singlebranchView?.viewFields?.find((viewProp)=>viewProp?._id==id)
+        const  isMandatoryReadOnlyExist = view?.find((viewProp)=>viewProp?._id==id)
         const isReadOnlyExist = branchSchema?.find((field)=>field.propertyId===id && field.isReadOnly==true);
         if(isMandatoryReadOnlyExist){
             dispatch(addFieldToBranchSchema({...propertyData, isMandatory: isExist?.isMandatory, order: isExist?.order}));
@@ -141,11 +138,11 @@ export const PropertyToBeAdd=({back})=>{
     const [dataToSearch, setDataToSearch] = useState();
 
     useEffect(()=>{
-        if(data?.getPropertyByGroup?.data && branchView?.singlebranchView?.viewFields){
+        if(data?.getPropertyByGroup?.data && view){
             const rawData = data.getPropertyByGroup.data?.map((data)=>{
                 const properties = data?.properties?.map((property)=>{
                     
-                    const isExist =  branchView?.singlebranchView?.viewFields?.find((field)=>field._id===property._id);
+                    const isExist =  view?.find((field)=>field._id===property._id);
                     const isLocalExist = branchSchemaNewFields?.find((field)=>field._id===property._id && field.isLocalDeleted==0)
 
                     if(isExist){
@@ -166,7 +163,7 @@ export const PropertyToBeAdd=({back})=>{
             setRawList([...rawData]);
             setDataToSearch([...rawData]);
         }
-    }, [data?.getPropertyByGroup, branchView?.singlebranchView?.viewFields]);
+    }, [data?.getPropertyByGroup, view]);
 
     // removeAllColumnsView
 
@@ -175,7 +172,7 @@ export const PropertyToBeAdd=({back})=>{
             const rawData = data.getPropertyByGroup.data?.map((data)=>{
                 const properties = data?.properties?.map((property)=>{
                     
-                    const isExist =  branchView?.singlebranchView?.viewFields?.find((field)=>field._id===property._id);
+                    const isExist =  view?.find((field)=>field._id===property._id);
 
                     if(isExist){
                         return {
@@ -245,7 +242,7 @@ export const PropertyToBeAdd=({back})=>{
                         value={query}
                     />
                 <div style={{marginTop:'1px', marginBottom:'5%'}}>
-                    {loading || branchViewLoading?
+                    {loading || processing?
                         <>
                         <br/>
                         <Loader />

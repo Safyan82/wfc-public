@@ -430,15 +430,13 @@ export const FormDrawer = ({ objectLoading,
       }
 
       const checkMandatoryField = ()=>{
-        const isMandatoryFieldFilled = mandatoryProperties?.every((field)=>data?.find(d=>Object.keys(d)[0]==field?.propertyDetail?.label.replaceAll(" ","").toLowerCase()));
+        const isMandatoryFieldFilled = mandatoryProperties?.every((field)=>data?.find(d=>Object.keys(d)[0]==field?.propertyDetail?.label.replaceAll(" ","").toLowerCase() && Object.values(d)[0]!==""));
+    
         const isErrorExist = Array.from(document.getElementsByClassName("errorMsg"));
-        // console.log(isErrorExist);
         if(isMandatoryFieldFilled && isErrorExist?.length==0){
-          // console.log("pass");
           setBtn(false);
         }else{
           setBtn(true);
-          // checkMandatoryField();
         }
       }
 
