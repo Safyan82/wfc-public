@@ -44,7 +44,7 @@ export const CreateView = ({ visible, onClose, setcreatedView, createdView, bran
             <button  
               onClick={handelSave}
               disabled={name?.length<1 || access?.length<1} 
-              className={name?.length<1 || access?.length<1 ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
+              className={name?.length<1 || access?.length<1 || createViewLoading ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
             >
               {createViewLoading? <Spin indicator={<LoadingOutlined/>}/> : "Save"}
             </button>

@@ -39,45 +39,41 @@ export const PropertiesList=({setLoader, properties, propertiesRefetch, processi
     const dispatch = useDispatch();
     useEffect(()=>{
       if(!processing){
-
+        
         const mandatoryFields = (properties)?.filter((property)=> property.isReadOnly===true);
         setMandatory(mandatoryFields);
         dispatch(setBranchSchema(properties));
         // console.log(branchView?.singlebranchView?.viewFields, "branchView?.singlebranchView?.viewFields");
-        if(view?.viewFields){
+        if(view){
+          console.log(view, "view safyan", properties)
           
+          
+          view?.filter((field)=>{
+            // here i filtered out the view properties from original updated schema
+            // coz there can be any property in single view that was archeive or deleted and backlog was here in specific view
+            
+            if(properties?.find((prop)=>prop.propertyId===field?._id)){
 
-          view?.map((field)=>{
-            const propData = {
-              label:field?.label,
-              _id:field?._id,
-              isMandatory:field?.isMandatory,
-              isLocalDeleted: 0,
-              order: field?.order
+              const propData = {
+                label:field?.label,
+                _id:field?._id,
+                isMandatory:field?.isMandatory,
+                isLocalDeleted: 0,
+                order: field?.order
+              }
+
+              dispatch(addFieldToBranchSchema(propData));
             }
-            dispatch(addFieldToBranchSchema(propData));
           });
           
         }
         else{
-
-          // (properties)?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
-          //   const propData = {
-          //     label:field?.propertyDetail?.label,
-          //     _id:field?.propertyId,
-          //     isMandatory:field?.isMandatory,
-          //     isLocalDeleted: 0,
-          //     order: field?.order
-          //   };
-          //   console.log(propData, "propD");
-          // resetbranchSchemaNewFields
-            dispatch(resetbranchSchemaNewFields());
-          // });
+          dispatch(resetbranchSchemaNewFields());
         }
 
         
       }
-    },[processing]);
+    },[processing, view]);
 
     
     const [loading, setLoading] = useState(false);

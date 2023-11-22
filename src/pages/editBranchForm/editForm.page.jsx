@@ -1,7 +1,6 @@
 import './editform.css';
 import '../../assets/default.css';
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAsterisk, faChevronLeft, faChevronRight, faStar } from "@fortawesome/free-solid-svg-icons";
 import { Button, Divider, Form, Input, notification } from "antd";
@@ -12,10 +11,10 @@ import { Popover } from "antd";
 import { ApartmentOutlined } from "@ant-design/icons";
 import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from 'react-redux';
-import { addFieldToBranchSchema, removeFieldFromBranchSchema, setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
+import { addFieldToBranchSchema, removeFieldFromBranchSchema, resetbranchSchemaNewFields, setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
-import { BulkBranchObjectMutation, BulkDeleteBranchObjectMutation } from '../../util/mutation/branch.mutation';
+import { BulkBranchObjectMutation, BulkDeleteBranchObjectMutation, ReorderBranchSchema } from '../../util/mutation/branch.mutation';
 import { Loader } from '../../components/loader';
 import Spinner from '../../components/spinner';
 import { GetBranchObject } from '../../util/query/branch.query';
@@ -27,6 +26,8 @@ export const EditForm=()=>{
     const navigate = useNavigate();
     const {title, url} = location?.state;
     const [modalState, setModalState] = useState(false);
+
+    const [reorderBranchSchema,{loading: rearragementLoading}] = useMutation(ReorderBranchSchema);
 
     const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
       fetchPolicy: 'network-only',
@@ -139,6 +140,14 @@ export const EditForm=()=>{
       }
     },[propertyToBeRemoveFromSchema]);
 
+    // on session terminate of this page clear the 
+    useEffect(()=>{
+      return()=>{
+        // resetbranchSchemaNewFields
+        dispatch(resetbranchSchemaNewFields());
+      }
+    },[]);
+
     return(
         <React.Fragment>
           {contextHolder}
@@ -247,7 +256,7 @@ export const EditForm=()=>{
                           </div>
                         ))}
 
-                        <DraggableList list={branchSchemaNewFields?.length>0 ? branchSchemaLocal.sort((a, b) => a?.order - b?.order) : []} />        
+                        <DraggableList objectRefetch={branchObjectRefetch} reorderSchema={reorderBranchSchema} list={branchSchemaNewFields?.length>0 ? branchSchemaLocal.sort((a, b) => a?.order - b?.order) : []} />        
                                       
                         </div>
                       

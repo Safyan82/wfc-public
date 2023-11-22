@@ -184,6 +184,7 @@ export const Branch = () =>{
           <GridFilter
               openAdvanceFilter={()=>setFilterModal(true)}
               updateView={upsertBranchView}
+              refetch={refetchAll}
           />
 
           <AdvanceFilter 
@@ -208,7 +209,6 @@ export const Branch = () =>{
         </div>
 
         <FormDrawer
-            title="Branch"
             objectData={branchObjectData?.getBranchProperty?.response}
             objectLoading={branchObjectLoading}
             handelSubmit={handelSubmit}
@@ -222,8 +222,11 @@ export const Branch = () =>{
             setIsOverlay={setIsOverlay}
             loading={processLoading}
             onClose={()=>setBranchModal(!branchModal)} 
+            to={"/branch/editform"}
+            from={"/user/branch"}
+            title={objectType.Branch}
         />
-
+      {editGridColumn?
         <EditColumn 
           objectType={objectType.Branch} 
           visible={editGridColumn} 
@@ -237,7 +240,8 @@ export const Branch = () =>{
 
           refetchView = {branchViewRefetch}
         />
-            
+        : null
+      }    
             
         </React.Fragment>
     )

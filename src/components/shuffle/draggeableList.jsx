@@ -5,11 +5,8 @@ import { ApartmentOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAsterisk, faClose, faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { Popover } from "antd";
-import { addFieldToBranchSchema, removeFieldFromBranchSchema, setPropertyToBeRemoveFromSchema } from "../../middleware/redux/reducers/branch.reducer";
+import { addFieldToBranchSchema, removeFieldFromBranchSchema, resetAndReorderBranchSchema, resetbranchSchemaNewFields, setPropertyToBeRemoveFromSchema } from "../../middleware/redux/reducers/branch.reducer";
 import { useDispatch } from "react-redux";
-import { useMutation } from "@apollo/client";
-import { ReorderBranchSchema } from "../../util/mutation/branch.mutation";
-import Spinner from "../spinner";
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -21,17 +18,23 @@ const reorder = (list, startIndex, endIndex) => {
 
 
 
-const DraggableList = ({list, editColumn, handelAddBranches, updateUserBranchView}) => {
-   console.log(list, "safyan listtt");
-  const [reorderBranchSchema,{loading: rearragementLoading}] = useMutation(ReorderBranchSchema);
+const DraggableList = ({list, editColumn, handelAddBranches, updateUserBranchView, reorderSchema, objectRefetch}) => {
+  
 
   const [items, setItems] = useState(list)
   useEffect(()=>{
     setItems(list?.filter((l)=>l.isLocalDeleted!=1));
   }, [list]);
 
+  useEffect(()=>{
+    
+    // we are calling this function to update the prop order in redux as well 
+    sessionStorage.setItem('reorderedItems',
+      JSON.stringify(items)
+    );
+  }, [items]);
 
-
+  
   const onDragEnd = async (result) => {
     // dropped outside the list
     if (!result.destination) {
@@ -45,6 +48,7 @@ const DraggableList = ({list, editColumn, handelAddBranches, updateUserBranchVie
       result.destination.index
     ));
 
+    
     if(updateUserBranchView){
       
       await updateUserBranchView(reorder(
@@ -53,17 +57,23 @@ const DraggableList = ({list, editColumn, handelAddBranches, updateUserBranchVie
         result.destination.index
       ));
     }else{
-      await reorderBranchSchema({
-        variables:{
-          input:{fields: reorder(
-            items,
-            result.source.index,
-            result.destination.index
-          ).map((item)=>({propertyId: item._id}))}
-        }
-      });
+      if(reorderSchema){
+        await reorderSchema({
+          variables:{
+            input:{fields: reorder(
+              items,
+              result.source.index,
+              result.destination.index
+            ).map((item)=>({propertyId: item._id}))}
+          }
+        });
+      }
+      if(objectRefetch){
+        await objectRefetch();
+      }
     }
 
+    
   }
 
 
