@@ -23,6 +23,8 @@ export const FormDrawer = ({ objectLoading,
   setIsOverlay, // overlay on the additional fields
   handelSubmit, // submit the actual form
   title,
+  to,
+  from,
  }) => {
       const navigate = useNavigate();
         
@@ -473,10 +475,10 @@ export const FormDrawer = ({ objectLoading,
           >
             <div className='title' 
                 style={objectLoading?{opacity:0.4}:{opacity:1}}
-                onClick={()=>navigate('/branch/editform',{
+                onClick={()=>navigate(to,{
                     state: {
-                    title: 'Branch',
-                    url:'/user/branch',
+                    title,
+                    url:from,
                     }
                 })}
             ><FontAwesomeIcon icon={faExternalLink} style={{ marginLeft: 4 }} /> Edit this form </div>

@@ -5,13 +5,13 @@ import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { setNotification } from '../../../middleware/redux/reducers/notification.reducer';
-import { PropertyToBeAdd } from '../../../pages/editForm/propertyTobeAdd.component';
-import { PropertiesList } from '../../../pages/editForm/propertiesList.modal';
+import { PropertyToBeAdd } from '../../../pages/editBranchForm/propertyTobeAdd.component';
+import { PropertiesList } from '../../../pages/editBranchForm/propertiesList.modal';
 import { Loader } from '../../loader';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { updateBranchView } from '../../../util/mutation/branchView.mutation';
-import { refreshBranchGrid, removeAllColumns, setPropertyToBeRemoveFromSchema } from '../../../middleware/redux/reducers/branch.reducer';
+import { refreshBranchGrid, removeAllColumns, resetBranch, setPropertyToBeRemoveFromSchema } from '../../../middleware/redux/reducers/branch.reducer';
 import Spinner from '../../spinner';
 
 
@@ -33,7 +33,7 @@ export const EditColumn = ({ visible,
       variables:{
         input:{
           _id: sessionStorage.getItem('selectedViewId'),
-          viewFields: branchSchemaNewFields.filter((field)=>field.isLocalDeleted!=1),
+          viewFields: JSON.parse(sessionStorage.getItem('reorderedItems')) || null,
         }
       }
     });
@@ -46,6 +46,7 @@ export const EditColumn = ({ visible,
 
     }));
     await refetchView();
+    dispatch(resetBranch());
     setDisabled(false);
     onClose();
   };
@@ -66,12 +67,12 @@ export const EditColumn = ({ visible,
             //   disabled={name?.length<1 || access?.length<1} 
             //   className={name?.length<1 || access?.length<1 ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
             onClick={updateView}
-            className='drawer-filled-btn'
+            className={disabled?' disabled-btn drawer-filled-btn': 'drawer-filled-btn'}
             disabled={disabled}
             >
-              {disabled? <Spinner color={"white"} /> : "Apply"}
+              {disabled? <Spinner color={"#ff7a53"} /> : "Apply"}
             </button>
-            <button  disabled={disabled} className={false? 'disabled-btn drawer-outlined-btn':'drawer-outlined-btn'} onClick={onClose}>
+            <button  disabled={disabled} className={disabled? 'disabled-btn drawer-outlined-btn':'drawer-outlined-btn'} onClick={onClose}>
               Cancel
             </button>
             <span className='grid-text-btn' disabled={disabled} onClick={()=>{

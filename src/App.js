@@ -6,7 +6,7 @@ import { Login } from "./pages/login";
 import { DefaultLayout } from "./layout/defaultLayout";
 import { Employee } from "./pages/employee";
 import { Branch } from "./pages/branch";
-import { EditForm } from "./pages/editForm/editForm.page";
+import { EditForm } from "./pages/editBranchForm/editForm.page";
 import React, { useEffect } from "react";
 import { Setting } from './pages/setting/setting';
 import { useSelector } from 'react-redux';
@@ -16,6 +16,7 @@ import { BranchDetailPage } from './pages/branchDetailPage/branchDetailPage';
 import { AllProperties } from './pages/allProperties/allProperties.page';
 import { BranchAllPropHistory } from './pages/branchAllPropHistory/branchAllPropHistory.page';
 import { SiteGroup } from './pages/sitegroup/sitegroup.page';
+import { EditEmployeeForm } from './pages/employee/editEmployeeForm/editEmployeeForm';
 
 function App() {
   
@@ -67,6 +68,7 @@ function App() {
         
         <Route path='/formview' element={<FormView/>} />
         <Route path='/branch/editform' exact element={<EditForm />} />
+        <Route path='/employee/editform' exact element={<EditEmployeeForm />} />
 
         {/* private routes */}
         <Route path='/user/' element={<DefaultLayout/>}>

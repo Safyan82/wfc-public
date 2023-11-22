@@ -29,11 +29,15 @@ export const DataTable = ({
   const [sortedInfo, setSortedInfo] = useState({});
   
   useEffect(()=>{
-    if(objectData && view ){
-      console.log(objectData, view, "data view")
-      const col = objectData?.filter((prop)=>  prop?.isReadOnly || view?.find((viewProp)=>viewProp?._id==prop?.propertyId)).map((prop)=>{
+    if(objectData?.length>0 && view ){
+      const mandatoryField = objectData?.filter((prop)=>  prop?.isReadOnly);
+      const viewProp = view.filter((viewProp)=> objectData?.find((object)=> object.propertyId == viewProp?._id))?.map((prop)=> ({propertyDetail: prop}));
+      const updateView = [...mandatoryField, ...viewProp];
+      console.log(updateView, "haza");
+      // const col = objectData?.filter((prop)=>  prop?.isReadOnly || view?.find((viewProp)=>viewProp?._id==prop?.propertyId)).map((prop)=>{
+      const col = updateView.map((prop)=>{
         // if(prop.propertyDetail.label=="Branch name" || prop.propertyDetail.label=="Post code"){
-
+          
           return {
             title: prop.propertyDetail.label,
             dataIndex: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
@@ -47,7 +51,7 @@ export const DataTable = ({
             ellipsis: true,
 
             render: (_, record) => {
-              const showActions = sessionStorage.getItem('hoverItem') == record.key && prop.propertyDetail.label.replaceAll(" ","").toLowerCase() =="branchname" &&  selectedRowKeys?.length===0;
+              const showActions = sessionStorage.getItem('hoverItem') == record.key && prop.propertyDetail.label == objectData[0].propertyDetail.label &&  selectedRowKeys?.length===0;
               return (          
                 <div style={{display:'flex', alignItems:'center', justifyContent:'space-between',}}>
                   

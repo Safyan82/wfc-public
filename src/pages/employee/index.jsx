@@ -194,7 +194,6 @@ export const Employee = () =>{
 
 
             <FormDrawer
-               title={"Employee"}
                objectData={employeeSchema}
                objectLoading={employeeObjectLoading}
                visible={employeeModal} 
@@ -208,8 +207,11 @@ export const Employee = () =>{
                loading={processloading}
                onClose={()=>setEmployeeModal(!employeeModal)} 
                handelSubmit={handelSubmit}
+               to={"/employee/editform"}
+               from={"/user/employee"}
+               title={objectType.Employee}
             />
-        
+          {editGridColumn?
             <EditColumn 
               objectType={objectType.Employee} 
               visible={editGridColumn} 
@@ -223,6 +225,8 @@ export const Employee = () =>{
               updateRenderedView = {updateEmployeeView}
               
             />
+          : null
+          }
 
         </React.Fragment>
     )

@@ -3,19 +3,22 @@ import {SearchOutlined} from '@ant-design/icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faClose, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Checkbox, Collapse, Input } from "antd";
-import './editform.css';
 import { useQuery } from '@apollo/client';
-import { GetPropertyByGroupQuery } from '../../util/query/properties.query';
+import { GetPropertyByGroupQuery } from '../../../util/query/properties.query';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { addFieldToBranchSchema, removeFieldFromBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
-import { Loader } from '../../components/loader';
+import { addFieldToBranchSchema, removeFieldFromBranchSchema } from '../../../middleware/redux/reducers/branch.reducer';
+import { Loader } from '../../../components/loader';
+import { objectType } from '../../../util/types/object.types';
 
 
 export const AddProperty=({back})=>{
 
     const {data, loading, refetch} = useQuery(GetPropertyByGroupQuery,{
-        fetchPolicy:'network-only'
+        fetchPolicy:'network-only',
+        variables:{
+            objectType: objectType.Employee
+        }
     });
     const [list, setList] = useState([]);
     const {branchSchema, propertyToBeRemoveFromSchema} = useSelector((state)=>state.branchReducer);

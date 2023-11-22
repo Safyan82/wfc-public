@@ -28,7 +28,7 @@ const branchReducer = createSlice({
     
     addFieldToBranchSchema: (state, action) => {
         const isExist = state.branchSchemaNewFields.find((schema)=>schema._id === action.payload._id);
-        
+        console.log(isExist, "isExist", action.payload);
         return {
          ...state,
          branchSchemaNewFields: isExist ? state.branchSchemaNewFields.map((schema)=>{
@@ -44,6 +44,14 @@ const branchReducer = createSlice({
                 }  
             }): [...state.branchSchemaNewFields, {isLocalDeleted:0, ...action.payload}],
         }     
+    },
+
+    resetAndReorderBranchSchema : (state, action) => {
+        console.log(action.payload, "payload");
+        return{
+            ...state,
+            branchSchemaNewFields: action.payload.map((item)=>item)
+        }   
     },
 
     addFieldToBranchEditColumn: (state, action) => {
@@ -92,7 +100,7 @@ const branchReducer = createSlice({
         }
     },
 
-    resetBranch:()=>{ return {branchSchema:[], propertyToBeRemoveFromSchema:null, removeAllColumnsView:false}},
+    resetBranch:()=>{ return {branchSchemaNewFields:[], branchSchema:[], propertyToBeRemoveFromSchema:null, removeAllColumnsView:false}},
 
     refreshBranchGrid : (state, action) => {
         return {
@@ -121,7 +129,7 @@ const branchReducer = createSlice({
 });
 
 
-export const { setBranchSchema, addFieldToBranchSchema, refreshBranchGrid,
+export const { resetBranch, resetAndReorderBranchSchema, setBranchSchema, addFieldToBranchSchema, refreshBranchGrid,
     addFieldToBranchEditColumn, removeFieldFromBranchSchema, 
     setPropertyToBeRemoveFromSchema, resetbranchSchemaNewFields, removeAllColumns } = branchReducer.actions;
 export default branchReducer.reducer;
