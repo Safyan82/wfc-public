@@ -33,7 +33,6 @@ export const DataTable = ({
       const mandatoryField = objectData?.filter((prop)=>  prop?.isReadOnly);
       const viewProp = view.filter((viewProp)=> objectData?.find((object)=> object.propertyId == viewProp?._id))?.map((prop)=> ({propertyDetail: prop}));
       const updateView = [...mandatoryField, ...viewProp];
-      console.log(updateView, "haza");
       // const col = objectData?.filter((prop)=>  prop?.isReadOnly || view?.find((viewProp)=>viewProp?._id==prop?.propertyId)).map((prop)=>{
       const col = updateView.map((prop)=>{
         // if(prop.propertyDetail.label=="Branch name" || prop.propertyDetail.label=="Post code"){
@@ -52,14 +51,41 @@ export const DataTable = ({
 
             render: (_, record) => {
               const showActions = sessionStorage.getItem('hoverItem') == record.key && prop.propertyDetail.label == objectData[0].propertyDetail.label &&  selectedRowKeys?.length===0;
+              if(prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="phonenumber"
+              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="telephone"
+              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="contact"
+              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="contactnumber"
+              ){
+                return(
+                  <a style={{textDecoration:'underline'}} href={"tel:"+record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}>
+                    {record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}
+                  </a>
+                )
+              }
+              else if(prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="email"
+              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="emailaddress"
+              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="mail"
+              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="mailaddress"
+              ){
+                return(
+                  <a style={{textDecoration:'underline'}} target='_blank' href={"mailto:"+record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}>
+                    {record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}
+                  </a>
+                )
+              }
+              else{
               return (          
                 <div style={{display:'flex', alignItems:'center', justifyContent:'space-between',}}>
                   
                   <div 
                     style={{}}
                     className={prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname"? 'prev-btn' : null}
-                  >{record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}</div>
+                  >
+                    {record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}
+                  
+                  </div>
                     
+  
                 
 
                   <button className={"grid-sm-btn"} style={showActions?{visibility: 'visible'}:{visibility: 'hidden'}} type="link" onClick={()=>history('/user/detailPage/'+record.key)}>
@@ -68,6 +94,7 @@ export const DataTable = ({
                 
               </div>
               );
+              }
             },
           }
         // }
