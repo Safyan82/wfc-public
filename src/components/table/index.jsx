@@ -52,6 +52,7 @@ export const DataTable = ({
             render: (_, record) => {
               const showActions = sessionStorage.getItem('hoverItem') == record.key && prop.propertyDetail.label == objectData[0].propertyDetail.label &&  selectedRowKeys?.length===0;
               if(prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="phonenumber"
+              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="phone"
               || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="telephone"
               || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="contact"
               || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="contactnumber"
