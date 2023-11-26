@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { AddDataFieldFromView, removeDataFieldFromSpecificBranchView } from '../../middleware/redux/reducers/branchData.reducer';
 import { BranchViewForSpecificUser } from '../../util/query/branchView.query';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
+import { Loader } from '../../components/loader';
 
 export const AllProperties  = () => {
     const singleBranchData = useSelector(state => state.branchDataReducer.specificBranchData);
@@ -52,10 +53,11 @@ export const AllProperties  = () => {
 
     const updateUserBranchView = async(properties) =>{
         // alert(singleBranchData?.id);
+        console.log(properties,"propertiesproperties", properties?.map((prop)=>prop._id));
         await addBranchViewDetail({
             variables:{
                 input:{
-                    properties,
+                    properties: properties,
                     createdFor: singleBranchData?.id,
                     createdBy: "M Safyan",
                     _id: branchViewForUser?.getUserBranchView?.response?._id,
@@ -79,9 +81,8 @@ export const AllProperties  = () => {
     useEffect(()=>{
         if(propToAdd){
 
-        console.log(propToAdd, "propToA");
-        updateUserBranchView([ ...branchViewForUser?.getUserBranchView?.response?.properties, { ...propToAdd.propertyDetail,
-            _id: propToAdd.propertyId,}])
+        updateUserBranchView([ ...branchViewForUser?.getUserBranchView?.response?.properties, 
+             propToAdd.propertyId])
             setPropToAdd(null);
         }
     }, [propToAdd]);
@@ -91,7 +92,7 @@ export const AllProperties  = () => {
 
    useEffect(()=>{
     if(groupedProp && Object.keys(groupedProp)?.length>0 ){
-        const existingIds = branchViewForUser?.getUserBranchView?.response?.properties?.map((prop)=> prop._id) || branchObjectdata?.getBranchProperty?.response?.map((prop)=>prop.propertyId)
+        const existingIds = branchViewForUser?.getUserBranchView?.response?.properties?.map((prop)=> prop) || branchObjectdata?.getBranchProperty?.response?.map((prop)=>prop.propertyId)
         const allPropList = Object.keys(groupedProp)?.map((item, index)=>{
             let count = 0;
             groupedProp[item]?.map((prop)=>(
@@ -224,7 +225,8 @@ export const AllProperties  = () => {
         if(propToRemove !== null){
 
             if(branchViewForUser?.getUserBranchView?.response?.properties){
-                updateUserBranchView(branchViewForUser?.getUserBranchView?.response?.properties?.filter((prop)=>prop._id != propToRemove));
+                // console.log(branchViewForUser?.getUserBranchView?.response?.properties?.filter((prop)=>prop != propToRemove), propToRemove);
+                updateUserBranchView(branchViewForUser?.getUserBranchView?.response?.properties?.filter((prop)=>prop != propToRemove));
                 setPropToRemove(null)
             }else{
 
@@ -267,17 +269,30 @@ export const AllProperties  = () => {
                         <div style={{display:'flex', justifyContent:'center', paddingTop:'3%'}}><Spinner/></div>
                         :
                         <div style={{paddingLeft: '5%', paddingBottom: '5%'}} className='allprop'>
+                            {loading || branchViewForUserLoading || branchObjectLoading?
+                            null
+                            :
                             <DraggableList editColumn={true} 
                                 handelAddBranches={handelAddBranches} 
                                 updateUserBranchView = {updateUserBranchView} 
                                 list={
-                                    branchViewForUser?.getUserBranchView?.response?.properties
+                                    branchViewForUser?.getUserBranchView?.response?.properties &&
+                                    branchViewForUser?.getUserBranchView?.response?.properties?.map((viewProp)=> {
+                                        const property = branchObjectdata?.getBranchProperty?.response?.find((prop)=>prop.propertyId == viewProp)
+                                        return{
+                                            ...property.propertyDetail,
+                                            _id: viewProp,
+
+                                        }
+                                    })
                                     || 
                                     branchObjectdata?.getBranchProperty?.response?.map((prop)=>({
                                     ...prop.propertyDetail,
                                     _id: prop.propertyId,
                                     }))
-                                } />        
+                                } /> 
+
+                            }      
                         </div>
                     }
 

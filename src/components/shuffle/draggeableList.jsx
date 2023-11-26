@@ -55,7 +55,7 @@ const DraggableList = ({list, editColumn, handelAddBranches, updateUserBranchVie
         items,
         result.source.index,
         result.destination.index
-      ));
+      )?.map((prop)=>prop._id));
     }else{
       if(reorderSchema){
         await reorderSchema({
