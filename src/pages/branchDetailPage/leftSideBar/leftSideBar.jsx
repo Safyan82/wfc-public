@@ -270,7 +270,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                             const property = branchProperties?.getBranchProperty?.response?.find(prp => prp.propertyId== prop)
                             return {
                                 _id: property?.propertyId,
-                                ...property.propertyDetail
+                                ...property?.propertyDetail
                             }
                         })
                         
