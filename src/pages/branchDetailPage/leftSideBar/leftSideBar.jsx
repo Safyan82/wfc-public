@@ -40,7 +40,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
     }, [branchViewForUserLoading, branchObjectLoading]);
   
     const [bioPopover, setBioPopover] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState('+44'+ singleBranchData?.branch['metadata']['phonenumber']);
+    const [phoneNumber, setPhoneNumber] = useState('+44');
     const phoneInputRef = useRef(null);
     const [phoneDialouge, setPhoneDialouge] = useState(false);
 
@@ -79,6 +79,23 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
 
     const [propertyDetailDrawer, setPropertyDetailDrawer] = useState(false);
     const [selectedProp, setSelectedProp] = useState(null);
+
+    const [filteredView, setFilteredView] = useState();
+
+    useEffect(()=>{
+        if(branchViewForUser?.getUserBranchView?.response?.properties?.length>0){
+            const view = branchViewForUser?.getUserBranchView?.response?.properties?.filter((prop)=>(
+                branchProperties?.getBranchProperty?.response?.find(prp => prp.propertyId== prop)));
+            
+            setFilteredView(view?.map((prop)=>{
+                const property = branchProperties?.getBranchProperty?.response?.find(prp => prp.propertyId == prop)
+                return {
+                    _id: property?.propertyId,
+                    ...property?.propertyDetail
+                }
+            }))
+        }
+    },[branchViewForUser]);
 
     return(
         <div className='sidebar-wrapper' ref={dataFieldRef}>
@@ -214,11 +231,9 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                         content={"Make a phone call"}
                     >
                         <span>
-                            <a href={"tel:"+singleBranchData?.branch['metadata']['phonenumber']}>
                             <button>
                                 <PhoneOutlined />
                             </button>
-                            </a>
                             <span className='tiny-text'>Call</span>
                         </span>
                     </Popover>
@@ -265,15 +280,8 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                         <Spinner/>
                     </div> 
                     :
-                    (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? 
-                        branchViewForUser?.getUserBranchView?.response?.properties?.map((prop)=>{
-                            const property = branchProperties?.getBranchProperty?.response?.find(prp => prp.propertyId== prop)
-                            return {
-                                _id: property?.propertyId,
-                                ...property?.propertyDetail
-                            }
-                        })
-                        
+                    (
+                        filteredView? filteredView
                         : objectData)?.map((prop, index)=>{
                         const defaultVal = singleBranchData?.branch[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()];
                         return(
