@@ -92,7 +92,7 @@ const DraggableTab = ({viewList, refetch,
     });
 
     if(!isExist){
-      setItems([...items, {key: (items.length+1).toString(), label: selectedSingleView.name, ...selectedSingleView}]);
+      setItems([...items, {key: (items.length+1).toString(), label: selectedSingleView?.name, ...selectedSingleView}]);
       setActiveKey((items.length+1).toString());
     }else{
       setActiveKey(isExist.key.toString());

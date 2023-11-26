@@ -241,6 +241,21 @@ export const AllProperties  = () => {
         }
     }, [propToRemove]);
 
+    const [filteredView, setFilteredView] = useState();
+    useEffect(()=>{
+        if(branchViewForUser?.getUserBranchView?.response?.properties?.length>0){
+            const view = branchViewForUser?.getUserBranchView?.response?.properties?.filter((prop)=>(
+                branchObjectdata?.getBranchProperty?.response?.find(prp => prp.propertyId== prop)));
+            
+            setFilteredView(view?.map((prop)=>{
+                const property = branchObjectdata?.getBranchProperty?.response?.find(prp => prp.propertyId == prop)
+                return {
+                    _id: property?.propertyId,
+                    ...property?.propertyDetail
+                }
+            }))
+        }
+    },[branchViewForUser]);
     return(
         <div className='bg'>
             <header>
@@ -276,15 +291,7 @@ export const AllProperties  = () => {
                                 handelAddBranches={handelAddBranches} 
                                 updateUserBranchView = {updateUserBranchView} 
                                 list={
-                                    branchViewForUser?.getUserBranchView?.response?.properties &&
-                                    branchViewForUser?.getUserBranchView?.response?.properties?.map((viewProp)=> {
-                                        const property = branchObjectdata?.getBranchProperty?.response?.find((prop)=>prop.propertyId == viewProp)
-                                        return{
-                                            ...property.propertyDetail,
-                                            _id: viewProp,
-
-                                        }
-                                    })
+                                    filteredView
                                     || 
                                     branchObjectdata?.getBranchProperty?.response?.map((prop)=>({
                                     ...prop.propertyDetail,
