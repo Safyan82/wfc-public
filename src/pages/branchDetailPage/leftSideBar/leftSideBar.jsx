@@ -275,7 +275,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                         })
                         
                         : objectData)?.map((prop, index)=>{
-                        const defaultVal = singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()];
+                        const defaultVal = singleBranchData?.branch[prop?.label?.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label?.replaceAll(" ","").toLowerCase()];
                         return(
                             <div className='detailInputParent' onMouseEnter={
                                 (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.length - 1 == index ?  
@@ -287,7 +287,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                         {prop?.label}
                                     </span>
                                     <span className={'detail-section'}>
-                                        {prop?.label.toLowerCase().replaceAll(" ", "")=="phonenumber" || prop?.label.toLowerCase().replaceAll(" ", "")=="phone" || prop?.labelprop?.label.toLowerCase().replaceAll(" ","")=="telephone"?
+                                        {prop?.label.toLowerCase()?.replaceAll(" ", "")=="phonenumber" || prop?.label.toLowerCase()?.replaceAll(" ", "")=="phone" || prop?.labelprop?.label.toLowerCase()?.replaceAll(" ","")=="telephone"?
                                         <Popover
                                             placement='right'
                                             trigger={"click"}
@@ -344,7 +344,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                     </span>
 
                                 </div>
-                                {prop?.label.toLowerCase().replaceAll(" ","")=="phonenumber"?
+                                {prop?.label.toLowerCase()?.replaceAll(" ","")=="phonenumber"?
                                 <span>
 
                                     <span style={{display:'flex'}}>
@@ -376,8 +376,8 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                 :
                                 <input type="text" 
                                     onChange={(e) => handelInputChange(e.target)} 
-                                    name={prop?.label.replaceAll(" ","").toLowerCase()}
-                                    defaultValue={singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()]}  
+                                    name={prop?.label?.replaceAll(" ","").toLowerCase()}
+                                    defaultValue={singleBranchData?.branch[prop?.label?.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label?.replaceAll(" ","").toLowerCase()]}  
                                     className={
                                         dataFields?.find((dprop)=>dprop?.name==prop?.label?.replaceAll(" ","").toLowerCase())? 'detailInput-focus':
                                         prop?.label=="Phone Number"? 
