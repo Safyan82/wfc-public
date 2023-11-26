@@ -17,9 +17,10 @@ import { PropertyDetailDrawer } from '../../allProperties/propertyDetail.drawer'
 
 export const DetailPageLeftSideBar = ({branchId, singleBranchData, 
     handelInputChange, dataFields, 
-    handelScrollbar, branchObjectLoading, branchProperties})=>{
+    handelScrollbar, branchProperties})=>{
 
     
+    const {data: branchObjectdata , loading: branchObjectLoading} = useQuery(GetBranchObject);
 
     const {data: branchViewForUser, loading: branchViewForUserLoading, refetch: branchViewForUserRefetch} = useQuery(BranchViewForSpecificUser,{
         variables:{
@@ -39,7 +40,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
     }, [branchViewForUserLoading, branchObjectLoading]);
   
     const [bioPopover, setBioPopover] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState('+44');
+    const [phoneNumber, setPhoneNumber] = useState('+44'+ singleBranchData?.branch['metadata']['phonenumber']);
     const phoneInputRef = useRef(null);
     const [phoneDialouge, setPhoneDialouge] = useState(false);
 
@@ -213,9 +214,11 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                         content={"Make a phone call"}
                     >
                         <span>
+                            <a href={"tel:"+singleBranchData?.branch['metadata']['phonenumber']}>
                             <button>
                                 <PhoneOutlined />
                             </button>
+                            </a>
                             <span className='tiny-text'>Call</span>
                         </span>
                     </Popover>
@@ -262,7 +265,16 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                         <Spinner/>
                     </div> 
                     :
-                    (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.map((prop, index)=>{
+                    (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? 
+                        branchViewForUser?.getUserBranchView?.response?.properties?.map((prop)=>{
+                            const property = branchProperties?.getBranchProperty?.response?.find(prp => prp.propertyId== prop)
+                            return {
+                                _id: property?.propertyId,
+                                ...property.propertyDetail
+                            }
+                        })
+                        
+                        : objectData)?.map((prop, index)=>{
                         const defaultVal = singleBranchData?.branch[prop?.label.replaceAll(" ","").toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label.replaceAll(" ","").toLowerCase()];
                         return(
                             <div className='detailInputParent' onMouseEnter={
@@ -275,7 +287,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                         {prop?.label}
                                     </span>
                                     <span className={'detail-section'}>
-                                        {prop?.label=="Phone Number"?
+                                        {prop?.label.toLowerCase().replaceAll(" ", "")=="phonenumber" || prop?.label.toLowerCase().replaceAll(" ", "")=="phone" || prop?.labelprop?.label.toLowerCase().replaceAll(" ","")=="telephone"?
                                         <Popover
                                             placement='right'
                                             trigger={"click"}
@@ -332,7 +344,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                     </span>
 
                                 </div>
-                                {prop?.label=="Phone Number"?
+                                {prop?.label.toLowerCase().replaceAll(" ","")=="phonenumber"?
                                 <span>
 
                                     <span style={{display:'flex'}}>
@@ -341,7 +353,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                             name="phonenumber"
                                             onClick={()=>setPhoneDialouge(!phoneDialouge)}
                                             defaultValue={defaultVal}
-                                            className={prop?.label=="Phone Number"? phoneDialouge?'detailInput-focus':'detailInput' : 'detailInput'} 
+                                            className={'detailInput-focus'} 
                                         />
                                         <code className='primary detail-section'>Primary</code>
                                         {/* <code className='primary detail-section'>
@@ -369,8 +381,8 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                     className={
                                         dataFields?.find((dprop)=>dprop?.name==prop?.label?.replaceAll(" ","").toLowerCase())? 'detailInput-focus':
                                         prop?.label=="Phone Number"? 
-                                        phoneDialouge?'detailInput-focus':'detailInput' 
-                                        : 'detailInput'} 
+                                        phoneDialouge?'detailInput-focus':'detailInput-focus' 
+                                        : 'detailInput-focus'} 
                                 />
                                 }
                                
