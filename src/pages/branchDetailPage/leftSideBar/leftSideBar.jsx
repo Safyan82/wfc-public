@@ -115,7 +115,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
             <div className='leftsidebar'>
 
                 <div className="header-navigator">
-                    <div>
+                    <div  onClick={()=>navigate(-1)}>
                         <FontAwesomeIcon className='left-chevron-icon' icon={faChevronLeft}/> <span className='text-deco' style={{left: '20%', position: 'relative'}}>Branch</span> 
                     </div>
 
