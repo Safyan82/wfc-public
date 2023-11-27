@@ -5,9 +5,11 @@ import { Form, Input, Drawer, Select, TreeSelect, DatePicker, TimePicker } from 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faClose, faExternalLink } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { GET_BRANCHES } from '../../util/query/branch.query';
 
 import { faCalendarAlt, faClock } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
+import { useQuery } from '@apollo/client';
 
 export const FormDrawer = ({ objectLoading, 
   objectData, 
@@ -447,6 +449,16 @@ export const FormDrawer = ({ objectLoading,
         setIsOverlay(true);
       };
 
+  
+    const { data: branchData, } = useQuery(GET_BRANCHES ,{
+      fetchPolicy: 'cache-and-network',
+      variables: {
+          input: {
+              filters: null
+          }
+      }
+    });
+
       const {Option} = Select;
       return (
         <div>
@@ -544,25 +556,44 @@ export const FormDrawer = ({ objectLoading,
                     </Form.Item>
                     
                     : property?.propertyDetail?.fieldType == 'selectDropdown' || property?.propertyDetail?.fieldType == 'radioDropdown' ?
-                    
-                    <Form.Item>
-                        <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
-                            <Select 
-                              className='custom-select'  
-                              suffixIcon={<span className='dropdowncaret'></span>}
-                              name={name}
-                              id={name}
-                              value={value}
+                    property?.propertyDetail?.label.toLowerCase()=="branch"?
+                      <Form.Item>
+                          <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
+                              <Select 
+                                className='custom-select'  
+                                suffixIcon={<span className='dropdowncaret'></span>}
+                                name={name}
+                                id={name}
+                                value={value}
+                                placeholder="Select Branch"
+                                onChange={(e)=>{handelDataValue({
+                                  name,
+                                  value: e
+                                });checkMandatoryField()}}
 
-                              onChange={(e)=>{handelDataValue({
-                                name,
-                                value: e
-                              });checkMandatoryField()}}
+                              >
+                                  {branchData?.branches?.map((option)=>(<Option value={option._id}> {option?.branchname} </Option>))}
+                              </Select>
+                      </Form.Item>  
+                      :
+                      <Form.Item>
+                          <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
+                              <Select 
+                                className='custom-select'  
+                                suffixIcon={<span className='dropdowncaret'></span>}
+                                name={name}
+                                id={name}
+                                value={value}
 
-                            >
-                                {property?.propertyDetail?.options?.map((option)=>(<Option value={option.value}> {option.key} </Option>))}
-                            </Select>
-                    </Form.Item>  
+                                onChange={(e)=>{handelDataValue({
+                                  name,
+                                  value: e
+                                });checkMandatoryField()}}
+
+                              >
+                                  {property?.propertyDetail?.options?.map((option)=>(<Option value={option.value}> {option.key} </Option>))}
+                              </Select>
+                      </Form.Item>  
                     
                     : property?.propertyDetail?.fieldType == 'multiCheckbox' ?
                     <Form.Item>

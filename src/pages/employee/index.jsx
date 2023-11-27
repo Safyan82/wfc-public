@@ -146,11 +146,26 @@ export const Employee = () =>{
     },[sessionStorage.getItem("selectedViewId")]);
 
     const {editGridColumn} = useSelector(state => state.propertyReducer);
+    
+    useEffect(()=>{
+      
+      viewRefetch();
+      refetch();
+      employeeObjectRefetch();
+      
+    },[]);
+
 
     return(
         <React.Fragment>
           <div className="tablegrid">
-            <GridHeader title={"Employee"} record={employeeData?.getEmployee?.response?.length} createAction={()=>setEmployeeModal(!employeeModal)} />
+            <GridHeader 
+              title={"Employee"}
+              to={"/employee/editform"}
+              from={"/user/employee"}
+              record={employeeData?.getEmployee?.response?.length} 
+              createAction={()=>setEmployeeModal(!employeeModal)} 
+            />
           
             <DraggableTab             
               viewList = {employeeViewData?.employeeView?.response}
@@ -189,6 +204,8 @@ export const Employee = () =>{
                 view={employeeViewData?.employeeView?.response?.find((e)=>e._id==sessionStorage.getItem("selectedViewId"))?.viewFields || []}
                 loading={employeeDataLoading ||employeeDataLoading || employeeViewLoading}
                 objectData={employeeObject?.getEmployeeObject?.response}
+                detailpage={"employee-detail/"}
+
             />
           </div>
 
