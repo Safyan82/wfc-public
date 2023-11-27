@@ -109,7 +109,7 @@ export const Branch = () =>{
 
     const {data: SinglebranchView, loading: branchViewLoading, refetch: branchViewRefetch} = useQuery(SingleBranchViewQuery,{
       variables:{
-        id: sessionStorage.getItem("selectedViewId")
+        id: sessionStorage.getItem("selectedViewId") || ""
       },
       fetchPolicy: 'network-only',
       skip: !sessionStorage.getItem("selectedViewId")
@@ -161,6 +161,10 @@ export const Branch = () =>{
 
     const [updateBranchCloumnView, {loading: updateBranchCloumnViewLoading}] = useMutation(updateBranchView);
 
+    useEffect(()=>{
+      refetchAll();
+    },[]);
+
     return(
         <React.Fragment>
 
@@ -169,6 +173,9 @@ export const Branch = () =>{
             title={"Branch"} 
             refetch={refetchAll}
             record={branchData?.branches?.length} 
+            to={"/branch/editform"}
+            from={"/user/branch"}
+      
             createAction={async()=>{setBranchModal(true);await schemaRefetch();}} 
           />
         
@@ -203,7 +210,7 @@ export const Branch = () =>{
               viewRefetch={branchViewRefetch}
               view = {SinglebranchView?.singlebranchView?.viewFields}
               objectData={branchObjectData?.getBranchProperty?.response}
-              
+              detailpage={"branch-detail/"}
           />
         
         </div>

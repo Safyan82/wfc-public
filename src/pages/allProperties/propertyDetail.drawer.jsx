@@ -5,18 +5,9 @@ import { Drawer, Table } from "antd";
 import { GetBranchPropertyHistoryDetail } from "../../util/query/branchPropHistory";
 import { Loader } from "../../components/loader";
 
-export const PropertyDetailDrawer = ({visible, close, selectedProp, clearState, branchId}) =>{
+export const PropertyDetailDrawer = ({visible, close, selectedProp, clearState, data, loading}) =>{
 
-    const {data: branchPropertyHistoryDetail, loading, error} = useQuery(GetBranchPropertyHistoryDetail,{
-        variables:{
-            input: {
-                propertyId: selectedProp?.propertyId,
-                branchId
-            }
-        },
-        skip: !selectedProp?.propertyId || !branchId,
-        fetchPolicy: 'network-only'
-    });
+   
 
     const columns = [
         {
@@ -61,7 +52,7 @@ export const PropertyDetailDrawer = ({visible, close, selectedProp, clearState, 
         <Table
             className="history-table"
             columns={columns}
-            dataSource={branchPropertyHistoryDetail?.getBranchPropHistory?.response}
+            dataSource={data}
         />
 
         </Drawer>

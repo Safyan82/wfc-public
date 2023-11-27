@@ -17,6 +17,9 @@ import { AllProperties } from './pages/allProperties/allProperties.page';
 import { BranchAllPropHistory } from './pages/branchAllPropHistory/branchAllPropHistory.page';
 import { SiteGroup } from './pages/sitegroup/sitegroup.page';
 import { EditEmployeeForm } from './pages/employee/editEmployeeForm/editEmployeeForm';
+import { EmployeeDetailPage } from './pages/employeeDetailPage/employeeDetail.page';
+import { EmployeeDetailViewPage } from './pages/employeeDetailPage/employeeDetailView.page';
+import { EmployeeAllPropHistory } from './pages/employeeAllPropHistory/employeeAllPropHistory';
 
 function App() {
   
@@ -73,14 +76,22 @@ function App() {
         {/* private routes */}
         <Route path='/user/' element={<DefaultLayout/>}>
           {/* <Route  element={<Employee />} /> */}
-          <Route path='branch' exact element={<Branch />}/>
-          <Route path='allproperties' element={<AllProperties/>} />
           <Route path='setting' element={<Setting />} />
-          <Route path='detailPage/:id' element={<BranchDetailPage/>} />
+          
+          <Route path='branch' exact element={<Branch />}/>
+          <Route path='branch-detail/:id' element={<BranchDetailPage/>} />
           <Route path='prophistory' element={<BranchAllPropHistory/>} />
+
+          <Route path='employee' element={<Employee/>} />
+          <Route path='employee-detail/:id' element={<EmployeeDetailPage/>} />
+          <Route path='employee-detail-view/:id' element={<EmployeeDetailViewPage/>} />
+          <Route path='employee-prop-history/:id' element={<EmployeeAllPropHistory/>} />
+          
+
+          <Route path='allproperties' element={<AllProperties/>} />
+          
           <Route path='sitegroup' element={<SiteGroup/>} />
           <Route path='customer' element={<BranchAllPropHistory/>} />
-          <Route path='employee' element={<Employee/>} />
         </Route>
         
       </Routes>

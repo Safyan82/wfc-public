@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux';
 import { resetDataFieldForNewView } from '../../../middleware/redux/reducers/branchData.reducer';
 import Spinner from '../../../components/spinner';
 import { PropertyDetailDrawer } from '../../allProperties/propertyDetail.drawer';
+import { GetBranchPropertyHistoryDetail } from '../../../util/query/branchPropHistory';
 
 export const DetailPageLeftSideBar = ({branchId, singleBranchData, 
     handelInputChange, dataFields, 
@@ -96,6 +97,18 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
             }))
         }
     },[branchViewForUser]);
+
+
+    const {data: branchPropertyHistoryDetail, loading, error} = useQuery(GetBranchPropertyHistoryDetail,{
+        variables:{
+            input: {
+                propertyId: selectedProp?.propertyId,
+                branchId
+            }
+        },
+        skip: !selectedProp?.propertyId || !branchId,
+        fetchPolicy: 'network-only'
+    });
 
     return(
         <div className='sidebar-wrapper' ref={dataFieldRef}>
@@ -283,7 +296,16 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                     (
                         filteredView? filteredView
                         : objectData)?.map((prop, index)=>{
-                        const defaultVal = singleBranchData?.branch[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()];
+                        
+                            const defaultVal = 
+                        singleBranchData?.branch?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || (
+                            
+                            singleBranchData?.branch['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())
+                            )? 
+                        singleBranchData?.branch[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()]
+                        : null;
+
+
                         return(
                             <div className='detailInputParent' onMouseEnter={
                                 (branchViewForUser?.getUserBranchView?.response?.properties?.length>0 ? branchViewForUser?.getUserBranchView?.response?.properties : objectData)?.length - 1 == index ?  
@@ -385,7 +407,16 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                 <input type="text" 
                                     onChange={(e) => handelInputChange(e.target)} 
                                     name={prop?.label?.replaceAll(" ","")?.toLowerCase()}
-                                    defaultValue={singleBranchData?.branch[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()]}  
+                                    defaultValue={
+                                        singleBranchData?.branch?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || (
+                                            singleBranchData?.branch?.hasOwnProperty('metadata') &&
+                                            singleBranchData?.branch['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())
+                                            )? 
+                                        
+                                        singleBranchData?.branch[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleBranchData?.branch['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()]
+                                        
+                                        : null
+                                    }  
                                     className={
                                         dataFields?.find((dprop)=>dprop?.name==prop?.label?.replaceAll(" ","")?.toLowerCase())? 'detailInput-focus':
                                         prop?.label=="Phone Number"? 
@@ -411,8 +442,9 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
             <PropertyDetailDrawer
                 visible={propertyDetailDrawer}
                 selectedProp={selectedProp} 
-                branchId={branchId}
                 clearState={setSelectedProp} 
+                loading={loading}
+                data={branchPropertyHistoryDetail?.getBranchPropHistory?.response}
                 close={()=>setPropertyDetailDrawer(false)} />
                
         </div>

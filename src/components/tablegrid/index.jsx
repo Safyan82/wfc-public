@@ -11,7 +11,7 @@ export const TableGrid=({
     data, 
     setDynamicColumn, 
     dynamicColumn, 
-    loading, viewRefetch, view, objectData
+    loading, viewRefetch, view, objectData,detailpage
 })=>{
 
 
@@ -27,7 +27,9 @@ export const TableGrid=({
                  viewRefetch={viewRefetch}
                  view={view}
                  objectData={objectData}
+                 detailpage={detailpage}
                 />
+                
             </div>
 
             

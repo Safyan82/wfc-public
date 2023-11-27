@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { CreateFieldDrawer } from '../createFields';
 
-export const GridHeader = ({title, record, createAction, editProperty})=>{
+export const GridHeader = ({title, record, createAction, editProperty, from, to,})=>{
     const [isAction, setAction] = useState(false);
     const containerRef = useRef(null);
 
@@ -45,10 +45,10 @@ export const GridHeader = ({title, record, createAction, editProperty})=>{
                         >Edit properties</Link> */}
                         <a href="" onClick={(e)=>{
                             e.preventDefault();
-                            navigate('/branch/editform',{
+                            navigate(to,{
                                 state: {
-                                title: 'Branch',
-                                url:'/user/branch',
+                                title,
+                                url:from,
                                 }
                             })}}>View Customization</a>
                         {/* <a href="#">Restore records</a> */}

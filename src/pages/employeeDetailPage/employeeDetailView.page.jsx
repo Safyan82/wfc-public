@@ -1,4 +1,4 @@
-import './allproperties.css';
+// import './allproperties.css';
 import React, { useEffect, useState } from "react";
 import { Row, Col, Input, Collapse, Checkbox } from 'antd';
 import { faCheck, faChevronLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -9,27 +9,36 @@ import { useMutation, useQuery } from '@apollo/client';
 import Spinner from '../../components/spinner';
 import { useSelector } from 'react-redux';
 import { GetPropertyByGroupQuery } from '../../util/query/properties.query';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { PropertyDetailDrawer } from './propertyDetail.drawer';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+// import { PropertyDetailDrawer } from './propertyDetail.drawer';
 import { AddBranchDetailViewMutation } from '../../util/mutation/branchDetailView.mutation';
 import { useDispatch } from 'react-redux';
 import { AddDataFieldFromView, removeDataFieldFromSpecificBranchView } from '../../middleware/redux/reducers/branchData.reducer';
 import { BranchViewForSpecificUser } from '../../util/query/branchView.query';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 import { Loader } from '../../components/loader';
+import { getUserEmployeeDetailView } from '../../util/query/employeeDetailView.query';
+import { EmployeeObjectQuery, getSingleEmployeeRecord } from '../../util/query/employee.query';
+import { AddEmployeeDetailView } from "../../util/mutation/employeeDetailView.mutation";
 
-export const AllProperties  = () => {
-    const singleBranchData = useSelector(state => state.branchDataReducer.specificBranchData);
+export const EmployeeDetailViewPage  = () => {
+
+    const param = useParams();
+
+
+    // Employee Default object
+    const {data:employeeSchema, loading: employeeObjectLoading, refetch: employeeObjectRefetch} = useQuery(EmployeeObjectQuery,{fetchPolicy:'network-only'});
+    const [employeeObject, setEmployeeObject] = useState([]);
+
     
-    const {data: branchObjectdata , loading: branchObjectLoading} = useQuery(GetBranchObject);
     const [groupedProp, setGroupedProp] = useState([]);
 
     const [propToRemove, setPropToRemove] = useState(null);
-    
-    useEffect(()=>{
 
-        if(!branchObjectLoading){
-            const groupedData = branchObjectdata?.getBranchProperty?.response?.reduce((result, item) => {
+    useEffect(()=>{
+        if(!employeeObjectLoading){
+            setEmployeeObject(employeeSchema?.getEmployeeObject?.response)  
+            const groupedData = employeeSchema?.getEmployeeObject?.response?.reduce((result, item) => {
                 const key = item.propertyDetail.groupName;
                 if (!result[key]) {
                     result[key] = [];
@@ -39,32 +48,43 @@ export const AllProperties  = () => {
             }, {});
             setGroupedProp(groupedData);
         }
-    },[branchObjectLoading]);
+    },[employeeSchema]);
+    
+    
 
-    const [addBranchViewDetail, {loading, error}] = useMutation(AddBranchDetailViewMutation);
-    const {data: branchViewForUser, loading: branchViewForUserLoading, refetch: branchViewForUserRefetch} = useQuery(BranchViewForSpecificUser,{
+
+    const [newEmployeeDetailView, {loading, error}] = useMutation(AddEmployeeDetailView);
+    
+    const {data: employeeDetailViewData, loading: employeeDetailViewLoading, refetch: employeeDetailViewRefetch} = useQuery(getUserEmployeeDetailView,{
         variables:{
             createdBy: "M Safyan",
-            createdFor: singleBranchData?.id,
+            createdFor: param?.id,
         },
         fetchPolicy: 'network-only'
     });
 
+    const [employeeDetailView, setEmployeeDetailView] = useState([]);
+
+    useEffect(()=>{
+        if(!employeeDetailViewLoading){
+            setEmployeeDetailView(employeeDetailViewData?.getUserEmployeeDetailView?.response);
+        }
+    },[employeeDetailViewData]);
+
 
     const updateUserBranchView = async(properties) =>{
-        // alert(singleBranchData?.id);
-        console.log(properties,"propertiesproperties", properties?.map((prop)=>prop._id));
-        await addBranchViewDetail({
+        console.log(properties[0]?._id? properties.map((prop)=>prop._id) : properties, "pp");
+        await newEmployeeDetailView({
             variables:{
                 input:{
-                    properties: properties,
-                    createdFor: singleBranchData?.id,
+                    properties: properties[0]?._id? properties.map((prop)=>prop._id) : properties,
+                    createdFor: param?.id,
                     createdBy: "M Safyan",
-                    _id: branchViewForUser?.getUserBranchView?.response?._id,
+                    _id: employeeDetailView?._id,
                 }
             }
         });
-        await branchViewForUserRefetch();
+        await employeeDetailViewRefetch();
         dispatch(setNotification({
             notificationState:true, 
             message:"Data Fields Updated",
@@ -81,7 +101,7 @@ export const AllProperties  = () => {
     useEffect(()=>{
         if(propToAdd){
 
-        updateUserBranchView([ ...branchViewForUser?.getUserBranchView?.response?.properties, 
+        updateUserBranchView([ ...employeeDetailView?.properties, 
              propToAdd.propertyId])
             setPropToAdd(null);
         }
@@ -89,19 +109,35 @@ export const AllProperties  = () => {
 
    const [blankHide, setBlankHide] = useState(false);
 
+   // get single employee Record
+    const {data: singleEmployeeRecord, loading: singleEmployeeLoading, refetch: singleEmployeeRefetch} = useQuery(getSingleEmployeeRecord,{
+        variables:{
+            id: param?.id
+        },
+        fetchPolicy: 'network-only'
+    });
+
+    const [singleEmployee, setSingleEmployee] = useState([]);
+    useEffect(()=>{
+        if(!singleEmployeeLoading){
+            setSingleEmployee(
+                singleEmployeeRecord?.singleEmployee?.response
+            );
+        }
+    },[singleEmployeeRecord]);
+
 
    useEffect(()=>{
     if(groupedProp && Object.keys(groupedProp)?.length>0 ){
-        const existingIds = branchViewForUser?.getUserBranchView?.response?.properties?.map((prop)=> prop) || branchObjectdata?.getBranchProperty?.response?.map((prop)=>prop.propertyId)
+        const existingIds = employeeDetailView?.properties?.map((prop)=> prop) || employeeObject?.map((prop)=>prop.propertyId)
         const allPropList = Object.keys(groupedProp)?.map((item, index)=>{
             let count = 0;
             groupedProp[item]?.map((prop)=>(
                 blankHide?
-                singleBranchData?.branch?.hasOwnProperty(prop?.propertyDetail?.label) ?
-
-                singleBranchData?.branch[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
+                singleEmployee.hasOwnProperty(prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()) ?
+                singleEmployee[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
                 || 
-                singleBranchData?.branch['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] ?
+                singleEmployee['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] ?
                 count++
                 :null:null : null
             ));
@@ -117,9 +153,10 @@ export const AllProperties  = () => {
                     
                     children: groupedProp[item]?.map((prop)=>(
                         blankHide?
-                        singleBranchData?.branch[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
+                        singleEmployee.hasOwnProperty(prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()) ?
+                        singleEmployee[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
                         || 
-                        singleBranchData?.branch['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] ?
+                        singleEmployee['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] ?
                         
                         <div className='field-presentation'>
                             
@@ -134,13 +171,10 @@ export const AllProperties  = () => {
                                 </div>
                                 <div className='field-prop-value'>
                                     <span>
-                                        {
-                                        singleBranchData?.branch?.hasOwnProperty(prop?.propertyDetail?.label)?
-                                        
-                                        singleBranchData?.branch[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
+                                        {singleEmployee[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
                                         || 
-                                        singleBranchData?.branch['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()]
-                                        : "--"
+                                        singleEmployee['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()]
+                                        || "--"
                                         }
                                     </span>
                                     <span className='field-prop-btn-grp'>
@@ -164,6 +198,7 @@ export const AllProperties  = () => {
                         </div>
 
                         : null
+                        : null
                         :
                         <div className='field-presentation'>
                             
@@ -179,11 +214,10 @@ export const AllProperties  = () => {
                                 <div className='field-prop-value'>
                                     <span>
                                         {
-                                        singleBranchData?.branch?.hasOwnProperty(prop?.propertyDetail?.label) ?
-                                        
-                                        singleBranchData?.branch[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
+                                        singleEmployee.hasOwnProperty(prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase())?
+                                        singleEmployee[prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()] 
                                         || 
-                                        singleBranchData?.branch['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()]
+                                        singleEmployee['metadata'][prop?.propertyDetail?.label.replaceAll(" ","").toLowerCase()]
                                         : "--"
                                         }
                                     </span>
@@ -210,10 +244,9 @@ export const AllProperties  = () => {
                 }
             )
         });
-        console.log(allPropList, "all prop list");
         setAllPropList([...allPropList]);
     }
-   }, [groupedProp, branchViewForUser, blankHide]);
+   }, [groupedProp, employeeDetailView, blankHide, employeeObject]);
 
 
     const navigate = useNavigate();
@@ -232,13 +265,13 @@ export const AllProperties  = () => {
     useEffect(()=>{
         if(propToRemove !== null){
 
-            if(branchViewForUser?.getUserBranchView?.response?.properties){
-                // console.log(branchViewForUser?.getUserBranchView?.response?.properties?.filter((prop)=>prop != propToRemove), propToRemove);
-                updateUserBranchView(branchViewForUser?.getUserBranchView?.response?.properties?.filter((prop)=>prop != propToRemove));
+            if(employeeDetailView?.properties){
+                // console.log(employeeDetailView?.properties?.filter((prop)=>prop != propToRemove), propToRemove);
+                updateUserBranchView(employeeDetailView?.properties?.filter((prop)=>prop != propToRemove));
                 setPropToRemove(null)
             }else{
 
-                const newBranchViewFields = branchObjectdata?.getBranchProperty?.response?.map((prop)=>({
+                const newBranchViewFields = employeeObject?.map((prop)=>({
                     ...prop.propertyDetail,
                     _id: prop.propertyId,
                 })).filter((prop)=>propToRemove != (prop._id));
@@ -251,19 +284,20 @@ export const AllProperties  = () => {
 
     const [filteredView, setFilteredView] = useState();
     useEffect(()=>{
-        if(branchViewForUser?.getUserBranchView?.response?.properties?.length>0){
-            const view = branchViewForUser?.getUserBranchView?.response?.properties?.filter((prop)=>(
-                branchObjectdata?.getBranchProperty?.response?.find(prp => prp.propertyId== prop)));
+        if(employeeDetailView?.properties?.length>0){
+            const view = employeeDetailView?.properties?.filter((prop)=>(
+                employeeObject?.find(prp => prp.propertyId== prop)));
             
             setFilteredView(view?.map((prop)=>{
-                const property = branchObjectdata?.getBranchProperty?.response?.find(prp => prp.propertyId == prop)
+                const property = employeeObject?.find(prp => prp.propertyId == prop)
                 return {
                     _id: property?.propertyId,
                     ...property?.propertyDetail
                 }
             }))
         }
-    },[branchViewForUser]);
+    },[employeeDetailView]);
+
     return(
         <div className='bg'>
             <header>
@@ -271,7 +305,7 @@ export const AllProperties  = () => {
                     <FontAwesomeIcon  className="back-icon" icon={faChevronLeft} /> Back
                 </div>
                 <div className='head-h1'>
-                    Manage data fields for Branch
+                    Manage data fields for Employee
                 </div>
             </header>
 
@@ -288,11 +322,11 @@ export const AllProperties  = () => {
                     <button className='simple-btn grid-sm-btn-disabled' style={{margin: 'auto', display:'table', marginBottom:'16px'}} > Reset to account defaults </button>
 
                     {
-                        branchObjectLoading || branchViewForUserLoading? 
+                        employeeObjectLoading || employeeDetailViewLoading? 
                         <div style={{display:'flex', justifyContent:'center', paddingTop:'3%'}}><Spinner/></div>
                         :
                         <div style={{paddingLeft: '5%', paddingBottom: '5%'}} className='allprop'>
-                            {loading || branchViewForUserLoading || branchObjectLoading?
+                            {loading || employeeDetailViewLoading || employeeObjectLoading?
                             null
                             :
                             <DraggableList editColumn={true} 
@@ -301,7 +335,7 @@ export const AllProperties  = () => {
                                 list={
                                     filteredView
                                     || 
-                                    branchObjectdata?.getBranchProperty?.response?.map((prop)=>({
+                                    employeeObject?.map((prop)=>({
                                     ...prop.propertyDetail,
                                     _id: prop.propertyId,
                                     }))
@@ -329,20 +363,16 @@ export const AllProperties  = () => {
                     </div>
 
                     <Collapse items={allPropList}/>
-                    <PropertyDetailDrawer 
+                    {/* <PropertyDetailDrawer 
                         clearState={setSelectedProp}
                         visible={propertyDetailDrawer} 
                         selectedProp={selectedProp} 
                         close={()=>setPropertyDetailDrawer(false)} 
                         branchId={singleBranchData?.id}
-                    />
+                    /> */}
                 </div>
 
             </div>
         </div>
     );
-}
-
-const RenderChild = ()=>{
-
 }

@@ -6,7 +6,7 @@ import { Loader } from '../loader';
 import { GetBranchObject } from '../../util/query/branch.query';
 import { useQuery } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faPencil, faSearch } from '@fortawesome/free-solid-svg-icons';
 import './table.css';
   
 import { Resizable } from 'react-resizable';
@@ -17,13 +17,15 @@ import { refreshBranchGrid } from '../../middleware/redux/reducers/branch.reduce
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { setEditGridColumn } from '../../middleware/redux/reducers/properties.reducer';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { EditPropertiesModal } from './modal/editproperty.modal';
 const { Header, Content, Footer } = Layout;
 
 export const DataTable = ({
   header, data, loading, 
   setDynamicColumn, 
   dynamicColumn, objectData,
-  viewRefetch, view}) => {
+  viewRefetch, view, detailpage}) => {
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [sortedInfo, setSortedInfo] = useState({});
@@ -89,7 +91,7 @@ export const DataTable = ({
   
                 
 
-                  <button className={"grid-sm-btn"} style={showActions?{visibility: 'visible'}:{visibility: 'hidden'}} type="link" onClick={()=>history('/user/detailPage/'+record.key)}>
+                  <button className={"grid-sm-btn"} style={showActions?{visibility: 'visible'}:{visibility: 'hidden'}} type="link" onClick={()=>history('/user/'+detailpage+record.key)}>
                     Preview
                   </button>
                 
@@ -184,7 +186,29 @@ export const DataTable = ({
     onChange: onSelectChange,
   };
 
-  const [editColumnModal, setEditColumnModal] = useState(false);
+  const customHeader =(
+
+    <div className='table-footer' id="selection-options">
+      
+
+      {selectedRowKeys?.length>0 &&
+      <>
+          <small class='small-text'> {selectedRowKeys?.length} selected</small>
+
+          <div>
+              <FontAwesomeIcon icon={faPencil} style={{marginRight:'5px'}}/> <span>Edit</span>
+          </div>
+
+          <div >
+              <FontAwesomeIcon icon={faTrashCan} style={{marginRight:'5px'}}/> <span>Delete</span>
+          </div>
+
+      </>
+  }
+    </div>
+  )
+
+  const [propertyModal, setPropertyModal] = useState(false);
 
   return (
     <Layout className='bg-white'>
@@ -199,6 +223,7 @@ export const DataTable = ({
               bordered
               rowSelection={rowSelection}
               columns={dynamicColumn} 
+              // className={selectedRowKeys?.length>0? 'commonGrid generalGrid' : 'generalGrid'}
               components={{
                 header: {
                   cell: ResizableTitle,
@@ -206,19 +231,40 @@ export const DataTable = ({
               }}
               dataSource={dataSource} 
               pagination={{pageSize:5,}}
-              title={!header? null : () => {
-                if(header){
-                return(
-                  <div className='grid-table-search-input'>
-                  
-                    <Input type='search' style={{background: 'white', width:'250px', height:'33px'}} className='generic-input-control' placeholder='Search ...'  suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}/>
-                    <div className="small-btn">
-                      <button className='sm-btn'>Export</button> &emsp;
-                      <button className='sm-btn' onClick={()=>dispatch(setEditGridColumn(true))}>Edit columns</button>
+              title={
+                                
+                !header? null : () => {
+                  if(header){
+                  return(
+                    <div className='grid-table-search-input'>
+                    
+                      <div className='table-footer' id="selection-options">
+                        <Input type='search' style={{background: 'white', width:'250px', height:'33px'}} className='generic-input-control' placeholder='Search ...'  suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}/>
+                        {selectedRowKeys?.length>0 &&
+                          <>
+                              <small class='small-text'> {selectedRowKeys?.length} selected</small>
+
+                              <div onClick={()=>setPropertyModal(!propertyModal)}>
+                                  <FontAwesomeIcon icon={faPencil} style={{marginRight:'5px'}}/> <span>Edit</span>
+                              </div>
+
+                              <div >
+                                  <FontAwesomeIcon icon={faTrashCan} style={{marginRight:'5px'}}/> <span>Delete</span>
+                              </div>
+
+                          </>
+                        }
+                      </div>
+                      
+                      
+                      <div className="small-btn">
+                        <button className='sm-btn'>Export</button> &emsp;
+                        <button className='sm-btn' onClick={()=>dispatch(setEditGridColumn(true))}>Edit columns</button>
+                      </div>
                     </div>
-                  </div>
-                )}else{return null}
-              }} 
+                  )}else{return null}
+                  }
+              } 
               
           
               onRow={(record) => ({
@@ -229,6 +275,15 @@ export const DataTable = ({
             />
             }
         </div>
+
+{/* bulk edit properties modal */}
+        <EditPropertiesModal
+          visible={propertyModal}
+          onClose={()=>setPropertyModal(!propertyModal)}
+          record={selectedRowKeys?.length}
+          dynamicColumn={dynamicColumn}
+        />
+      
       </Content>
       
     </Layout>

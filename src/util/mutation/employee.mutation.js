@@ -8,3 +8,11 @@ mutation($input: EmployeeInput!){
     }
 }
 `;
+
+export const updateEmployeeMutation = gql `
+mutation($input: EmployeeUpdateInput!){
+  updateEmployee(input: $input) {
+    response
+  }
+}
+`;

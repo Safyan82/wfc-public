@@ -1,5 +1,4 @@
 import { Row, Col } from 'antd';
-import './branchDetailPage.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { DetailPageLeftSideBar } from './leftSideBar/leftSideBar';
 import { DetailPageMiddleSection } from './middleSection/middleSection';
@@ -14,56 +13,57 @@ import { setSpecificBranchData } from '../../middleware/redux/reducers/branchDat
 import { BranchViewForSpecificUser } from '../../util/query/branchView.query';
 import { updateBranchMutation } from '../../util/mutation/branch.mutation';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
+import { EmployeeObjectQuery, getSingleEmployeeRecord } from '../../util/query/employee.query';
+import { Loader } from '../../components/loader';
+import { updateEmployeeMutation } from '../../util/mutation/employee.mutation';
+import Spinner from '../../components/spinner';
 
 
-export const BranchDetailPage = ()=>{
+export const EmployeeDetailPage = ()=>{
     const param = useParams();
+    const dispatch = useDispatch();
+
     const {noteToggle} = useSelector(state=>state.noteReducer);
 
-    const {data: singleBranchData, loading: singleBranchLoading, refetch: singleBranchRefetch} = useQuery(getSingleBranch,{
+    // get single employee Record
+    const {data: singleEmployeeRecord, loading: singleEmployeeLoading, refetch: singleEmployeeRefetch} = useQuery(getSingleEmployeeRecord,{
         variables:{
             id: param?.id
         },
         fetchPolicy: 'network-only'
     });
 
-    const dispatch = useDispatch();
-
-
-    const {data:branchProperties, loading: branchObjectLoading, refetch: branchObjectRefetch} = useQuery(GetBranchObject,{
-        fetchPolicy: 'cache-and-network',
-    });
-
-
+    const [singleEmployee, setSingleEmployee] = useState([]);
     useEffect(()=>{
-        if(!singleBranchLoading){
-            dispatch(setSpecificBranchData({id: param?.id, ...singleBranchData}));
+        if(!singleEmployeeLoading){
+            setSingleEmployee(
+                singleEmployeeRecord?.singleEmployee?.response
+            );
         }
-    }, [singleBranchLoading]);
+    },[singleEmployeeRecord]);
+
+    // singleEmployee Record ended
+
+    // Employee Default object
+    const {data:employeeSchema, loading: employeeObjectLoading, refetch: employeeObjectRefetch} = useQuery(EmployeeObjectQuery,{fetchPolicy:'network-only'});
+    const [employeeObject, setEmployeeObject] = useState([]);
+    useEffect(()=>{
+        if(!employeeObjectLoading){
+            setEmployeeObject(employeeSchema?.getEmployeeObject?.response)  
+        }
+    },[employeeSchema]);
+    // Employee default object terminated
+
 
     const [dataFields, setDataFields] = useState([]);
-    const [handelCancelRequestUndoValueFlag, sethandelCancelRequestUndoValueFlag] = useState(false);
-
-    useEffect(()=>{
-        if(handelCancelRequestUndoValueFlag==true){
-            singleBranchRefetch();
-        }
-    },[handelCancelRequestUndoValueFlag]);
     
     const [refreshProp, setRefreshProp] = useState(false);
     
-    useEffect(()=>{
-        window.scrollTo(0, document.body.scrollHeight);
-    }, [dataFields]);
-    
-    const [phone, setPhone] = useState([]);
-    
-
 
     const handelInputChange = (target) => {
         const {name, value} = target;
         const isExist = dataFields?.find((field)=> field?.name == name);
-        const property = branchProperties?.getBranchProperty?.response.find((prop)=> prop.propertyDetail.label.replaceAll(" ","").toLowerCase() === name)
+        const property = employeeObject?.find((prop)=> prop.propertyDetail.label.replaceAll(" ","").toLowerCase() === name)
         // console.log(property, "branchProperties");
         setDataFields(isExist? dataFields?.map((field)=> {
             if(field.name == name){
@@ -77,14 +77,14 @@ export const BranchDetailPage = ()=>{
         }): [...dataFields, {name, value, propertyId: property?.propertyId}]);
     };
 
-    const [updateBranch, {loading, error}]  = useMutation(updateBranchMutation);
+    const [updateEmployee, {loading, error}]  = useMutation(updateEmployeeMutation);
 
     const handelUpdateSave = async ()=>{
         try{
             let schemaFields = [];
 
             dataFields?.map((field)=>{
-                if(field.name==="branchname" || field.name==="postcode"){
+                if(field.name==="firstname" || field.name==="lastname"  || field.name==="branchid"){
                     schemaFields.push(field);
                 }
                 else{
@@ -92,7 +92,7 @@ export const BranchDetailPage = ()=>{
                 }
             });
 
-            await updateBranch({
+            await updateEmployee({
                 variables:{
                     input:{
                         _id: param?.id,
@@ -102,11 +102,11 @@ export const BranchDetailPage = ()=>{
             });
 
             dispatch(setNotification({
-                message: "Branch Updated Successfully",
+                message: "Employee Details are Updated Successfully",
                 notificationState: true,
                 error: false
             }));
-            await singleBranchRefetch();
+            await singleEmployeeRefetch();
             setRefreshProp(false);
             setDataFields([]);
         }
@@ -119,38 +119,8 @@ export const BranchDetailPage = ()=>{
         }
     };
 
-    const leftSideRef = useRef();
+    console.log(employeeObject,"singleEmployee", singleEmployee)
 
-    const handelScrollbar = ()=>{
-        const element = leftSideRef.current;
-        const duration = 2000; // Adjust the duration (in milliseconds) as needed
-
-        const startScrollTop = element.scrollTop;
-        const targetScrollTop = element.scrollHeight;
-
-        const startTime = performance.now();
-
-        function scroll(timestamp) {
-            const currentTime = timestamp - startTime;
-            if (currentTime < duration) {
-                const scrollPosition = easeInOutQuad(currentTime, startScrollTop, targetScrollTop - startScrollTop, duration);
-                element.scrollTop = scrollPosition;
-                requestAnimationFrame(scroll);
-            } else {
-                element.scrollTop = targetScrollTop; // Ensure exact target position at the end
-            }
-        }
-
-        requestAnimationFrame(scroll);
-
-    };
-
-    const easeInOutQuad = (t, b, c, d) => {
-        t /= d / 2;
-        if (t < 1) return (c / 2) * t * t + b;
-        t--;
-        return (-c / 2) * (t * (t - 2) - 1) + b;
-    }
 
     return(
         <>
@@ -159,23 +129,20 @@ export const BranchDetailPage = ()=>{
                 <Notes/>
                 :null}
 
-                <Col span={6} ref={leftSideRef} style={{paddingRight:'0px',
+                <Col span={6} style={{paddingRight:'0px',
                     maxHeight: 'calc(100vh - 54px)',
                     overflowY: 'scroll',
                     transition: 'scroll-behavior 1s',
                 }}>
+                    {singleEmployee?
                     <DetailPageLeftSideBar 
-                        handelCancelRequestUndoValueFlag={handelCancelRequestUndoValueFlag} 
-                        handelInputChange={handelInputChange} 
-                        branchId={param?.id} 
-                        singleBranchData={singleBranchData} 
-                        key={refreshProp}
-                        dataFields={dataFields}
-                        handelScrollbar={handelScrollbar}
-                        branchProperties={branchProperties}
-                        branchObjectLoading={branchObjectLoading}
-                    />
-
+                        employeeObject={employeeObject?.map((object)=> ({_id: object.propertyId, ...object.propertyDetail}))}
+                        singleEmployee={singleEmployee}
+                        loading={employeeObjectLoading || singleEmployeeLoading}
+                        handelInputChange={handelInputChange}
+                    />:
+                    <Loader/>
+                    }
                 </Col>
                 <Col span={12} style={{paddingLeft:'0px'}} >
                     <DetailPageMiddleSection  />
@@ -186,8 +153,8 @@ export const BranchDetailPage = ()=>{
             </Row>
             {dataFields?.length>0 ?
             <div className='action-footer'>
-                <button disabled={loading} className={loading? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handelUpdateSave}>Save</button>
-                <button disabled={loading} className={loading? 'disabled-btn drawer-outlined-btn' : 'drawer-outlined-btn'} onClick={()=>{setDataFields([]);setRefreshProp(!refreshProp)}}>Cancel</button>
+                <button className={loading? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} disabled={loading} onClick={handelUpdateSave}>{loading?<Spinner/>:"Save"}</button>
+                <button className={loading? 'disabled-btn drawer-outlined-btn' : 'drawer-outlined-btn'}  disabled={loading} onClick={()=>{setDataFields([]);setRefreshProp(!refreshProp)}}>Cancel</button>
                 {
                     dataFields?.length?
                     <span className='text' style={{margin: 0}}>You've changed {dataFields?.length} properties</span>
