@@ -457,3 +457,8 @@
     height: 70px;
     overflow: hidden;
 }
+
+.detailInputParent .ant-select-selector{
+    border: none !important;
+    outline: none !important;
+}

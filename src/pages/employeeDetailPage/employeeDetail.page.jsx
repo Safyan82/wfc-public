@@ -60,8 +60,7 @@ export const EmployeeDetailPage = ()=>{
     const [refreshProp, setRefreshProp] = useState(false);
     
 
-    const handelInputChange = (target) => {
-        const {name, value} = target;
+    const handelInputChange = ({name, value}) => {
         const isExist = dataFields?.find((field)=> field?.name == name);
         const property = employeeObject?.find((prop)=> prop.propertyDetail.label.replaceAll(" ","").toLowerCase() === name)
         // console.log(property, "branchProperties");
@@ -84,7 +83,7 @@ export const EmployeeDetailPage = ()=>{
             let schemaFields = [];
 
             dataFields?.map((field)=>{
-                if(field.name==="firstname" || field.name==="lastname"  || field.name==="branchid"){
+                if(field.name==="firstname" || field.name==="lastname"  || field.name==="branch"){
                     schemaFields.push(field);
                 }
                 else{
@@ -112,7 +111,7 @@ export const EmployeeDetailPage = ()=>{
         }
         catch(err){            
             dispatch(setNotification({
-                message: "An error encountered while updating branch",
+                message: "An error encountered while updating employee",
                 notificationState: true,
                 error: true
             }));

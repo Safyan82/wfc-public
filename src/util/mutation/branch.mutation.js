@@ -41,4 +41,12 @@ mutation($input: BranchUpdateInput!){
     response
   }
 }
-`
+`;
+
+export const updateBulkBranchMutation = gql `
+mutation($input: BulkBranchUpdateInput!){
+  updateBulkBranch(input: $input) {
+    response
+  }
+}
+`;

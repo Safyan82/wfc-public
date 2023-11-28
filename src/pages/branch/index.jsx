@@ -8,7 +8,7 @@ import { FormDrawer } from '../formDrawer';
 import { CreateFieldDrawer } from '../../components/createFields/index';
 import { TableGrid } from '../../components/tablegrid';
 import { useSelector } from 'react-redux';
-import { CREATE_BRACNH } from '../../util/mutation/branch.mutation';
+import { CREATE_BRACNH, updateBulkBranchMutation } from '../../util/mutation/branch.mutation';
 import { useDispatch } from 'react-redux';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 import { BranchViewQuery, SingleBranchViewQuery } from '../../util/query/branchView.query';
@@ -165,6 +165,48 @@ export const Branch = () =>{
       refetchAll();
     },[]);
 
+    // update Bulk data
+    const [updateBulkBranch, {loading: updateBulkBranchLoading}] = useMutation(updateBulkBranchMutation)
+    const handelBulkUpdateSave = async (property, record)=>{
+      console.log(property, record, "new ");
+      try{
+          let schemaFields = {};
+          
+          
+            if(property?.field==="branchname" || property?.field==="postcode"){
+              schemaFields[property?.field] = property?.value;
+            }
+            else{
+              schemaFields['metadata.'+property.field]=property?.value;
+            }
+          
+          await updateBulkBranch({
+              variables:{
+                  input:{
+                      _ids: [...record],
+                      properties: {...schemaFields},
+                  }
+              }
+          });
+
+          dispatch(setNotification({
+              message: "Branches Updated Successfully",
+              notificationState: true,
+              error: false
+          }));
+          await refetch();
+          return true;
+      }
+      catch(err){            
+          dispatch(setNotification({
+              message: "An error encountered while updating branch",
+              notificationState: true,
+              error: true
+          }));
+          return false;
+      }
+    };
+
     return(
         <React.Fragment>
 
@@ -211,6 +253,7 @@ export const Branch = () =>{
               view = {SinglebranchView?.singlebranchView?.viewFields}
               objectData={branchObjectData?.getBranchProperty?.response}
               detailpage={"branch-detail/"}
+              handelBulkUpdateSave={handelBulkUpdateSave}
           />
         
         </div>
