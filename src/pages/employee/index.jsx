@@ -3,7 +3,7 @@ import { TableGrid } from "../../components/tablegrid";
 import { FormDrawer } from '../formDrawer';
 import { useMutation, useQuery } from "@apollo/client";
 import { EmployeeObjectQuery, GetEmployeeRecord } from "../../util/query/employee.query";
-import { AddEmployeeMutation } from "../../util/mutation/employee.mutation";
+import { AddEmployeeMutation, updateBulkEmployeeMutation } from "../../util/mutation/employee.mutation";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../../middleware/redux/reducers/notification.reducer";
 import { employeeViewQuery } from "../../util/query/employeeView.query";
@@ -55,17 +55,18 @@ export const Employee = () =>{
     const handelSubmit=async (isCloseAble)=>{
         const firstname = data?.find((d)=>(Object.keys(d)[0]=="firstname"));
         const lastname = data?.find((d)=>(Object.keys(d)[0]==="lastname"));
+        const branch = data?.find((d)=>(Object.keys(d)[0]==="branch"));
         
         let metadata = {};
         data?.map(d=>{
-          if(Object.keys(d)[0]!=="firstname" && Object.keys(d)[0]!=="lastname"){
+          if(Object.keys(d)[0]!=="firstname" && Object.keys(d)[0]!=="lastname" && Object.keys(d)[0]!=="branch"){
             metadata[Object.keys(d)[0]]= Object.values(d)[0]
           }
         });
         const employee = {
           ...firstname,
           ...lastname,
-          branchid: '123',
+          ...branch,
           metadata,
         }
         // handel mutation
@@ -155,6 +156,47 @@ export const Employee = () =>{
       
     },[]);
 
+    // update Bulk data
+    const [updateBulkEmployee] = useMutation(updateBulkEmployeeMutation)
+    const handelBulkUpdateSave = async (property, record)=>{
+      console.log(property, record, "new ");
+      try{
+          let schemaFields = {};
+          
+          
+            if(property?.field==="firstname" || property?.field==="lastname" || property?.field==="branch"){
+              schemaFields[property?.field] = property?.value;
+            }
+            else{
+              schemaFields['metadata.'+property.field]=property?.value;
+            }
+          
+          await updateBulkEmployee({
+              variables:{
+                  input:{
+                      _ids: [...record],
+                      properties: {...schemaFields},
+                  }
+              }
+          });
+
+          dispatch(setNotification({
+              message: "Employees Updated Successfully",
+              notificationState: true,
+              error: false
+          }));
+          await refetch();
+          return true;
+      }
+      catch(err){            
+          dispatch(setNotification({
+              message: "An error encountered while updating branch",
+              notificationState: true,
+              error: true
+          }));
+          return false;
+      }
+    };
 
     return(
         <React.Fragment>
@@ -205,6 +247,7 @@ export const Employee = () =>{
                 loading={employeeDataLoading ||employeeDataLoading || employeeViewLoading}
                 objectData={employeeObject?.getEmployeeObject?.response}
                 detailpage={"employee-detail/"}
+                handelBulkUpdateSave={handelBulkUpdateSave}
 
             />
           </div>

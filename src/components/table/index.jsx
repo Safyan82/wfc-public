@@ -25,10 +25,9 @@ export const DataTable = ({
   header, data, loading, 
   setDynamicColumn, 
   dynamicColumn, objectData,
-  viewRefetch, view, detailpage}) => {
+  viewRefetch, view, detailpage, handelBulkUpdateSave}) => {
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [sortedInfo, setSortedInfo] = useState({});
   
   useEffect(()=>{
     if(objectData?.length>0 && view ){
@@ -40,6 +39,7 @@ export const DataTable = ({
         // if(prop.propertyDetail.label=="Branch name" || prop.propertyDetail.label=="Post code"){
           
           return {
+            originalObj: prop,
             title: prop.propertyDetail.label,
             dataIndex: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
             key: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(), // Initial width of the column
@@ -186,27 +186,6 @@ export const DataTable = ({
     onChange: onSelectChange,
   };
 
-  const customHeader =(
-
-    <div className='table-footer' id="selection-options">
-      
-
-      {selectedRowKeys?.length>0 &&
-      <>
-          <small class='small-text'> {selectedRowKeys?.length} selected</small>
-
-          <div>
-              <FontAwesomeIcon icon={faPencil} style={{marginRight:'5px'}}/> <span>Edit</span>
-          </div>
-
-          <div >
-              <FontAwesomeIcon icon={faTrashCan} style={{marginRight:'5px'}}/> <span>Delete</span>
-          </div>
-
-      </>
-  }
-    </div>
-  )
 
   const [propertyModal, setPropertyModal] = useState(false);
 
@@ -248,9 +227,9 @@ export const DataTable = ({
                                   <FontAwesomeIcon icon={faPencil} style={{marginRight:'5px'}}/> <span>Edit</span>
                               </div>
 
-                              <div >
+                              {/* <div >
                                   <FontAwesomeIcon icon={faTrashCan} style={{marginRight:'5px'}}/> <span>Delete</span>
-                              </div>
+                              </div> */}
 
                           </>
                         }
@@ -277,12 +256,16 @@ export const DataTable = ({
         </div>
 
 {/* bulk edit properties modal */}
+{propertyModal?
         <EditPropertiesModal
           visible={propertyModal}
           onClose={()=>setPropertyModal(!propertyModal)}
-          record={selectedRowKeys?.length}
+          record={selectedRowKeys}
+          clearSelection = {setSelectedRowKeys}
           dynamicColumn={dynamicColumn}
+          handelBulkUpdateSave={handelBulkUpdateSave}
         />
+:null}
       
       </Content>
       

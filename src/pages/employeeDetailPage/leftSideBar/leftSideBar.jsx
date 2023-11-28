@@ -5,7 +5,7 @@ import { faBarsStaggered, faCalendarDay, faCheck, faChevronLeft, faClose, faCros
 import { Avatar, Popover, Collapse, Panel, Form, Input, Select, Badge, Checkbox, Skeleton } from 'antd';
 import { faBuilding, faCalendar, faCalendarAlt, faCalendarDays, faCopy, faEnvelope, faMeh, faNoteSticky, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import {    EditOutlined, CopyOutlined, CopyTwoTone, PhoneOutlined, EllipsisOutlined, CalendarOutlined, MediumWorkmarkOutlined, TableOutlined, TagsOutlined, ContainerOutlined, RedEnvelopeOutlined, MailOutlined, FormOutlined } from '@ant-design/icons';
-import { GetBranchObject, getSingleBranch } from '../../../util/query/branch.query';
+import { GET_BRANCHES, GetBranchObject, getSingleBranch } from '../../../util/query/branch.query';
 import { useQuery } from '@apollo/client';
 import PhoneInput from 'react-phone-input-2';
 import { useNavigate } from 'react-router-dom';
@@ -85,6 +85,15 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
         },
         skip: !selectedProp?.propertyId || !singleEmployee?._id,
         fetchPolicy: 'network-only'
+    });
+
+    const { data: branchData, } = useQuery(GET_BRANCHES ,{
+        fetchPolicy: 'cache-and-network',
+        variables: {
+            input: {
+                filters: null
+            }
+        }
     });
 
     return(
@@ -243,7 +252,20 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                                     </span>
 
                                 </div>
-                                
+                                {prop?.label?.toLowerCase()=="branch"?
+                                <Select 
+                                 className='detailInput-focus'  
+                                 style={{border: "none"}}
+                                 suffixIcon={<span className='dropdowncaret'></span>}
+                                 defaultValue={singleEmployee?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || singleEmployee['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())? 
+                                 singleEmployee[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleEmployee['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()] : ""}  
+                                 placeholder="Select Branch"
+                                 onChange={(e)=>{handelInputChange({name: "branch", value: e});}}
+                 
+                                >
+                                    {branchData?.branches?.map((option)=>(<Select.Option value={option._id}> {option?.branchname} </Select.Option>))}
+                                </Select>
+                                :
                                 <input type="text" 
                                     onChange={(e) => handelInputChange(e.target)} 
                                     name={prop?.label?.replaceAll(" ","")?.toLowerCase()}
@@ -251,6 +273,7 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                                         singleEmployee[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleEmployee['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()] : ""}  
                                     className={'detailInput-focus'} 
                                 />
+                                }
                                 
                                
                             </div>
