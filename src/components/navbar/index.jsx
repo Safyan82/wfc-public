@@ -56,7 +56,7 @@ export function Navbar(){
 
 
             <Menu.Item className='menu-item '>
-                <Link to="/user/setting">
+                <Link to="/setting">
                     <FontAwesomeIcon icon={faGear} className='menu-icon' />
                 </Link>
             </Menu.Item>

@@ -254,7 +254,7 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
                                 navigate('/branch/editform',{
                                   state: {
                                   title: 'Branch',
-                                  url:'/user/setting',
+                                  url:'/setting',
                                   }
                               })}} className='useIn-Header'>Create Branch Form 
                               <FontAwesomeIcon icon={faExternalLink} style={{fontSize:'13px', marginLeft:'5px', color: '#7c98b'}} />

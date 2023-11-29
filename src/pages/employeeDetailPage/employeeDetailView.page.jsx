@@ -354,7 +354,7 @@ export const EmployeeDetailViewPage  = () => {
                             All data fields
                         </span>
 
-                        <button className='filter-btn' onClick={()=>navigate("/user/setting")}> Manage data fields </button>
+                        <button className='filter-btn' onClick={()=>navigate("/setting")}> Manage data fields </button>
                     </div>
 
                     <div className="allpropList-searchbar">
