@@ -1,460 +1,68 @@
-import './setting.css';
 import '../../components/createFields/createFieldDrawer.css';
-import React, { useEffect, useState } from 'react';
-import { Alert, Button, Col, Input, Popover, Row, Select, Tabs, Typography } from 'antd';
+import "./setting.css";
+import React from 'react';
+import { Col, Popover, Row } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faLock, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Filter } from './settingfilter';
-import {SettingPropertyGrid} from './setting-property-grid';
-import { SettingGroupPropertyGrid } from './settingGroupGrid';
-import { GroupFilter } from './groupfilter';
-import { useNavigate } from 'react-router-dom';
-import { ArcheiveFilter } from './archeiveFilter';
-import { ArcheivePropertyGrid } from './archeiveGrid';
-import { CreateFieldDrawer } from '../../components/createFields/index';
-import { GroupModal } from './modal/group.modal';
-import { GROUPLIST } from '../../util/query/group.query';
-import { useQuery } from '@apollo/client';
-import { ARCHIVE_PROPERTY_LIST, GetProptyByGroupId, PROPERTYLIST, PROPERTYWITHFILTER } from '../../util/query/properties.query';
-import { EditFieldDrawer } from '../../components/editField/editField.drawer';
-import { resetGroup } from '../../middleware/redux/reducers/group.reducer';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { resetPropertyFilterByGroup } from '../../middleware/redux/reducers/properties.reducer';
-import { resetArchivePropertyFilteredData } from '../../middleware/redux/reducers/archiveProperty.reducer';
-import { MoveGroupModal } from './modal/moveGroup.modal';
-import { objectType } from '../../util/types/object.types';
+import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet } from "react-router-dom";
+import { Navbar } from '../../components/navbar';
+import { routes } from '../../util/routes/routes';
 
-export const Setting=()=>{
-    const  { TabPane } = Tabs;
+
+export const Setting = ()=>{
     const navigate = useNavigate();
-    const [fieldModal, setFieldModal] = useState(false);
-    const [editfieldModal, setEditFieldModal] = useState(false);
-    const [propertyFakeLoad, setPropertyFakeLoading] = useState(false);
-    const [groupmodal, setGroupModal] = useState(false);
-    const [objectTypelocal, setObjectType] = useState("Branch");
-
-
-    // setting popover 
-    
-    const [group, setGroupInput] = useState();
-    const [groupPopover, setGroupPopover] = useState(false);
-    const [fieldType, setFieldType] = useState();
-    const [fieldTypePopover, setfieldTypePopover] = useState(false);
-    const [user, setUser] = useState();
-    const [userPopover, setuserPopover] = useState(false);
-
-    // setting popover terminate
-
-    
-    const [archive, setArchive] = useState();
-    const [archivePopover, setArchivePopover] = useState(false);
-    
-
-    //  tab change
- 
-    
-    const [field, setField] = useState([
-        {field:'groupId', value: ''},
-        {field:'fieldType', value: '' },
-        {field: 'objectType', value: 'branch'},
-    ]);
-    const [value, setValue] = useState(null);
-
-
-    useEffect(()=>{
-        // alert(group?.id);
-        if(group && group?.name!="All groups"){
-            setField(field?.map((f)=> {
-                if(f.field=='groupId'){
-                    return {...f, value: group?.id};
-                }else{
-                    return f;
-                }
-            }))
-            
-        }else{
-            setField(field?.map((f)=> {
-                if(f.field=='groupId'){
-                    return {field:'groupId', value: ''};
-                }else{
-                    return f;
-                }
-            }))
-        }
-    },[group])
-
-    useEffect(()=>{
-        if(fieldType && fieldType!=="All field types"){
-            let  selectedType = ((fieldType?.replaceAll("-",""))?.replaceAll(" ",""))?.toLowerCase();
-            selectedType= selectedType=="multilinetext"? "multilineText" : selectedType==="singlelinetext"? "singlelineText": selectedType;
-            
-            setField(field?.map((f)=> {
-                if(f.field=='fieldType'){
-                    return {...f, value: selectedType};
-                }else{
-                    return f;
-                }
-            }));
-
-        }else{
-            
-            setField(field?.map((f)=> {
-                if(f.field=='fieldType'){
-                    return {field:'fieldType', value: ''};
-                }else{
-                    return f;
-                }
-            }));
-        }
-    },[fieldType])
-
-    // clear pagination
-    useEffect(()=>{localStorage.clear()},[]);
-
-
-    const [archiveList, setArchiveList] = useState([]);
-
-    const { loading:archiveloading, error, data, refetch } = useQuery(ARCHIVE_PROPERTY_LIST,{
-        fetchPolicy: 'network-only',
-        variables:{
-            objectType: objectTypelocal
-        }
-    });
-    const { loading:groupLoading, error:groupError, data:groupList , refetch:groupRefetch } = useQuery(GROUPLIST,{
-        variables:{
-            objectType: objectTypelocal
-        },
-        skip: !objectTypelocal,
-        fetchPolicy: 'network-only'
-    });
-    const { loading:propertyListLoading, error:propertyListError, data:propertyDataList , refetch:propertyListRefetch } = useQuery(PROPERTYWITHFILTER,{
-        variables:{
-            input:{fields: field}
-        },
-        skip: !objectTypelocal,
-        fetchPolicy: 'network-only'
-    });
-
-    useEffect(()=>{
-        setArchiveList(data);
-    },[data]);
-
-    
-
-    const {archiveFilteredData, isFilterActive, isloading} = useSelector(state=>state.archiveReducer);
-
-    useEffect(()=>{
-        if(isFilterActive){
-            setArchiveList(archiveFilteredData);
-        }else{
-            setArchiveList(data);
-        }
-    },[isFilterActive]);
-
-    
-    const [propertyList, setPropertyList] = useState([]);
-    const [jerkLoad, setJerkLoad] = useState(false);
-    useEffect(()=>{
-        setJerkLoad(true);
-        if(propertyDataList && Object.keys(propertyDataList?.getPropertywithFilters)){
-            setPropertyList([...propertyDataList?.getPropertywithFilters]);
-        };
-        setTimeout(()=>{
-
-            setJerkLoad(false);
-        },500);
-    },[propertyDataList]);
-
-
-    
-    useEffect(()=>{
-        if(editfieldModal==false && (propertyListLoading==false && jerkLoad==false)){
-           
-            console.log(propertyListLoading, jerkLoad, "Lllllllll")
-           setPropertyFakeLoading(false);
-           
-        }
-    },[propertyListLoading, jerkLoad])
-
-
-    const { groupFilterId } = useSelector(state=>state.propertyReducer);
-
-    useEffect(()=>{
-        if(groupFilterId && Object.keys(groupFilterId)){
-            setGroupInput({id: groupFilterId?.key, name: groupFilterId?.name});
-        }
-    }, [groupFilterId]);
-
-    useEffect(()=>{
-        console.log("mounted again");
-    },[]);
-   
-
-    const [activeTab, setActiveTab] = useState('1');
-    const handelTabChange = async (e)=>{
-        setActiveTab(e);
-        setGroupPopover(false);
-        setuserPopover(false);
-        setfieldTypePopover(false);
-        setArchivePopover(false);
-        console.log(objectTypelocal, "objectTypeLocal");
-        await propertyListRefetch();
-        await refetch();
-        if(e=='2'){
-            dispatch(resetPropertyFilterByGroup());
-        }
-        if(e=='3'){
-            dispatch(resetArchivePropertyFilteredData(false));
-            await refetch()
-        }
-    };
-
-    const dispatch = useDispatch();
-
-    const resetToPropertyTab = async(tab) =>{
-        if(tab=='1'){
-            
-            setField([
-                {field:'groupId', value: ''},
-                {field:'fieldType', value: '' },
-                {field:'objectType', value: objectTypelocal }
-            ]);
-            dispatch(resetPropertyFilterByGroup());
-            setGroupInput({name: 'All groups', id: null});
-            setFieldType('All field types');
-            await propertyListRefetch();
-        }
-        
-        if(tab=='3'){
-            dispatch(resetArchivePropertyFilteredData(false));
-            await refetch()
-        }
-        if(tab=='2'){
-            await groupRefetch();
-        }
-    }
-
-    useEffect(()=>{
-        if(objectTypelocal){
-            setField(field?.map((f)=> {
-                if(f.field=='objectType'){
-                    return {...f, value: objectTypelocal};
-                }else{
-                    return f;
-                }
-            }));
-        }
-    }, [objectTypelocal]);
-
+    const {pathname} = useLocation();
+    const active = 'setting-sidebar-nav-list-item setting-navbar-active';
+    const inactive = 'setting-sidebar-nav-list-item';
     return(
         <Row>
+            <Navbar/>
             <Col span={4} className='setting-sidebar'>
-                <div className='setting-sidebar-body'>
-                    <div className="setting-sidebar-inner">
-                        <div className='back-link' onClick={()=>navigate(-1)}>
-                            <FontAwesomeIcon className='icon' icon={faChevronLeft}/>
-                            <span >Back</span>
-                        </div>
-                        <div className="setting-heading">
-                            <div className='setting-header-title'>
-                                Setting
+                    <div className='setting-sidebar-body'>
+                        <div className="setting-sidebar-inner">
+                            <div className='back-link' onClick={()=>navigate(-1)}>
+                                <FontAwesomeIcon className='icon' icon={faChevronLeft}/>
+                                <span >Back</span>
                             </div>
-                            <div style={{lineHeight:'33px'}}>
-                                <Popover content="Search settings">
-                                    <FontAwesomeIcon icon={faSearch} className='setting-heading-icon' />
-                                </Popover>
-                            </div>
-                        </div>
-                        <nav>
-                            <div className='setting-sidebar-nav'>Your Preferences</div>
-                            <ul className='setting-sidebar-nav-list'>
-                                <li className='setting-sidebar-nav-list-item'>General</li>
-                                <li className='setting-sidebar-nav-list-item'>Notifications</li>
-                                <li className='setting-sidebar-nav-list-item'>Security</li>
-                            </ul>
-                        </nav>
-                        <nav className='nav-divider'>
-                            <div className='setting-sidebar-nav'>Account Setup</div>
-                            <ul className='setting-sidebar-nav-list'>
-                                <li className='setting-sidebar-nav-list-item'>Account Defaults</li>
-                                <li className='setting-sidebar-nav-list-item'>Users & Teams</li>
-                                <li className='setting-sidebar-nav-list-item'>Privacy & Consent</li>
-                            </ul>
-                        </nav>
-                        <nav className='nav-divider'>
-                            <div className='setting-sidebar-nav'>Data Management</div>
-                            <ul className='setting-sidebar-nav-list'>
-                                <li className='setting-sidebar-nav-list-item setting-navbar-active'>Properties</li>
-                                <li className='setting-sidebar-nav-list-item'>Objects</li>
-                                <li className='setting-sidebar-nav-list-item'>Import & Export</li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </Col>
-                <div className="setting-body">
-                    <div className="setting-body-inner">
-                        <div className='setting-body-inner'>
-                            <div className="setting-body-title">
-                                <div className='setting-body-inner-title'>
-                                    Properties
+                            <div className="setting-heading">
+                                <div className='setting-header-title'>
+                                    Setting
                                 </div>
-
-                                <div className='btn-group'>
-                                    <button className='btn-transparent'>
-                                        <FontAwesomeIcon icon={faLock}/> &nbsp; <span className='text-decore'>Data Quality</span>
-                                    </button>
-                                    <Button className='setting-filled-btn'>
-                                        Export all properties
-                                    </Button>
+                                <div style={{lineHeight:'33px'}}>
+                                    <Popover content="Search settings">
+                                        <FontAwesomeIcon icon={faSearch} className='setting-heading-icon' />
+                                    </Popover>
                                 </div>
                             </div>
-                            <div className="text">
-                                Properties are used to collect and store information about your records in WorkForce City. For example, a contact might have properties like First Name or Lead Status.
-                            </div>
-                            {/* object selection box */}
-                            <div className="object-selection-box">
-                                <div className="objects">
-
-                                    <div className='left-selection-box'>
-                                        <div className='object-item'>
-                                            Select an object:
-                                        </div>
-                                        <div className="object-item">
-                                            <Select
-                                                className='custom-select'
-                                                style={{width:'250px'}}
-                                                suffixIcon={<span className="dropdowncaret"></span>}
-                                                defaultValue={"Branch"}
-                                                onChange={(e)=>setObjectType(e)}
-                                            >
-                                                {
-                                                    Object.keys(objectType)?.map((object)=>(
-
-                                                        <Select.Option value={objectType[object]}>{objectType[object]} properties</Select.Option>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </div>
-                                    </div>
-                                    <div className="right-selection-box">
-                                        <div className='object-item object-text text-decore'>Go to branch settings</div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            {/* propertie views */}
-                            <div className="propertyTab"></div>
-                            <Tabs defaultActiveKey="1" onTabClick={resetToPropertyTab} activeKey={activeTab } onChange={handelTabChange}>
-                                <TabPane tab={`Properties (${propertyList?.length || 0})`} key="1">
-                                    <Filter 
-                                        group={group}
-                                        groupPopover={groupPopover}
-                                        fieldType={fieldType}
-                                        fieldTypePopover={fieldTypePopover}
-                                        user={user}
-                                        userPopover={userPopover}
-                                        groupList={groupList?.groupList}
-                                        propertyListRefetch={propertyListRefetch}
-                                        propertyList={propertyList}
-                                        setPropertyList={setPropertyList}
-                                        resetSearch={propertyDataList?.getPropertywithFilters}
-                                        setGroupPopover={setGroupPopover}
-                                        setGroupInput={setGroupInput}
-                                        setFieldType={setFieldType}
-                                        setfieldTypePopover={setfieldTypePopover}
-                                        setUser={setUser}
-                                        setuserPopover={setuserPopover}
-
-                                        editProperty={()=>setFieldModal(true)}
-                                    />
-                                    <SettingPropertyGrid
-                                        propertyList={propertyList}
-                                        propertyListRefetch={propertyListRefetch}
-                                        propertyListLoading={propertyFakeLoad? false : propertyListLoading || jerkLoad}
-                                        refetch={refetch}
-                                        setFieldModal={setFieldModal}
-                                        setEditFieldModal={setEditFieldModal}
-                                        groupList={groupList}
-                                        objectType={objectTypelocal}
-
-                                    />
-                                </TabPane>
-                            <TabPane tab="Group" key="2">
-                                <GroupFilter setGroupModal={()=>setGroupModal(true)}/>
-                                <SettingGroupPropertyGrid
-                                    groupList={groupList}
-                                    groupLoading={groupLoading}
-                                    groupRefetch={groupRefetch}
-                                    editGroup={()=>setGroupModal(true)}
-                                    setActiveTab={setActiveTab}
-                                />
-                            </TabPane>
-                            <TabPane tab={`Archived Properties (${data?.getArchiveProperties?.length || 0})`} key="3" onClick={(e)=>console.log(e)}>
-                                <ArcheiveFilter
-                                    archive={archive}
-                                    setArchive={setArchive}
-                                    archivePopover={archivePopover}
-                                    setArchivePopover={setArchivePopover}
-                                    objectType={objectTypelocal}
-
-                                />
-                                <Alert
-                                    description={<b className='info-alert'>After 90 days your custom properties will be deleted and can no longer be restored.</b>}
-                                    type="info"
-                                    closable
-                                    closeText={<FontAwesomeIcon  className='alert-close-icon' icon={faTimes}/>}
-                                />
-                                <ArcheivePropertyGrid 
-                                    data={archiveFilteredData || data?.getArchiveProperties}
-                                    loading={isloading || archiveloading || propertyListLoading}
-                                    refetch={refetch}
-                                    propertyListRefetch={propertyListRefetch}
-                                    objectType = {objectTypelocal}
-
-                                />
-                            </TabPane>
-                            </Tabs>
-
-                            {/* filter */}
-                            
-
+                            <nav>
+                                <div className='setting-sidebar-nav'>Your Preferences</div>
+                                <ul className='setting-sidebar-nav-list'>
+                                    <li className='setting-sidebar-nav-list-item'>General</li>
+                                    <li className='setting-sidebar-nav-list-item'>Notifications</li>
+                                    <li className='setting-sidebar-nav-list-item'>Security</li>
+                                </ul>
+                            </nav>
+                            <nav className='nav-divider'>
+                                <div className='setting-sidebar-nav'>Account Setup</div>
+                                <ul className='setting-sidebar-nav-list'>
+                                    <li className='setting-sidebar-nav-list-item'>Account Defaults</li>
+                                    <Link to={routes.addUser}><li className={pathname==routes.addUser?active:inactive}>Users & Teams</li></Link>
+                                    <li className='setting-sidebar-nav-list-item'>Privacy & Consent</li>
+                                </ul>
+                            </nav>
+                            <nav className='nav-divider'>
+                                <div className='setting-sidebar-nav'>Data Management</div>
+                                <ul className='setting-sidebar-nav-list'>
+                                    <Link to={routes.setting}><li className={pathname==routes.setting?active:inactive}>Properties</li></Link>
+                                    <li className='setting-sidebar-nav-list-item'>Objects</li>
+                                    <li className='setting-sidebar-nav-list-item'>Import & Export</li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
-                </div>
-        
-            <CreateFieldDrawer 
-                visible={fieldModal}  
-                objectType={objectTypelocal}
-                propertyListRefetch={propertyListRefetch}
-                onClose={()=>{propertyListRefetch();setPropertyFakeLoading(true); groupRefetch(); setFieldModal(false);}}
-            />
-            
-            
-
-            <EditFieldDrawer 
-                groupList={groupList}
-                groupLoading={groupLoading}
-                visible={editfieldModal}  
-                propertyListRefetch={propertyListRefetch}
-                onClose={()=>{
-                    setPropertyFakeLoading(true);
-                    propertyListRefetch();                    
-                    setEditFieldModal(false);
-
-                }}
-            />
-            
-            <GroupModal 
-                groupRefetch={groupRefetch} 
-                objectType={objectTypelocal}
-                visible={groupmodal} 
-                onClose={()=>{setGroupModal(false); dispatch(resetGroup({}))}} 
-            />
-
-
+            </Col> 
+            <Outlet/>
         </Row>
     );
-};
+}

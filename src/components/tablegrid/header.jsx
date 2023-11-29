@@ -41,7 +41,7 @@ export const GridHeader = ({title, record, createAction, editProperty, from, to,
                         <div  class="dropdown-content" style={isAction ? {display:'block'}: {display:'none'}}>
                         <a href="" onClick={(e)=>{ e.preventDefault(); setFieldModal(true); }}
                         >Create properties</a>
-                        {/* <Link to="/user/setting" target='_blank'
+                        {/* <Link to="/setting" target='_blank'
                         >Edit properties</Link> */}
                         <a href="" onClick={(e)=>{
                             e.preventDefault();

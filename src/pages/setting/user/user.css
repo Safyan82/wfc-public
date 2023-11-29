@@ -1,0 +1,5 @@
+.userTab .create-btn{
+    display: flex;
+    flex-direction: row-reverse;
+    padding-bottom: 12px;
+}

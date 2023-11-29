@@ -20,6 +20,9 @@ import { EditEmployeeForm } from './pages/employee/editEmployeeForm/editEmployee
 import { EmployeeDetailPage } from './pages/employeeDetailPage/employeeDetail.page';
 import { EmployeeDetailViewPage } from './pages/employeeDetailPage/employeeDetailView.page';
 import { EmployeeAllPropHistory } from './pages/employeeAllPropHistory/employeeAllPropHistory';
+import { PropertySetting } from './pages/setting/propertySetting';
+import { User } from './pages/setting/user/user';
+import { routes } from './util/routes/routes';
 
 function App() {
   
@@ -75,9 +78,7 @@ function App() {
 
         {/* private routes */}
         <Route path='/user/' element={<DefaultLayout/>}>
-          {/* <Route  element={<Employee />} /> */}
-          <Route path='setting' element={<Setting />} />
-          
+
           <Route path='branch' exact element={<Branch />}/>
           <Route path='branch-detail/:id' element={<BranchDetailPage/>} />
           <Route path='prophistory' element={<BranchAllPropHistory/>} />
@@ -92,18 +93,19 @@ function App() {
           
           <Route path='sitegroup' element={<SiteGroup/>} />
           <Route path='customer' element={<BranchAllPropHistory/>} />
+
+         
+          
+        </Route>
+
+         {/* setting navigation layout under hte main navigation*/}
+        <Route path={routes.setting} element={<Setting />}  >
+          <Route index element={<PropertySetting/>} />
+          <Route path={routes.addUser} element={<User/>} />
         </Route>
         
       </Routes>
     </BrowserRouter>
-    {/* <Navbar/> */}
-    {/* <Sidebar> */}
-      {/* <TableComponent/> */}
-      
-    {/* </Sidebar> */}
-    {/* <PasswordInput/>
-    <PhoneNumberInput/> */}
-    {/* <CreateField/> */}
     </>
   );
 }
