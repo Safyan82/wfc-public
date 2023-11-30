@@ -18,7 +18,8 @@ export const Setting = ()=>{
     return(
         <Row>
             <Navbar/>
-            <Col span={4} className='setting-sidebar'>
+            <div style={{display:'flex'}}>
+            <div className='setting-sidebar'>
                     <div className='setting-sidebar-body'>
                         <div className="setting-sidebar-inner">
                             <div className='back-link' onClick={()=>navigate(-1)}>
@@ -61,8 +62,9 @@ export const Setting = ()=>{
                             </nav>
                         </div>
                     </div>
-            </Col> 
+            </div> 
             <Outlet/>
+            </div>
         </Row>
     );
 }
