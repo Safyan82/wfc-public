@@ -1,11 +1,9 @@
 .setting-sidebar{
-    flex: 0 0 33%;
+    width: 256px;
     max-width: 256px;
     position: relative;
     background-color: rgb(245, 248, 250);
     min-height: calc(100vh - 54px);
-    /* box-shadow: rgba(81, 111, 144, 0.25) 1px 0px 3px 0px; */
-    margin-right: 3px;
 }
 
 .setting-sidebar-body{
@@ -130,7 +128,7 @@
 
 /* setting body */
 .setting-body{
-    flex: 1 0 0%;
+    /* flex: 1 0 0%; */
     max-width: calc(100% - 256px);
     padding-left: 16px;
     padding-right: 16px;
