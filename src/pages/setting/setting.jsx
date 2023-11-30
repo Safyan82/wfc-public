@@ -16,7 +16,7 @@ export const Setting = ()=>{
     const active = 'setting-sidebar-nav-list-item setting-navbar-active';
     const inactive = 'setting-sidebar-nav-list-item';
     return(
-        <Row>
+        <>
             <Navbar/>
             <div style={{display:'flex'}}>
             <div className='setting-sidebar'>
@@ -65,6 +65,6 @@ export const Setting = ()=>{
             </div> 
             <Outlet/>
             </div>
-        </Row>
+        </>
     );
 }
