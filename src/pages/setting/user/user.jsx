@@ -14,17 +14,18 @@ export const User = ()=>{
     };
 
     return(
-        <div className='setting-body setting-body-inner'
->
-            <div className="propertyTab"></div>
-            <Tabs defaultActiveKey="1" activeKey={activeTab} onChange={handelTabChange}>
-                <TabPane tab={`User`} key="1" >
-                    <UserTab/>
-                </TabPane>
-                <TabPane tab="Team" key="2" >
-                    
-                </TabPane>
-            </Tabs>
+        <div className='setting-body'>
+            <div className='setting-body-inner'> 
+                <div className="propertyTab"></div>
+                <Tabs defaultActiveKey="1" activeKey={activeTab} onChange={handelTabChange}>
+                    <TabPane tab={`User`} key="1" >
+                        <UserTab/>
+                    </TabPane>
+                    <TabPane tab="Team" key="2" >
+                        
+                    </TabPane>
+                </Tabs>
+            </div>
         </div>
     );
 }
