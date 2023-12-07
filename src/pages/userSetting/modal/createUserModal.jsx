@@ -5,6 +5,7 @@ import { Modal, Steps } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { CreateUserComponent } from '../component/createUserComponent/createUser.component';
+import { PermissionComponent } from '../component/permission/permission.component';
 
 
 
@@ -26,7 +27,7 @@ export const CreateUserModal = ({visible, onClose})=>{
         },
         {
           title: 'PERMISSIONS',
-        //   component: <Permisssion fieldType={fieldType} setFieldType={setFieldType} basicInfo={basicInfo} setWidth={setWidth}/>
+          component: <PermissionComponent />
         },
         {
           title: 'REVIEW',

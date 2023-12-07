@@ -1,0 +1,169 @@
+.permission-accordin{
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    position: relative;
+    background-color: rgb(245, 248, 250);
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: none;
+    letter-spacing: 0.5px;
+}
+
+.userModal .ant-collapse-header{
+    padding: 15px;
+    background-color: rgb(245, 248, 250);    
+    border-width: 1px 0px;
+    border-color: rgb(203, 214, 226);
+    border-style: solid;
+    border-radius: none;
+
+}
+
+.object-prop .ant-collapse-header{
+    padding: 15px;
+    background-color: transparent;    
+    border: none;
+    border-radius: none;
+
+}
+
+
+
+.userModal:where(.css-dev-only-do-not-override-12jzuas).ant-collapse>.ant-collapse-item:last-child, :where(.css-dev-only-do-not-override-12jzuas).ant-collapse>.ant-collapse-item:last-child>.ant-collapse-header{
+    border-radius: 0;
+}
+
+.userModal .ant-collapse{
+    border-right: 1px solid rgb(203, 214, 226) !important;
+    border-left: 1px solid rgb(203, 214, 226) !important;
+}
+
+.userModal:where(.css-dev-only-do-not-override-12jzuas).ant-collapse>.ant-collapse-item >.ant-collapse-header .ant-collapse-expand-icon{
+    margin-top:7.5px
+}
+
+.userModal .ant-collapse-header:hover{
+    color: #33475b !important;
+}
+
+.helping-heading{
+    
+    transition: all .15s ease-out;
+    color: #0091ae;
+}
+
+.helping-heading:hover{
+    text-decoration: underline;
+}
+
+.userAccess-box-active{
+    min-height: 180px;
+    padding: 12px;
+    max-width: 260px;
+    border-color: #00a4bd;
+    box-shadow: 0 0 0 1px #00a4bd;
+    background-color: #e5f5f8;
+    /* display: flex; */
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+
+.userAccess-box{
+    min-height: 180px;
+    max-width: 260px;
+    padding: 12px;
+    border: 1px solid #7fd1de;
+    background-color: white;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.userAccess-box .radio-btn, .userAccess-box-active .radio-btn{
+    height: max-content;
+    direction: rtl;
+    width: 100%;
+}
+
+.premission-head{
+    font-size: 16px;
+    /* margin: 0; */
+    margin-top: 20px;
+    margin-bottom: 0px;
+}
+
+.permission-block{
+    padding: 20px 20px 24px 44px;
+    display: flex;
+    column-gap: 50px;
+}
+
+.object-block{
+    width: 33%;
+}
+
+
+.object-block-item{
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-font-smoothing: auto;
+    font-family: var(--uicomponents-font-family,"Lexend Deca",Helvetica,Arial,sans-serif);
+    font-weight: 400;
+    font-size: 14px;
+    color: rgb(51, 71, 91);
+    line-height: 24px;
+    padding: 7px 12px;
+    position: relative;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.object-block-item:hover{
+    background-color:#e5f5f8;
+}
+
+.object-block-item-active{
+    background-color:#e5f5f8;
+}
+
+.object-block-item-active:before{
+    content: "";
+    border-left: 4px solid rgb(0, 164, 189);
+    height: 100%;
+    left: 0px;
+    position: absolute;
+    top: 0px;
+    border-radius: 3px;
+}
+
+.object-prop .ant-collapse{
+    border: 0 !important;
+}
+
+.object-prop-item{
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-font-smoothing: auto;
+    font-family: var(--uicomponents-font-family,"Lexend Deca",Helvetica,Arial,sans-serif);
+    font-weight: 400;
+    font-size: 14px;
+    color: rgb(51, 71, 91);
+    line-height: 24px;
+    padding: 7px 12px;
+    position: relative;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.object-prop-item:hover{
+    background-color:#e5f5f8;
+}
+
+.object-prop{
+    width: 77%;
+}
