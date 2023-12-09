@@ -1,6 +1,6 @@
 import { GenericTable } from '../../../../components/genericTable/genericTable';
-import '../user.css';
-export const UserTab = ()=>{
+import '../../user.css';
+export const UserTab = ({createUser})=>{
     return(
         <div className='userTab'>
             {/* descriptive text */}
@@ -10,7 +10,7 @@ export const UserTab = ()=>{
 
             {/* right btn */}
             <div className="create-btn">
-                <button className="drawer-filled-btn">
+                <button className="drawer-filled-btn" onClick={createUser}>
                     Create User
                 </button>
             </div>

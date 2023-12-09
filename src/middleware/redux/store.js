@@ -11,6 +11,7 @@ import branchViewReducer from './reducers/branchView.reducer';
 import resetReducer from './reducers/reset.reducer';
 import noteReducer from './reducers/note.reducer';
 import branchDataReducer from './reducers/branchData.reducer';
+import permissionReducer from './reducers/permission.reducer';
 
 const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ const store = configureStore({
     reset: resetReducer,
     noteReducer: noteReducer,
     branchDataReducer: branchDataReducer,
+    permissionReducer: permissionReducer, 
   },
   middleware:[...getDefaultMiddleware()]
 });

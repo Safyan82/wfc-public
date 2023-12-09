@@ -21,7 +21,7 @@ import { EmployeeDetailPage } from './pages/employeeDetailPage/employeeDetail.pa
 import { EmployeeDetailViewPage } from './pages/employeeDetailPage/employeeDetailView.page';
 import { EmployeeAllPropHistory } from './pages/employeeAllPropHistory/employeeAllPropHistory';
 import { PropertySetting } from './pages/setting/propertySetting';
-import { User } from './pages/setting/user/user';
+import { User } from './pages/userSetting/user';
 import { routes } from './util/routes/routes';
 
 function App() {

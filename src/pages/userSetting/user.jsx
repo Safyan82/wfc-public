@@ -1,15 +1,15 @@
 import './user.css';
-import '../setting.css';
 import { Tabs } from 'antd';
 import { useState } from 'react';
-import { UserTab } from './userTabComponent/userTab';
+import { UserTab } from './component/userTabComponent/userTab';
+import { CreateUserModal } from './modal/createUserModal';
 
 export const User = ()=>{
     const {TabPane} = Tabs;
     const [activeTab, setActiveTab] = useState('1');
+    const [userModal, setUserModal] = useState(false);
 
     const handelTabChange = (e)=>{
-        console.log(e, "eeee");
         setActiveTab(e);
     };
 
@@ -19,13 +19,16 @@ export const User = ()=>{
                 <div className="propertyTab"></div>
                 <Tabs defaultActiveKey="1" activeKey={activeTab} onChange={handelTabChange}>
                     <TabPane tab={`User`} key="1" >
-                        <UserTab/>
+                        <UserTab createUser={()=>setUserModal(!userModal)}/>
                     </TabPane>
                     <TabPane tab="Team" key="2" >
                         
                     </TabPane>
                 </Tabs>
             </div>
+            <CreateUserModal
+             visible={userModal} onClose={()=>setUserModal(false)} 
+            />
         </div>
     );
 }
