@@ -158,6 +158,7 @@
     position: relative;
     text-decoration: none;
     cursor: pointer;
+    justify-content: space-between;
 }
 
 .object-prop-item:hover{
@@ -166,4 +167,92 @@
 
 .object-prop{
     width: 77%;
+}
+
+.access-icon{
+    color: #00a4bd
+}
+
+.access-icon:hover{
+    color: #0091ae;
+}
+
+.permission-block .ant-collapse-header{
+    padding-right: 25px !important;
+}
+
+.slash{
+    border: 0.5px solid #00a4bd;
+    height: 26px;
+    transform: rotate(-60deg);
+    position: absolute;
+    right: 18px;
+    margin-top: -6px;
+}
+
+.slash-disabled{
+    border: 0.5px solid rgb(176, 193, 212);
+    height: 26px;
+    transform: rotate(-60deg);
+    position: absolute;
+    right: 18px;
+    margin-top: -6px;
+}
+
+.editSlash{
+    border: 0.5px solid #00a4bd;
+    height: 26px;
+    transform: rotate(-60deg);
+    position: absolute;
+    right: 51px;
+    margin-top: -7px;
+}
+
+.module-block{
+    border: 1px solid rgb(234, 240, 246);
+    text-align: left;
+    padding: 16px;
+    padding-top: 1px !important;
+    transition: background-color 150ms ease-out 0s;
+    background-color: rgb(245, 248, 250);
+}
+
+.link{
+    font-weight: 600;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: all .15s ease-out;
+    color: #0091ae;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.link:hover{
+    color: #007a8c;
+    text-decoration: underline;
+}
+
+.badge {
+    border-radius: 3px;
+    line-height: 20px;
+    min-height: 20px;
+    background-color: rgb(255, 99, 71);
+    color: white;
+    padding: 4px 8px;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.permission-popover .ant-popover-inner-content{
+    width: 200px !important;
+}
+
+.permission-popover .ant-popover-arrow:before{
+    background-color: white !important;
+}
+
+.disabled{
+    color: rgb(176, 193, 212) !important;   
+    cursor: not-allowed;
 }

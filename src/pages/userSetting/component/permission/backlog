@@ -1,0 +1,35 @@
+
+                        {/* <div style={{display:'flex', columnGap:'20px'}} onClick={()=>handleCollapseChange([data?._id])}>
+                            {
+                            premissionAccess?.visible==1?
+                            <Popover content={"Make Invisible For All Properties"}>
+                                <FontAwesomeIcon className='access-icon' onClick={()=>dispatch(setlocalPermission({label: data?._id, visible: 0}))}   icon={faEye} />
+                            </Popover>
+                            :
+                            
+                            <Popover content={"Make visible For All Properties"}>
+                                <FontAwesomeIcon className='access-icon' onClick={()=>dispatch(setlocalPermission({label: data?._id, visible: 1}))}   icon={faEyeSlash} />
+                            </Popover>
+                            }
+
+                            {premissionAccess?.edit==1?
+                            <Popover content={"Don't Allow Modification For All Properties"}>
+                                <FontAwesomeIcon className='access-icon' onClick={()=>dispatch(setlocalPermission({label: data?._id, edit: 0}))}   icon={faPencil}  />
+                            </Popover>
+                            :
+                            <Popover content={"Allow Modification For All Properties"}>
+                                <FontAwesomeIcon className='access-icon' onClick={()=>dispatch(setlocalPermission({label: data?._id, edit: 1}))}   icon={faPencilRuler}  />
+                            </Popover>
+                            }
+
+                            {premissionAccess?.delete==1?
+                            <Popover content={"Don't Allow to Delete For All Properties"}>
+                                <FontAwesomeIcon className='access-icon' onClick={()=>dispatch(setlocalPermission({label: data?._id, delete: 0}))}   icon={faTrashCanArrowUp}  />
+                            </Popover>
+                            :
+                            <Popover content={"Allow to Delete For All Properties"}>
+                                <FontAwesomeIcon className='access-icon' onClick={()=>dispatch(setlocalPermission({label: data?._id, delete: 1}))}   icon={faStoreSlash}  />
+                            </Popover>
+                            }
+
+                        </div> */}
