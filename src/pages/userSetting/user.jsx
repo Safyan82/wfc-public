@@ -26,9 +26,11 @@ export const User = ()=>{
                     </TabPane>
                 </Tabs>
             </div>
+            {userModal?
             <CreateUserModal
              visible={userModal} onClose={()=>setUserModal(false)} 
             />
+            :null}
         </div>
     );
 }
