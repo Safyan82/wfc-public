@@ -256,3 +256,8 @@
     color: rgb(176, 193, 212) !important;   
     cursor: not-allowed;
 }
+
+.ant-select-selection-placeholder{
+    color: #7c98b6 !important;
+    font-weight: 500 !important;
+}
