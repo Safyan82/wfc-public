@@ -48,6 +48,7 @@ export const Setting = ()=>{
                                 <div className='setting-sidebar-nav'>Account Setup</div>
                                 <ul className='setting-sidebar-nav-list'>
                                     <li className='setting-sidebar-nav-list-item'>Account Defaults</li>
+                                    <Link to={routes.userRole}><li className={pathname==routes.userRole?active:inactive}>User Roles</li></Link>
                                     <Link to={routes.addUser}><li className={pathname==routes.addUser?active:inactive}>Users & Teams</li></Link>
                                     <li className='setting-sidebar-nav-list-item'>Privacy & Consent</li>
                                 </ul>
@@ -63,7 +64,9 @@ export const Setting = ()=>{
                         </div>
                     </div>
             </div> 
-            <Outlet/>
+            {/* <div style={{width: '100%',}}> */}
+                <Outlet/>
+            {/* </div> */}
             </div>
         </>
     );
