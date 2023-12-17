@@ -44,7 +44,6 @@ const permissionReducer = createSlice({
 
         }
     },
-
     updateDefaultPropPermissin: (state, action)=>{ 
         return {
             ...state,
@@ -73,10 +72,22 @@ const permissionReducer = createSlice({
                 }
             }
         }
+    },
+    setCustomModulePermission:(state, action)=>{
+        return{
+            ...state,
+            propAccess: {
+                ...state.propAccess,
+                [action.payload.objectType]: {
+                    ...state.propAccess[action.payload.objectType],
+                    ["custom"+action.payload.objectType]: action.payload.custom
+                }
+            }
+        }
     }
   },
 });
 
 
-export const { setlocalPermission, setDefaultPropPermission, updateDefaultPropPermissin, updateModulePermission } = permissionReducer.actions;
+export const { setCustomModulePermission, setlocalPermission, setDefaultPropPermission, updateDefaultPropPermissin, updateModulePermission } = permissionReducer.actions;
 export default permissionReducer.reducer;
