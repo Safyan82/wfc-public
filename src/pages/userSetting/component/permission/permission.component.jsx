@@ -11,9 +11,10 @@ import { objectType } from '../../../../util/types/object.types';
 import { useQuery } from '@apollo/client';
 import { GetPropertyByGroupQuery, PROPERTYWITHFILTER } from '../../../../util/query/properties.query';
 import { useDispatch } from 'react-redux';
-import { setDefaultPropPermission, setlocalPermission, updateDefaultPropPermissin } from '../../../../middleware/redux/reducers/permission.reducer';
+import { setDefaultPropPermission, setlocalPermission, updateDefaultPropPermissin, updateModulePermission } from '../../../../middleware/redux/reducers/permission.reducer';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { CustomModulePermission } from '../../modal/customModulePermission';
 
 
 export const PermissionComponent = ()=>{
@@ -125,9 +126,10 @@ const UserAccess = ()=>{
     )
 }
 
-const Permission = ({access})=>{
+export const Permission = ({access, role})=>{
     
     const [obj, setObj] = useState(objectType.Branch);
+
     const {data: groupProperty} = useQuery(GetPropertyByGroupQuery,{
         variables:{
           objectType: obj
@@ -136,16 +138,13 @@ const Permission = ({access})=>{
     });
 
     const [list, setList] = useState([]);
-
-    const [activeKey, setActiveKey] = useState([]);
-
    
 
     const dispatch = useDispatch();
 
     const {propAccess} = useSelector((state)=>state?.permissionReducer);
-  
 
+    console.log(propAccess)
 
     //  first time rendering when property data recieves
     useEffect(()=>{
@@ -160,21 +159,48 @@ const Permission = ({access})=>{
                     </div>,
 
             children: data?.properties?.map((property, index)=>{
-                dispatch(setDefaultPropPermission({[property._id]: {visible:1, edit:1} }))
                 return(
-                    <div key={index} className='object-prop-item'>
-                                    <span>{property?.label}</span>
-                                    <div style={{display:'flex', columnGap:'20px'}}>
-
-                                        <FontAwesomeIcon className='access-icon'  
-                                            icon={propAccess?.visible? faEye : faEyeSlash} />    
-                                    
-                                        <FontAwesomeIcon className='access-icon'  
-                                            icon={propAccess?.edit? faPencil : faPencilRuler}  />
-
-                                        <FontAwesomeIcon className='access-icon'  
-                                            icon={propAccess?.delete? faTrashCanArrowUp : faStoreSlash}  />
-                                    </div>
+                    <div key={index} className={moduleView =="None" ? 'disabled object-prop-item' : 'object-prop-item'}>
+                        <span>{property?.label}</span>
+                        <div style={{display:'flex', columnGap:'20px'}} >
+        
+                            <FontAwesomeIcon className={propAccess[obj]?.view=="None"  || moduleView == "None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                                if(moduleView=="None"){
+                                    return;
+                                } 
+                                else {
+                                    dispatch(updateDefaultPropPermissin({
+                                        id: property?._id,
+                                        permission:{
+                                            visible: propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.visible==1? 0 : 1,
+                                            edit: propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit,
+                                            delete: propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.delete || moduleDelete
+                                        },
+                                        objectType: obj
+                                    }))
+                                }}
+                            } 
+                                icon={propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.visible==1? faEye : faEyeSlash} />    
+                        
+                            <FontAwesomeIcon className={propAccess[obj]?.view=="None" || moduleView == "None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                                 if(moduleView=="None"){
+                                    return;
+                                }else{
+                                    dispatch(updateDefaultPropPermissin({
+                                        id: property?._id,
+                                        objectType: obj,
+                                        permission:{
+                                            edit: propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit==1? 0 : 1,
+                                            visible: propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.visible,
+                                            delete: propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.delete || moduleDelete
+                                        }
+                                    }))
+                                }
+                            }}  
+                            icon={faPencil}  />
+                            {propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit==1? null : <span className={propAccess[obj]?.view=="None" || moduleView=="None"?'slash-disabled ':'slash'}></span> }
+                            
+                        </div>
                     </div>
                 )
             }),
@@ -183,38 +209,49 @@ const Permission = ({access})=>{
     },[groupProperty?.getPropertyByGroup?.data]);
 
 
-
 // Top access control of each module
-    const [moduleView, setModuleView] = useState("All "+obj);
-    const [moduleEdit, setModuleEdit] = useState("All "+obj);
-    const [moduleDelete, setModuleDelete] = useState("All "+obj);
+    const [moduleView, setModuleView] = useState(propAccess[obj]?.view || null);
+    const [moduleEdit, setModuleEdit] = useState(null);
+    const [moduleDelete, setModuleDelete] = useState(null);
 
-    useEffect(()=>{
-        setModuleView("All "+obj);
-        setModuleEdit("All "+obj);
-        setModuleDelete("All "+obj);
-    },[obj]);
 
     // popover state managements
     const [viewPopover, setViewPopover] = useState(false);
     const [editPopover, setEditPopover] = useState(false);
     const [deletePopover, setDeletePopover] = useState(false);
+    const [customModulePermission, setCustomModulePermission] = useState(false);
 
     useEffect(()=>{
+        if(moduleView!=null){
+            if(moduleView=="None"){
+                dispatch(updateModulePermission({objectType: obj, view: moduleView, edit: moduleView, delete: moduleView}));
+            }else{
+                dispatch(updateModulePermission({objectType: obj, view: moduleView, edit: moduleView, delete: moduleView}));
+            }
+        }
+        if(moduleView?.toLowerCase()== "custom branch"){
+            setCustomModulePermission(true);
+        }else{
+            setCustomModulePermission(false)
+        }
+
         if(moduleView =="Team owns"){
+            dispatch(updateModulePermission({objectType: obj, edit: "Team owns", delete: "Team owns"}));
+
             setModuleEdit("Team owns");
             setModuleDelete("Team owns");
         };
         if(moduleView=="None"){
+           
             if(groupProperty?.getPropertyByGroup?.data){
                 const d = groupProperty?.getPropertyByGroup?.data?.map((data)=>{
                     data?.properties?.map((property, index)=>{
                         dispatch(updateDefaultPropPermissin({
                             id: property?._id,
+                            objectType: obj,
                             permission:{
                                 visible: 0,
                                 edit: 0,
-                                delete: propAccess[property?._id]?.delete
                             }
                         }));
             })})}
@@ -225,6 +262,7 @@ const Permission = ({access})=>{
                     data?.properties?.map((property, index)=>{
                         dispatch(updateDefaultPropPermissin({
                             id: property?._id,
+                            objectType: obj,
                             permission:{
                                 visible: 1,
                                 edit: 1
@@ -236,26 +274,46 @@ const Permission = ({access})=>{
     }, [moduleView]);
 
     useEffect(()=>{
-        if(moduleEdit=="None"){
-            
+        if(moduleEdit!=null){
+
+            dispatch(updateModulePermission({objectType: obj, edit: moduleEdit}));
+        }
+        if(moduleEdit=="None" && moduleView=="None"){
             if(groupProperty?.getPropertyByGroup?.data){
                 groupProperty?.getPropertyByGroup?.data?.map((data)=>{
                     data?.properties?.map((property, index)=>{
                         dispatch(updateDefaultPropPermissin({
                             id: property?._id,
+                            objectType: obj,
                             permission:{
-                                visible: 1,
+                                visible: 0,
                                 edit: 0
                             }
                         }));
             })})}
-        }else{
+        }else if(moduleEdit=="None"){
+
+            if(groupProperty?.getPropertyByGroup?.data){
+                groupProperty?.getPropertyByGroup?.data?.map((data)=>{
+                    data?.properties?.map((property, index)=>{
+                        dispatch(updateDefaultPropPermissin({
+                            id: property?._id,
+                            objectType: obj,
+                            permission:{
+                                visible: propAccess[obj][property?._id]?.visible,
+                                edit: 0
+                            }
+                        }));
+            })})}
+        }        
+        else{
             
             if(groupProperty?.getPropertyByGroup?.data){
                 groupProperty?.getPropertyByGroup?.data?.map((data)=>{
                     data?.properties?.map((property, index)=>{
                         dispatch(updateDefaultPropPermissin({
                             id: property?._id,
+                            objectType: obj,
                             permission:{
                                 visible: 1,
                                 edit: 1
@@ -264,6 +322,12 @@ const Permission = ({access})=>{
             })})}
         }
     },[moduleEdit]);
+
+    useEffect(()=>{
+        if(moduleDelete!=null){
+            dispatch(updateModulePermission({objectType: obj, delete: moduleDelete}));
+        }
+    },[moduleDelete]);
     
     // handel rendering when any thing change in depth access of each module
     useEffect(()=>{
@@ -284,7 +348,7 @@ const Permission = ({access})=>{
                             <span>{property?.label}</span>
                             <div style={{display:'flex', columnGap:'20px'}} >
             
-                                <FontAwesomeIcon className={moduleView == "None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                                <FontAwesomeIcon className={propAccess[obj]?.view=="None" || moduleView == "None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
                                     if(moduleView=="None"){
                                         return;
                                     } 
@@ -292,31 +356,33 @@ const Permission = ({access})=>{
                                         dispatch(updateDefaultPropPermissin({
                                             id: property?._id,
                                             permission:{
-                                                visible: propAccess[property?._id]?.visible==1? 0 : 1,
-                                                edit: propAccess[property?._id]?.edit,
-                                                delete: propAccess[property?._id]?.delete
-                                            }
+                                                visible: propAccess[obj][property?._id]?.visible==1? 0 : 1,
+                                                edit: propAccess[obj][property?._id]?.edit,
+                                                delete: propAccess[obj][property?._id]?.delete || moduleDelete
+                                            },
+                                            objectType: obj
                                         }))
                                     }}
                                 } 
-                                    icon={propAccess[property?._id]?.visible==1? faEye : faEyeSlash} />    
+                                    icon={propAccess[obj][property?._id]?.visible==1? faEye : faEyeSlash} />    
                             
-                                <FontAwesomeIcon className={moduleView == "None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                                <FontAwesomeIcon className={propAccess[obj]?.view=="None" || moduleView == "None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
                                      if(moduleView=="None"){
                                         return;
                                     }else{
                                         dispatch(updateDefaultPropPermissin({
                                             id: property?._id,
+                                            objectType: obj,
                                             permission:{
-                                                edit: propAccess[property?._id]?.edit==1? 0 : 1,
-                                                visible: propAccess[property?._id]?.visible,
-                                                delete: propAccess[property?._id]?.delete
+                                                edit: propAccess[obj][property?._id]?.edit==1? 0 : 1,
+                                                visible: propAccess[obj][property?._id]?.visible,
+                                                delete: propAccess[obj][property?._id]?.delete || moduleDelete
                                             }
                                         }))
                                     }
                                 }}  
                                 icon={faPencil}  />
-                                {propAccess[property?._id]?.edit==1? null : <span className={moduleView=="None"?'slash-disabled ':'slash'}></span> }
+                                {propAccess[obj][property?._id]?.edit==1? null : <span className={propAccess[obj]?.view=="None"  || moduleView=="None"?'slash-disabled ':'slash'}></span> }
                                 
                             </div>
                         </div>
@@ -325,11 +391,40 @@ const Permission = ({access})=>{
             }});
             setList(d);
         }
-        console.log(propAccess, "propAccess");
+        if(propAccess && propAccess.hasOwnProperty(obj)){
+
+            setModuleView(propAccess[obj]?.view)
+            setModuleDelete(propAccess[obj]?.delete)
+            setModuleEdit(propAccess[obj]?.edit)
+        }
     },[propAccess]);
 
+    const [objectPropertyDefaultDetail, setobjectPropertyDefaultDetail] = useState({});
+
+    useEffect(()=>{
+        let objectPropertyDetail = {};
+        groupProperty?.getPropertyByGroup?.data?.map((data)=>{
+            data?.properties?.map((property, index)=>(
+                objectPropertyDetail[property._id] = {visible:1, edit:1, objectType: obj}
+            ));
+        });
+        setobjectPropertyDefaultDetail(objectPropertyDetail);
+    }, [groupProperty?.getPropertyByGroup?.data]);
+
+    useEffect(()=>{
+        if(Object.keys(objectPropertyDefaultDetail)?.length && (!propAccess.hasOwnProperty(obj) || Object.keys(propAccess[obj])?.length<4)){
+            dispatch(setDefaultPropPermission({[obj]:{view: "All "+obj , edit:  "All "+obj, delete:  "All "+obj, ...objectPropertyDefaultDetail}}))
+        }else if(groupProperty?.getPropertyByGroup?.data?.length==0){
+            setModuleDelete("All "+obj);
+            setModuleEdit("All "+obj);
+            setModuleView("All "+obj);
+        }
+    }, [objectPropertyDefaultDetail]);
+    
+   
+
     return(
-        <div className='permission-block'>
+        <div className='permission-block' style={role?{minHeight: '290px', maxHeight: '300px', overflowY: 'scroll'}:null}>
             <div className="object-block">
                 <Input type="text" 
                     name="popoverSearch"
@@ -371,12 +466,15 @@ const Permission = ({access})=>{
                                             Team owns
                                         </div>
                                         <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
+                                            Custom {obj}
+                                        </div>
+                                        <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
                                             None
                                         </div>
                                     </div>
 
                                 }>
-                                    <span className='truncated-text' onClick={()=>{setViewPopover(!viewPopover)}}> {moduleView}
+                                    <span className='truncated-text' onClick={()=>{setViewPopover(!viewPopover)}}> { propAccess.hasOwnProperty(obj) ? propAccess[obj]?.view : moduleView}
                                     <span className='caret'></span>
                                     </span> 
                                 </Popover>
@@ -391,11 +489,11 @@ const Permission = ({access})=>{
                                 <Popover 
                                     overlayClassName='settingCustomPopover permission-popover'
                                     trigger={"click"}
-                                    open={moduleView=="None"? false :editPopover}
+                                    open={propAccess[obj]?.view=="None" || moduleView=="None"? false :editPopover}
                                     content={
                                     <div className='popover-data'>
-                                        <div className={moduleView=="Team owns"? "popoverdataitem disabled" : "popoverdataitem"} onClick={(e)=>{
-                                            if(moduleView=="Team owns"){
+                                        <div className={propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"? "popoverdataitem disabled" : "popoverdataitem"} onClick={(e)=>{
+                                            if(propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"){
                                                 return;
                                             }else{
                                                 setEditPopover(!editPopover);
@@ -419,7 +517,7 @@ const Permission = ({access})=>{
                                     </div>
 
                                 }>
-                                    <span className={moduleView=="None"?"disabled":null} onClick={()=>setEditPopover(moduleView=="None"? false :!editPopover)}> {moduleEdit} 
+                                    <span className={moduleView=="None"?"disabled":null} onClick={()=>setEditPopover(moduleView=="None"? false :!editPopover)}> { propAccess.hasOwnProperty(obj) ? propAccess[obj]?.edit : moduleEdit} 
                                     <span className='caret'></span>
                                     </span> 
                                 </Popover>
@@ -435,11 +533,11 @@ const Permission = ({access})=>{
                                 <Popover 
                                     overlayClassName='settingCustomPopover permission-popover'
                                     trigger={"click"}
-                                    open={moduleView=="None"? false :deletePopover}
+                                    open={propAccess[obj]?.view=="None" || moduleView=="None"? false :deletePopover}
                                     content={
                                     <div className='popover-data'>
-                                        <div className={moduleView=="Team owns"? "popoverdataitem disabled" : "popoverdataitem"} onClick={(e)=>{
-                                            if(moduleView=="Team owns"){
+                                        <div className={propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"? "popoverdataitem disabled" : "popoverdataitem"} onClick={(e)=>{
+                                            if(propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"){
                                                 return;
                                             }else{
                                                 setModuleDelete(e.target.innerText);
@@ -463,7 +561,7 @@ const Permission = ({access})=>{
                                     </div>
 
                                 }>
-                                    <span className={moduleView=="None"? "disabled" : null}  onClick={()=>{setDeletePopover(moduleView=="None"? false: !deletePopover)}}> {moduleDelete} 
+                                    <span className={moduleView=="None"? "disabled" : null}  onClick={()=>{setDeletePopover(moduleView=="None"? false: !deletePopover)}}> { propAccess.hasOwnProperty(obj) ? propAccess[obj]?.delete : moduleDelete} 
                                     <span className='caret'></span>
                                     </span> 
                                 </Popover>
@@ -476,6 +574,11 @@ const Permission = ({access})=>{
                 
             </div>
 
+            {customModulePermission?
+                <CustomModulePermission obj={obj} visible={customModulePermission} onClose={()=>setCustomModulePermission(!customModulePermission)}/>
+                : 
+                null
+            }
         </div>
     )
 }

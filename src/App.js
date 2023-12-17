@@ -23,6 +23,7 @@ import { EmployeeAllPropHistory } from './pages/employeeAllPropHistory/employeeA
 import { PropertySetting } from './pages/setting/propertySetting';
 import { User } from './pages/userSetting/user';
 import { routes } from './util/routes/routes';
+import { UserRole } from './pages/userRole/userRole';
 
 function App() {
   
@@ -102,6 +103,7 @@ function App() {
         <Route path={routes.setting} element={<Setting />}  >
           <Route index element={<PropertySetting/>} />
           <Route path={routes.addUser} element={<User/>} />
+          <Route path={routes.userRole} element={<UserRole/>} />
         </Route>
         
       </Routes>
