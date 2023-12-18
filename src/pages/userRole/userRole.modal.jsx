@@ -6,6 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { Permission } from "../userSetting/component/permission/permission.component";
 import { ReviewPermission } from '../../components/reviewPermission/ReviewPermission';
+import { resetPermission } from '../../middleware/redux/reducers/permission.reducer';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useMutation } from '@apollo/client';
+import { createUserRoleMutation } from '../../util/mutation/userRole.mutation';
+import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 
 
 
@@ -36,7 +42,39 @@ export const CreateUserRoleModal = ({visible, onClose})=>{
         }
     ];
 
-      
+    const dispatch = useDispatch();
+    const {propAccess} = useSelector(state=>state.permissionReducer);
+    const [createUserRole, {loading}] = useMutation(createUserRoleMutation);
+    console.log(loading, "loadingg")
+    const handelSubmit = async ()=>{
+    
+        try{
+            await createUserRole({
+                variables:{
+                    input:{
+                        rolename: roleName.toString(),
+                        permission: propAccess,
+                    }
+                }
+            });
+            dispatch(setNotification({
+                notificationState:true, 
+                message:"New System User Role has been added",
+                error: false,
+            }));
+
+            onClose();
+        }
+        catch(err){
+            
+            dispatch(setNotification({
+                notificationState:true, 
+                message:"An Error Encountered",
+                error: true,
+            }));
+
+        }
+    }
 
     return(
         <Modal
@@ -52,7 +90,7 @@ export const CreateUserRoleModal = ({visible, onClose})=>{
                         <FontAwesomeIcon style={{marginRight:'0.5em'}} icon={faChevronLeft}/> {'Back'} 
                       </button>
                     }
-                      <button className='drawer-btn' onClick={onClose} >Cancel</button>
+                      <button className='drawer-btn' onClick={()=>{dispatch(resetPermission()); onClose();}} >Cancel</button>
                     </div>
                     
                     {(currentStep < steps.length - 1) &&
@@ -61,8 +99,8 @@ export const CreateUserRoleModal = ({visible, onClose})=>{
                       </button>
                     } 
                     {currentStep == steps.length - 1 && 
-                      <button disabled={false} onClick={null} className={(currentStep ==0) || false ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
-                      {false? <Spinner/> :'Create'}
+                      <button disabled={loading} onClick={handelSubmit} className={(currentStep ==0) || false ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
+                      {loading? <Spinner/> :'Create'}
                       </button>
                     }
   
