@@ -49,7 +49,7 @@
 }
 
 .createUserModal:where(.css-dev-only-do-not-override-12jzuas).ant-modal .ant-modal-footer{
-    margin-top: 0px !important;
+    margin-top: auto !important;
 }
 
 .pt-20{padding-top: 20px;}

@@ -12,6 +12,7 @@ import { Loader } from '../../../components/loader';
 import { MOVE_GROUP } from '../../../util/mutation/properties.mutation';
 import { GET_BRANCHES } from '../../../util/query/branch.query';
 import { setModuleCustomPermission } from '../../../middleware/redux/reducers/moduleCustomPermission.reducer';
+import { setCustomModulePermission, updateDefaultPropPermissin } from '../../../middleware/redux/reducers/permission.reducer';
 
 
 export const CustomModulePermission = ({ visible, onClose, propertyListRefetch, groupList, setSelectedRowKeys, obj}) => {
@@ -46,9 +47,8 @@ export const CustomModulePermission = ({ visible, onClose, propertyListRefetch, 
 
   const [tags, setTags] = useState([]);
   
-  const  customPermission = useSelector(state=>state.moduleCustomPermissionReducer);
+  const {propAccess} = useSelector(state=>state.permissionReducer);
   
-  console.log(customPermission)
 
   useEffect(() => {
 
@@ -89,7 +89,7 @@ export const CustomModulePermission = ({ visible, onClose, propertyListRefetch, 
 
 
   useEffect(()=>{
-    if(groupInput && !tags?.find((tag)=>tag?.name==groupInput?.name)){
+    if(groupInput && !tags?.find((tag)=>tag?.name==groupInput?.name) && groupInput?.id!="dumy"){
         setTags([...tags, groupInput]);
     }
   }, [groupInput]);
@@ -97,11 +97,21 @@ export const CustomModulePermission = ({ visible, onClose, propertyListRefetch, 
 
   const dispatch = useDispatch();
   useEffect(()=>{
+    if(propAccess && propAccess.hasOwnProperty(obj)){
+      if((propAccess[obj]).hasOwnProperty("custom"+obj)){
+
+        setTags([...propAccess[obj]["custom"+obj]]);
+        // console.log(propAccess[obj]["custom"+obj]);
+      }
+    }
     // setModuleCustomPermission
-    dispatch(setModuleCustomPermission({[obj]:tags}))
-  }, [tags]);
+  }, [propAccess]);
 
 
+  const [btn, setBtn] = useState(false);
+  useEffect(()=>{
+    console.log(btn);
+  },[btn]);
 
   return (
     <Modal
@@ -110,9 +120,12 @@ export const CustomModulePermission = ({ visible, onClose, propertyListRefetch, 
       footer={
         <div style={{padding:'6px 40px', paddingBottom:'16px', textAlign:'left', display:'flex', columnGap:'16px', marginTop:'-25px' }}>
             <button  
-              disabled={groupInput?.id? false : true} 
-              className={!groupInput?.id? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
-              onClick={onClose}
+              disabled={btn || groupInput?.id ? false : true} 
+              className={ !btn || !groupInput?.id  ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
+              onClick={()=>{
+                dispatch(setCustomModulePermission({objectType: obj, custom:tags}));
+                onClose();
+              }}
             >
               {loading ? <Spin indicator={<LoadingOutlined/>}/> : "Save"}
             </button>
@@ -143,7 +156,7 @@ export const CustomModulePermission = ({ visible, onClose, propertyListRefetch, 
                 </div>
                 <div className="grouptabs" style={{marginBottom: '16px'}}>
                     {tags?.map((property)=>(
-                        <Tag closable={true} onClose={()=>setTags(tags?.filter((tag)=>tag.id!=property.id))} className='tag'>
+                        <Tag closable={true} onClose={()=>{setBtn(true); setGroupInput({id:"dumy"}); setTags(tags?.filter((tag)=>tag.id!=property.id));  }} className='tag'>
                             {property.name}
                         </Tag>
                     ))}
@@ -194,7 +207,7 @@ export const CustomModulePermission = ({ visible, onClose, propertyListRefetch, 
                                 {localGroup?.length ? localGroup?.map((gl)=>(
                                     <div 
                                         className={"popoverdataitem"} 
-                                        onClick={(e)=>{setGroupInput({name:gl.branchname, id:gl._id}); setGroupPopover(false)}}>
+                                        onClick={(e)=>{setGroupInput({name:gl.branchname, id:gl._id}); setBtn(true); setGroupPopover(false)}}>
                                         {gl.branchname}
                                     </div>
                                 )):

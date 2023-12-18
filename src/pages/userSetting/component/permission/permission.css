@@ -261,3 +261,13 @@
     color: #7c98b6 !important;
     font-weight: 500 !important;
 }
+
+.moduleList{
+    cursor: pointer;
+    color: #007a8c;
+}
+
+.moduleList:hover{
+    color: #00a4bd;
+    text-decoration: underline;
+}

@@ -1,15 +1,15 @@
-import Spinner from '../../../components/spinner';
-import './createUserModal.css';
+import Spinner from '../../components/spinner';
+// import './createUserModal.css';
 import React, { useState } from 'react';
-import { Modal, Steps } from 'antd';
+import { Input, Modal, Steps } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { CreateUserComponent } from '../component/createUserComponent/createUser.component';
-import { PermissionComponent } from '../component/permission/permission.component';
+import { Permission } from "../userSetting/component/permission/permission.component";
+import { ReviewPermission } from '../../components/reviewPermission/ReviewPermission';
 
 
 
-export const CreateUserModal = ({visible, onClose})=>{
+export const CreateUserRoleModal = ({visible, onClose})=>{
     
     const [currentStep, setCurrentStep] = useState(0);
     const handlePrev = () => {
@@ -19,24 +19,22 @@ export const CreateUserModal = ({visible, onClose})=>{
     const handleNext = (e) => {
         setCurrentStep(currentStep + 1);
     };
-
-    
+    const [roleName, setRoleName] = useState("");
         
     const steps = [
         {
-          title: 'EMPLOYEE DETAIL',
-          component: <CreateUserComponent />
+            title: 'Permissions',
+            component: <Permission role />
         },
         {
-          title: 'PERMISSIONS',
-          component: <PermissionComponent role/>
-        },
+            title:  'Role Info',
+            component: <RoleInfo roleName={roleName} setRoleName={setRoleName} />
+        },          
         {
-          title: 'REVIEW',
-        //   component: <Review basicInfo={basicInfo} setWidth={setWidth} />
+            title: 'Review',
+            component: <ReviewPermission roleName={roleName} />
         }
     ];
-
 
       
 
@@ -44,9 +42,8 @@ export const CreateUserModal = ({visible, onClose})=>{
         <Modal
             visible={visible}     
             width="100%"
-            height="100vh"
+            height="100%"
             className='createUserModal'
-            style={{ top: 10, height: '100vh', paddingBottom: 10 }}
             footer={
                 <div className='drawer-footer' style={{marginTop:0, display:'flex', justifyContent:'space-between'}}>
                     <div>
@@ -59,7 +56,7 @@ export const CreateUserModal = ({visible, onClose})=>{
                     </div>
                     
                     {(currentStep < steps.length - 1) &&
-                      <button id="nextBtn" className={false? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handleNext}>
+                      <button id="nextBtn" disabled={currentStep==1 && roleName?.length<3 ? true : false} className={currentStep==1 && roleName?.length<3 ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handleNext}>
                       {'Next'} <FontAwesomeIcon className='next-btn-icon' icon={faChevronRight}/>
                       </button>
                     } 
@@ -75,7 +72,7 @@ export const CreateUserModal = ({visible, onClose})=>{
         >
             <div className='userModal modal-parent'>
                 <div className="user-header">
-                    <div className="text w-100">Create User</div>
+                    <div className="text w-100">Create Role</div>
                     <Steps current={currentStep} progressDot={customDot}>
                     {steps.map((step, index) => (
                         <Step key={index} title={step.title} />
@@ -99,3 +96,23 @@ const customDot = (dot, { status, index }) => {
     </div>
   );
 };
+
+
+const RoleInfo = ({roleName, setRoleName})=>{
+    
+    return(
+        <div style={{ margin:'auto', marginTop:'2%' , width:'60%', marginBottom:'5%' }}>
+            <label style={{fontWeight: 'bold'}}>Role Name</label>
+            <Input 
+                className="generic-input-control"
+                placeholder="Define Role Name"
+                autoFocus
+                value={roleName}
+                onChange={(e)=>setRoleName(e.target.value)}
+            />
+            <div className="text">Specify a role name that aligns with the designated permissions and access levels configured previously.
+            </div>
+        </div>
+    )
+}
+

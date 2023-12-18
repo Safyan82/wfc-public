@@ -6,7 +6,7 @@ import pencil from './pencil.svg'
 import admin from './keys.svg'
 import { PopoverSearch } from '../../../setting/popoverSearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBugSlash, faExternalLink, faEye, faEyeSlash, faPencil, faPencilRuler, faSearch, faStoreSlash, faTrashCanArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { faBugSlash, faExternalLink, faEye, faEyeSlash, faLink, faList12, faPencil, faPencilRuler, faSearch, faStoreSlash, faTrashCanArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { objectType } from '../../../../util/types/object.types';
 import { useQuery } from '@apollo/client';
 import { GetPropertyByGroupQuery, PROPERTYWITHFILTER } from '../../../../util/query/properties.query';
@@ -144,7 +144,7 @@ export const Permission = ({access, role})=>{
 
     const {propAccess} = useSelector((state)=>state?.permissionReducer);
 
-    console.log(propAccess)
+    // console.log(propAccess)
 
     //  first time rendering when property data recieves
     useEffect(()=>{
@@ -164,7 +164,7 @@ export const Permission = ({access, role})=>{
                         <span>{property?.label}</span>
                         <div style={{display:'flex', columnGap:'20px'}} >
         
-                            <FontAwesomeIcon className={propAccess[obj]?.view=="None"  || moduleView == "None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                            <FontAwesomeIcon className={propAccess[obj]?.view=="None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
                                 if(moduleView=="None"){
                                     return;
                                 } 
@@ -182,7 +182,7 @@ export const Permission = ({access, role})=>{
                             } 
                                 icon={propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.visible==1? faEye : faEyeSlash} />    
                         
-                            <FontAwesomeIcon className={propAccess[obj]?.view=="None" || moduleView == "None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                            <FontAwesomeIcon className={propAccess[obj]?.view=="None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
                                  if(moduleView=="None"){
                                     return;
                                 }else{
@@ -198,7 +198,7 @@ export const Permission = ({access, role})=>{
                                 }
                             }}  
                             icon={faPencil}  />
-                            {propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit==1? null : <span className={propAccess[obj]?.view=="None" || moduleView=="None"?'slash-disabled ':'slash'}></span> }
+                            {propAccess.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit==1? null : <span className={propAccess[obj]?.view=="None" ? 'slash-disabled' : 'slash'}></span> }
                             
                         </div>
                     </div>
@@ -211,9 +211,15 @@ export const Permission = ({access, role})=>{
 
 // Top access control of each module
     const [moduleView, setModuleView] = useState(propAccess[obj]?.view || null);
-    const [moduleEdit, setModuleEdit] = useState(null);
-    const [moduleDelete, setModuleDelete] = useState(null);
+    const [moduleEdit, setModuleEdit] = useState(propAccess[obj]?.edit || null);
+    const [moduleDelete, setModuleDelete] = useState(propAccess[obj]?.delete || null);
 
+    useEffect(()=>{
+        console.log("User generic role")
+        setModuleView(propAccess[obj]?.view || null);
+        setModuleEdit(propAccess[obj]?.edit || null);
+        setModuleDelete(propAccess[obj]?.delete || null);
+    }, [obj]);
 
     // popover state managements
     const [viewPopover, setViewPopover] = useState(false);
@@ -230,7 +236,7 @@ export const Permission = ({access, role})=>{
             }
         }
         if(moduleView?.toLowerCase()== "custom branch"){
-            setCustomModulePermission(true);
+            // setCustomModulePermission(true);
         }else{
             setCustomModulePermission(false)
         }
@@ -252,6 +258,7 @@ export const Permission = ({access, role})=>{
                             permission:{
                                 visible: 0,
                                 edit: 0,
+                                label: property?.label,
                             }
                         }));
             })})}
@@ -265,7 +272,8 @@ export const Permission = ({access, role})=>{
                             objectType: obj,
                             permission:{
                                 visible: 1,
-                                edit: 1
+                                edit: 1,
+                                label: property?.label,
                             }
                         }));
             })})}
@@ -287,7 +295,8 @@ export const Permission = ({access, role})=>{
                             objectType: obj,
                             permission:{
                                 visible: 0,
-                                edit: 0
+                                edit: 0,
+                                label: property?.label,
                             }
                         }));
             })})}
@@ -301,7 +310,8 @@ export const Permission = ({access, role})=>{
                             objectType: obj,
                             permission:{
                                 visible: propAccess[obj][property?._id]?.visible,
-                                edit: 0
+                                edit: 0,
+                                label: property?.label,
                             }
                         }));
             })})}
@@ -316,7 +326,8 @@ export const Permission = ({access, role})=>{
                             objectType: obj,
                             permission:{
                                 visible: 1,
-                                edit: 1
+                                edit: 1,
+                                label: property?.label,
                             }
                         }));
             })})}
@@ -328,6 +339,7 @@ export const Permission = ({access, role})=>{
             dispatch(updateModulePermission({objectType: obj, delete: moduleDelete}));
         }
     },[moduleDelete]);
+
     
     // handel rendering when any thing change in depth access of each module
     useEffect(()=>{
@@ -348,7 +360,7 @@ export const Permission = ({access, role})=>{
                             <span>{property?.label}</span>
                             <div style={{display:'flex', columnGap:'20px'}} >
             
-                                <FontAwesomeIcon className={propAccess[obj]?.view=="None" || moduleView == "None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                                <FontAwesomeIcon className={propAccess[obj]?.view=="None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
                                     if(moduleView=="None"){
                                         return;
                                     } 
@@ -358,6 +370,7 @@ export const Permission = ({access, role})=>{
                                             permission:{
                                                 visible: propAccess[obj][property?._id]?.visible==1? 0 : 1,
                                                 edit: propAccess[obj][property?._id]?.edit,
+                                                label: property?.label,
                                                 delete: propAccess[obj][property?._id]?.delete || moduleDelete
                                             },
                                             objectType: obj
@@ -365,8 +378,8 @@ export const Permission = ({access, role})=>{
                                     }}
                                 } 
                                     icon={propAccess[obj][property?._id]?.visible==1? faEye : faEyeSlash} />    
-                            
-                                <FontAwesomeIcon className={propAccess[obj]?.view=="None" || moduleView == "None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                                
+                                <FontAwesomeIcon className={propAccess[obj]?.view=="None" ? 'access-icon disabled' :'access-icon'} onClick={()=>{
                                      if(moduleView=="None"){
                                         return;
                                     }else{
@@ -376,13 +389,14 @@ export const Permission = ({access, role})=>{
                                             permission:{
                                                 edit: propAccess[obj][property?._id]?.edit==1? 0 : 1,
                                                 visible: propAccess[obj][property?._id]?.visible,
-                                                delete: propAccess[obj][property?._id]?.delete || moduleDelete
+                                                delete: propAccess[obj][property?._id]?.delete || moduleDelete,
+                                                label: property?.label,
                                             }
                                         }))
                                     }
                                 }}  
                                 icon={faPencil}  />
-                                {propAccess[obj][property?._id]?.edit==1? null : <span className={propAccess[obj]?.view=="None"  || moduleView=="None"?'slash-disabled ':'slash'}></span> }
+                                {propAccess[obj][property?._id]?.edit==1? null : <span className={propAccess[obj]?.view=="None"?'slash-disabled ':'slash'}></span> }
                                 
                             </div>
                         </div>
@@ -392,10 +406,12 @@ export const Permission = ({access, role})=>{
             setList(d);
         }
         if(propAccess && propAccess.hasOwnProperty(obj)){
+            // alert("a b c")
+            console.log(propAccess[obj], "obj access")
 
-            setModuleView(propAccess[obj]?.view)
-            setModuleDelete(propAccess[obj]?.delete)
-            setModuleEdit(propAccess[obj]?.edit)
+            // setModuleView(propAccess[obj]?.view)
+            // setModuleDelete(propAccess[obj]?.delete)
+            // setModuleEdit(propAccess[obj]?.edit)
         }
     },[propAccess]);
 
@@ -405,7 +421,8 @@ export const Permission = ({access, role})=>{
         let objectPropertyDetail = {};
         groupProperty?.getPropertyByGroup?.data?.map((data)=>{
             data?.properties?.map((property, index)=>(
-                objectPropertyDetail[property._id] = {visible:1, edit:1, objectType: obj}
+                objectPropertyDetail[property._id] = {visible:1, edit:1, objectType: obj,
+                    label: property?.label,}
             ));
         });
         setobjectPropertyDefaultDetail(objectPropertyDetail);
@@ -414,7 +431,8 @@ export const Permission = ({access, role})=>{
     useEffect(()=>{
         if(Object.keys(objectPropertyDefaultDetail)?.length && (!propAccess.hasOwnProperty(obj) || Object.keys(propAccess[obj])?.length<4)){
             dispatch(setDefaultPropPermission({[obj]:{view: "All "+obj , edit:  "All "+obj, delete:  "All "+obj, ...objectPropertyDefaultDetail}}))
-        }else if(groupProperty?.getPropertyByGroup?.data?.length==0){
+        }else if(groupProperty?.getPropertyByGroup?.data?.length==0 && !propAccess[obj].hasOwnProperty("view")){
+            alert("");
             setModuleDelete("All "+obj);
             setModuleEdit("All "+obj);
             setModuleView("All "+obj);
@@ -424,7 +442,9 @@ export const Permission = ({access, role})=>{
    
 
     return(
-        <div className='permission-block' style={role?{minHeight: '290px', maxHeight: '300px', overflowY: 'scroll'}:null}>
+        <div className='permission-block' 
+        style={role?{minHeight: '330px', maxHeight: '330px', overflowY: 'scroll'}:null}
+        >
             <div className="object-block">
                 <Input type="text" 
                     name="popoverSearch"
@@ -436,7 +456,7 @@ export const Permission = ({access, role})=>{
                     // onChange={(e)=> setLocalGroup(groupList?.filter((group)=> (group.name)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
                     suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                 />
-                {Object.values(objectType)?.map((object)=>(
+                {Object.values(objectType)?.sort((a,b)=>a.localeCompare(b))?.map((object)=>(
                     <div className={object==obj?'object-block-item object-block-item-active' : 'object-block-item'} onClick={()=>setObj(object)}>{object}</div>
                 ))}
             </div>
@@ -450,7 +470,15 @@ export const Permission = ({access, role})=>{
                     <div style={{display:'flex', rowGap:'16px', flexDirection: 'column'}}>
                         
                         <div style={{display:'flex', justifyContent:'space-between'}}>
-                            <b>View</b>
+                            <div style={{display: 'flex', columnGap: '15px'}}>
+                                <b>View</b>
+                                {
+                                    propAccess.hasOwnProperty(obj) && (propAccess[obj]).hasOwnProperty("custom"+obj)?
+                                    <span onClick={()=>setCustomModulePermission(true)} className='moduleList'>See {obj} List <FontAwesomeIcon icon={faLink}/> </span>
+                                    : null
+                                }
+                            </div>
+
                             <div className="filter-item">
 
                                 <Popover 
@@ -465,7 +493,7 @@ export const Permission = ({access, role})=>{
                                         <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
                                             Team owns
                                         </div>
-                                        <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
+                                        <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText); setCustomModulePermission(true)}}>
                                             Custom {obj}
                                         </div>
                                         <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
@@ -476,13 +504,13 @@ export const Permission = ({access, role})=>{
                                 }>
                                     <span className='truncated-text' onClick={()=>{setViewPopover(!viewPopover)}}> { propAccess.hasOwnProperty(obj) ? propAccess[obj]?.view : moduleView}
                                     <span className='caret'></span>
-                                    </span> 
+                                    </span>
                                 </Popover>
                             </div>
                         </div>
 
                            
-                        <div className={moduleView=="None"?"disabled":null} style={{display:'flex', justifyContent:'space-between'}}>
+                        <div className={propAccess[obj]?.view=="None"?"disabled":null} style={{display:'flex', justifyContent:'space-between'}}>
                             <b>Edit</b>
                             <div className="filter-item">
 
@@ -517,7 +545,7 @@ export const Permission = ({access, role})=>{
                                     </div>
 
                                 }>
-                                    <span className={moduleView=="None"?"disabled":null} onClick={()=>setEditPopover(moduleView=="None"? false :!editPopover)}> { propAccess.hasOwnProperty(obj) ? propAccess[obj]?.edit : moduleEdit} 
+                                    <span className={propAccess[obj]?.view=="None"?"disabled":null} onClick={()=>setEditPopover(moduleView=="None"? false :!editPopover)}> { propAccess.hasOwnProperty(obj) ? propAccess[obj]?.edit : moduleEdit} 
                                     <span className='caret'></span>
                                     </span> 
                                 </Popover>
@@ -525,7 +553,7 @@ export const Permission = ({access, role})=>{
                         </div>
 
 
-                        <div className={moduleView=="None"? "disabled" : null}  style={{display:'flex', justifyContent:'space-between'}}>
+                        <div className={propAccess[obj]?.view=="None"? "disabled" : null}  style={{display:'flex', justifyContent:'space-between'}}>
                             <b>Delete <span className='badge'> Critical</span></b>
 
                             <div className="filter-item">
@@ -533,7 +561,7 @@ export const Permission = ({access, role})=>{
                                 <Popover 
                                     overlayClassName='settingCustomPopover permission-popover'
                                     trigger={"click"}
-                                    open={propAccess[obj]?.view=="None" || moduleView=="None"? false :deletePopover}
+                                    open={propAccess[obj]?.view=="None"? false :deletePopover}
                                     content={
                                     <div className='popover-data'>
                                         <div className={propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"? "popoverdataitem disabled" : "popoverdataitem"} onClick={(e)=>{
@@ -561,7 +589,7 @@ export const Permission = ({access, role})=>{
                                     </div>
 
                                 }>
-                                    <span className={moduleView=="None"? "disabled" : null}  onClick={()=>{setDeletePopover(moduleView=="None"? false: !deletePopover)}}> { propAccess.hasOwnProperty(obj) ? propAccess[obj]?.delete : moduleDelete} 
+                                    <span className={propAccess[obj]?.view=="None"? "disabled" : null}  onClick={()=>{setDeletePopover(moduleView=="None"? false: !deletePopover)}}> { propAccess.hasOwnProperty(obj) ? propAccess[obj]?.delete : moduleDelete} 
                                     <span className='caret'></span>
                                     </span> 
                                 </Popover>

@@ -4,7 +4,33 @@ const permissionReducer = createSlice({
   name: 'permissionReducer',
   initialState: {
     localAccess: [],
-    propAccess:{}
+    propAccess:{
+        Branch: {
+            view: "All Branch",
+            edit: "All Branch",
+            delete: "All Branch",
+        },
+        Employee: {
+            view: "All Employee",
+            edit: "All Employee",
+            delete: "All Employee",
+        },
+        Site: {
+            view: "All Site",
+            edit: "All Site",
+            delete: "All Site",
+        },
+        Customer: {
+            view: "All Customer",
+            edit: "All Customer",
+            delete: "All Customer",
+        },
+        SiteGroup: {
+            view: "All SiteGroup",
+            edit: "All SiteGroup",
+            delete: "All SiteGroup",
+        },
+    }
   },
   reducers: {
     setlocalPermission: (state, action) => {
@@ -44,7 +70,6 @@ const permissionReducer = createSlice({
 
         }
     },
-
     updateDefaultPropPermissin: (state, action)=>{ 
         return {
             ...state,
@@ -73,10 +98,22 @@ const permissionReducer = createSlice({
                 }
             }
         }
+    },
+    setCustomModulePermission:(state, action)=>{
+        return{
+            ...state,
+            propAccess: {
+                ...state.propAccess,
+                [action.payload.objectType]: {
+                    ...state.propAccess[action.payload.objectType],
+                    ["custom"+action.payload.objectType]: action.payload.custom
+                }
+            }
+        }
     }
   },
 });
 
 
-export const { setlocalPermission, setDefaultPropPermission, updateDefaultPropPermissin, updateModulePermission } = permissionReducer.actions;
+export const { setCustomModulePermission, setlocalPermission, setDefaultPropPermission, updateDefaultPropPermissin, updateModulePermission } = permissionReducer.actions;
 export default permissionReducer.reducer;

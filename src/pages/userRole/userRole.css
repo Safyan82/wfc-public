@@ -1,0 +1,14 @@
+.createUserModal .ant-modal-content{
+    margin-left: -1%;
+    width: 102%;
+    height: 100vh;
+}   
+
+.createUserModal{
+    top: 0 !important
+}
+
+.modal-parent{
+    height: 87vh;
+    overflow: auto;
+}
