@@ -1,6 +1,6 @@
 import { GenericTable } from "../../components/genericTable/genericTable"
 
-export const UserRoleGrid = ({createUser})=>{
+export const UserRoleGrid = ({column, createUser, dataSource})=>{
     return(
         <div className='userTab'>
 
@@ -13,7 +13,9 @@ export const UserRoleGrid = ({createUser})=>{
 
             {/* table */}
             <div className='tableView site-layout'>
-                <GenericTable/>
+                <GenericTable 
+                dataSource={dataSource} 
+                column={column} />
             </div>
 
         </div>

@@ -1,17 +1,52 @@
 import { Tabs } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CreateUserRoleModal } from './userRole.modal';
 import { UserRoleGrid } from './userRoleGrid';
 import "./userRole.css";
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useQuery } from '@apollo/client';
+import { UserRoleQuery } from '../../util/query/userRole.query';
 
 export const UserRole = ()=>{
-    const {TabPane} = Tabs;
-    const [activeTab, setActiveTab] = useState('1');
     const [userModal, setUserModal] = useState(false);
+    const column = [
+        {
+            title: 'NAME',
+            key: 'rolename',
+            dataIndex: 'rolename'
+        }, 
+        {
+            title: 'Permission',
+            key: 'permission',
+            dataIndex: 'permission'
+        }, 
+        {
+            title: 'Created At',
+            key: 'createdat',
+            dataIndex: 'createdAt'
+        }, 
 
-    const handelTabChange = (e)=>{
-        setActiveTab(e);
-    };
+    ];
+
+    const {data} = useQuery(UserRoleQuery,{
+        fetchPolicy: 'network-only'
+    });
+    const [userRoleData, setUserRoleData] = useState([]);
+    useEffect(()=>{
+        if(data?.userRoleList?.response){
+            setUserRoleData(data?.userRoleList?.response?.map((role)=>({
+                ...role,
+                permission:Object.keys(role.permission)?.map((access)=>
+                <>
+                    <span>
+                        <b>{access}</b> (<b>Edit</b> {role.permission[access]?.edit} | <b>View</b> {role.permission[access]?.view} | <b>Delete</b> {role.permission[access]?.delete})
+                    </span>, &emsp; <br/>
+                </>
+                )
+            })));
+        }
+    }, [data]);
 
     return(
         <div className='setting-body userRoleModal'>
@@ -19,14 +54,18 @@ export const UserRole = ()=>{
                 <div className="setting-body-inner"></div> 
                 <div className="setting-body-title">
                     <div className='setting-body-inner-title'>
-                        User Role
+                        User Role 
                     </div>
                 </div>
                 {/* descriptive text */}
                 <div className="text">
                     Creation of new roles and efficient management of field-level access. Elevate control and security effortlessly for a more streamlined user experience.
                 </div>
-                <UserRoleGrid createUser={()=>setUserModal(!userModal)}/>
+                <UserRoleGrid 
+                    createUser={()=>setUserModal(!userModal)}
+                    column={column} 
+                    dataSource={userRoleData}   
+                />
             </div>
             {userModal?
             <CreateUserRoleModal

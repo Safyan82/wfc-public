@@ -3,30 +3,30 @@ import { faPencil, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input, Table } from "antd"
 
-export const GenericTable = ({data})=>{
+export const GenericTable = ({column, dataSource})=>{
     
-    const columns = [
-        {
-          title: 'Name',
-          dataIndex: 'name',
-          key: 'name',
-        },
-        {
-          title: 'Access',
-          dataIndex: 'name',
-          key: 'name',
-        },
-        {
-          title: 'Last Active',
-          dataIndex: 'name',
-          key: 'name',
-        },
-        {
-          title: 'Created Date',
-          dataIndex: 'name',
-          key: 'name',
-        },
-    ];
+    // const columns = [
+    //     {
+    //       title: 'Name',
+    //       dataIndex: 'name',
+    //       key: 'name',
+    //     },
+    //     {
+    //       title: 'Access',
+    //       dataIndex: 'name',
+    //       key: 'name',
+    //     },
+    //     {
+    //       title: 'Last Active',
+    //       dataIndex: 'name',
+    //       key: 'name',
+    //     },
+    //     {
+    //       title: 'Created Date',
+    //       dataIndex: 'name',
+    //       key: 'name',
+    //     },
+    // ];
 
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [hoveredRow, setHoveredRow] = useState(null);
@@ -64,8 +64,8 @@ export const GenericTable = ({data})=>{
         <Table
             className="history-table"
             bordered
-            columns={columns}
-            dataSource={[{value: 12}]}
+            columns={column}
+            dataSource={dataSource}
             
             onRow={(record) => ({
                 onMouseEnter: () => handleRowMouseEnter(record),
