@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useQuery } from '@apollo/client';
 import { UserRoleQuery } from '../../util/query/userRole.query';
+import dayjs from 'dayjs';
 
 export const UserRole = ()=>{
     const [userModal, setUserModal] = useState(false);
@@ -40,10 +41,14 @@ export const UserRole = ()=>{
                 permission:Object.keys(role.permission)?.map((access)=>
                 <>
                     <span>
-                        <b>{access}</b> (<b>Edit</b> {role.permission[access]?.edit} | <b>View</b> {role.permission[access]?.view} | <b>Delete</b> {role.permission[access]?.delete})
-                    </span>, &emsp; <br/>
+                        <b>{access}</b> &nbsp;
+                        (<b style={{fontSize:'11px'}}>Edit</b> <span style={{fontSize:'10px'}}>{role.permission[access]?.edit}</span> | 
+                        <b style={{fontSize:'11px'}}> View</b> <span style={{fontSize:'10px'}}>{role.permission[access]?.view}</span> | 
+                        <b style={{fontSize:'11px'}}> Delete</b> <span style={{fontSize:'10px'}}>{role.permission[access]?.delete}</span>)
+                    </span> <br/>
                 </>
-                )
+                ),
+                createdAt: dayjs(role.createdAt, { customParseFormat: 'YYYY-MM-DD' }).format('DD-MM-YYYY')
             })));
         }
     }, [data]);
