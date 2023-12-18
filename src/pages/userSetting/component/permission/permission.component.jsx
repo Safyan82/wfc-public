@@ -211,13 +211,14 @@ export const Permission = ({access, role})=>{
 
 // Top access control of each module
     const [moduleView, setModuleView] = useState(propAccess[obj]?.view || null);
-    const [moduleEdit, setModuleEdit] = useState(null);
-    const [moduleDelete, setModuleDelete] = useState(null);
+    const [moduleEdit, setModuleEdit] = useState(propAccess[obj]?.edit || null);
+    const [moduleDelete, setModuleDelete] = useState(propAccess[obj]?.delete || null);
 
     useEffect(()=>{
-        setModuleView(null);
-        setModuleDelete(null);
-        setModuleEdit(null);
+        console.log("User generic role")
+        setModuleView(propAccess[obj]?.view || null);
+        setModuleEdit(propAccess[obj]?.edit || null);
+        setModuleDelete(propAccess[obj]?.delete || null);
     }, [obj]);
 
     // popover state managements
@@ -235,7 +236,7 @@ export const Permission = ({access, role})=>{
             }
         }
         if(moduleView?.toLowerCase()== "custom branch"){
-            setCustomModulePermission(true);
+            // setCustomModulePermission(true);
         }else{
             setCustomModulePermission(false)
         }
@@ -257,6 +258,7 @@ export const Permission = ({access, role})=>{
                             permission:{
                                 visible: 0,
                                 edit: 0,
+                                label: property?.label,
                             }
                         }));
             })})}
@@ -270,7 +272,8 @@ export const Permission = ({access, role})=>{
                             objectType: obj,
                             permission:{
                                 visible: 1,
-                                edit: 1
+                                edit: 1,
+                                label: property?.label,
                             }
                         }));
             })})}
@@ -292,7 +295,8 @@ export const Permission = ({access, role})=>{
                             objectType: obj,
                             permission:{
                                 visible: 0,
-                                edit: 0
+                                edit: 0,
+                                label: property?.label,
                             }
                         }));
             })})}
@@ -306,7 +310,8 @@ export const Permission = ({access, role})=>{
                             objectType: obj,
                             permission:{
                                 visible: propAccess[obj][property?._id]?.visible,
-                                edit: 0
+                                edit: 0,
+                                label: property?.label,
                             }
                         }));
             })})}
@@ -321,7 +326,8 @@ export const Permission = ({access, role})=>{
                             objectType: obj,
                             permission:{
                                 visible: 1,
-                                edit: 1
+                                edit: 1,
+                                label: property?.label,
                             }
                         }));
             })})}
@@ -334,7 +340,6 @@ export const Permission = ({access, role})=>{
         }
     },[moduleDelete]);
 
-    console.log(propAccess,obj)
     
     // handel rendering when any thing change in depth access of each module
     useEffect(()=>{
@@ -365,6 +370,7 @@ export const Permission = ({access, role})=>{
                                             permission:{
                                                 visible: propAccess[obj][property?._id]?.visible==1? 0 : 1,
                                                 edit: propAccess[obj][property?._id]?.edit,
+                                                label: property?.label,
                                                 delete: propAccess[obj][property?._id]?.delete || moduleDelete
                                             },
                                             objectType: obj
@@ -383,7 +389,8 @@ export const Permission = ({access, role})=>{
                                             permission:{
                                                 edit: propAccess[obj][property?._id]?.edit==1? 0 : 1,
                                                 visible: propAccess[obj][property?._id]?.visible,
-                                                delete: propAccess[obj][property?._id]?.delete || moduleDelete
+                                                delete: propAccess[obj][property?._id]?.delete || moduleDelete,
+                                                label: property?.label,
                                             }
                                         }))
                                     }
@@ -399,10 +406,12 @@ export const Permission = ({access, role})=>{
             setList(d);
         }
         if(propAccess && propAccess.hasOwnProperty(obj)){
+            // alert("a b c")
+            console.log(propAccess[obj], "obj access")
 
-            setModuleView(propAccess[obj]?.view)
-            setModuleDelete(propAccess[obj]?.delete)
-            setModuleEdit(propAccess[obj]?.edit)
+            // setModuleView(propAccess[obj]?.view)
+            // setModuleDelete(propAccess[obj]?.delete)
+            // setModuleEdit(propAccess[obj]?.edit)
         }
     },[propAccess]);
 
@@ -412,7 +421,8 @@ export const Permission = ({access, role})=>{
         let objectPropertyDetail = {};
         groupProperty?.getPropertyByGroup?.data?.map((data)=>{
             data?.properties?.map((property, index)=>(
-                objectPropertyDetail[property._id] = {visible:1, edit:1, objectType: obj}
+                objectPropertyDetail[property._id] = {visible:1, edit:1, objectType: obj,
+                    label: property?.label,}
             ));
         });
         setobjectPropertyDefaultDetail(objectPropertyDetail);
@@ -421,7 +431,8 @@ export const Permission = ({access, role})=>{
     useEffect(()=>{
         if(Object.keys(objectPropertyDefaultDetail)?.length && (!propAccess.hasOwnProperty(obj) || Object.keys(propAccess[obj])?.length<4)){
             dispatch(setDefaultPropPermission({[obj]:{view: "All "+obj , edit:  "All "+obj, delete:  "All "+obj, ...objectPropertyDefaultDetail}}))
-        }else if(groupProperty?.getPropertyByGroup?.data?.length==0){
+        }else if(groupProperty?.getPropertyByGroup?.data?.length==0 && !propAccess[obj].hasOwnProperty("view")){
+            alert("");
             setModuleDelete("All "+obj);
             setModuleEdit("All "+obj);
             setModuleView("All "+obj);
@@ -431,7 +442,9 @@ export const Permission = ({access, role})=>{
    
 
     return(
-        <div className='permission-block' style={role?{minHeight: '290px', maxHeight: '300px', overflowY: 'scroll'}:null}>
+        <div className='permission-block' 
+        style={role?{minHeight: '330px', maxHeight: '330px', overflowY: 'scroll'}:null}
+        >
             <div className="object-block">
                 <Input type="text" 
                     name="popoverSearch"
@@ -443,7 +456,7 @@ export const Permission = ({access, role})=>{
                     // onChange={(e)=> setLocalGroup(groupList?.filter((group)=> (group.name)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
                     suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                 />
-                {Object.values(objectType)?.map((object)=>(
+                {Object.values(objectType)?.sort((a,b)=>a.localeCompare(b))?.map((object)=>(
                     <div className={object==obj?'object-block-item object-block-item-active' : 'object-block-item'} onClick={()=>setObj(object)}>{object}</div>
                 ))}
             </div>
@@ -480,7 +493,7 @@ export const Permission = ({access, role})=>{
                                         <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
                                             Team owns
                                         </div>
-                                        <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
+                                        <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText); setCustomModulePermission(true)}}>
                                             Custom {obj}
                                         </div>
                                         <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>

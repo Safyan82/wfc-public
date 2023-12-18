@@ -1,0 +1,24 @@
+.review-title{
+    font-size: 14px;
+    font-weight: bold;
+    margin: auto;
+    text-align: center;
+    letter-spacing: 0.4px;
+}
+
+.role-title{
+    font-weight: bold;
+    font-style: italic;
+    font-size: 22px;
+    margin: auto;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+.review-collapse{
+    margin: 0px 40px 40px 40px !important;
+}
+
+.review-child{
+    padding: 20px 20px 24px 44px;
+}
