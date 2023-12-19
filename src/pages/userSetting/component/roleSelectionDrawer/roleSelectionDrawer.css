@@ -1,0 +1,51 @@
+.userRoleSelection-box{
+    border: 1px solid #7fd1de;
+    cursor: pointer;
+    padding: 12px;
+    background-color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    color: #33475b;
+    margin-bottom: 16px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+}
+
+
+
+
+.userRoleSelection-box:hover{
+    box-shadow: 0 0 0 1px #7fd1de, 0 0 12px 0 rgba(0, 163, 189, 0.3);
+}
+
+.userRoleSelection-box-disabled{
+    border: 1px solid rgb(176, 193, 212);
+    cursor: pointer;
+    padding: 12px;
+    color: rgb(176, 193, 212) !important;   
+    cursor: not-allowed;
+    font-size: 14px;
+    font-weight: bold;
+    color: #33475b;
+    margin-bottom: 16px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+}
+
+.userRoleSelection-box-disabled small{
+    
+    color: rgb(176, 193, 212) !important;
+}
+
+.small-text{
+    color: #516f90!important;
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: normal;
+}

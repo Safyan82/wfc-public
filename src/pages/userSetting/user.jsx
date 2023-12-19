@@ -3,6 +3,7 @@ import { Tabs } from 'antd';
 import { useState } from 'react';
 import { UserTab } from './component/userTabComponent/userTab';
 import { CreateUserModal } from './modal/createUserModal';
+import { UserRoleSelectionDrawer } from './component/roleSelectionDrawer/roleSelectionDrawer';
 
 export const User = ()=>{
     const {TabPane} = Tabs;
@@ -12,6 +13,8 @@ export const User = ()=>{
     const handelTabChange = (e)=>{
         setActiveTab(e);
     };
+
+    const [userRoleModal, setUserRoleModal] = useState(false);
 
     return(
         <div className='setting-body'>
@@ -26,11 +29,19 @@ export const User = ()=>{
                     </TabPane>
                 </Tabs>
             </div>
-            {userModal?
+            {userRoleModal?
             <CreateUserModal
-             visible={userModal} onClose={()=>setUserModal(false)} 
+             visible={userRoleModal} onClose={()=>setUserRoleModal(false)} 
             />
             :null}
+            {userModal?
+            <UserRoleSelectionDrawer 
+                visible={userModal}  
+                onClose={()=>setUserModal(false)} 
+                setUserRoleModal={setUserRoleModal}
+            />
+            : null
+            }
         </div>
     );
 }

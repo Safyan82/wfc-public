@@ -5,29 +5,7 @@ import { Input, Table } from "antd"
 
 export const GenericTable = ({column, dataSource})=>{
     
-    // const columns = [
-    //     {
-    //       title: 'Name',
-    //       dataIndex: 'name',
-    //       key: 'name',
-    //     },
-    //     {
-    //       title: 'Access',
-    //       dataIndex: 'name',
-    //       key: 'name',
-    //     },
-    //     {
-    //       title: 'Last Active',
-    //       dataIndex: 'name',
-    //       key: 'name',
-    //     },
-    //     {
-    //       title: 'Created Date',
-    //       dataIndex: 'name',
-    //       key: 'name',
-    //     },
-    // ];
-
+   
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [hoveredRow, setHoveredRow] = useState(null);
 
