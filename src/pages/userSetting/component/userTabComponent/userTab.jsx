@@ -1,6 +1,30 @@
 import { GenericTable } from '../../../../components/genericTable/genericTable';
 import '../../user.css';
 export const UserTab = ({createUser})=>{
+    
+    const columns = [
+        {
+          title: 'Name',
+          dataIndex: 'name',
+          key: 'name',
+        },
+        {
+          title: 'Access',
+          dataIndex: 'name',
+          key: 'name',
+        },
+        {
+          title: 'Last Active',
+          dataIndex: 'name',
+          key: 'name',
+        },
+        {
+          title: 'Created Date',
+          dataIndex: 'name',
+          key: 'name',
+        },
+    ];
+
     return(
         <div className='userTab'>
             {/* descriptive text */}
@@ -17,7 +41,7 @@ export const UserTab = ({createUser})=>{
 
             {/* table */}
             <div className='tableView site-layout'>
-                <GenericTable/>
+                <GenericTable column={columns} />
             </div>
 
         </div>

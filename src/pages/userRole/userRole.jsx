@@ -30,7 +30,7 @@ export const UserRole = ()=>{
 
     ];
 
-    const {data} = useQuery(UserRoleQuery,{
+    const {data, refetch: userRoleRefetch} = useQuery(UserRoleQuery,{
         fetchPolicy: 'network-only'
     });
     const [userRoleData, setUserRoleData] = useState([]);
@@ -74,7 +74,7 @@ export const UserRole = ()=>{
             </div>
             {userModal?
             <CreateUserRoleModal
-             visible={userModal} onClose={()=>setUserModal(false)} 
+             visible={userModal} onClose={async()=>{setUserModal(false); await userRoleRefetch();}} 
             />
             :null}
         </div>

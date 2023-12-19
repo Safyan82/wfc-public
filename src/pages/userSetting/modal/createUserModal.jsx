@@ -24,12 +24,12 @@ export const CreateUserModal = ({visible, onClose})=>{
         
     const steps = [
         {
-          title: 'EMPLOYEE DETAIL',
-          component: <CreateUserComponent />
-        },
-        {
           title: 'PERMISSIONS',
           component: <PermissionComponent role/>
+        },
+        {
+          title: 'EMPLOYEE DETAIL',
+          component: <CreateUserComponent />
         },
         {
           title: 'REVIEW',
