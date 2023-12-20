@@ -10,7 +10,7 @@
 .createUser-block{
     height: 55vh;
     max-height: 55vh;
-    overflow-y: scroll;
+    overflow: auto;
 }
 
 .createUser-block .createUser-block-header{
