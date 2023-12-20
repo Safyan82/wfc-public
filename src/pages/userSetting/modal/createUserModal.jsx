@@ -19,7 +19,6 @@ export const CreateUserModal = ({visible, onClose})=>{
     const handleNext = (e) => {
         setCurrentStep(currentStep + 1);
     };
-
     
         
     const steps = [
@@ -28,7 +27,7 @@ export const CreateUserModal = ({visible, onClose})=>{
           component: <PermissionComponent role/>
         },
         {
-          title: 'EMPLOYEE DETAIL',
+          title: 'USER DETAIL',
           component: <CreateUserComponent />
         },
         {

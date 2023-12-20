@@ -1,6 +1,6 @@
 import './permission.css';
-import { Collapse, Input, Popover, Radio } from "antd";
-import { useEffect, useState } from "react";
+import { Collapse, Input, Popover, Radio, Select } from "antd";
+import { useEffect, useRef, useState } from "react";
 import standard from './robot.svg'
 import pencil from './pencil.svg'
 import admin from './keys.svg'
@@ -15,53 +15,53 @@ import { setDefaultPropPermission, setlocalPermission, updateDefaultPropPermissi
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { CustomModulePermission } from '../../modal/customModulePermission';
-
+import {UserRoleQuery} from "../../../../util/query/userRole.query"
 
 export const PermissionComponent = ()=>{
     const [isExpanded, setExpand] = useState('1');
 
+    const [userAccessType, setUserAccessType] = useState("standardPermissions");
 
-    const items = [
-        {
-            key: '1',
-            label: <div className="permission-accordin">
-                        <div>
-                            Choose how to set access
+    const [items, setItems] = useState([]);
+    const [userRole, setuserRole] = useState("");
+
+    const {data, refetch: userRoleRefetch} = useQuery(UserRoleQuery ,{
+        fetchPolicy: 'network-only'
+    });
+
+    useEffect(()=>{
+        if(userAccessType){
+            setItems([
+                {
+                    key: '1',
+                    label: <div className="permission-accordin">
+                                <div>
+                                    Choose how to set access
+                                </div>
+                                {isExpanded=='1'? null:
+                                    <div className="helping-heading">Start with standard user access</div>
+                                }
+                            </div>
+                    ,
+                    children: <UserAccess userAccessType={userAccessType} setUserAccessType={setUserAccessType} />,
+                },
+
+                {
+                    key: '2',
+                    label:<div className="permission-accordin">
+                            <div>
+                               {userAccessType==="standardPermissions" ? "Choose user role" : "Choose permission"} 
+                            </div>
+                            {isExpanded=='2'? null:
+                                <div className="helping-heading">Change permissions</div>
+                            }
                         </div>
-                        {isExpanded=='1'? null:
-                            <div className="helping-heading">Start with standard user access</div>
-                        }
-                    </div>
-            ,
-            children: <UserAccess />,
-        },
-        {
-            key: '2',
-            label:<div className="permission-accordin">
-                    <div>
-                        Choose permission
-                    </div>
-                    {isExpanded=='2'? null:
-                        <div className="helping-heading">Change permissions</div>
-                    }
-                </div>
-            ,
-            children: <Permission />,
-        },
-//         {
-//             key: '3',
-//             label:  <div className="permission-accordin">
-//                     <div>
-//                         Review access
-//                     </div>
-//                     {isExpanded=='1'? null:
-//                         <div className="helping-heading"></div>
-//                     }
-//                 </div>
-// ,
-//             // children: <p>{text}</p>,
-//         },
-    ];
+                    ,
+                    children: userAccessType==="standardPermissions" ? <PreDefineRoles setuserRole={setuserRole} userRole={userRole} data={data?.userRoleList?.response} /> : <Permission /> ,
+                }
+            ])
+        }
+    }, [userAccessType, data?.userRoleList?.response, isExpanded, userRole]);
 
 
     return(
@@ -89,14 +89,14 @@ export const PermissionComponent = ()=>{
     );
 }
 
-const UserAccess = ()=>{
-    const [access, setAccess] = useState('standardPermissions');
+const UserAccess = ({setUserAccessType, userAccessType})=>{
+   
 
     return(
         <div style={{ margin:'20px 20px', display:'flex', columnGap:'40px', justifyContent: 'center' }}>
             
-            <div className={access=="standardPermissions"? "userAccess-box-active" :"userAccess-box"} onClick={()=>setAccess("standardPermissions")} >
-                <Radio name="access" checked={access=="standardPermissions"? true: false} value={"standardPermissions"} onChange={(e)=>setAccess(e.target.value)}    className="radio-btn"/>
+            <div className={userAccessType=="standardPermissions"? "userAccess-box-active" :"userAccess-box"} onClick={()=>setUserAccessType("standardPermissions")} >
+                <Radio name="access" checked={userAccessType=="standardPermissions"? true: false} value={"standardPermissions"} onChange={(e)=>setUserAccessType(e.target.value)}    className="radio-btn"/>
                 <img style={{marginTop:'-25px'}} src={standard} width="40%" height="40%" alt="" />
                 <h5 className='premission-head'>Start with standard user access</h5>
                 <div className="text">
@@ -104,8 +104,8 @@ const UserAccess = ()=>{
                 </div>
             </div>
 
-            <div className={access=="newPermissions"? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setAccess("newPermissions")} >
-                <Radio name="access" checked={access=="newPermissions"? true: false} value={"newPermissions"} onChange={(e)=>setAccess(e.target.value)}      className="radio-btn"/>
+            <div className={userAccessType=="newPermissions"? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setUserAccessType("newPermissions")} >
+                <Radio name="access" checked={userAccessType=="newPermissions"? true: false} value={"newPermissions"} onChange={(e)=>setUserAccessType(e.target.value)}      className="radio-btn"/>
                 <img style={{marginTop:'-25px'}}  src={pencil} width="40%" height="40%" alt="" />
 
                 <h5 className='premission-head'>Start from scratch</h5>
@@ -113,8 +113,8 @@ const UserAccess = ()=>{
 
             </div>
 
-            <div className={access=="adminPermission"? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setAccess("adminPermission")}>
-                <Radio name="access"  checked={access=="adminPermission"? true: false}  value={"adminPermission"} onChange={(e)=>setAccess(e.target.value)}   className="radio-btn"/>
+            <div className={userAccessType=="adminPermission"? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setUserAccessType("adminPermission")}>
+                <Radio name="access"  checked={userAccessType=="adminPermission"? true: false}  value={"adminPermission"} onChange={(e)=>setUserAccessType(e.target.value)}   className="radio-btn"/>
                 <img style={{marginTop:'-25px'}}  src={admin} width="40%" height="40%" alt="" />
                 <h5 className='premission-head'>Make Super Admin</h5>
                 <div className="text">
@@ -617,6 +617,116 @@ export const Permission = ({access, role})=>{
                 : 
                 null
             }
+        </div>
+    )
+}
+
+const PreDefineRoles = ({setuserRole, data, userRole})=>{
+    
+    const [parentWidth, setParentWidth] = useState(null);
+    const parentRef = useRef(null);
+    const [groupPopover, setGroupPopover] = useState(false);
+    
+    const popoverRef = useRef(null);
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (!event.target.closest('.group-wrapper')) {
+            setGroupPopover(false);
+          }
+        };
+    
+        document.addEventListener('click', handleClickOutside);
+    
+        return () => {
+          document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+
+        const updateParentWidth = () => {
+          if (parentRef.current) {
+            const width = parentRef.current.offsetWidth;
+            setParentWidth(width);
+          }
+        };
+    
+        // Call the update function on initial mount and window resize
+        updateParentWidth();
+        window.addEventListener('resize', updateParentWidth);
+        inputRef?.current?.focus();
+    
+        // Clean up the event listener on unmount
+        return () => {
+          window.removeEventListener('resize', updateParentWidth);
+        };
+    
+    }, [groupPopover]);
+
+    const [localRole, setLocalRole] = useState([]);
+
+    useEffect(()=>{
+        setLocalRole(data);
+    }, [data]);
+
+    return (
+        <div className="group-wrapper"  style={{width: '500px', margin: 'auto', marginTop: '32px'}}>
+            <div
+                name="groupInput"
+                className='generic-input-control groupInput' 
+                style={{cursor:'pointer', padding:'0 0px'}}
+                onClick={()=>setGroupPopover(!groupPopover)}
+            >
+                <div style={{fontSize:'14px', fontWeight: 'normal', margin: '9px', display: 'flex', justifyContent: 'space-between'}}>
+                    { Object.keys(userRole)?.length<1? "Select user role" : userRole?.name }
+                    <span onClick={()=>setGroupPopover(!groupPopover)} 
+                        style={{
+                            // position: 'absolute',
+                            // right: '6px',
+                        }} className='caret'></span>
+                </div>
+            </div>
+
+            <div ref={parentRef} className={groupPopover? 'show': 'hide'} style={{width: '500px', margin: 'auto'}}>
+                <div className="moveGroupData" style={{width: parentWidth-1.5}} >
+                    <div className="popover-search" >
+                        <Input type="text" 
+                            ref={inputRef}
+                            name='popoverSearch'
+                            style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
+                            className='generic-input-control' 
+                            placeholder="Search..."
+                            autoFocus={groupPopover}
+                            autoComplete="off"
+                            onChange={(e)=> setLocalRole(data?.filter((role)=> (role.rolename)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
+                            suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
+                        />
+                    </div>
+
+                    <div ref={popoverRef}>
+                        {localRole?.length ? localRole?.map((role)=>(
+                            <div 
+                                className={"popoverdataitem"} 
+                                onClick={(e)=>{setuserRole({name:role.rolename, id:role._id}); setGroupPopover(false)}}>
+                                {role.rolename}
+                            </div>
+                        )):
+                        
+                        <div 
+                            className={"popoverdataitem"} 
+                            style={{cursor:'no-drop'}}
+                            onClick={(e)=>{ setGroupPopover(false)}}>
+                            No results found
+                        </div>
+                        }
+                    </div>
+                </div>
+
+            </div>      
+                             
+                  
         </div>
     )
 }
