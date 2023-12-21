@@ -25,6 +25,7 @@
 
 #userDetail .ant-avatar-string{
     line-height: 44px !important;
+    font-size: 12px;
 }
 
 #userDetail{
