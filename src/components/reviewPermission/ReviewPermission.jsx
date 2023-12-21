@@ -1,9 +1,9 @@
-import { Collapse } from "antd";
+import { Avatar, Collapse } from "antd";
 import "./reviewPermission.css";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
-export const ReviewPermission = ({roleName}) =>{
+export const ReviewPermission = ({roleName, user}) =>{
 
     const {propAccess} = useSelector((state)=>state?.permissionReducer);
     console.log(propAccess, "propAccesspropAccess", Object.values(propAccess["Branch"]))
@@ -50,10 +50,29 @@ export const ReviewPermission = ({roleName}) =>{
 
     return (
         <div style={{ maxHeight: '380px', overflowY: 'scroll'}}>
-            <div style={{margin: '0px 40px'}} className="role-title">{roleName}</div>
-            <div style={{margin: '0px 40px'}}  className='review-title'>
-                Everything you need to get started
+            {Object.keys(user)?.length>0?
+            <div id="userDetail" style={{margin: '0px 40px'}}>
+                <Avatar size={60}>
+                    {user?.firstname[0]+user?.lastname[0]}
+                </Avatar>
+                <div style={{display: 'flex', rowGap: '5px', flexDirection: 'column'}}>
+                    <span>
+                        {user?.firstname+" "+user?.lastname} 
+                    </span>
+                    <b>
+                       <a href={"mailto:"+user?.metadata?.email}>{user?.metadata?.email}</a> 
+                    </b>
+                </div>
             </div>
+            :null}
+            {roleName?
+            <>
+                <div style={{margin: '0px 40px'}} className="role-title">{roleName}</div>
+                <div style={{margin: '0px 40px'}}  className='review-title'>
+                    Everything you need to get started
+                </div>
+            </>
+            : null}
 
             <hr style={{margin: '30px 40px', borderColor:'rgb(223, 227, 235)'}}/>
             <div className="review-title" style={{fontSize:'22px', marginBottom:'10px',}}>

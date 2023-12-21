@@ -17,13 +17,11 @@ import { Link } from 'react-router-dom';
 import { CustomModulePermission } from '../../modal/customModulePermission';
 import {UserRoleQuery} from "../../../../util/query/userRole.query"
 
-export const PermissionComponent = ()=>{
+export const PermissionComponent = ({userAccessType, setUserAccessType, userRole, setuserRole})=>{
     const [isExpanded, setExpand] = useState('1');
 
-    const [userAccessType, setUserAccessType] = useState("standardPermissions");
-
+    
     const [items, setItems] = useState([]);
-    const [userRole, setuserRole] = useState("");
 
     const {data, refetch: userRoleRefetch} = useQuery(UserRoleQuery ,{
         fetchPolicy: 'network-only'
@@ -709,7 +707,7 @@ const PreDefineRoles = ({setuserRole, data, userRole})=>{
                         {localRole?.length ? localRole?.map((role)=>(
                             <div 
                                 className={"popoverdataitem"} 
-                                onClick={(e)=>{setuserRole({name:role.rolename, id:role._id}); setGroupPopover(false)}}>
+                                onClick={(e)=>{setuserRole({name:role.rolename, id:role._id, permission: role?.permission}); setGroupPopover(false)}}>
                                 {role.rolename}
                             </div>
                         )):

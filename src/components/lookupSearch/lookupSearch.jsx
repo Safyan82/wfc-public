@@ -65,7 +65,7 @@ export const LookupSearch = ({setSelectedOption, data, selectedOption, title, ad
                 onClick={()=>setSearchPopover(!searchPopover)}
             >
                 <div style={{fontSize:'14px', fontWeight: 'normal', margin: '9px', display: 'flex', justifyContent: 'space-between'}}>
-                    { Object.keys(selectedOption)?.length<1? title : selectedOption?.name }
+                    { Object.keys(selectedOption)?.length<1? title : selectedOption?.label== "undefined undefined" ? title : selectedOption?.label }
                     <span onClick={()=>setSearchPopover(!searchPopover)} 
                         style={{
                             // position: 'absolute',
@@ -97,7 +97,7 @@ export const LookupSearch = ({setSelectedOption, data, selectedOption, title, ad
                             {localData?.length ? localData?.map((data)=>(
                                 <div 
                                     className={"popoverdataitem"} 
-                                    onClick={(e)=>{setSelectedOption({name:data.label, _id:data._id}); setSearchPopover(false)}}>
+                                    onClick={(e)=>{setSelectedOption({label:data.label, _id:data._id}); setSearchPopover(false)}}>
                                     {data.label}
                                 </div>
                             )):

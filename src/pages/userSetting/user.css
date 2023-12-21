@@ -3,3 +3,17 @@
     flex-direction: row-reverse;
     padding-bottom: 12px;
 }
+
+.generate-password{
+    direction: rtl;
+    font-weight: 300;
+}
+.generate-password:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.copy-password:hover{
+    transform: scale(1.05);
+    cursor: pointer;
+}
