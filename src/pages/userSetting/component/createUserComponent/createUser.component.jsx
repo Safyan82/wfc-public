@@ -171,7 +171,7 @@ export const CreateUserComponent = ()=>{
                     />
                 </Form.Item>
 
-                {emp ?
+                {emp && emp?.label!=="undefined undefined" ?
                 <>
                 
                 <Form.Item>
