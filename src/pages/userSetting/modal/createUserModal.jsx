@@ -11,6 +11,9 @@ import { useDispatch } from 'react-redux';
 import { resetPermission, setPreDefinedDBPermission } from '../../../middleware/redux/reducers/permission.reducer';
 import { useSelector } from 'react-redux';
 import { resetUserDetail } from '../../../middleware/redux/reducers/user.reducer';
+import { useMutation } from '@apollo/client';
+import { newUserMutation } from '../../../util/mutation/user.mutation';
+import { setNotification } from '../../../middleware/redux/reducers/notification.reducer';
 
 
 
@@ -51,6 +54,7 @@ export const CreateUserModal = ({visible, onClose})=>{
     },[]);
 
     const {userDetail} = useSelector(state=> state.userDetailReducer);
+    const {propAccess} = useSelector(state=> state.permissionReducer);
 
     const steps = [
         {
@@ -68,11 +72,52 @@ export const CreateUserModal = ({visible, onClose})=>{
         },
         {
           title: 'REVIEW',
-          component: userRole?.permission ? <ReviewPermission user={userDetail}/> : null
+          component: <ReviewPermission user={userDetail}/>
+          // component: userRole?.permission ? <ReviewPermission user={userDetail}/> : null
         }
     ];
 
 
+    //  create user mutation
+    const [addNewUser, {loading}] = useMutation(newUserMutation);
+
+    const handelSubmit = async () => {
+      try{
+        
+        const userInfo = {
+          userAccessType,
+          userRole: userRole?.id || null,
+          permission: userRole?.id? null :propAccess,
+          password: userDetail?.password,
+          isManualPassword: userDetail?.hasOwnProperty("manualPassword")? userDetail?.manualPassword : 0,
+          employeeId: userDetail?._id
+        };
+
+        await addNewUser({
+          variables:{
+            input: userInfo
+          }
+        });
+        
+        dispatch(setNotification({
+          notificationState:true, 
+          message:"System user created successfully",
+          error: false,
+        }));
+
+        await dispatch(resetPermission());
+        await dispatch(resetUserDetail());
+        onClose();
+      }
+      catch(err){
+        dispatch(setNotification({
+          notificationState:true, 
+          message:err.message,
+          error: true,
+        }));
+      }
+
+    }
       
 
     return(
@@ -106,8 +151,8 @@ export const CreateUserModal = ({visible, onClose})=>{
                       </button>
                     } 
                     {currentStep == steps.length - 1 && 
-                      <button disabled={false} onClick={null} className={(currentStep ==0) || false ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
-                      {false? <Spinner/> :'Create'}
+                      <button disabled={loading} onClick={handelSubmit} className={(currentStep ==0) || loading ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
+                      {loading? <Spinner/> :'Create'}
                       </button>
                     }
   

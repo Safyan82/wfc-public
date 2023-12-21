@@ -5,8 +5,11 @@ import { useEffect, useState } from "react";
 
 export const ReviewPermission = ({roleName, user}) =>{
 
+    console.log("propAccesspropAccess")
+    const state = useSelector((state)=>state);
+    console.log(state, "propAccesspropAccess")
     const {propAccess} = useSelector((state)=>state?.permissionReducer);
-    console.log(propAccess, "propAccesspropAccess", Object.values(propAccess["Branch"]))
+
     const [items, setItems] = useState([]);
 
     useEffect(()=>{
@@ -50,7 +53,7 @@ export const ReviewPermission = ({roleName, user}) =>{
 
     return (
         <div style={{ maxHeight: '380px', overflowY: 'scroll'}}>
-            {Object.keys(user)?.length>0?
+            {user && Object.keys(user)?.length>0?
             <div id="userDetail" style={{margin: '0px 40px'}}>
                 <Avatar size={60}>
                     {user?.firstname[0]+user?.lastname[0]}
