@@ -13,6 +13,7 @@ import noteReducer from './reducers/note.reducer';
 import branchDataReducer from './reducers/branchData.reducer';
 import permissionReducer from './reducers/permission.reducer';
 import moduleCustomPermissionReducer from './reducers/moduleCustomPermission.reducer';
+import userReducer from './reducers/user.reducer';
 
 const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ const store = configureStore({
     branchDataReducer: branchDataReducer,
     permissionReducer: permissionReducer, 
     moduleCustomPermissionReducer: moduleCustomPermissionReducer,
+    userDetailReducer: userReducer
   },
   middleware:[...getDefaultMiddleware()]
 });

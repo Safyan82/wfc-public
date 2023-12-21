@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Form, Input, Select } from "antd";
+import { Checkbox, Form, Input, Select } from "antd";
 import {EmployeeObjectQuery, GetEmployeeRecord} from "../../../../util/query/employee.query";
 import csv from './img.svg';
 import { useEffect, useState } from "react";
@@ -12,6 +12,9 @@ import { useDispatch } from "react-redux";
 import { AddEmployeeMutation } from "../../../../util/mutation/employee.mutation";
 import { setNotification } from "../../../../middleware/redux/reducers/notification.reducer";
 import {objectType} from "../../../../util/types/object.types";
+import { ManualPassword } from "./manualPassword";
+import { setUserDetail } from "../../../../middleware/redux/reducers/user.reducer";
+import { useSelector } from "react-redux";
 
 export const CreateUserComponent = ()=>{
     const {data: employeeData, loading: employeeDataLoading, refetch} = useQuery( GetEmployeeRecord ,{fetchPolicy: 'cache-and-network',
@@ -22,20 +25,30 @@ export const CreateUserComponent = ()=>{
     }
     });
 
+    const {userDetail:user} = useSelector(state=> state.userDetailReducer);
+
     const [suggestedEmail, setSuggestedEmail] = useState("");
-    const [email, setEmail] = useState("");
-    const [firstname, setfirstname] = useState("");
-    const [lastname, setlastname] = useState("");
+    const [email, setEmail] = useState(user?.metadata?.email || "");
+    const [firstname, setfirstname] = useState(user?.firstname|| "");
+    const [lastname, setlastname] = useState(user?.lastname || "");
     const [branch, setbranch] = useState("");
     const [emplevel, setemplevel] = useState("");
     const [emptype, setemptype] = useState("");
-    const [emp, setemp] = useState("");
+    const [emp, setemp] = useState({label: user?.firstname+ " "+user?.lastname, _id:user?._id}||"");
+
+
+    const [manualPasswordPopover, setManualPasswordPopover] = useState(false);
+
+    const [password, setPassword] = useState(user?.password || "");
+    
+    const dispatch = useDispatch();
+
+
 
     useEffect(()=>{
         if(emp){
-
             const data = employeeData?.getEmployee?.response?.find((res)=>res._id==emp?._id);
-            console.log(data, "ddd safi")
+            dispatch(setUserDetail(data));
             setfirstname(data?.firstname);
             setEmail(data?.metadata?.email);
             setlastname(data?.lastname);
@@ -48,6 +61,11 @@ export const CreateUserComponent = ()=>{
         }
     }, [emp]);
 
+    useEffect(()=>{
+        if(password?.length>7){
+            dispatch(setUserDetail({...user, password}))
+        }
+    }, [password]);
 
     // form drawer
     const [employeeSchema, setEmployeeSchema] = useState();
@@ -66,7 +84,6 @@ export const CreateUserComponent = ()=>{
         }
     },[employeeObjectLoading]);
 
-    const dispatch = useDispatch();
 
     // Add new Employee while form creation
     const [addEmployeeMutation, {loading: processloading}] = useMutation(AddEmployeeMutation);
@@ -122,6 +139,13 @@ export const CreateUserComponent = ()=>{
 
     }
 
+    useEffect(()=>{
+        if(password?.length>7){
+            console.log({ ...user, password, manualPassword: 1}, "{ ...user, password, manualPassword: 1}")
+            dispatch(setUserDetail({ ...user, password, manualPassword: 1}));
+            const data = employeeData?.getEmployee?.response?.find((res)=>res._id==emp?._id);
+        }
+    }, [manualPasswordPopover])
 
     return(
         <div className="stepperBody createUser-block">
@@ -179,7 +203,17 @@ export const CreateUserComponent = ()=>{
                         readOnly
                     />
                     {/* {suggestedEmail ? <label className="createOption text" onClick={(e)=>{setEmail(e.target.innerText); setEmailVal(e.target.innerText); setSuggestedEmail(null)}}>{suggestedEmail}</label> : null} */}
-                </Form.Item>         
+                </Form.Item>   
+
+                <Form.Item>
+                    <Checkbox
+                     onChange= {(e)=>{setManualPasswordPopover(e.target.checked);setPassword('');}}
+                     value= {password?.length>7 ? true : false  }
+                     checked= {password?.length>7 ? true : false }
+                    >
+                        Set manual password for this user
+                    </Checkbox>
+                </Form.Item>      
 
                 
                 </>
@@ -188,6 +222,12 @@ export const CreateUserComponent = ()=>{
                 
             </div>
 
+            <ManualPassword
+                visible={manualPasswordPopover}
+                onClose={()=>setManualPasswordPopover(false)}
+                password={password}
+                setPassword={setPassword}
+            />
             
             <FormDrawer
                objectData={employeeSchema}

@@ -142,10 +142,16 @@ const permissionReducer = createSlice({
                 },
             }
         }
+    },
+    setPreDefinedDBPermission: (state, action) =>{
+        return{
+            ...state,
+            propAccess: {...action.payload}
+        }
     }
   },
 });
 
 
-export const { resetPermission,setCustomModulePermission, setlocalPermission, setDefaultPropPermission, updateDefaultPropPermissin, updateModulePermission } = permissionReducer.actions;
+export const { setPreDefinedDBPermission, resetPermission,setCustomModulePermission, setlocalPermission, setDefaultPropPermission, updateDefaultPropPermissin, updateModulePermission } = permissionReducer.actions;
 export default permissionReducer.reducer;

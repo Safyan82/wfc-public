@@ -22,3 +22,13 @@
 .review-child{
     padding: 20px 20px 24px 44px;
 }
+
+#userDetail .ant-avatar-string{
+    line-height: 44px !important;
+}
+
+#userDetail{
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+}
