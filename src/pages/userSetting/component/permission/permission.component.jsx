@@ -102,8 +102,8 @@ const UserAccess = ({setUserAccessType, userAccessType})=>{
                 </div>
             </div>
 
-            <div className={userAccessType=="newPermissions"? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setUserAccessType("newPermissions")} >
-                <Radio name="access" checked={userAccessType=="newPermissions"? true: false} value={"newPermissions"} onChange={(e)=>setUserAccessType(e.target.value)}      className="radio-btn"/>
+            <div className={userAccessType=="customPermissions"? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setUserAccessType("customPermissions")} >
+                <Radio name="access" checked={userAccessType=="customPermissions"? true: false} value={"customPermissions"} onChange={(e)=>setUserAccessType(e.target.value)}      className="radio-btn"/>
                 <img style={{marginTop:'-25px'}}  src={pencil} width="40%" height="40%" alt="" />
 
                 <h5 className='premission-head'>Start from scratch</h5>
@@ -415,7 +415,7 @@ export const Permission = ({access, role})=>{
         }
         if(propAccess && propAccess?.hasOwnProperty(obj)){
             // alert("a b c")
-            console.log(propAccess[obj], "obj access")
+            console.log(propAccess, "obj access")
 
             // setModuleView(propAccess[obj]?.view)
             // setModuleDelete(propAccess[obj]?.delete)

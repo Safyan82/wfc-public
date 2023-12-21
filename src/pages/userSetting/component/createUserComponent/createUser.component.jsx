@@ -203,7 +203,20 @@ export const CreateUserComponent = ()=>{
                         readOnly
                     />
                     {/* {suggestedEmail ? <label className="createOption text" onClick={(e)=>{setEmail(e.target.innerText); setEmailVal(e.target.innerText); setSuggestedEmail(null)}}>{suggestedEmail}</label> : null} */}
-                </Form.Item>   
+                </Form.Item>  
+
+                {password?.length>7 ?
+                <Form.Item>
+                    <div onClick={()=>setManualPasswordPopover(!manualPasswordPopover)} className="generate-password">Change password</div>
+
+                    <Input.Password 
+                        className="generic-input-control"
+                        value={password}
+                        readOnly
+                        />
+                </Form.Item>
+                : null
+                }
 
                 <Form.Item>
                     <Checkbox

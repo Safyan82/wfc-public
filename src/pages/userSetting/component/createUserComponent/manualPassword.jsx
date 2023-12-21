@@ -9,7 +9,7 @@ export const ManualPassword = ({visible, onClose, password, setPassword})=>{
     const [isValidPassword, setIsValidPassword] = useState(false);
 
     useEffect(()=>{
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!=@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/;
         const isValid = passwordRegex.test(password);
         console.log(isValid, "isValidPassword", );
         setIsValidPassword(isValid)
