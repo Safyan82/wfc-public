@@ -123,7 +123,15 @@ body{
     /* border: none; */
 }
 
-.login-form-container .ant-input:hover{
+.login-form-container .ant-input[type="text"]:hover{
+    box-shadow: 0 0 0 2px #fb8c5f !important;
+    outline: none !important;
+    outline-color: #fb8c5f !important;
+    border-color: #fb8c5f !important;
+}
+
+
+.login-form-container-classic .ant-input:hover{
     box-shadow: 0 0 0 2px #fb8c5f !important;
     outline: none !important;
     outline-color: #fb8c5f !important;
@@ -277,6 +285,10 @@ a:visited{
 }
 
 .login-form-container{
+    text-align: center;
+}
+
+.login-form-container-classic{
     display: block;
     position: relative;
     margin: 25% auto 0;

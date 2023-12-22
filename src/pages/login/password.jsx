@@ -1,12 +1,12 @@
 import "./login.css";
-import React from 'react';
+import React, { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
-import { Row, Col, Form, Input, Typography, Checkbox, notification } from 'antd';
+import { Row, Col, Form, Input, Typography, Checkbox, notification, Tag } from 'antd';
 import workforcecityLogin from '../../assets/img/workForceCityLogin.png';
 import logo from '../../assets/img/wc-logo-big.png';
 
 
-export const Login=()=>{
+export const Password=()=>{
 
     // implementation of API
     const [api, contextHolder] = notification.useNotification();
@@ -56,6 +56,8 @@ export const Login=()=>{
         }
     }
 
+    const [showPass, setShowPass] = useState(false);
+
     return(
         <div className="login-parent-window">
             {contextHolder}
@@ -64,38 +66,44 @@ export const Login=()=>{
                 <div className='login-form-container'>
                     <img src={logo} alt="" width={75} height={65}/>
                     
-                    <Typography.Title level={3} className='text-center login-title' >Login</Typography.Title>
+                    <Typography.Title level={3} className='text-center login-title' >Hi. Omar</Typography.Title>
                     
                     <div className="text">
-                        to continue to Workforce City
+                        <Tag>omar@outlook.com</Tag>
                     </div>
+
                     <Form.Item style={{marginTop: '45px'}}>
-                        <Input autoFocus placeholder='Email' className='generic-input-control' type="email" onChange={(e)=>{handelEmail(e.target.value)}}/>
-                        <div className="ant-form-text helper-text" style={{textAlign: 'left', marginTop: '5px'}}>{email?.error && email?.error}</div>
-                        
+                        <Input autoFocus placeholder='Password' className='generic-input-control' type={showPass? "text" : "password"}  onChange={(e)=>{handelPassword(e.target.value)}}/>
+                        <div className="ant-form-text helper-text" style={{textAlign: 'left', marginTop: '5px'}}>{password?.error && password?.error}</div>
+
+                    
                         <Form.Item className='validationCheckboxGroup' style={{textAlign:'left'}}>
                         
-                            <Checkbox>
-                                Remember me
+                            <Checkbox onChange={()=>setShowPass(!showPass)}>
+                                Show password
                             </Checkbox>
                         </Form.Item>
                     </Form.Item>
 
 
+                    
                     <Form.Item className='validationCheckboxGroup' style={{position: 'absolute', top: '430px', }}>
                         
-                        <span className="ant-form-text forgetPassword" style={{marginTop:'5px'}} >Forget email ?</span>
+                        <span className="ant-form-text forgetPassword" style={{marginTop:'5px'}} >Forget password ?</span>
                        
                     </Form.Item>
+
                     
                     <Form.Item style={{position: 'absolute', top: '450px', marginLeft: 'calc(450px - 80px)'}}>
-                        <button className="drawer-filled-btn"  onClick={()=>navigate('/pwd')}>Next</button>
+                        <button className="drawer-filled-btn">Next</button>
                     </Form.Item>
 
                 </div>
-                <div className="text classic-login" onClick={()=>navigate('/classic')}>
+                
+                <div className="text classic-login"  onClick={()=>navigate('/classic')}>
                     Switch to classic login
                 </div>
+
             </div>
 
 
