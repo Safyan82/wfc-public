@@ -24,6 +24,8 @@ import { PropertySetting } from './pages/setting/propertySetting';
 import { User } from './pages/userSetting/user';
 import { routes } from './util/routes/routes';
 import { UserRole } from './pages/userRole/userRole';
+import { Password } from './pages/login/password';
+import { ClassicLogin } from './pages/login/login';
 
 function App() {
   
@@ -72,6 +74,8 @@ function App() {
      <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login/>} />
+        <Route path="/pwd" element={<Password/>} />
+        <Route path="/classic" element={<ClassicLogin/>} />
         
         <Route path='/formview' element={<FormView/>} />
         <Route path='/branch/editform' exact element={<EditForm />} />
