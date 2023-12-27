@@ -9,3 +9,11 @@ mutation($input: userInput!){
     }
 }
 `;
+
+export const verifyPasswordMutation = gql `
+mutation($input: userInput!){
+  verifyPassword(input: $input) {
+    response
+    message
+  }
+}`;

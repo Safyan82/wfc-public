@@ -109,7 +109,9 @@ export const PropertySetting=()=>{
     },[fieldType])
 
     // clear pagination
-    useEffect(()=>{localStorage.clear()},[]);
+    useEffect(()=>{
+        localStorage.removeItem('currPropPage');
+    },[]);
 
 
     const [archiveList, setArchiveList] = useState([]);

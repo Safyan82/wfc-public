@@ -40,3 +40,12 @@ query($employeeId: String!){
   }
 }
 `;
+
+
+export const checkUserForEmail = gql `
+query($email: String!){
+  checkUserByEmail(email: $email) {
+    response
+  }
+}
+`;

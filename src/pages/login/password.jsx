@@ -1,9 +1,13 @@
 import "./login.css";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import { Row, Col, Form, Input, Typography, Checkbox, notification, Tag } from 'antd';
 import workforcecityLogin from '../../assets/img/workForceCityLogin.png';
 import logo from '../../assets/img/wc-logo-big.png';
+import { useSelector } from "react-redux";
+import { useMutation } from "@apollo/client";
+import { verifyPasswordMutation } from "../../util/mutation/user.mutation";
+import Spinner from "../../components/spinner";
 
 
 export const Password=()=>{
@@ -13,52 +17,65 @@ export const Password=()=>{
     const navigate = useNavigate();
 
     // fields
-    const[email, setEmail] = React.useState({value:'',error:''});
     const[password, setPassword] = React.useState({value:'',error:''});
-    const[remember, setRemember] = React.useState();
 
 
     const openNotification = (placement,message, description) => {
       api.warning({
-        message: `Warning`,
+        message: message,
         closeIcon: null,
-        description:
-          'Email and Password is required',
         placement,
       });
     };
 
-    const handelformSubmit=(e)=>{
-        e.preventDefault();
-        if(email.value.length >0 && password.value.length >0 && email.error=="" && password.error==""){
-            navigate("/user/branch");
-        }else{
-            openNotification('topRight');
-        }
-    }
+    const {emailVerificationDetail} = useSelector(state=>state.userDetailReducer);
 
-    const handelEmail=(value)=>{
-        const regx=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        if(regx.test(value)){
-            
-            setEmail({error:'', value});
-        }else{
-            setEmail({error:'Email is invalid'});
+    useEffect(()=>{
+        if(emailVerificationDetail && Object.keys(emailVerificationDetail)?.length<1){
+             window.location="/";
+        }
+    }, [emailVerificationDetail]);
+
+    const [verifyPassword, {loading}] = useMutation(verifyPasswordMutation);
+
+    const handelAuth= async ()=>{
+        try{
+            if(password.value.length >0 && password.error==""){
+                const user = {
+                    password: password?.value,
+                    employeeId: emailVerificationDetail?._id
+                }
+                const userResponse = await verifyPassword({
+                    variables:{
+                        input: user
+                    }
+                });
+                localStorage.setItem("authToken", userResponse?.data?.verifyPassword?.response?.token);
+                navigate("/setting/userRole");
+            }
+        }
+        catch(err){
+            openNotification('topRight', err.message);
         }
     }
 
     const handelPassword=(value)=>{
-        const regx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?=.*[a-zA-Z0-9@#$%^&+=!]).{8,}$/;
+
+        const regx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!-])(?=.*[a-zA-Z0-9@#$%^&+=!]).{8,}$/;
         if(regx.test(value)){
             setPassword({error:'', value});
         }else{
-            setPassword({error:'Password must be at least 8 Character long and include at least one uppercase letter, one lowercase letter, one digit, and one special character'});
+            setPassword({error:'Password is not valid'});
         }
     }
 
+
     const [showPass, setShowPass] = useState(false);
 
+
+
     return(
+        emailVerificationDetail?._id?
         <div className="login-parent-window">
             {contextHolder}
             
@@ -66,10 +83,10 @@ export const Password=()=>{
                 <div className='login-form-container'>
                     <img src={logo} alt="" width={75} height={65}/>
                     
-                    <Typography.Title level={3} className='text-center login-title' >Hi. Omar</Typography.Title>
+                    <Typography.Title level={3} className='text-center login-title' >Hi. {emailVerificationDetail?.name}</Typography.Title>
                     
                     <div className="text">
-                        <Tag>omar@outlook.com</Tag>
+                        <Tag>{emailVerificationDetail?.email}</Tag>
                     </div>
 
                     <Form.Item style={{marginTop: '45px'}}>
@@ -95,7 +112,7 @@ export const Password=()=>{
 
                     
                     <Form.Item style={{position: 'absolute', top: '450px', marginLeft: 'calc(450px - 80px)'}}>
-                        <button className="drawer-filled-btn">Next</button>
+                        <button onClick={handelAuth} className="drawer-filled-btn">Next</button>
                     </Form.Item>
 
                 </div>
@@ -107,6 +124,10 @@ export const Password=()=>{
             </div>
 
 
+        </div>
+        : 
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height:'100vh'}}>
+            <Spinner color={'#ff7a53'} fontSize={80}/>
         </div>
     )
 }
