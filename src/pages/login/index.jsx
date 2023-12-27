@@ -1,64 +1,69 @@
 import "./login.css";
-import React from 'react';
+import React, { useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import { Row, Col, Form, Input, Typography, Checkbox, notification } from 'antd';
 import workforcecityLogin from '../../assets/img/workForceCityLogin.png';
 import logo from '../../assets/img/wc-logo-big.png';
+import { useQuery } from "@apollo/client";
+import { checkUserForEmail } from "../../util/query/employee.query";
+import { useDispatch } from "react-redux";
+import { checkEmailDetails, resetUserDetail } from "../../middleware/redux/reducers/user.reducer";
+import { resetAll } from '../../middleware/redux/reducers/reset.reducer';
+import { useSelector } from "react-redux";
 
 
 export const Login=()=>{
 
-    // implementation of API
-    const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
+    const regx=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     // fields
     const[email, setEmail] = React.useState({value:'',error:''});
-    const[password, setPassword] = React.useState({value:'',error:''});
     const[remember, setRemember] = React.useState();
 
+    
+    const {data} = useQuery(checkUserForEmail,{
+        variables:{
+            email: email?.value
+        },
+        skip: !regx.test(email?.value),
+        fetchPolicy: 'network-only'
+    });
 
-    const openNotification = (placement,message, description) => {
-      api.warning({
-        message: `Warning`,
-        closeIcon: null,
-        description:
-          'Email and Password is required',
-        placement,
-      });
-    };
+    const dispatch = useDispatch();
+    const state = useSelector(state => state?.userDetailReducer);
+    useEffect(()=>{
+        dispatch(resetUserDetail());
+        dispatch(resetAll());
+        console.log(state, "state")
+    }, []);
 
-    const handelformSubmit=(e)=>{
-        e.preventDefault();
-        if(email.value.length >0 && password.value.length >0 && email.error=="" && password.error==""){
-            navigate("/user/branch");
-        }else{
-            openNotification('topRight');
+    useEffect(()=>{
+        console.log(!data?.checkUserByEmail?.response?.hasOwnProperty('_id') , "data?.checkUserByEmail?.response")
+        if(data?.checkUserByEmail?.response?.hasOwnProperty('_id')){
+            dispatch(checkEmailDetails(data?.checkUserByEmail?.response));
+            setEmail({...email, error:''});
+            return;
+        }else if(regx.test(email?.value) && !data?.checkUserByEmail?.response?.hasOwnProperty('_id')){
+            setEmail({...email, error: "Email is not registered"});
+            return;
         }
-    }
+    }, [data])
+
 
     const handelEmail=(value)=>{
-        const regx=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if(regx.test(value)){
-            
             setEmail({error:'', value});
         }else{
+            dispatch(resetUserDetail());
             setEmail({error:'Email is invalid'});
+
         }
     }
 
-    const handelPassword=(value)=>{
-        const regx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?=.*[a-zA-Z0-9@#$%^&+=!]).{8,}$/;
-        if(regx.test(value)){
-            setPassword({error:'', value});
-        }else{
-            setPassword({error:'Password must be at least 8 Character long and include at least one uppercase letter, one lowercase letter, one digit, and one special character'});
-        }
-    }
 
     return(
         <div className="login-parent-window">
-            {contextHolder}
             
             <div className='login-box'>
                 <div className='login-form-container'>
@@ -75,7 +80,7 @@ export const Login=()=>{
                         
                         <Form.Item className='validationCheckboxGroup' style={{textAlign:'left'}}>
                         
-                            <Checkbox>
+                            <Checkbox onChange={(e)=>setRemember(e.target.checked)}>
                                 Remember me
                             </Checkbox>
                         </Form.Item>
@@ -89,7 +94,14 @@ export const Login=()=>{
                     </Form.Item>
                     
                     <Form.Item style={{position: 'absolute', top: '450px', marginLeft: 'calc(450px - 80px)'}}>
-                        <button className="drawer-filled-btn"  onClick={()=>navigate('/pwd')}>Next</button>
+                        <button 
+                        disabled={
+                            // !data?.checkUserByEmail?.response?.hasOwnProperty('_id') || 
+                            email?.value?.length<1 || email?.error!==""}
+                        className={
+                            // !data?.checkUserByEmail?.response?.hasOwnProperty('_id') || 
+                            email?.value?.length<1 || email?.error!==""? "drawer-filled-btn disabled-btn" : "drawer-filled-btn" } 
+                        onClick={()=>navigate('/pwd')}>Next</button>
                     </Form.Item>
 
                 </div>

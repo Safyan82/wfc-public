@@ -26,6 +26,11 @@ import { routes } from './util/routes/routes';
 import { UserRole } from './pages/userRole/userRole';
 import { Password } from './pages/login/password';
 import { ClassicLogin } from './pages/login/login';
+import { PrivateRoutes } from './util/routes/private.routes';
+import { ApolloProvider } from '@apollo/client';
+import { privateClient, publicClient } from './config/apollo';
+import { useErrorBoundary } from './util/errorBoundary/errorboundary';
+import { ErrorFallback } from './util/errorFallback/errorFallback';
 
 function App() {
   
@@ -64,53 +69,71 @@ function App() {
     }
   },[notificationToast]);
 
-  useEffect(()=>{
-    localStorage.setItem("branchOrder", JSON.stringify([{"id":1,"content":"Address Line 1"},{"id":2,"content":"Address Line2"},{"id":3,"content":"City"},{"id":4,"content":"County"}]));
-  },[])
+
+  
+  const hasError = useErrorBoundary();
 
   return (
+    hasError?
+    <ErrorFallback/>
+    :
     <>
-     {contextHolder}
-     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login/>} />
-        <Route path="/pwd" element={<Password/>} />
-        <Route path="/classic" element={<ClassicLogin/>} />
-        
-        <Route path='/formview' element={<FormView/>} />
-        <Route path='/branch/editform' exact element={<EditForm />} />
-        <Route path='/employee/editform' exact element={<EditEmployeeForm />} />
+    {contextHolder}
+    <BrowserRouter>
 
-        {/* private routes */}
-        <Route path='/user/' element={<DefaultLayout/>}>
+      {/* public routes */}
+      <ApolloProvider client={publicClient}>
+        <Routes>
 
-          <Route path='branch' exact element={<Branch />}/>
-          <Route path='branch-detail/:id' element={<BranchDetailPage/>} />
-          <Route path='prophistory' element={<BranchAllPropHistory/>} />
+          <Route path='/' element={<Login/>} />
+          <Route path="/pwd" element={<Password/>} />
+          <Route path="/classic" element={<ClassicLogin/>} />
+        </Routes>
+      </ApolloProvider>
 
-          <Route path='employee' element={<Employee/>} />
-          <Route path='employee-detail/:id' element={<EmployeeDetailPage/>} />
-          <Route path='employee-detail-view/:id' element={<EmployeeDetailViewPage/>} />
-          <Route path='employee-prop-history/:id' element={<EmployeeAllPropHistory/>} />
+
+      {/* private Routes */}
+      <ApolloProvider client={privateClient}>
+
+        <Routes>
+          <Route path='/formview' element={<FormView/>} />
+          <Route path='/branch/editform' exact element={<EditForm />} />
+          <Route path='/employee/editform' exact element={<EditEmployeeForm />} />
+
+          {/* private routes */}
+          <Route path='/user/' element={<PrivateRoutes><DefaultLayout/></PrivateRoutes>}>
+
+            <Route path='branch' exact element={<Branch />}/>
+            <Route path='branch-detail/:id' element={<BranchDetailPage/>} />
+            <Route path='prophistory' element={<BranchAllPropHistory/>} />
+
+            <Route path='employee' element={<Employee/>} />
+            <Route path='employee-detail/:id' element={<EmployeeDetailPage/>} />
+            <Route path='employee-detail-view/:id' element={<EmployeeDetailViewPage/>} />
+            <Route path='employee-prop-history/:id' element={<EmployeeAllPropHistory/>} />
+            
+
+            <Route path='allproperties' element={<AllProperties/>} />
+            
+            <Route path='sitegroup' element={<SiteGroup/>} />
+            <Route path='customer' element={<BranchAllPropHistory/>} />
+
           
+            
+          </Route>
 
-          <Route path='allproperties' element={<AllProperties/>} />
+          {/* setting navigation layout under hte main navigation*/}
+          <Route path={routes.setting} element={<PrivateRoutes><Setting /></PrivateRoutes>}  >
+            <Route index element={<PropertySetting/>} />
+            <Route path={routes.addUser} element={<User/>} />
+            <Route path={routes.userRole} element={<UserRole/>} />
+          </Route>
           
-          <Route path='sitegroup' element={<SiteGroup/>} />
-          <Route path='customer' element={<BranchAllPropHistory/>} />
+        </Routes>
 
-         
-          
-        </Route>
+      </ApolloProvider>
 
-         {/* setting navigation layout under hte main navigation*/}
-        <Route path={routes.setting} element={<Setting />}  >
-          <Route index element={<PropertySetting/>} />
-          <Route path={routes.addUser} element={<User/>} />
-          <Route path={routes.userRole} element={<UserRole/>} />
-        </Route>
-        
-      </Routes>
+
     </BrowserRouter>
     </>
   );
