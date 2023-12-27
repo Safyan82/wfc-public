@@ -46,7 +46,7 @@ export const UserTab = ({createUser})=>{
         const userData =  data?.getAllUser?.response?.map((user)=>({
           name: user?.employee[0]?.lastname+" "+user?.employee[0]?.firstname, 
           access: user?.userAccessType.split(/(?=[A-Z])/).join(",").replaceAll(",", " ").toLocaleUpperCase(), 
-          createdAt: dayjs(user?.createdAt).format('DD/MM/YYYY HH:mm:ss') }));
+          createdAt: new dayjs(user?.createdAt).format('DD/MM/YYYY HH:mm') }));
 
         setDataSource(userData);
         
