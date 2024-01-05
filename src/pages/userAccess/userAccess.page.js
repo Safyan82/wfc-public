@@ -40,7 +40,7 @@ export const UserAccess = ()=>{
     const [dataSource, setDataSource] = useState([]);
     useEffect(()=>{
         if(data?.getUsersAccessLog){
-            setDataSource(data?.getUsersAccessLog?.map((log, id)=>{
+            setDataSource(data?.getUsersAccessLog.reverse()?.map((log, id)=>{
                 return {
                     key: id,
                     name: log?.employee[0]?.firstname + " " + log?.employee[0]?.lastname,
