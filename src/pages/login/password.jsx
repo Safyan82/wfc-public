@@ -19,7 +19,7 @@ export const Password=()=>{
     const navigate = useNavigate();
 
     // fields
-    const[password, setPassword] = React.useState({value:'2015-Ag-5563',error:''});
+    const[password, setPassword] = React.useState({value:'',error:''});
     const dispatch = useDispatch();
 
     const openNotification = (placement,message, description) => {
