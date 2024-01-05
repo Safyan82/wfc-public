@@ -180,9 +180,7 @@
 }
 
 .detailInput{
-    display: none;
     border:0px;
-    border-bottom: 1px solid #00a4bd;
     margin-top: 0px;
     margin-bottom: 5px;
 }
@@ -215,7 +213,7 @@
 
 .detailInputParent{
     min-height: 40px;
-    margin-top: 8%;
+    /* margin-top: 8%; */
 }
 
 .detail-section-focus{
@@ -240,7 +238,7 @@
 
 
 .detailInputParent:hover .detailInput{
-    display: block;
+    /* display: block; */
     width: 100%;
 }
 

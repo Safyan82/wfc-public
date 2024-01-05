@@ -26,9 +26,24 @@ const permissionReducer = createSlice({
             delete: "All Customer",
         },
         SiteGroup: {
-            view: "All SiteGroup",
-            edit: "All SiteGroup",
-            delete: "All SiteGroup",
+            view: "All Site Group",
+            edit: "All Site Group",
+            delete: "All Site Group",
+        },
+        Properties: {
+            view: "Properties",
+            edit: "N/A",
+            delete: "N/A",
+        },
+        UserRoles: {
+            view: "All User Roles",
+            edit: "N/A",
+            delete: "N/A",
+        },
+        UserRoles: {
+            view: "All User & Roles",
+            edit: "N/A",
+            delete: "N/A",
         },
     }
   },
@@ -136,9 +151,24 @@ const permissionReducer = createSlice({
                     delete: "All Customer",
                 },
                 SiteGroup: {
-                    view: "All SiteGroup",
-                    edit: "All SiteGroup",
-                    delete: "All SiteGroup",
+                    view: "All Site Group",
+                    edit: "All Site Group",
+                    delete: "All Site Group",
+                },
+                Properties: {
+                    view: "Properties",
+                    edit: "N/A",
+                    delete: "N/A",
+                },
+                UserRoles: {
+                    view: "All User Roles",
+                    edit: "N/A",
+                    delete: "N/A",
+                },
+                UserRoles: {
+                    view: "All User & Roles",
+                    edit: "N/A",
+                    delete: "N/A",
                 },
             }
         }

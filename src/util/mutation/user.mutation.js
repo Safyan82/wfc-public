@@ -17,3 +17,12 @@ mutation($input: userInput!){
     message
   }
 }`;
+
+
+export const updateUserMutation = gql`
+mutation($input: userInput!){
+  updateUser(input: $input) {
+    response
+  }
+}
+`;

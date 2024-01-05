@@ -254,7 +254,7 @@
 
 .disabled{
     color: rgb(176, 193, 212) !important;   
-    cursor: not-allowed;
+    cursor: not-allowed !important;
 }
 
 .ant-select-selection-placeholder{
@@ -270,4 +270,9 @@
 .moduleList:hover{
     color: #00a4bd;
     text-decoration: underline;
+}
+
+.disabled-text{
+    cursor: not-allowed !important;
+    background-color: transparent !important;
 }

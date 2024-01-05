@@ -301,7 +301,7 @@ export const AllProperties  = () => {
                                 list={
                                     filteredView
                                     || 
-                                    branchObjectdata?.getBranchProperty?.response?.map((prop)=>({
+                                    branchObjectdata?.getBranchProperty?.response?.map((prop,)=>({
                                     ...prop.propertyDetail,
                                     _id: prop.propertyId,
                                     }))

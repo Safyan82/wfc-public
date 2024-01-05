@@ -38,7 +38,7 @@ export const CreateUserRoleModal = ({visible, onClose})=>{
         },          
         {
             title: 'Review',
-            component: <ReviewPermission roleName={roleName} />
+            component: <ReviewPermission userAccessType={false} roleName={roleName} />
         }
     ];
 
@@ -53,7 +53,7 @@ export const CreateUserRoleModal = ({visible, onClose})=>{
                 variables:{
                     input:{
                         rolename: roleName.toString(),
-                        permission: propAccess,
+                        permission: Object.fromEntries(Object.entries(propAccess).slice(0,5)),
                     }
                 }
             });

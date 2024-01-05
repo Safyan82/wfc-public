@@ -22,7 +22,9 @@ export const User = ()=>{
                 <div className="propertyTab"></div>
                 <Tabs defaultActiveKey="1" activeKey={activeTab} onChange={handelTabChange}>
                     <TabPane tab={`User`} key="1" >
-                        <UserTab createUser={()=>setUserModal(!userModal)}/>
+                        <UserTab 
+                        setUserRoleModal={setUserRoleModal}
+                        createUser={()=>setUserModal(!userModal)}/>
                     </TabPane>
                     <TabPane tab="Team" key="2" >
                         

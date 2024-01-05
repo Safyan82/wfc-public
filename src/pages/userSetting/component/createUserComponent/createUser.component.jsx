@@ -17,6 +17,9 @@ import { setUserDetail } from "../../../../middleware/redux/reducers/user.reduce
 import { useSelector } from "react-redux";
 
 export const CreateUserComponent = ()=>{
+    
+    const {editUserData} = useSelector((state)=>state?.editUserReducer);
+
     const {data: employeeData, loading: employeeDataLoading, refetch} = useQuery( GetEmployeeRecord ,{fetchPolicy: 'cache-and-network',
     variables: {
         input: {
@@ -36,6 +39,17 @@ export const CreateUserComponent = ()=>{
     const [emptype, setemptype] = useState("");
     const [emp, setemp] = useState({label: user?.firstname+ " "+user?.lastname, _id:user?._id}||"");
 
+    // edit user detail
+    useEffect(()=>{
+        if(editUserData?.user?.employee){
+            const user = editUserData?.user?.employee[0];
+            
+            const data = employeeData?.getEmployee?.response?.find((res)=>res._id==user?._id);
+            dispatch(setUserDetail(data));
+            setEmail(user?.metadata?.email)
+            setemp({label: user?.firstname+ " "+user?.lastname, _id: user?._id});
+        }
+    },[editUserData]);
 
     const [manualPasswordPopover, setManualPasswordPopover] = useState(false);
 
@@ -46,8 +60,9 @@ export const CreateUserComponent = ()=>{
 
 
     useEffect(()=>{
-        if(emp){
+        if(emp && employeeData?.getEmployee?.response){
             const data = employeeData?.getEmployee?.response?.find((res)=>res._id==emp?._id);
+            console.log(data, "daaa", emp)
             dispatch(setUserDetail(data));
             setfirstname(data?.firstname);
             setEmail(data?.metadata?.email);
@@ -59,7 +74,7 @@ export const CreateUserComponent = ()=>{
             setlastname(null);
             setbranch(null);
         }
-    }, [emp]);
+    }, [emp, employeeData]);
 
     useEffect(()=>{
         if(password?.length>7){
@@ -174,7 +189,7 @@ export const CreateUserComponent = ()=>{
                 {emp && emp?.label!=="undefined undefined" ?
                 <>
                 
-                <Form.Item>
+                {/* <Form.Item>
                     <div style={{display:'flex', flexDirection: 'row', justifyContent:'space-between', columnGap: '15px'}}>
                         <Input 
                             className="generic-input-control"
@@ -189,18 +204,18 @@ export const CreateUserComponent = ()=>{
                             readOnly
                         />
                     </div>
-                </Form.Item>   
+                </Form.Item>    */}
                 
                 <Form.Item>
                     <Input
                         placeholder="Email Address"
                         className="generic-input-control"
-                        value={email}
+                        value={editUserData?.user?.employee[0]?.metadata?.email || email}
                         autoComplete={false}
                         autoCorrect={false}
                         autoCapitalize={false}
                         onChange={(e)=>setEmail(e.target.value)}
-                        readOnly
+                        
                     />
                     {/* {suggestedEmail ? <label className="createOption text" onClick={(e)=>{setEmail(e.target.innerText); setEmailVal(e.target.innerText); setSuggestedEmail(null)}}>{suggestedEmail}</label> : null} */}
                 </Form.Item>  
@@ -218,13 +233,14 @@ export const CreateUserComponent = ()=>{
                 : null
                 }
 
-                <Form.Item>
+                <Form.Item
+                >
                     <Checkbox
                      onChange= {(e)=>{setManualPasswordPopover(e.target.checked);setPassword('');}}
                      value= {password?.length>7 ? true : false  }
                      checked= {password?.length>7 ? true : false }
                     >
-                        Set manual password for this user
+                        {editUserData?.user? "Update manual password for this user" :"Set manual password for this user"}
                     </Checkbox>
                 </Form.Item>      
 

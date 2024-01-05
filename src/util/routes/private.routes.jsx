@@ -15,7 +15,6 @@ export const PrivateRoutes = ({children})=>{
         fetchPolicy: 'network-only',
     });
 
-    console.log(data, "data", error?.message);
 
     useEffect(()=>{
         if(error?.message?.length>0){

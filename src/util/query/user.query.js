@@ -15,3 +15,12 @@ query{
   }
 }
 `;
+
+
+export const GetUserByEmpIdQuery = gql `
+query($employeeId: String!){
+  getUserByEmpId(employeeId: $employeeId) {
+    response
+  }
+}
+`;

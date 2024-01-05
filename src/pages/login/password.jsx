@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import { useMutation } from "@apollo/client";
 import { verifyPasswordMutation } from "../../util/mutation/user.mutation";
 import Spinner from "../../components/spinner";
+import { useDispatch } from "react-redux";
+import { setAuthUserDetail } from "../../middleware/redux/reducers/userAuth.reducer";
 
 
 export const Password=()=>{
@@ -17,8 +19,8 @@ export const Password=()=>{
     const navigate = useNavigate();
 
     // fields
-    const[password, setPassword] = React.useState({value:'',error:''});
-
+    const[password, setPassword] = React.useState({value:'2015-Ag-5563',error:''});
+    const dispatch = useDispatch();
 
     const openNotification = (placement,message, description) => {
       api.warning({
@@ -50,7 +52,11 @@ export const Password=()=>{
                         input: user
                     }
                 });
-                localStorage.setItem("authToken", userResponse?.data?.verifyPassword?.response?.token);
+                const {token, ...rest} = userResponse?.data?.verifyPassword?.response
+                console.log(rest);
+                dispatch(setAuthUserDetail(rest))
+                localStorage.setItem("authToken", token);
+                localStorage.setItem("employeeId", rest?.employeeId);
                 navigate("/setting/userRole");
             }
         }
@@ -112,7 +118,7 @@ export const Password=()=>{
 
                     
                     <Form.Item style={{position: 'absolute', top: '450px', marginLeft: 'calc(450px - 80px)'}}>
-                        <button onClick={handelAuth} className="drawer-filled-btn">Next</button>
+                        <button disabled={loading} onClick={handelAuth} className={loading? " disabled-btndrawer-filled-btn" :"drawer-filled-btn"}>Next</button>
                     </Form.Item>
 
                 </div>

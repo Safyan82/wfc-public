@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+
 import createFieldReducer from './reducers/createField.reducer';
 import notificationReducer from './reducers/notification.reducer';
 import groupReducer from './reducers/group.reducer';
@@ -17,8 +17,9 @@ import userReducer from './reducers/user.reducer';
 import editUserReducer from './reducers/editUser.reducer';
 import userAuthReducer from './reducers/userAuth.reducer';
 
-const store = configureStore({
-  reducer: {
+
+export const rootReducer ={ 
+    reducer:{
     createFieldReducer: createFieldReducer,
     notificationReducer: notificationReducer,
     groupReducer: groupReducer,
@@ -37,8 +38,4 @@ const store = configureStore({
     editUserReducer: editUserReducer,
     // this reducer is dedicated for user auth detail only
     userAuthReducer: userAuthReducer
-  },
-  middleware:[...getDefaultMiddleware()]
-});
-
-export default store;
+  }}
