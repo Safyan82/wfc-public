@@ -27,24 +27,27 @@ import { UserRole } from './pages/userRole/userRole';
 import { Password } from './pages/login/password';
 import { ClassicLogin } from './pages/login/login';
 import { PrivateRoutes } from './util/routes/private.routes';
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider, useLazyQuery } from '@apollo/client';
 import { privateClient, publicClient } from './config/apollo';
 import { useErrorBoundary } from './util/errorBoundary/errorboundary';
 import { ErrorFallback } from './util/errorFallback/errorFallback';
+import { isLoginCheckQuery } from './util/query/user.query';
+import { UnAuthroizedAccess } from './pages/unAuthroizedAccess/unAuthroizedAccess.page';
+import { UserAccess } from './pages/userAccess/userAccess.page';
 
 function App() {
   
-  // useEffect(()=>{
+  useEffect(()=>{
     
-  //   setInterval(() => {  
-  //     if (navigator.onLine) {
-  //       console.log("online");
-  //     } else {
-  //       console.log("offline");
-  //     }
-  //   }, 100);
+    setInterval(() => {  
+      if (navigator.onLine) {
+        // console.log("online");
+      } else {
+        console.log("offline");
+      }
+    }, 100);
 
-  // },[]);
+  },[]);
   
   const {notificationToast} = useSelector(state => state.notificationReducer);
   const [api, contextHolder] = notification.useNotification();
@@ -70,6 +73,7 @@ function App() {
   },[notificationToast]);
 
 
+
   
   const hasError = useErrorBoundary();
 
@@ -84,7 +88,7 @@ function App() {
       {/* public routes */}
       <ApolloProvider client={publicClient}>
         <Routes>
-
+          
           <Route path='/' element={<Login/>} />
           <Route path="/pwd" element={<Password/>} />
           <Route path="/classic" element={<ClassicLogin/>} />
@@ -96,6 +100,12 @@ function App() {
       <ApolloProvider client={privateClient}>
 
         <Routes>
+          {/* Error Fall back route */}
+          <Route path="/error" element={<UnAuthroizedAccess/>}/>
+          
+          {/* Error Fall back route terminated*/}
+
+
           <Route path='/formview' element={<FormView/>} />
           <Route path='/branch/editform' exact element={<EditForm />} />
           <Route path='/employee/editform' exact element={<EditEmployeeForm />} />
@@ -127,6 +137,7 @@ function App() {
             <Route index element={<PropertySetting/>} />
             <Route path={routes.addUser} element={<User/>} />
             <Route path={routes.userRole} element={<UserRole/>} />
+            <Route path={routes.userAccess} element={<UserAccess/>} />
           </Route>
           
         </Routes>

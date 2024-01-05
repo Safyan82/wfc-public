@@ -2,20 +2,20 @@ import { Avatar, Collapse } from "antd";
 import "./reviewPermission.css";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { objectType } from "../../util/types/object.types";
+import { accessType } from "../../util/types/access.types";
 
-export const ReviewPermission = ({roleName, user}) =>{
+export const ReviewPermission = ({roleName, user, userAccessType}) =>{
 
-    console.log("propAccesspropAccess")
-    const state = useSelector((state)=>state);
-    console.log(state, "propAccesspropAccess")
     const {propAccess} = useSelector((state)=>state?.permissionReducer);
+    console.log(userAccessType, "propAccesspropAccess", propAccess);
 
     const [items, setItems] = useState([]);
 
     useEffect(()=>{
         if(propAccess){
-            
-            setItems(Object.keys(propAccess)?.map((module, index)=>({
+            const permittedObject = userAccessType==accessType.AdminPermission ? propAccess : Object.fromEntries(Object.entries(propAccess).slice(0,5));
+            setItems(Object.keys(permittedObject)?.map((module, index)=>({
                 key: index,
                 label: 
                 <div  style={{margin: '0px 40px', fontWeight: 'bold'}} >

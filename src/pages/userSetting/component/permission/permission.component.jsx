@@ -7,19 +7,24 @@ import admin from './keys.svg'
 import { PopoverSearch } from '../../../setting/popoverSearch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBugSlash, faExternalLink, faEye, faEyeSlash, faLink, faList12, faPencil, faPencilRuler, faSearch, faStoreSlash, faTrashCanArrowUp } from '@fortawesome/free-solid-svg-icons';
-import { objectType } from '../../../../util/types/object.types';
+import { adminObjectType, normalUser, objectType } from '../../../../util/types/object.types';
 import { useQuery } from '@apollo/client';
 import { GetPropertyByGroupQuery, PROPERTYWITHFILTER } from '../../../../util/query/properties.query';
 import { useDispatch } from 'react-redux';
-import { setDefaultPropPermission, setlocalPermission, updateDefaultPropPermissin, updateModulePermission } from '../../../../middleware/redux/reducers/permission.reducer';
+import { setDefaultPropPermission, setPreDefinedDBPermission, setlocalPermission, updateDefaultPropPermissin, updateModulePermission } from '../../../../middleware/redux/reducers/permission.reducer';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CustomModulePermission } from '../../modal/customModulePermission';
 import {UserRoleQuery} from "../../../../util/query/userRole.query"
+import { accessType } from '../../../../util/types/access.types';
+import { adminDefaultPermissions } from '../../../../util/types/permission.type';
 
-export const PermissionComponent = ({userAccessType, setUserAccessType, userRole, setuserRole})=>{
-    const [isExpanded, setExpand] = useState('1');
-
+export const PermissionComponent = ({userAccessType, setUserAccessType, userRole, setuserRole, selectedItem=0})=>{
+    
+    const [isExpanded, setExpand] = useState(selectedItem);
+    
+    
+    console.log(userAccessType, "editUserData")
     
     const [items, setItems] = useState([]);
 
@@ -30,36 +35,36 @@ export const PermissionComponent = ({userAccessType, setUserAccessType, userRole
     useEffect(()=>{
         if(userAccessType){
             setItems([
-                {
-                    key: '1',
+                selectedItem==0? {
+                    key: selectedItem,
                     label: <div className="permission-accordin">
                                 <div>
                                     Choose how to set access
                                 </div>
-                                {isExpanded=='1'? null:
+                                {/* {isExpanded==1? null: */}
                                     <div className="helping-heading">Start with standard user access</div>
-                                }
+                                {/* } */}
                             </div>
                     ,
                     children: <UserAccess userAccessType={userAccessType} setUserAccessType={setUserAccessType} />,
-                },
-
+                }
+                :
                 {
-                    key: '2',
+                    key: 0,
                     label:<div className="permission-accordin">
                             <div>
-                               {userAccessType==="standardPermissions" ? "Choose user role" : "Choose permission"} 
+                               {userAccessType===accessType.StandardPermission ? "Choose user role" : "Choose permission"} 
                             </div>
-                            {isExpanded=='2'? null:
+                            {/* {isExpanded==0? null: */}
                                 <div className="helping-heading">Change permissions</div>
-                            }
+                            {/* } */}
                         </div>
                     ,
-                    children: userAccessType==="standardPermissions" ? <PreDefineRoles setuserRole={setuserRole} userRole={userRole} data={data?.userRoleList?.response} /> : <Permission /> ,
+                    children: userAccessType===accessType.StandardPermission ? <PreDefineRoles setuserRole={setuserRole} userRole={userRole} data={data?.userRoleList?.response} /> : <Permission userAccessType={userAccessType} /> ,
                 }
             ])
         }
-    }, [userAccessType, data?.userRoleList?.response, isExpanded, userRole]);
+    }, [userAccessType, data?.userRoleList?.response, isExpanded, userRole, selectedItem]);
 
 
     return(
@@ -75,10 +80,9 @@ export const PermissionComponent = ({userAccessType, setUserAccessType, userRole
             
             <div>
                 <Collapse 
-                    accordion 
-                    defaultActiveKey={'1'}  
+                    defaultActiveKey={'0'}  
                     items={items}
-                    onChange={(e)=>setExpand(e[0])}
+                    onChange={(e)=>console.log(e, "pp")}
                 />      
             
             </div>
@@ -90,11 +94,12 @@ export const PermissionComponent = ({userAccessType, setUserAccessType, userRole
 const UserAccess = ({setUserAccessType, userAccessType})=>{
    
 
+
     return(
         <div style={{ margin:'20px 20px', display:'flex', columnGap:'40px', justifyContent: 'center' }}>
             
-            <div className={userAccessType=="standardPermissions"? "userAccess-box-active" :"userAccess-box"} onClick={()=>setUserAccessType("standardPermissions")} >
-                <Radio name="access" checked={userAccessType=="standardPermissions"? true: false} value={"standardPermissions"} onChange={(e)=>setUserAccessType(e.target.value)}    className="radio-btn"/>
+            <div className={userAccessType==accessType.StandardPermission? "userAccess-box-active" :"userAccess-box"} onClick={()=>setUserAccessType(accessType.StandardPermission)} >
+                <Radio name="access" checked={userAccessType==accessType.StandardPermission? true: false} value={accessType.StandardPermission} onChange={(e)=>setUserAccessType(e.target.value)}    className="radio-btn"/>
                 <img style={{marginTop:'-25px'}} src={standard} width="40%" height="40%" alt="" />
                 <h5 className='premission-head'>Start with standard user access</h5>
                 <div className="text">
@@ -102,8 +107,8 @@ const UserAccess = ({setUserAccessType, userAccessType})=>{
                 </div>
             </div>
 
-            <div className={userAccessType=="customPermissions"? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setUserAccessType("customPermissions")} >
-                <Radio name="access" checked={userAccessType=="customPermissions"? true: false} value={"customPermissions"} onChange={(e)=>setUserAccessType(e.target.value)}      className="radio-btn"/>
+            <div className={userAccessType==accessType.CustomerPermission? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setUserAccessType(accessType.CustomerPermission)} >
+                <Radio name="access" checked={userAccessType==accessType.CustomerPermission? true: false} value={accessType.CustomerPermission} onChange={(e)=>setUserAccessType(e.target.value)}      className="radio-btn"/>
                 <img style={{marginTop:'-25px'}}  src={pencil} width="40%" height="40%" alt="" />
 
                 <h5 className='premission-head'>Start from scratch</h5>
@@ -111,8 +116,8 @@ const UserAccess = ({setUserAccessType, userAccessType})=>{
 
             </div>
 
-            <div className={userAccessType=="adminPermission"? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setUserAccessType("adminPermission")}>
-                <Radio name="access"  checked={userAccessType=="adminPermission"? true: false}  value={"adminPermission"} onChange={(e)=>setUserAccessType(e.target.value)}   className="radio-btn"/>
+            <div className={userAccessType==accessType.AdminPermission? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setUserAccessType(accessType.AdminPermission)}>
+                <Radio name="access"  checked={userAccessType==accessType.AdminPermission? true: false}  value={accessType.AdminPermission} onChange={(e)=>setUserAccessType(e.target.value)}   className="radio-btn"/>
                 <img style={{marginTop:'-25px'}}  src={admin} width="40%" height="40%" alt="" />
                 <h5 className='premission-head'>Make Super Admin</h5>
                 <div className="text">
@@ -124,7 +129,7 @@ const UserAccess = ({setUserAccessType, userAccessType})=>{
     )
 }
 
-export const Permission = ({access, role})=>{
+export const Permission = ({access, role, userAccessType})=>{
     
     const [obj, setObj] = useState(objectType.Branch);
 
@@ -142,7 +147,7 @@ export const Permission = ({access, role})=>{
 
     const {propAccess} = useSelector((state)=>state?.permissionReducer);
 
-    // console.log(propAccess)
+    console.log(propAccess)
 
     //  first time rendering when property data recieves
     useEffect(()=>{
@@ -446,9 +451,21 @@ export const Permission = ({access, role})=>{
             setModuleView("All "+obj);
         }
     }, [objectPropertyDefaultDetail]);
-    
-   
 
+    // HANDEL WHILE TO EDIT
+    const {editUserData} = useSelector((state)=>state?.editUserReducer);
+
+
+    useEffect(()=>{
+        if(editUserData?.user?.permission){
+            dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
+        }
+    },[editUserData]);
+
+    // TERMINATE EDIT HANDEL 
+
+    const objectToRender = userAccessType===accessType.AdminPermission? Object.values(objectType) : Object.values(normalUser);
+    
     return(
         <div className='permission-block' 
         style={role?{minHeight: '330px', maxHeight: '330px', overflowY: 'scroll'}:null}
@@ -464,7 +481,7 @@ export const Permission = ({access, role})=>{
                     // onChange={(e)=> setLocalGroup(groupList?.filter((group)=> (group.name)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
                     suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
                 />
-                {Object.values(objectType)?.sort((a,b)=>a.localeCompare(b))?.map((object)=>(
+                {objectToRender?.map((object)=>(
                     <div className={object==obj?'object-block-item object-block-item-active' : 'object-block-item'} onClick={()=>setObj(object)}>{object}</div>
                 ))}
             </div>
@@ -481,7 +498,7 @@ export const Permission = ({access, role})=>{
                             <div style={{display: 'flex', columnGap: '15px'}}>
                                 <b>View</b>
                                 {
-                                    propAccess?.hasOwnProperty(obj) && (propAccess[obj])?.hasOwnProperty("custom"+obj)?
+                                    propAccess?.hasOwnProperty(obj) && (propAccess[obj])?.hasOwnProperty("custom"+obj) && moduleView!==""?
                                     <span onClick={()=>setCustomModulePermission(true)} className='moduleList'>See {obj} List <FontAwesomeIcon icon={faLink}/> </span>
                                     : null
                                 }
@@ -498,12 +515,18 @@ export const Permission = ({access, role})=>{
                                         <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
                                             All {obj}
                                         </div>
-                                        <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
-                                            Team owns
-                                        </div>
-                                        <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText); setCustomModulePermission(true)}}>
-                                            Custom {obj}
-                                        </div>
+                                        {/* these show only when normal user */}
+                                        {!adminObjectType?.includes(obj) && 
+                                        <>
+                                            <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
+                                                Team owns
+                                            </div>
+                                            <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText); setCustomModulePermission(true)}}>
+                                                Custom {obj}
+                                            </div>
+                                        </>
+                                        }
+
                                         <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
                                             None
                                         </div>
@@ -517,92 +540,99 @@ export const Permission = ({access, role})=>{
                             </div>
                         </div>
 
-                           
-                        <div className={propAccess[obj]?.view=="None"?"disabled":null} style={{display:'flex', justifyContent:'space-between'}}>
-                            <b>Edit</b>
-                            <div className="filter-item">
+                        {adminObjectType?.includes(obj)? 
+                            null
+                        :
+                        <>
+                        
+                            <div className={propAccess[obj]?.view=="None"?"disabled":null} style={{display:'flex', justifyContent:'space-between'}}>
+                                <b>Edit</b>
+                                <div className="filter-item">
 
-                                <Popover 
-                                    overlayClassName='settingCustomPopover permission-popover'
-                                    trigger={"click"}
-                                    open={propAccess[obj]?.view=="None" || moduleView=="None"? false :editPopover}
-                                    content={
-                                    <div className='popover-data'>
-                                        <div className={propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"? "popoverdataitem disabled" : "popoverdataitem"} onClick={(e)=>{
-                                            if(propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"){
-                                                return;
-                                            }else{
+                                    <Popover 
+                                        overlayClassName='settingCustomPopover permission-popover'
+                                        trigger={"click"}
+                                        open={propAccess[obj]?.view=="None" || moduleView=="None"? false :editPopover}
+                                        content={
+                                        <div className='popover-data'>
+                                            <div className={propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"? "popoverdataitem disabled" : "popoverdataitem"} onClick={(e)=>{
+                                                if(propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"){
+                                                    return;
+                                                }else{
+                                                    setEditPopover(!editPopover);
+                                                    setModuleEdit(e.target.innerText)
+                                                }
+                                            }}>
+                                                All {obj}
+                                            </div>
+                                            <div className="popoverdataitem" onClick={(e)=>{
                                                 setEditPopover(!editPopover);
                                                 setModuleEdit(e.target.innerText)
-                                            }
-                                        }}>
-                                            All {obj}
+                                            }}>
+                                                Team owns
+                                            </div>
+                                            <div className="popoverdataitem" onClick={(e)=>{
+                                                setEditPopover(!editPopover);
+                                                setModuleEdit(e.target.innerText)
+                                            }}>
+                                                None
+                                            </div>
                                         </div>
-                                        <div className="popoverdataitem" onClick={(e)=>{
-                                            setEditPopover(!editPopover);
-                                            setModuleEdit(e.target.innerText)
-                                        }}>
-                                            Team owns
-                                        </div>
-                                        <div className="popoverdataitem" onClick={(e)=>{
-                                            setEditPopover(!editPopover);
-                                            setModuleEdit(e.target.innerText)
-                                        }}>
-                                            None
-                                        </div>
-                                    </div>
 
-                                }>
-                                    <span className={propAccess[obj]?.view=="None"?"disabled":null} onClick={()=>setEditPopover(moduleView=="None"? false :!editPopover)}> { propAccess?.hasOwnProperty(obj) ? propAccess[obj]?.edit : moduleEdit} 
-                                    <span className='caret'></span>
-                                    </span> 
-                                </Popover>
+                                    }>
+                                        <span className={propAccess[obj]?.view=="None"?"disabled":null} onClick={()=>setEditPopover(moduleView=="None"? false :!editPopover)}> { propAccess?.hasOwnProperty(obj) ? propAccess[obj]?.edit : moduleEdit} 
+                                        <span className='caret'></span>
+                                        </span> 
+                                    </Popover>
+                                </div>
                             </div>
-                        </div>
+                            <div className={propAccess[obj]?.view=="None"? "disabled" : null}  style={{display:'flex', justifyContent:'space-between'}}>
+                                <b>Delete <span className='badge'> Critical</span></b>
 
+                                <div className="filter-item">
 
-                        <div className={propAccess[obj]?.view=="None"? "disabled" : null}  style={{display:'flex', justifyContent:'space-between'}}>
-                            <b>Delete <span className='badge'> Critical</span></b>
-
-                            <div className="filter-item">
-
-                                <Popover 
-                                    overlayClassName='settingCustomPopover permission-popover'
-                                    trigger={"click"}
-                                    open={propAccess[obj]?.view=="None"? false :deletePopover}
-                                    content={
-                                    <div className='popover-data'>
-                                        <div className={propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"? "popoverdataitem disabled" : "popoverdataitem"} onClick={(e)=>{
-                                            if(propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"){
-                                                return;
-                                            }else{
+                                    <Popover 
+                                        overlayClassName='settingCustomPopover permission-popover'
+                                        trigger={"click"}
+                                        open={propAccess[obj]?.view=="None"? false :deletePopover}
+                                        content={
+                                        <div className='popover-data'>
+                                            <div className={propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"? "popoverdataitem disabled" : "popoverdataitem"} onClick={(e)=>{
+                                                if(propAccess[obj]?.view=="Team owns" || moduleView=="Team owns"){
+                                                    return;
+                                                }else{
+                                                    setModuleDelete(e.target.innerText);
+                                                    setDeletePopover(!deletePopover);
+                                                }
+                                            }}>
+                                                All {obj} 
+                                            </div>
+                                            <div className={"popoverdataitem"} onClick={(e)=>{
                                                 setModuleDelete(e.target.innerText);
                                                 setDeletePopover(!deletePopover);
-                                            }
-                                        }}>
-                                            All {obj} 
+                                            }}>
+                                            Team owns
+                                            </div>
+                                            <div className="popoverdataitem" onClick={(e)=>{
+                                                setModuleDelete(e.target.innerText);
+                                                setDeletePopover(!deletePopover);
+                                            }}>
+                                                None
+                                            </div>
                                         </div>
-                                        <div className={"popoverdataitem"} onClick={(e)=>{
-                                            setModuleDelete(e.target.innerText);
-                                            setDeletePopover(!deletePopover);
-                                        }}>
-                                         Team owns
-                                        </div>
-                                        <div className="popoverdataitem" onClick={(e)=>{
-                                            setModuleDelete(e.target.innerText);
-                                            setDeletePopover(!deletePopover);
-                                        }}>
-                                            None
-                                        </div>
-                                    </div>
 
-                                }>
-                                    <span className={propAccess[obj]?.view=="None"? "disabled" : null}  onClick={()=>{setDeletePopover(moduleView=="None"? false: !deletePopover)}}> { propAccess?.hasOwnProperty(obj) ? propAccess[obj]?.delete : moduleDelete} 
-                                    <span className='caret'></span>
-                                    </span> 
-                                </Popover>
+                                    }>
+                                        <span className={propAccess[obj]?.view=="None"? "disabled" : null}  onClick={()=>{setDeletePopover(moduleView=="None"? false: !deletePopover)}}> { propAccess?.hasOwnProperty(obj) ? propAccess[obj]?.delete : moduleDelete} 
+                                        <span className='caret'></span>
+                                        </span> 
+                                    </Popover>
+                                </div>
                             </div>
-                        </div>
+                        </>
+                        }
+
+
+
                     </div>
                 </div>
                 
@@ -619,7 +649,7 @@ export const Permission = ({access, role})=>{
     )
 }
 
-const PreDefineRoles = ({setuserRole, data, userRole})=>{
+export const PreDefineRoles = ({setuserRole, data, userRole})=>{
     
     const [parentWidth, setParentWidth] = useState(null);
     const parentRef = useRef(null);
@@ -669,8 +699,10 @@ const PreDefineRoles = ({setuserRole, data, userRole})=>{
         setLocalRole(data);
     }, [data]);
 
+    const navigate = useNavigate();
+    console.log(userRole?.name, "userRole?.name")
     return (
-        <div className="group-wrapper"  style={{width: '500px', margin: 'auto', marginTop: '32px'}}>
+        <div className="group-wrapper"  style={{width: '500px', margin: 'auto', marginTop: '8px'}}>
             <div
                 name="groupInput"
                 className='generic-input-control groupInput' 
@@ -678,7 +710,7 @@ const PreDefineRoles = ({setuserRole, data, userRole})=>{
                 onClick={()=>setGroupPopover(!groupPopover)}
             >
                 <div style={{fontSize:'14px', fontWeight: 'normal', margin: '9px', display: 'flex', justifyContent: 'space-between'}}>
-                    { Object.keys(userRole)?.length<1? "Select user role" : userRole?.name }
+                    { Object.keys(userRole)?.length<1 || userRole?.name===undefined  ? "Select user role" : userRole?.name }
                     <span onClick={()=>setGroupPopover(!groupPopover)} 
                         style={{
                             // position: 'absolute',
@@ -704,8 +736,10 @@ const PreDefineRoles = ({setuserRole, data, userRole})=>{
                     </div>
 
                     <div ref={popoverRef}>
-                        {localRole?.length ? localRole?.map((role)=>(
+                        <div  style={{maxHeight: '145px', overflow:'auto'}}>
+                        {localRole?.length ? localRole?.map((role, index)=>(
                             <div 
+                                key={index}
                                 className={"popoverdataitem"} 
                                 onClick={(e)=>{setuserRole({name:role.rolename, id:role._id, permission: role?.permission}); setGroupPopover(false)}}>
                                 {role.rolename}
@@ -719,6 +753,11 @@ const PreDefineRoles = ({setuserRole, data, userRole})=>{
                             No results found
                         </div>
                         }
+                        </div>
+                        
+                        <div className="addViewfooter" onClick={()=>window.open("/setting/userRole")} style={{cursor: "pointer"}}>
+                            <span>Create a new user role <FontAwesomeIcon icon={faExternalLink}/> </span>
+                        </div>
                     </div>
                 </div>
 

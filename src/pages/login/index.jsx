@@ -18,9 +18,15 @@ export const Login=()=>{
     const regx=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     // fields
-    const[email, setEmail] = React.useState({value:'',error:''});
+    const[email, setEmail] = React.useState({value:'msafyan46@gmail.com',error:''});
     const[remember, setRemember] = React.useState();
 
+    // useEffect to redirect the user from login page if he already registered
+    useEffect(()=>{
+        if(localStorage.getItem('authToken')){
+            navigate("/user/branch");
+        }
+    },[]);
     
     const {data} = useQuery(checkUserForEmail,{
         variables:{
@@ -39,8 +45,7 @@ export const Login=()=>{
     }, []);
 
     useEffect(()=>{
-        console.log(!data?.checkUserByEmail?.response?.hasOwnProperty('_id') , "data?.checkUserByEmail?.response")
-        if(data?.checkUserByEmail?.response?.hasOwnProperty('_id')){
+       if(data?.checkUserByEmail?.response?.hasOwnProperty('_id')){
             dispatch(checkEmailDetails(data?.checkUserByEmail?.response));
             setEmail({...email, error:''});
             return;

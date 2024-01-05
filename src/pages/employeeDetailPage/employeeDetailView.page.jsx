@@ -317,7 +317,7 @@ export const EmployeeDetailViewPage  = () => {
                         About
                     </div>
                     <div className="text">
-                        These data fields will appear when you view information about a branch. These changes will only affect you.
+                        These data fields will appear when you view information about an employee. These changes will only affect you.
                     </div>
                     <button className='simple-btn grid-sm-btn-disabled' style={{margin: 'auto', display:'table', marginBottom:'16px'}} > Reset to account defaults </button>
 

@@ -180,15 +180,17 @@
 }
 
 .detailInput{
-    display: none;
+    /* display: none; */
     border:0px;
-    border-bottom: 1px solid #00a4bd;
+    /* border-bottom: 1px solid #00a4bd; */
     margin-top: 0px;
     margin-bottom: 5px;
+    width: 100%;
+
 }
 
 .detailInput:focus{
-    
+    width: 100%;
     border:0px;
     border-bottom: 1px solid #00a4bd;
     outline: 0 !important;
@@ -202,6 +204,7 @@
 
 .detailInputHead{
     padding-top: 10px;
+    height: 30px;
     transition: padding 0.9 ease-in-out;
     display: flex;
     justify-content: space-between;
@@ -215,7 +218,7 @@
 
 .detailInputParent{
     min-height: 40px;
-    margin-top: 8%;
+    /* margin-top: 8%; */
 }
 
 .detail-section-focus{
@@ -240,16 +243,15 @@
 
 
 .detailInputParent:hover .detailInput{
-    display: block;
     width: 100%;
+    border-bottom: 1px solid #00a4bd;
+
 }
 
-.detailInputParent:hover .detailInputHead{
-    /* padding-top: 0px !important; */
-}
+
 
 .detailInputParent:hover .detail-section{
-    display: block;
+    /* display: block; */
 }
 
 .rightsidebar-wrapper .ant-collapse-item{
@@ -461,4 +463,11 @@
 .detailInputParent .ant-select-selector{
     border: none !important;
     outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 25px !important;
+}
+
+.detailInputParent:hover .ant-select-selector{
+    border-bottom: 1px solid #00a4bd !important;
 }

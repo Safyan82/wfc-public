@@ -15,6 +15,7 @@ import { resetDataFieldForNewView } from '../../../middleware/redux/reducers/bra
 import Spinner from '../../../components/spinner';
 import { PropertyDetailDrawer } from '../../allProperties/propertyDetail.drawer';
 import { GetBranchPropertyHistoryDetail } from '../../../util/query/branchPropHistory';
+import { useSelector } from 'react-redux';
 
 export const DetailPageLeftSideBar = ({branchId, singleBranchData, 
     handelInputChange, dataFields, 
@@ -109,6 +110,26 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
         skip: !selectedProp?.propertyId || !branchId,
         fetchPolicy: 'network-only'
     });
+
+    
+    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
+    const [readonlyProp, setReadOnlyProp] = useState([]);
+    useEffect(()=>{
+        let readOnly = [];
+        for (const key in authenticatedUserDetail?.permission?.Branch) {
+            if (authenticatedUserDetail?.permission?.Branch.hasOwnProperty(key) && authenticatedUserDetail?.permission?.Branch[key].hasOwnProperty('edit')) {
+                if(authenticatedUserDetail?.permission?.Branch[key]?.edit==0){
+
+                    readOnly.push(key);
+                    
+                }
+                
+            }
+        };
+        setReadOnlyProp([...readOnly]);
+        console.log(readOnly, "readOnly", authenticatedUserDetail?.permission?.Employee);
+        // console.log(Object.values(authenticatedUserDetail?.permission?.Employee), "authenticatedUserDetail");
+    }, [authenticatedUserDetail]);
 
     return(
         <div className='sidebar-wrapper' ref={dataFieldRef}>
@@ -296,7 +317,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                     (
                         filteredView? filteredView
                         : objectData)?.map((prop, index)=>{
-                        
+                            console.log(prop, "propprop")
                             const defaultVal = 
                         singleBranchData?.branch?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || (
                             
@@ -383,7 +404,9 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                             name="phonenumber"
                                             onClick={()=>setPhoneDialouge(!phoneDialouge)}
                                             defaultValue={defaultVal}
-                                            className={'detailInput-focus'} 
+                                            disabled={readonlyProp.includes(prop._id)}
+                                            className={readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
+                                           
                                         />
                                         <code className='primary detail-section'>Primary</code>
                                         {/* <code className='primary detail-section'>
@@ -417,11 +440,13 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                         
                                         : null
                                     }  
+                                    disabled={readonlyProp.includes(prop._id)}
+                                   
                                     className={
                                         dataFields?.find((dprop)=>dprop?.name==prop?.label?.replaceAll(" ","")?.toLowerCase())? 'detailInput-focus':
                                         prop?.label=="Phone Number"? 
                                         phoneDialouge?'detailInput-focus':'detailInput-focus' 
-                                        : 'detailInput-focus'} 
+                                        : readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
                                 />
                                 }
                                

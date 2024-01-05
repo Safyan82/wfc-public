@@ -16,6 +16,7 @@ import Spinner from '../../../components/spinner';
 import { PropertyDetailDrawer } from '../../allProperties/propertyDetail.drawer';
 import { getUserEmployeeDetailView } from '../../../util/query/employeeDetailView.query';
 import { getEmployeePropHistoryQuery } from '../../../util/query/employee.query';
+import { useSelector } from 'react-redux';
 
 export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, handelInputChange})=>{
   
@@ -95,6 +96,26 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
             }
         }
     });
+
+    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
+    const [readonlyProp, setReadOnlyProp] = useState([]);
+    useEffect(()=>{
+        let readOnly = [];
+        for (const key in authenticatedUserDetail?.permission?.Employee) {
+            if (authenticatedUserDetail?.permission?.Employee.hasOwnProperty(key) && authenticatedUserDetail?.permission?.Employee[key].hasOwnProperty('edit')) {
+                if(authenticatedUserDetail?.permission?.Employee[key]?.edit==0){
+
+                    readOnly.push(key);
+                    
+                }
+                
+            }
+        };
+        setReadOnlyProp([...readOnly]);
+        console.log(readOnly, "readOnly", authenticatedUserDetail?.permission?.Employee);
+        // console.log(Object.values(authenticatedUserDetail?.permission?.Employee), "authenticatedUserDetail");
+    }, [authenticatedUserDetail]);
+    // console.log(authenticatedUserDetail?.permission?.Employee, "authenticatedUserDetail", employeeObject);
 
     return(
         <div className='sidebar-wrapper'>
@@ -254,7 +275,9 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                                 </div>
                                 {prop?.label?.toLowerCase()=="branch"?
                                 <Select 
-                                 className='detailInput-focus'  
+                                 disabled={readonlyProp.includes(prop._id)}
+                                 className={readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
+                                
                                  style={{border: "none"}}
                                  suffixIcon={<span className='dropdowncaret'></span>}
                                  defaultValue={singleEmployee?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || singleEmployee['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())? 
@@ -267,11 +290,12 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                                 </Select>
                                 :
                                 <input type="text" 
+                                    disabled={readonlyProp.includes(prop._id)}
                                     onChange={(e) => handelInputChange(e.target)} 
                                     name={prop?.label?.replaceAll(" ","")?.toLowerCase()}
                                     defaultValue={singleEmployee?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || singleEmployee['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())? 
                                         singleEmployee[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleEmployee['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()] : ""}  
-                                    className={'detailInput-focus'} 
+                                    className={readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
                                 />
                                 }
                                 

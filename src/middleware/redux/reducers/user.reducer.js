@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+// this reducer is use for user creation proccess from setting
+
 const userReducer = createSlice({
   name: 'userReducer',
   initialState: {
     userDetail: {},
-    emailVerificationDetail: {}
+    emailVerificationDetail: {},
+    refetchUser: false
   },
   reducers: {
 
@@ -32,11 +35,18 @@ const userReducer = createSlice({
         ...state,
         emailVerificationDetail: {...action.payload},
       }
-    }
+    },
+
+    refetchAllUser : (state, action) =>{
+      return {
+        ...state, 
+        refetchUser: action.payload
+      }
+    },
 
   },
 });
 
 
-export const { setUserDetail, resetUserDetail, checkEmailDetails } = userReducer.actions;
+export const { setUserDetail, resetUserDetail, checkEmailDetails, refetchAllUser } = userReducer.actions;
 export default userReducer.reducer;

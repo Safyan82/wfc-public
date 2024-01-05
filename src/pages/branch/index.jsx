@@ -207,7 +207,15 @@ export const Branch = () =>{
       }
     };
 
+    // check if user have access this page
+
+    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
+    
+    // const IsBranchView = authenticatedUserDetail?.permission?.Branch?.view!=="None";
+    
+
     return(
+      // authenticatedUserDetail?.userAccessType? IsBranchView?  
         <React.Fragment>
 
         <div className="tablegrid">
@@ -294,5 +302,6 @@ export const Branch = () =>{
       }    
             
         </React.Fragment>
+        // : null : null
     )
 }
