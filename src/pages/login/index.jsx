@@ -18,7 +18,7 @@ export const Login=()=>{
     const regx=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     // fields
-    const[email, setEmail] = React.useState({value:'msafyan46@gmail.com',error:''});
+    const[email, setEmail] = React.useState({value:'',error:''});
     const[remember, setRemember] = React.useState();
 
     // useEffect to redirect the user from login page if he already registered
