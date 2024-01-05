@@ -46,7 +46,7 @@ export const UserAccess = ()=>{
                     name: log?.employee[0]?.firstname + " " + log?.employee[0]?.lastname,
                     email: log?.employee[0]?.metadata?.email,
                     ip: log?.ip,
-                    location: log?.location?.city,
+                    location: log?.location,
                     accessedAt: log?.accessedAt
                 }
             }))
