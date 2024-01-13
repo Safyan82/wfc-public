@@ -365,6 +365,7 @@ export const Permission = ({access, role, userAccessType})=>{
     
     // handel rendering when any thing change in depth access of each module
     useEffect(()=>{
+        console.log("propAccesspropAccess", propAccess)
         if(groupProperty?.getPropertyByGroup?.data){
             const d = groupProperty?.getPropertyByGroup?.data?.map((data)=>{
                 
@@ -471,7 +472,9 @@ export const Permission = ({access, role, userAccessType})=>{
         // }else{
         //     dispatch(setPreDefinedDBPermission(adminDefaultPermissions))
         // }
-        dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
+        if(editUserData?.user?.permission){
+            dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
+        }
 
     },[editUserData]);
 

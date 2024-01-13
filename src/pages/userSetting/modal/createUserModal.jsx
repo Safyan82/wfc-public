@@ -17,6 +17,7 @@ import { setNotification } from '../../../middleware/redux/reducers/notification
 import { UserRoleQuery } from '../../../util/query/userRole.query';
 import { accessType } from '../../../util/types/access.types';
 import { setEditUserData } from '../../../middleware/redux/reducers/editUser.reducer';
+import { checkUserForEmail } from '../../../util/query/employee.query';
 
 
 
@@ -82,6 +83,36 @@ export const CreateUserModal = ({visible, onClose})=>{
     const {userDetail} = useSelector(state=> state.userDetailReducer);
     const {propAccess} = useSelector(state=> state.permissionReducer);
 
+    console.log(userDetail?.email, "user email", editUserData?.user?.email)
+    const regx=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    const {data:userEmailVerification} = useQuery(checkUserForEmail,{
+      variables:{
+          email: userDetail?.email
+      },
+      skip: !regx.test(userDetail?.email) || userDetail?.email==editUserData?.user?.email,
+      fetchPolicy: 'network-only'
+    });
+    const [isEmailValid, setEmailValid] = useState(false);
+
+    useEffect(()=>{
+      if(userEmailVerification?.checkUserByEmail?.response?.hasOwnProperty('_id')){
+          console.log("email is not available");
+          dispatch(setNotification({
+            error:true,
+            message: "This Email is already linked with another account",
+            notificationState: true
+          }));
+          setEmailValid(false);
+          return;
+       }else if(regx.test(userDetail?.email) && !userEmailVerification?.checkUserByEmail?.response?.hasOwnProperty('_id')){
+           setEmailValid(true)
+           return;
+       }else{
+        setEmailValid(false)
+
+       }
+   }, [userEmailVerification])
 
     const steps = [
         {
@@ -128,7 +159,7 @@ export const CreateUserModal = ({visible, onClose})=>{
           userRole: userAccessType==accessType.StandardPermission ? userRole?.id || null : null,
           permission: userAccessType==accessType.StandardPermission ? null : userAccessType==accessType.CustomerPermission ? Object.fromEntries(Object.entries(propAccess).slice(0,5)) : propAccess,
           password: userDetail?.password,
-          email: userDetail?.metadata?.email,
+          email: userDetail?.email || userDetail?.metadata?.email,
           isManualPassword: userDetail?.hasOwnProperty("manualPassword")? userDetail?.manualPassword : 0,
           employeeId: userDetail?._id
         };
@@ -173,7 +204,7 @@ export const CreateUserModal = ({visible, onClose})=>{
 
     }
       
-
+    console.log(currentStep===2 && userDetail?.email && !isEmailValid, currentStep===2 , userDetail?.email , !isEmailValid, "validatoin")
     return(
         <Modal
             visible={visible}     
@@ -202,10 +233,10 @@ export const CreateUserModal = ({visible, onClose})=>{
                       <button id="nextBtn" 
                       disabled={
                         currentStep==1 && userAccessType===accessType.StandardPermission && userRole?.length<1  ||
-                        currentStep===2 && userDetail && Object.keys(userDetail)?.length<1 ? true : false}
+                        currentStep===2 && userDetail && Object.keys(userDetail)?.length<1 || currentStep===2 && userDetail?.email && !isEmailValid ? true : false}
                       className={
                         currentStep==1 && userAccessType===accessType.StandardPermission && userRole?.length<1 || 
-                        currentStep===2 && userDetail && Object.keys(userDetail)?.length<1 ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handleNext}>
+                        currentStep===2 && userDetail && Object.keys(userDetail)?.length<1  || currentStep===2 && userDetail?.email && !isEmailValid ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handleNext}>
                       {'Next'} <FontAwesomeIcon className='next-btn-icon' icon={faChevronRight}/>
                       </button>
                     } 
