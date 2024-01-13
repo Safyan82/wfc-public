@@ -19,24 +19,24 @@ export const adminDefaultPermissions = {
         edit: "All Customer",
         delete: "All Customer",
     },
-    ['Site Group']: {
+    SiteGroup: {
         view: "All Site Group",
         edit: "All Site Group",
         delete: "All Site Group",
     },
-    ['Properties']: {
+    Properties: {
         view: "Properties",
         edit: "N/A",
         delete: "N/A",
     },
-    ['User Roles']: {
+    UserRoles: {
         view: "All User Roles",
         edit: "N/A",
         delete: "N/A",
     },
-    ['User & Roles']: {
+    UserRoles: {
         view: "All User & Roles",
         edit: "N/A",
         delete: "N/A",
     },
-};
+}

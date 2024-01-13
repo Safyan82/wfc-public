@@ -18,6 +18,7 @@ import { CustomModulePermission } from '../../modal/customModulePermission';
 import {UserRoleQuery} from "../../../../util/query/userRole.query"
 import { accessType } from '../../../../util/types/access.types';
 import { adminDefaultPermissions } from '../../../../util/types/permission.type';
+import { CustomEmployeeModulePermission } from '../../modal/customEmployeePermission';
 
 export const PermissionComponent = ({userAccessType, setUserAccessType, userRole, setuserRole, selectedItem=0})=>{
     
@@ -229,6 +230,7 @@ export const Permission = ({access, role, userAccessType})=>{
     const [editPopover, setEditPopover] = useState(false);
     const [deletePopover, setDeletePopover] = useState(false);
     const [customModulePermission, setCustomModulePermission] = useState(false);
+    const [customEmployeePermission, setCustomEmployeePermission] = useState(false);
 
     useEffect(()=>{
         if(moduleView!=null){
@@ -249,9 +251,16 @@ export const Permission = ({access, role, userAccessType})=>{
             }
         }
         if(moduleView?.toLowerCase()== "custom branch"){
-            // setCustomModulePermission(true);
-        }else{
-            setCustomModulePermission(false)
+            setCustomModulePermission(true);
+            setCustomEmployeePermission(false);
+
+        }else if(moduleView?.toLowerCase()== "custom employee"){
+            setCustomModulePermission(false);
+            setCustomEmployeePermission(true);
+        }
+        else{
+            setCustomModulePermission(false);
+            setCustomEmployeePermission(false);
         }
 
         if(moduleView =="Team owns"){
@@ -457,9 +466,13 @@ export const Permission = ({access, role, userAccessType})=>{
 
 
     useEffect(()=>{
-        if(editUserData?.user?.permission){
-            dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
-        }
+        // if(editUserData?.userAccessType===userAccessType){
+        //     dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
+        // }else{
+        //     dispatch(setPreDefinedDBPermission(adminDefaultPermissions))
+        // }
+        dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
+
     },[editUserData]);
 
     // TERMINATE EDIT HANDEL 
@@ -499,7 +512,7 @@ export const Permission = ({access, role, userAccessType})=>{
                                 <b>View</b>
                                 {
                                     propAccess?.hasOwnProperty(obj) && (propAccess[obj])?.hasOwnProperty("custom"+obj) && moduleView!==""?
-                                    <span onClick={()=>setCustomModulePermission(true)} className='moduleList'>See {obj} List <FontAwesomeIcon icon={faLink}/> </span>
+                                    <span onClick={()=> obj=="Branch" ? setCustomModulePermission(true) : setCustomEmployeePermission(true)} className='moduleList'>See {obj} List <FontAwesomeIcon icon={faLink}/> </span>
                                     : null
                                 }
                             </div>
@@ -521,7 +534,7 @@ export const Permission = ({access, role, userAccessType})=>{
                                             <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
                                                 Team owns
                                             </div>
-                                            <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText); setCustomModulePermission(true)}}>
+                                            <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText);}}>
                                                 Custom {obj}
                                             </div>
                                         </>
@@ -644,6 +657,12 @@ export const Permission = ({access, role, userAccessType})=>{
                 <CustomModulePermission obj={obj} visible={customModulePermission} onClose={()=>setCustomModulePermission(!customModulePermission)}/>
                 : 
                 null
+            }
+
+            {
+                customEmployeePermission?
+                <CustomEmployeeModulePermission  obj={obj} visible={customEmployeePermission} onClose={()=>setCustomEmployeePermission(!customEmployeePermission)} />
+                : null
             }
         </div>
     )

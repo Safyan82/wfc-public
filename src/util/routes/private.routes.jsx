@@ -12,6 +12,9 @@ export const PrivateRoutes = ({children})=>{
     const [loading, setLoading] = useState(true);
     const token = localStorage.getItem('authToken');
     const [getUser, {data, error}] = useLazyQuery(isLoginCheckQuery,{
+        variables:{
+            deviceId: localStorage.getItem('deviceId'),
+        },
         fetchPolicy: 'network-only',
     });
 

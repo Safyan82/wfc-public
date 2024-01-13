@@ -10,7 +10,7 @@ import { verifyPasswordMutation } from "../../util/mutation/user.mutation";
 import Spinner from "../../components/spinner";
 import { useDispatch } from "react-redux";
 import { setAuthUserDetail } from "../../middleware/redux/reducers/userAuth.reducer";
-
+import { browserName, CustomView } from 'react-device-detect';
 
 export const Password=()=>{
 
@@ -43,21 +43,31 @@ export const Password=()=>{
     const handelAuth= async ()=>{
         try{
             if(password.value.length >0 && password.error==""){
+                const userAgent = navigator.userAgent;
+                const isMobile = /Mobi/i.test(userAgent);                
+
                 const user = {
                     password: password?.value,
-                    employeeId: emailVerificationDetail?._id
+                    employeeId: emailVerificationDetail?._id,
+                    platform:{
+                        isMobile: isMobile,
+                        operatingSystem: navigator.platform,
+                        userAgent: userAgent,
+                        browser: browserName
+                      },
                 }
                 const userResponse = await verifyPassword({
                     variables:{
                         input: user
                     }
                 });
-                const {token, ...rest} = userResponse?.data?.verifyPassword?.response
-                console.log(rest);
+                const {token, deviceId, ...rest} = userResponse?.data?.verifyPassword?.response
+              
                 dispatch(setAuthUserDetail(rest))
                 localStorage.setItem("authToken", token);
                 localStorage.setItem("employeeId", rest?.employeeId);
-                navigate("/setting/userRole");
+                localStorage.setItem("deviceId", deviceId);
+                navigate("/user/branch");
             }
         }
         catch(err){
@@ -118,14 +128,14 @@ export const Password=()=>{
 
                     
                     <Form.Item style={{position: 'absolute', top: '450px', marginLeft: 'calc(450px - 80px)'}}>
-                        <button disabled={loading} onClick={handelAuth} className={loading? " disabled-btndrawer-filled-btn" :"drawer-filled-btn"}>Next</button>
+                        <button disabled={loading} onClick={handelAuth} className={loading? " disabled-btn drawer-filled-btn " :"drawer-filled-btn"}>Next</button>
                     </Form.Item>
 
                 </div>
                 
-                <div className="text classic-login"  onClick={()=>navigate('/classic')}>
+                {/* <div className="text classic-login"  onClick={()=>navigate('/classic')}>
                     Switch to classic login
-                </div>
+                </div> */}
 
             </div>
 

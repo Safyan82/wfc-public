@@ -110,9 +110,9 @@ export const Login=()=>{
                     </Form.Item>
 
                 </div>
-                <div className="text classic-login" onClick={()=>navigate('/classic')}>
+                {/* <div className="text classic-login" onClick={()=>navigate('/classic')}>
                     Switch to classic login
-                </div>
+                </div> */}
             </div>
 
 

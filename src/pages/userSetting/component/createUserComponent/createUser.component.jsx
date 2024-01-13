@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Checkbox, Form, Input, Select } from "antd";
+import { Alert, Checkbox, Form, Input, Select } from "antd";
 import {EmployeeObjectQuery, GetEmployeeRecord} from "../../../../util/query/employee.query";
 import csv from './img.svg';
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ import {objectType} from "../../../../util/types/object.types";
 import { ManualPassword } from "./manualPassword";
 import { setUserDetail } from "../../../../middleware/redux/reducers/user.reducer";
 import { useSelector } from "react-redux";
+import { GetUserByEmpIdQuery } from '../../../../util/query/user.query';
 
 export const CreateUserComponent = ()=>{
     
@@ -30,14 +31,18 @@ export const CreateUserComponent = ()=>{
 
     const {userDetail:user} = useSelector(state=> state.userDetailReducer);
 
-    const [suggestedEmail, setSuggestedEmail] = useState("");
     const [email, setEmail] = useState(user?.metadata?.email || "");
-    const [firstname, setfirstname] = useState(user?.firstname|| "");
-    const [lastname, setlastname] = useState(user?.lastname || "");
-    const [branch, setbranch] = useState("");
-    const [emplevel, setemplevel] = useState("");
-    const [emptype, setemptype] = useState("");
     const [emp, setemp] = useState({label: user?.firstname+ " "+user?.lastname, _id:user?._id}||"");
+
+    const {data: UserLiveData, loading: UserLiveDataLoading} = useQuery(GetUserByEmpIdQuery,{
+        variables:{
+            employeeId: emp?._id
+        },
+        skip: !emp?._id,
+        fetchPolicy: 'network-only',
+    });
+
+    console.log(UserLiveData?.getUserByEmpId?.response, "UserLiveDataUserLiveData", UserLiveData?.getUserByEmpId?.response?.length);
 
     // edit user detail
     useEffect(()=>{
@@ -62,19 +67,23 @@ export const CreateUserComponent = ()=>{
     useEffect(()=>{
         if(emp && employeeData?.getEmployee?.response){
             const data = employeeData?.getEmployee?.response?.find((res)=>res._id==emp?._id);
-            console.log(data, "daaa", emp)
-            dispatch(setUserDetail(data));
-            setfirstname(data?.firstname);
-            setEmail(data?.metadata?.email);
-            setlastname(data?.lastname);
-            setbranch(data?.branch);
+            const isAlreadyExist = false;
+            if(editUserData?.user){
+
+                dispatch(setUserDetail(data));
+                setEmail(data?.metadata?.email);
+            }else if(!UserLiveDataLoading && UserLiveData?.getUserByEmpId?.response?.length===undefined){
+                
+                dispatch(setUserDetail(data));
+                setEmail(data?.metadata?.email);
+            }else{
+                setEmail(null);
+                dispatch(setUserDetail({}));
+            }
         }else{
-            setfirstname(null);
             setEmail(null);
-            setlastname(null);
-            setbranch(null);
         }
-    }, [emp, employeeData]);
+    }, [emp, employeeData, UserLiveData]);
 
     useEffect(()=>{
         if(password?.length>7){
@@ -166,27 +175,34 @@ export const CreateUserComponent = ()=>{
         <div className="stepperBody createUser-block">
             <div className="createUser-block-header">
                 <h3 className="h3">
-                    Create new user 
+                    {editUserData?.user? "Update User" : "Create new user"}
                     {/* from existing employees */}
                 </h3>
                 <div className="text">Add a new user to your workforce city account with an email address.</div>
             </div>
             
             <div style={{width:'40%',margin:'auto', display:'table'}}>
-                
+                {UserLiveData?.getUserByEmpId?.response?.length!==undefined && !editUserData?.user? <Alert
+                    message="Error"
+                    description="We can't proceed as this Employee is already associated with an other account."
+                    type="error"
+                    showIcon
+                    closable
+                /> : null}
                 <Form.Item>
                     <LookupSearch
                         setSelectedOption={setemp}
                         selectedOption={emp}
                         title={"Select or add a user"}
                         add
+                        disabled={editUserData?.user? true: false}
                         addOnTitle={"Create a new employee"}
                         addPopup={setEmployeeModal}
                         data={employeeData?.getEmployee?.response?.map((emp)=>({_id:emp._id, label: emp.firstname +" "+ emp.lastname})).reverse()}
                     />
                 </Form.Item>
 
-                {emp && emp?.label!=="undefined undefined" ?
+                {(emp && emp?.label!=="undefined undefined") ?
                 <>
                 
                 {/* <Form.Item>

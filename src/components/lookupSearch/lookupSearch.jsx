@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input } from "antd";
 import { useRef, useState, useEffect } from "react";
 
-export const LookupSearch = ({setSelectedOption, data, selectedOption, title, add, addOnTitle, addPopup})=>{
+export const LookupSearch = ({setSelectedOption, data, selectedOption, title, add, addOnTitle, addPopup, disabled=true})=>{
     
     const [parentWidth, setParentWidth] = useState(null);
     const parentRef = useRef(null);
@@ -61,8 +61,9 @@ export const LookupSearch = ({setSelectedOption, data, selectedOption, title, ad
             <div
                 name="groupInput"
                 className='generic-input-control groupInput' 
-                style={{cursor:'pointer', padding:'0 0px'}}
-                onClick={()=>setSearchPopover(!searchPopover)}
+                title={disabled? "You can not update the selected employee" : ""}
+                style={disabled? {cursor:'not-allowed', padding:'0 0px'} : {cursor:'pointer', padding:'0 0px'}}
+                onClick={()=> disabled ? null : setSearchPopover(!searchPopover)}
             >
                 <div style={{fontSize:'14px', fontWeight: 'normal', margin: '9px', display: 'flex', justifyContent: 'space-between'}}>
                     { Object.keys(selectedOption)?.length<1? title : selectedOption?.label== "undefined undefined" ? title : selectedOption?.label }
@@ -78,9 +79,10 @@ export const LookupSearch = ({setSelectedOption, data, selectedOption, title, ad
                 <div className="moveGroupData" style={{width: parentWidth-1.5, zIndex: 111}} >
                     <div className="popover-search" >
                         <Input type="text" 
+                            disabled={disabled}
                             ref={inputRef}
                             name='popoverSearch'
-                            style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
+                            style={disabled? { width: '-webkit-fill-available', backgroundColor: 'white', cursor: 'not-allowed'  } : { width: '-webkit-fill-available', backgroundColor: 'white'  }} 
                             className='generic-input-control' 
                             placeholder="Search..."
                             autoFocus={searchPopover}

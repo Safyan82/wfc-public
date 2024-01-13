@@ -1,11 +1,12 @@
 import React,{ useEffect, useState } from 'react';
-import { Menu, Input, Space, Avatar, Layout, Header } from 'antd';
+import { Menu, Input, Space, Avatar, Layout, Header, Dropdown } from 'antd';
 import {
   SearchOutlined,
   MoreOutlined,
   LogoutOutlined,
   WechatOutlined,
   CloseOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -21,11 +22,46 @@ import { GetUserByEmpIdQuery } from '../../util/query/user.query';
 import { useDispatch } from 'react-redux';
 import { setAuthUserDetail, setAuthUserRefresh } from '../../middleware/redux/reducers/userAuth.reducer';
 import { isArray } from '@apollo/client/utilities';
+import { accessType } from '../../util/types/access.types';
 
 
 const { SubMenu } = Menu;
 
+
+
+const UserMenu = ({visible, setVisible}) => {
+
+    // Dummy user data
+    const user = {
+      name: 'John Doe',
+    //   avatar: 'https://example.com/avatar.jpg',
+    };
+  
+    const navigate = useNavigate();
+    const menu = (
+      <Menu style={{width: '200px'}}>
+        <Menu.Item key="1">Profile</Menu.Item>
+        <Menu.Item key="2">Active Session</Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="3" onClick={()=>{localStorage.clear(); navigate("/")}}>Logout</Menu.Item>
+      </Menu>
+    );
+  
+    return (
+      <Dropdown overlay={menu} visible={visible} placement="bottomLeft" onClick={()=>setVisible(!visible)}>
+        <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+          <Avatar src={user.avatar} alt={user.name} />
+          <span style={{ marginLeft: '8px' }}>{user.name}</span>
+          {/* <DownOutlined style={{ marginLeft: '8px' }} /> */}
+        </div>
+      </Dropdown>
+    );
+  };
+
+
 export function Navbar(){
+    const [visible, setVisible] = useState(false);
+
     const [isWindowMaximized, setWindowMaximized] = useState(true);
     const [placeholder, setPlaceholder] = useState(false);
     const navigate = useNavigate();
@@ -57,6 +93,7 @@ export function Navbar(){
                 dispatch(setAuthUserDetail(data?.getUserByEmpId?.response[0]));
             }
             dispatch(setAuthUserRefresh(refetchAuthUser));
+            console.log(data?.getUserByEmpId?.response[0]?.userAccessType, "data?.getUserByEmpId?.response[0]?.userRolePermission[0]?.permission")
         }
     },[data?.getUserByEmpId?.response]);
 
@@ -111,13 +148,17 @@ export function Navbar(){
                 />
             </Space>
             </Menu.Item>
-
+            
+            {/* {data?.getUserByEmpId?.response[0]?.userAccessType===accessType.AdminPermission? */}
 
             <Menu.Item className='menu-item '>
                 <Link to="/setting">
                     <FontAwesomeIcon icon={faGear} className='menu-icon' />
                 </Link>
             </Menu.Item>
+            {/* // :null} */}
+            
+            
             <Menu.Item className='menu-item '>
                 <FontAwesomeIcon icon={faBell} className='menu-icon'  />
             </Menu.Item>
@@ -130,12 +171,16 @@ export function Navbar(){
                 <div className='vertical-separator'></div>
             </Menu.Item>
 
-            <SubMenu key="account" icon={<WordLetterAvatar word={"Muhammad Safyan"} />} title={"Safyan"} >
-                {/* <Menu.Item key="profile">Profile</Menu.Item>
+            <Menu.Item>
+                <UserMenu visible={visible} setVisible={setVisible} />
+            </Menu.Item>
+
+            {/* <SubMenu key="account" icon={<WordLetterAvatar word={"Muhammad Safyan"} />} title={"Safyan"} >
+                <Menu.Item key="profile">Profile</Menu.Item>
                 <Menu.Item key="logout" icon={<LogoutOutlined />}>
                     Logout
-                </Menu.Item> */}
-            </SubMenu>
+                </Menu.Item>
+            </SubMenu> */}
 
             {/* mini max btn */}
             {/* <Menu.Item style={{marginTop:'-1%'}}  key="minimize" className='minimize' id="minimize" itemRef='minimize'> <FontAwesomeIcon icon={faWindowMinimize} /> </Menu.Item>

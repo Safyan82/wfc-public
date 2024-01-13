@@ -34,6 +34,8 @@ import { ErrorFallback } from './util/errorFallback/errorFallback';
 import { isLoginCheckQuery } from './util/query/user.query';
 import { UnAuthroizedAccess } from './pages/unAuthroizedAccess/unAuthroizedAccess.page';
 import { UserAccess } from './pages/userAccess/userAccess.page';
+import { Join } from './pages/join/join';
+
 
 function App() {
   
@@ -41,7 +43,7 @@ function App() {
     
     setInterval(() => {  
       if (navigator.onLine) {
-        // console.log("online");
+       
       } else {
         console.log("offline");
       }
@@ -58,14 +60,14 @@ function App() {
 
         api.error({
           message:notificationToast.message,
-          placement:"top",
+          placement: notificationToast?.placement || "top",
           className: 'notification-without-close',
         });
 
       }else{
         api.success({
           message:notificationToast.message,
-          placement:"top",
+          placement: notificationToast?.placement || "top",
           className: 'notification-without-close',
         });
       }
@@ -91,7 +93,7 @@ function App() {
           
           <Route path='/' element={<Login/>} />
           <Route path="/pwd" element={<Password/>} />
-          <Route path="/classic" element={<ClassicLogin/>} />
+          <Route path="/join/:employeeId" element={<Join/>} />
         </Routes>
       </ApolloProvider>
 
