@@ -63,7 +63,7 @@ export const ReviewPermission = ({roleName, user, userAccessType}) =>{
                         {user?.firstname+" "+user?.lastname} 
                     </span>
                     <b>
-                       <a href={"mailto:"+user?.metadata?.email}>{user?.metadata?.email}</a> 
+                       <a href={"mailto:"+user?.email || user?.metadata?.email}>{user?.email || user?.metadata?.email}</a> 
                     </b>
                 </div>
             </div>

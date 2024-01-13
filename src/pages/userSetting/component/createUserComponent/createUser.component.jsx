@@ -31,7 +31,7 @@ export const CreateUserComponent = ()=>{
 
     const {userDetail:user} = useSelector(state=> state.userDetailReducer);
 
-    const [email, setEmail] = useState(user?.metadata?.email || "");
+    const [email, setEmail] = useState( editUserData?.user?.email ||user?.metadata?.email || "");
     const [emp, setemp] = useState({label: user?.firstname+ " "+user?.lastname, _id:user?._id}||"");
 
     const {data: UserLiveData, loading: UserLiveDataLoading} = useQuery(GetUserByEmpIdQuery,{
@@ -44,17 +44,7 @@ export const CreateUserComponent = ()=>{
 
     console.log(UserLiveData?.getUserByEmpId?.response, "UserLiveDataUserLiveData", UserLiveData?.getUserByEmpId?.response?.length);
 
-    // edit user detail
-    useEffect(()=>{
-        if(editUserData?.user?.employee){
-            const user = editUserData?.user?.employee[0];
-            
-            const data = employeeData?.getEmployee?.response?.find((res)=>res._id==user?._id);
-            dispatch(setUserDetail(data));
-            setEmail(user?.metadata?.email)
-            setemp({label: user?.firstname+ " "+user?.lastname, _id: user?._id});
-        }
-    },[editUserData]);
+ 
 
     const [manualPasswordPopover, setManualPasswordPopover] = useState(false);
 
@@ -71,7 +61,7 @@ export const CreateUserComponent = ()=>{
             if(editUserData?.user){
 
                 dispatch(setUserDetail(data));
-                setEmail(data?.metadata?.email);
+                setEmail(editUserData?.user?.email);
             }else if(!UserLiveDataLoading && UserLiveData?.getUserByEmpId?.response?.length===undefined){
                 
                 dispatch(setUserDetail(data));
@@ -90,6 +80,10 @@ export const CreateUserComponent = ()=>{
             dispatch(setUserDetail({...user, password}))
         }
     }, [password]);
+
+    useEffect(()=>{
+        dispatch(setUserDetail({...user, email}))
+    },[email]);
 
     // form drawer
     const [employeeSchema, setEmployeeSchema] = useState();
@@ -171,6 +165,18 @@ export const CreateUserComponent = ()=>{
         }
     }, [manualPasswordPopover])
 
+       // edit user detail
+       useEffect(()=>{
+        if(editUserData?.user?.employee){
+            const user = editUserData?.user?.employee[0];
+            
+            const data = employeeData?.getEmployee?.response?.find((res)=>res._id==user?._id);
+            dispatch(setUserDetail({...data, email: user?.email}));
+            setEmail(editUserData?.user?.email)
+            setemp({label: user?.firstname+ " "+user?.lastname, _id: user?._id});
+        }
+    },[editUserData]);
+
     return(
         <div className="stepperBody createUser-block">
             <div className="createUser-block-header">
@@ -226,7 +232,7 @@ export const CreateUserComponent = ()=>{
                     <Input
                         placeholder="Email Address"
                         className="generic-input-control"
-                        value={editUserData?.user?.employee[0]?.metadata?.email || email}
+                        value={email}
                         autoComplete={false}
                         autoCorrect={false}
                         autoCapitalize={false}
