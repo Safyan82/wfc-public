@@ -9,8 +9,8 @@ query{
 `;
 
 export const isLoginCheckQuery = gql `
-query{
-  IsLogin {
+query($deviceId: String!){
+  IsLogin(deviceId: $deviceId) {
     isLogin
   }
 }

@@ -52,5 +52,5 @@ export const containsNumeric = (str) => {
 }
 
 export const containsSpecialCharacter = (str) => {
-    return /[!=@#$%^&*()-_+=<>?]/.test(str);
+    return /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(str);
 }
