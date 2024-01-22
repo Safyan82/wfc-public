@@ -9,12 +9,14 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { refetchAllUser } from '../../../../middleware/redux/reducers/user.reducer';
 import { setEditUserData } from '../../../../middleware/redux/reducers/editUser.reducer';
+import { useNavigate } from 'react-router-dom';
 
 
 export const UserTab = ({createUser, setUserRoleModal})=>{
 
-  const dispatch = useDispatch();
-    
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const columns = [
         {
           title: 'Name',
@@ -24,8 +26,8 @@ export const UserTab = ({createUser, setUserRoleModal})=>{
           render:(_, record) => {
             return (
               <div style={{display: 'flex', justifyContent: 'space-between', alignItems:'center'}}>
-                <span>{record?.name}</span>
-                {record?.key===hoveredRow?
+                <span className='grid-hover' onClick={()=>navigate("/setting/user/"+record?.user?.employeeId)}>{record?.name}</span>
+                {/* {record?.key===hoveredRow?
                 <button className={"grid-sm-btn"} 
                   onClick={()=>{
                     setUserRoleModal(true);
@@ -35,7 +37,7 @@ export const UserTab = ({createUser, setUserRoleModal})=>{
                   type="link" >
                   Edit
                 </button>
-                : null}
+                : null} */}
               </div>
             )
             
@@ -79,7 +81,7 @@ export const UserTab = ({createUser, setUserRoleModal})=>{
       if(data?.getAllUser?.response){
         dayjs.locale('en-gb');
         const userData =  data?.getAllUser?.response?.map((user, index)=>({
-          key: index,
+          key: user?._id,
           name: user?.employee[0]?.lastname+" "+user?.employee[0]?.firstname, 
           access: user?.userAccessType, 
           createdAt: 
@@ -105,7 +107,13 @@ export const UserTab = ({createUser, setUserRoleModal})=>{
       sessionStorage.setItem('RolehoverItem', record.key);
     };
     const [hoveredRow, setHoveredRow] = useState(null);
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
+    const handelUserEdit = ()=>{
+      console.log(dataSource?.find((user)=>user?.key==selectedRowKeys[0]), "hogo")
+      dispatch(setEditUserData(dataSource?.find((user)=>user?.key==selectedRowKeys[0])));
+      setUserRoleModal(true);
+    };
 
     return(
         <div className='userTab'>
@@ -129,6 +137,11 @@ export const UserTab = ({createUser, setUserRoleModal})=>{
                   handleRowMouseEnter={handleRowMouseEnter} 
                   dataSource={dataSource} column={columns}  
                   setSearchKeyword={setSearchKeyword} 
+                  selectedRowKeys={selectedRowKeys}
+                  setSelectedRowKeys={setSelectedRowKeys}
+                  
+                  tableOption={["Edit User"]}
+                  tableOptionFunc={[handelUserEdit]}
                 />
             </div>
 

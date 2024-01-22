@@ -21,29 +21,40 @@ export const PrivateRoutes = ({children})=>{
 
     useEffect(()=>{
         if(error?.message?.length>0){
+            localStorage.clear();
             dispatch(setNotification(
                 {
-                    error: true,
+                    error: false,
                     notificationState:true, 
-                    message:"Session is expired",
+                    message:"Logout gracefully!",
 
                 }
             ));
+            
+            const token = localStorage.getItem('authToken');
+            if(!token){
+                localStorage.clear();
+                dispatch(resetAll());
+                window.location="/";
+            }
             localStorage.clear();
+
         }
     }, [error]);
 
     const dispatch = useDispatch();
     useEffect(()=>{
+        getUser();
+
         setInterval(()=>{
-            getUser();
-            const token = localStorage.getItem('authToken');
-            if(!token){
-                dispatch(resetAll());
+            if(localStorage.getItem('authToken')){
+                getUser();
+            }else{
                 window.location="/";
             }
         }, 10000)
         setLoading(false);
+
     },[]);
 
     return(

@@ -15,3 +15,8 @@
 .top-menu-layout li{
     font-size: 13px;
 }
+
+.user-avatar .ant-avatar-string{
+    line-height: 31px !important;
+    transform: scale(1) translateX(-50%) translateY(10%) !important;
+}

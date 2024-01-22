@@ -73,7 +73,7 @@ export const CreateUserComponent = ()=>{
         }else{
             setEmail(null);
         }
-    }, [emp, employeeData, UserLiveData]);
+    }, [emp, employeeData, UserLiveData, editUserData]);
 
     useEffect(()=>{
         if(password?.length>7){

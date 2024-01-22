@@ -7,3 +7,12 @@ export const createUserRoleMutation = gql `
         }
     }
 `;
+
+export const updateUserRoleMutation = gql `
+mutation($input: userRoleInput!){
+    updateUserRole(input: $input) {
+      response
+      message
+    }
+}
+`;

@@ -7,3 +7,11 @@ query{
     }
 }
 `;
+
+export const userRoleByIdQuery = gql`
+query($userRoleByIdId: String!){
+  userRoleById(id: $userRoleByIdId) {
+    response
+  }
+}
+`;

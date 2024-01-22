@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
 
 *{
-    font-family: 'Lexend Deca', sans-serif;
+    font-family: "Lexend Deca",Helvetica,Arial,sans-serif;
     /* user-select: none; */
 }
 

@@ -49,7 +49,7 @@ export const Setting = ()=>{
                                 <ul className='setting-sidebar-nav-list'>
                                     <li className='setting-sidebar-nav-list-item'>Account Defaults</li>
                                     <Link to={routes.userRole}><li className={pathname==routes.userRole?active:inactive}>User Roles</li></Link>
-                                    <Link to={routes.addUser}><li className={pathname==routes.addUser?active:inactive}>Users & Teams</li></Link>
+                                    <Link to={routes.addUser}><li className={pathname==routes.addUser?active:inactive }>Users & Teams</li></Link>
                                     <Link to={routes.userAccess}><li className={pathname==routes.userAccess?active:inactive}>Users Access Log</li></Link>
                                     <li className='setting-sidebar-nav-list-item'>Privacy & Consent</li>
                                 </ul>

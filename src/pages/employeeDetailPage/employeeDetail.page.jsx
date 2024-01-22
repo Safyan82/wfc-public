@@ -99,12 +99,12 @@ export const EmployeeDetailPage = ()=>{
                     }
                 }
             });
-
             dispatch(setNotification({
                 message: "Employee Details are Updated Successfully",
                 notificationState: true,
                 error: false
             }));
+
             await singleEmployeeRefetch();
             setRefreshProp(false);
             setDataFields([]);

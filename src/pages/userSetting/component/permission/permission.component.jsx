@@ -400,7 +400,7 @@ export const Permission = ({access, role, userAccessType})=>{
                                         }))
                                     }}
                                 } 
-                                    icon={propAccess[obj][property?._id]?.visible==1? faEye : faEyeSlash} />    
+                                    icon={propAccess && propAccess[obj] && propAccess[obj][property?._id]?.visible==1? faEye : faEyeSlash} />    
                                 
                                 <FontAwesomeIcon className={propAccess[obj]?.view=="None" ? 'access-icon disabled' :'access-icon'} onClick={()=>{
                                      if(moduleView=="None"){
@@ -419,7 +419,7 @@ export const Permission = ({access, role, userAccessType})=>{
                                     }
                                 }}  
                                 icon={faPencil}  />
-                                {propAccess[obj][property?._id]?.edit==1? null : <span className={propAccess[obj]?.view=="None"?'slash-disabled ':'slash'}></span> }
+                                {propAccess && propAccess[obj] && propAccess[obj][property?._id]?.edit==1? null : <span className={propAccess[obj]?.view=="None"?'slash-disabled ':'slash'}></span> }
                                 
                             </div>
                         </div>
@@ -462,23 +462,41 @@ export const Permission = ({access, role, userAccessType})=>{
         }
     }, [objectPropertyDefaultDetail]);
 
-    // HANDEL WHILE TO EDIT
+    // ======================= User edit specific only
+    // HANDEL WHILE TO EDIT for user
     const {editUserData} = useSelector((state)=>state?.editUserReducer);
 
 
     useEffect(()=>{
-        // if(editUserData?.userAccessType===userAccessType){
-        //     dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
-        // }else{
-        //     dispatch(setPreDefinedDBPermission(adminDefaultPermissions))
-        // }
-        if(editUserData?.user?.permission){
+        if(editUserData?.user?.permission && !sessionStorage.getItem("editDone")){
+            sessionStorage.setItem("editDone", true);
             dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
         }
 
     },[editUserData]);
 
     // TERMINATE EDIT HANDEL 
+    // ======================= User edit specific only terminated
+
+
+
+
+    // ======================= Handel pre-define role only
+    // Handel pre-define role only
+    const {userRoleToBeEdit} = useSelector((state)=>state?.userRoleReducer);
+
+
+    useEffect(()=>{
+        if(userRoleToBeEdit?.permission && !sessionStorage.getItem("RoleEditDone")){
+            sessionStorage.setItem("RoleEditDone", true);
+            dispatch(setPreDefinedDBPermission(userRoleToBeEdit?.permission));
+        }
+
+    },[userRoleToBeEdit]);
+
+    // Handel pre-define role only
+    // ======================= Handel pre-define role only terminated
+
 
     const objectToRender = userAccessType===accessType.AdminPermission? Object.values(objectType) : Object.values(normalUser);
     

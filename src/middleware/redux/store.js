@@ -16,29 +16,54 @@ import moduleCustomPermissionReducer from './reducers/moduleCustomPermission.red
 import userReducer from './reducers/user.reducer';
 import editUserReducer from './reducers/editUser.reducer';
 import userAuthReducer from './reducers/userAuth.reducer';
+import userRoleReducer from './reducers/userRole.reducer';
+
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import { rootReducer } from './rootReducer';
+
+
+
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: {
-    createFieldReducer: createFieldReducer,
-    notificationReducer: notificationReducer,
-    groupReducer: groupReducer,
-    propertyReducer: propertiesReducer,
-    archiveReducer: archivePropertyReducer,
-    editPropertyReducer: editPropertyReducer,
-    branchReducer: branchReducer,
-    quickFilterReducer: quickFilterReducer,
-    branchViewReducer: branchViewReducer,
-    reset: resetReducer,
-    noteReducer: noteReducer,
-    branchDataReducer: branchDataReducer,
-    permissionReducer: permissionReducer, 
-    moduleCustomPermissionReducer: moduleCustomPermissionReducer,
-    userDetailReducer: userReducer,
-    editUserReducer: editUserReducer,
-    // this reducer is dedicated for user auth detail only
-    userAuthReducer: userAuthReducer
-  },
-  middleware:[...getDefaultMiddleware()]
+  reducer: persistedReducer,
 });
+
+
+
+export const persistor = persistStore(store);
+
+
+// const store = configureStore({
+//   reducer: {
+//     createFieldReducer: createFieldReducer,
+//     notificationReducer: notificationReducer,
+//     groupReducer: groupReducer,
+//     propertyReducer: propertiesReducer,
+//     archiveReducer: archivePropertyReducer,
+//     editPropertyReducer: editPropertyReducer,
+//     branchReducer: branchReducer,
+//     quickFilterReducer: quickFilterReducer,
+//     branchViewReducer: branchViewReducer,
+//     reset: resetReducer,
+//     noteReducer: noteReducer,
+//     branchDataReducer: branchDataReducer,
+//     permissionReducer: permissionReducer, 
+//     moduleCustomPermissionReducer: moduleCustomPermissionReducer,
+//     userDetailReducer: userReducer,
+//     editUserReducer: editUserReducer,
+//     // this reducer is dedicated for user auth detail only
+//     userAuthReducer: userAuthReducer,
+//     // this reducer is to handel the edit part of the pre defined user roles in setting
+//     userRoleReducer: userRoleReducer
+//   },
+//   middleware:[...getDefaultMiddleware()]
+// });
 
 export default store;

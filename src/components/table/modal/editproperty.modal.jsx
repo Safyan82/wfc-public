@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Input, Modal, Select, Button, notification, Spin, TreeSelect, DatePicker, TimePicker } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { Form, Input, Modal, Select, Button, notification, Spin, TreeSelect, DatePicker, TimePicker, Tag } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarAlt, faClock, faClose } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarAlt, faClock, faClose, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useQuery } from '@apollo/client';
 import { GET_BRANCHES } from '../../../util/query/branch.query';
@@ -9,6 +9,8 @@ import { GET_BRANCHES } from '../../../util/query/branch.query';
 
 export const EditPropertiesModal = ({ visible, onClose, record, dynamicColumn, handelBulkUpdateSave, clearSelection}) => {
   const [data, setData] = useState(null);
+  const popoverRef = useRef(null);
+  const inputRef = useRef(null);
   const { data: branchData, } = useQuery(GET_BRANCHES ,{
     fetchPolicy: 'cache-and-network',
     variables: {
@@ -18,26 +20,111 @@ export const EditPropertiesModal = ({ visible, onClose, record, dynamicColumn, h
     }
   });
 
+  const [localGroup, setLocalGroup] = useState(branchData?.branches||[]);
+  const [groupInput, setGroupInput] = useState();
+  const [groupPopover, setGroupPopover] = useState(false);
+
   const [selectedProperty, setSelectedProperty] = useState(null);
 
   const [field, setField] = useState(null);
+      
+ 
+
+
+  useEffect(()=>{
+    if(branchData?.branches?.length>0){
+        setLocalGroup(branchData?.branches);
+    }
+  },[branchData?.branches]);
+
+  
+  const [parentWidth, setParentWidth] = useState(null);
+  const parentRef = useRef(null);
+
+  const [tags, setTags] = useState([]);
+  
+  
+
+  useEffect(() => {
+
+    const updateParentWidth = () => {
+      if (parentRef.current) {
+        const width = parentRef.current.offsetWidth;
+        setParentWidth(width);
+      }
+    };
+
+    // Call the update function on initial mount and window resize
+    updateParentWidth();
+    window.addEventListener('resize', updateParentWidth);
+    inputRef?.current?.focus();
+
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener('resize', updateParentWidth);
+    };
+
+  }, [groupPopover, visible]);
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.group-wrapper')) {
+        setGroupPopover(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  // useEffect(()=>{
+  //   if(tags?.length>0){
+  //     console.log(tags, "dddd")
+  //     setData({
+  //       field:"branch",
+  //       value: [...tags]
+  //     });
+  //   }
+  // },[tags]);
+
+
+  useEffect(()=>{
+    if(groupInput && !tags?.find((tag)=>tag?.name==groupInput?.name) && groupInput?.id!="dumy"){
+        setTags([...tags, groupInput]);
+        const dataValue = tags?.map((tag)=>tag.id);
+        console.log([...dataValue, groupInput?.id], "groupppId")
+        setData({field: 'branch', value: [...dataValue, groupInput?.id]})
+    }
+  }, [groupInput]);
+
 
   useEffect(()=>{
     if(selectedProperty){
-      setData(null);
-      setField(null);
-      const newField = getField(data, setData, branchData, selectedProperty);
+      // setData(null);
+      // setField(null);
+      const newField = getField(data, setData, branchData, selectedProperty, popoverRef, inputRef, parentRef, parentWidth, setParentWidth, tags, setTags, localGroup, setLocalGroup, groupInput, setGroupInput, groupPopover, setGroupPopover);
       setField(newField);
+    }
+  }, [selectedProperty, groupPopover, groupInput]);
+
+  
+  useEffect(()=>{
+    if(selectedProperty){
+      setData(null);
     }
   }, [selectedProperty]);
 
   useEffect(()=>{
     if(data){
 
-      const newField = getField(data, setData, branchData, selectedProperty);
+      const newField = getField(data, setData, branchData, selectedProperty, popoverRef, inputRef, localGroup, parentRef, parentWidth, setParentWidth, tags, setTags, setLocalGroup, groupInput, setGroupInput, groupPopover, setGroupPopover);
       setField(newField);
     }
-  }, [data]);
+  }, [data, groupPopover, groupInput]);
 
   const [loading, setLoading] = useState(false);
   const handelUpdate = async ()=>{
@@ -95,7 +182,7 @@ export const EditPropertiesModal = ({ visible, onClose, record, dynamicColumn, h
                 ))}
               </Select>
             </Form.Item> 
-            {field}    
+            {field? field : null}    
           </form>
         </div>  
       </React.Fragment>  
@@ -103,9 +190,9 @@ export const EditPropertiesModal = ({ visible, onClose, record, dynamicColumn, h
   );
 };
 
-const getField = (data, setData, branchData, property)=>{
+const getField = (data, setData, branchData, property, popoverRef, inputRef, parentRef, parentWidth, setParentWidth, tags, setTags, localGroup, setLocalGroup, groupInput, setGroupInput, groupPopover, setGroupPopover)=>{
   
-  
+  console.log(property, "safyan propertyy");
   const name = property?.propertyDetail?.label.replaceAll(" ","").toLowerCase();
   const {Option} = Select;
 
@@ -320,6 +407,8 @@ const getField = (data, setData, branchData, property)=>{
 
   }
 
+  
+
   return(
                     
     property?.propertyDetail?.fieldType==="singlelineText" || property?.propertyDetail?.fieldType==="password" || property?.propertyDetail?.fieldType==="email" ?
@@ -375,21 +464,93 @@ const getField = (data, setData, branchData, property)=>{
     property?.propertyDetail?.label.toLowerCase()=="branch"?
       <Form.Item>
           <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
-              <Select 
-                className='custom-select'  
-                suffixIcon={<span className='dropdowncaret'></span>}
-                name={name}
-                id={name}
+              
+          {tags?.length>0?
+            <>
                 
-                placeholder="Select Branch"
-                onChange={(e)=>{handelDataValue({
-                  name,
-                  value: e
-                });}}
-
+                <div className="grouptabs" style={{marginBottom: '16px'}}>
+                    {tags?.map((property)=>(
+                        <Tag closable={true} onClose={()=>{setGroupInput({id:"dumy"}); setTags(tags?.filter((tag)=>tag.id!=property.id));  }} className='tag'>
+                            {property.name}
+                        </Tag>
+                    ))}
+                </div>
+            </>
+            : null
+          }
+          <div className="group-wrapper">
+              <div
+                  name="groupInput"
+                  className='generic-input-control groupInput' 
+                  style={{cursor:'pointer', padding:'0 0px'}}
+                  onClick={()=>setGroupPopover(!groupPopover)}
               >
-                  {branchData?.branches?.map((option)=>(<Option value={option._id}> {option?.branchname} </Option>))}
-              </Select>
+                  <div  style={{fontSize:'14px', fontWeight: 'normal', margin: '9px', display: 'flex'}}>
+                      Select branch
+                      <span onClick={()=>setGroupPopover(!groupPopover)} 
+                          style={{
+                              position: 'absolute',
+                              right: '6px',
+                          }} className='caret'></span>
+                  </div>
+              </div>
+
+              <div ref={parentRef} className={groupPopover? 'show ': 'hide'}>
+                  <div className="moveGroupData" style={{width: parentWidth-1.5}} >
+                      <div className="popover-search" >
+                          <Input type="text" 
+                              ref={inputRef}
+                              name='popoverSearch'
+                              style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
+                              className='generic-input-control' 
+                              placeholder="Search..."
+                              autoFocus={groupPopover}
+                              autoComplete="off"
+                              onChange={(e)=> setLocalGroup(branchData?.branches?.filter((group)=> (group.branchname)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
+                              suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
+                          />
+                      </div>
+
+                      <div ref={popoverRef}>
+                          {localGroup?.length ? localGroup?.map((gl)=>(
+                              <div 
+                                  className={"popoverdataitem"} 
+                                  onClick={(e)=>{setGroupInput({name:gl.branchname, id:gl._id}); setGroupPopover(false)}}>
+                                  {gl.branchname}
+                              </div>
+                          )):
+                          
+                          <div 
+                              className={"popoverdataitem"} 
+                              style={{cursor:'no-drop'}}
+                              onClick={(e)=>{ setGroupPopover(false)}}>
+                              No results found
+                          </div>
+                          }
+                      </div>
+                  </div>
+
+              </div>
+          
+                  
+                  
+            
+          </div>
+          {/* <Select 
+            className='custom-select'  
+            suffixIcon={<span className='dropdowncaret'></span>}
+            name={name}
+            id={name}
+            
+            placeholder="Select Branch"
+            onChange={(e)=>{handelDataValue({
+              name,
+              value: e
+            });}}
+
+          >
+              {branchData?.branches?.map((option)=>(<Option value={option._id}> {option?.branchname} </Option>))}
+          </Select> */}
       </Form.Item>  
       :
       <Form.Item>

@@ -35,6 +35,7 @@ import { isLoginCheckQuery } from './util/query/user.query';
 import { UnAuthroizedAccess } from './pages/unAuthroizedAccess/unAuthroizedAccess.page';
 import { UserAccess } from './pages/userAccess/userAccess.page';
 import { Join } from './pages/join/join';
+import { UserDetailPage } from './pages/userDetail/userDetail.page';
 
 
 function App() {
@@ -140,6 +141,7 @@ function App() {
             <Route path={routes.addUser} element={<User/>} />
             <Route path={routes.userRole} element={<UserRole/>} />
             <Route path={routes.userAccess} element={<UserAccess/>} />
+            <Route path={"user/:employeeId"} element={<UserDetailPage/>} />
           </Route>
           
         </Routes>
