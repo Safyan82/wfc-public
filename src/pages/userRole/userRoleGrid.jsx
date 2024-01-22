@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { GenericTable } from "../../components/genericTable/genericTable"
+import { setUserRoleToBeEdit } from "../../middleware/redux/reducers/userRole.reducer";
 
-export const UserRoleGrid = ({column, createUser, dataSource})=>{
+export const UserRoleGrid = ({column, createUser, dataSource, rawData})=>{
     
     
     const [searchKeyword, setSearchKeyword] = useState("");
@@ -17,7 +19,19 @@ export const UserRoleGrid = ({column, createUser, dataSource})=>{
       sessionStorage.setItem('RolehoverItem', record.key);
     };
     const [hoveredRow, setHoveredRow] = useState(null);
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
+    useEffect(()=>{
+        console.log(selectedRowKeys, "roww keyyy");
+    }, [selectedRowKeys]);
+
+    const dispatch = useDispatch();
+    
+    const handelRoleEdit = ()=>{
+        const editProp = rawData?.find((data)=>data?._id==selectedRowKeys[0]);
+        dispatch(setUserRoleToBeEdit(editProp));
+        createUser();
+    };
     
     return(
         <div className='userTab'>
@@ -34,11 +48,14 @@ export const UserRoleGrid = ({column, createUser, dataSource})=>{
                 <GenericTable 
                     dataSource={dataSource} 
                     column={column} 
+                    tableOption={["Edit Role"]}
+                    tableOptionFunc={[handelRoleEdit]}
                     hoveredRow={hoveredRow}
                     setHoveredRow={setHoveredRow}
                     handleRowMouseEnter={handleRowMouseEnter} 
-                    setSearchKeyword={setSearchKeyword} 
-                    
+                    setSearchKeyword={setSearchKeyword}   
+                    selectedRowKeys={selectedRowKeys}
+                    setSelectedRowKeys={setSelectedRowKeys}
                 />
             </div>
 

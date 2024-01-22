@@ -14,3 +14,18 @@ query{
     }
 }
 `;
+
+export const UserAccessLogByEmployeeIdQuery = gql `
+query($employeeId: String!){
+  getUsersAccessLogByEmpId(employeeId: $employeeId) {
+      _id
+      location
+      ip
+      userId
+      employee
+      accessedAt
+      platform
+      isActive
+    }
+}
+`;

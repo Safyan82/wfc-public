@@ -7,14 +7,17 @@ import App from './App';
 import { ApolloProvider } from '@apollo/client';
 import { client, publicClient } from './config/apollo';
 import { Provider } from 'react-redux';
-import store from './middleware/redux/store';
+import store, { persistor } from './middleware/redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   // <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
   // </React.StrictMode>
 );

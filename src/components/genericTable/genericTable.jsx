@@ -5,10 +5,11 @@ import { Input, Table } from "antd"
 
 export const GenericTable = ({column, 
     dataSource, setSearchKeyword, 
-    handleRowMouseEnter, hoveredRow, setHoveredRow})=>{
+    handleRowMouseEnter, hoveredRow, setHoveredRow, tableOption=["Edit"], tableOptionFunc=[()=>{}],
+    selectedRowKeys, setSelectedRowKeys,
+  })=>{
     
    
-    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
     const rowClassName = (record) => {
         return record.key === hoveredRow ? 'hovered-row' : '';
@@ -24,6 +25,7 @@ export const GenericTable = ({column,
     };
 
     const onSelectChange = (newSelectedRowKeys) => {
+        console.log(newSelectedRowKeys, "newSelectedRowKeys");
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
@@ -33,6 +35,7 @@ export const GenericTable = ({column,
         onChange: onSelectChange,
     };
 
+    console.log(tableOptionFunc, "")
     return (
 
         <Table
@@ -57,13 +60,13 @@ export const GenericTable = ({column,
                       <>
                           <small class='small-text' style={{margin: 0 }}> {selectedRowKeys?.length} selected</small>
 
-                          <div style={{fontSize:'11px'}}>
-                            <FontAwesomeIcon icon={faPencil} style={{marginRight:'5px', fontSize:'10px'}} /> <span>Edit permissions</span>
+                          <div style={{fontSize:'11px'}} className={selectedRowKeys?.length>1? 'disabled': null} onClick={selectedRowKeys?.length>1? ()=>{return false;} :tableOptionFunc[0]}>
+                            <FontAwesomeIcon icon={faPencil} style={{marginRight:'5px', fontSize:'10px'}} /> <span>{tableOption[0]}</span>
                           </div>
 
-                          <div style={{fontSize:'11px'}} className='disabled'>
+                          {/* <div style={{fontSize:'11px'}} className='disabled'>
                             <FontAwesomeIcon icon={faPencil} style={{marginRight:'5px', fontSize:'10px'}} className='disabled'/> <span className='disabled'>Add to team</span>
-                          </div>
+                          </div> */}
                       </>
                     }
                   </div>

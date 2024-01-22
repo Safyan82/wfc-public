@@ -37,6 +37,7 @@ export const UserRole = ()=>{
     useEffect(()=>{
         if(data?.userRoleList?.response){
             setUserRoleData(data?.userRoleList?.response?.map((role)=>({
+                key: role?._id,
                 ...role,
                 permission:Object.keys(role.permission)?.map((access)=>
                 <>
@@ -69,7 +70,8 @@ export const UserRole = ()=>{
                 <UserRoleGrid 
                     createUser={()=>setUserModal(!userModal)}
                     column={column} 
-                    dataSource={userRoleData}   
+                    dataSource={userRoleData}  
+                    rawData={data?.userRoleList?.response} 
                 />
             </div>
             {userModal?

@@ -56,7 +56,7 @@ export const Employee = () =>{
         const firstname = data?.find((d)=>(Object.keys(d)[0]=="firstname"));
         const lastname = data?.find((d)=>(Object.keys(d)[0]==="lastname"));
         const branch = data?.find((d)=>(Object.keys(d)[0]==="branch"));
-        
+        console.log(branch, "bbb")
         let metadata = {};
         data?.map(d=>{
           if(Object.keys(d)[0]!=="firstname" && Object.keys(d)[0]!=="lastname" && Object.keys(d)[0]!=="branch"){
@@ -66,7 +66,7 @@ export const Employee = () =>{
         const employee = {
           ...firstname,
           ...lastname,
-          ...branch,
+          branch: [...branch.branch],
           metadata,
         }
         // handel mutation

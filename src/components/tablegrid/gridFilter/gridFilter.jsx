@@ -122,7 +122,7 @@ export const GridFilter = ({openAdvanceFilter, updateView, refetch})=>{
                                             <div 
                                                 className="text" 
                                                 style={{color: '#516f90',
-                                                fontWeight: '50'}}
+                                                fontWeight: '200'}}
                                             >
                                                 {datalist.subtitle}
                                             </div>
@@ -194,7 +194,7 @@ export const GridFilter = ({openAdvanceFilter, updateView, refetch})=>{
                                         }}>
                                         {datalist.title}
                                         <div className="text" style={{color: '#516f90',
-                                            fontWeight: '50'}}>{datalist.subtitle}</div>
+                                            fontWeight: '200'}}>{datalist.subtitle}</div>
                                         </div>
                                         
                                     ))}

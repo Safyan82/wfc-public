@@ -1,15 +1,16 @@
 import './drawer.css';
 import Spinner from '../../components/spinner';
-import React,{ useEffect, useState } from 'react';
-import { Form, Input, Drawer, Select, TreeSelect, DatePicker, TimePicker } from 'antd';
+import React,{ useEffect, useRef, useState } from 'react';
+import { Form, Input, Drawer, Select, TreeSelect, DatePicker, TimePicker, Tag } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faClose, faExternalLink } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faClose, faExternalLink, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { GET_BRANCHES } from '../../util/query/branch.query';
 
 import { faCalendarAlt, faClock } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import { useQuery } from '@apollo/client';
+import { isArray } from '@apollo/client/utilities';
 
 export const FormDrawer = ({ objectLoading, 
   objectData, 
@@ -434,8 +435,7 @@ export const FormDrawer = ({ objectLoading,
       }
 
       const checkMandatoryField = ()=>{
-        const isMandatoryFieldFilled = mandatoryProperties?.every((field)=>data?.find(d=>Object.keys(d)[0]==field?.propertyDetail?.label.replaceAll(" ","").toLowerCase() && Object.values(d)[0]!==""));
-    
+        const isMandatoryFieldFilled = mandatoryProperties?.every((field)=>data?.find(d=>Object.keys(d)[0]==field?.propertyDetail?.label.replaceAll(" ","").toLowerCase() && Object.values(d)[0]?.length>0 ));
         const isErrorExist = Array.from(document.getElementsByClassName("errorMsg"));
         if(isMandatoryFieldFilled && isErrorExist?.length==0){
           setBtn(false);
@@ -458,6 +458,79 @@ export const FormDrawer = ({ objectLoading,
           }
       }
     });
+
+    
+  const popoverRef = useRef(null);
+  const inputRef = useRef(null);
+  const [localGroup, setLocalGroup] = useState(branchData?.branches||[]);
+  const [groupInput, setGroupInput] = useState();
+  const [groupPopover, setGroupPopover] = useState(false);
+
+  useEffect(()=>{
+    if(branchData?.branches?.length>0){
+        setLocalGroup(branchData?.branches);
+    }
+  },[branchData?.branches]);
+
+  
+  const [parentWidth, setParentWidth] = useState(null);
+  const parentRef = useRef(null);
+
+  const [tags, setTags] = useState([]);
+  
+  
+
+  useEffect(() => {
+
+    const updateParentWidth = () => {
+      if (parentRef.current) {
+        const width = parentRef.current.offsetWidth;
+        setParentWidth(width);
+      }
+    };
+
+    // Call the update function on initial mount and window resize
+    updateParentWidth();
+    window.addEventListener('resize', updateParentWidth);
+    inputRef?.current?.focus();
+
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener('resize', updateParentWidth);
+    };
+
+  }, [groupPopover, visible]);
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.group-wrapper')) {
+        setGroupPopover(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(()=>{
+    console.log(tags, "ttt");
+    handelDataValue({
+      name:"branch",
+      value: [...tags]
+    });
+    checkMandatoryField()
+  },[tags]);
+
+
+  useEffect(()=>{
+    if(groupInput && !tags?.find((tag)=>tag?.name==groupInput?.name) && groupInput?.id!="dumy"){
+        setTags([...tags, groupInput]);
+    }
+  }, [groupInput]);
 
       const {Option} = Select;
       return (
@@ -557,24 +630,103 @@ export const FormDrawer = ({ objectLoading,
                     
                     : property?.propertyDetail?.fieldType == 'selectDropdown' || property?.propertyDetail?.fieldType == 'radioDropdown' ?
                     property?.propertyDetail?.label.toLowerCase()=="branch"?
-                      <Form.Item>
-                          <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
-                              <Select 
-                                className='custom-select'  
-                                suffixIcon={<span className='dropdowncaret'></span>}
-                                name={name}
-                                id={name}
-                                value={value}
-                                placeholder="Select Branch"
-                                onChange={(e)=>{handelDataValue({
-                                  name,
-                                  value: e
-                                });checkMandatoryField()}}
+                      
 
-                              >
-                                  {branchData?.branches?.map((option)=>(<Option value={option._id}> {option?.branchname} </Option>))}
-                              </Select>
-                      </Form.Item>  
+                        <Form.Item>
+                            <label>{tags?.length>1? 'Branches': 'Branch'} <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
+                          
+                            {tags?.length>0?
+                            <>
+                                
+                                <div className="grouptabs" style={{marginBottom: '16px'}}>
+                                    {tags?.map((property)=>(
+                                        <Tag closable={true} onClose={()=>{setBtn(true); setGroupInput({id:"dumy"}); setTags(tags?.filter((tag)=>tag.id!=property.id));  }} className='tag'>
+                                            {property.name}
+                                        </Tag>
+                                    ))}
+                                </div>
+                            </>
+                            : null
+                            }
+                            <div className="group-wrapper">
+                                <div
+                                    name="groupInput"
+                                    className='generic-input-control groupInput' 
+                                    style={{cursor:'pointer', padding:'0 0px'}}
+                                    onClick={()=>setGroupPopover(!groupPopover)}
+                                >
+                                    <div  style={{fontSize:'14px', fontWeight: 'normal', margin: '9px', display: 'flex'}}>
+                                        Select branch
+                                        <span onClick={()=>setGroupPopover(!groupPopover)} 
+                                            style={{
+                                                position: 'absolute',
+                                                right: '6px',
+                                            }} className='caret'></span>
+                                    </div>
+                                </div>
+
+                                <div ref={parentRef} id="branch-selector" className={groupPopover? 'show ': 'hide'}>
+                                    <div className="moveGroupData" style={{width: parentWidth-1.5}} >
+                                        <div className="popover-search" >
+                                            <Input type="text" 
+                                                ref={inputRef}
+                                                name='popoverSearch'
+                                                style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
+                                                className='generic-input-control' 
+                                                placeholder="Search..."
+                                                autoFocus={groupPopover}
+                                                autoComplete="off"
+                                                onChange={(e)=> setLocalGroup(branchData?.branches?.filter((group)=> (group.branchname)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
+                                                suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
+                                            />
+                                        </div>
+
+                                        <div ref={popoverRef}>
+                                            {localGroup?.length ? localGroup?.map((gl)=>(
+                                                <div 
+                                                    className={"popoverdataitem"} 
+                                                    onClick={(e)=>{setGroupInput({name:gl.branchname, id:gl._id}); setBtn(true); setGroupPopover(false)}}>
+                                                    {gl.branchname}
+                                                </div>
+                                            )):
+                                            
+                                            <div 
+                                                className={"popoverdataitem"} 
+                                                style={{cursor:'no-drop'}}
+                                                onClick={(e)=>{ setGroupPopover(false)}}>
+                                                No results found
+                                            </div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                </div>
+                            
+                                    
+                                    
+                              
+                            </div>
+                        </Form.Item>
+
+                      
+                      // <Form.Item>
+                      //     <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
+                      //         <Select 
+                      //           className='custom-select'  
+                      //           suffixIcon={<span className='dropdowncaret'></span>}
+                      //           name={name}
+                      //           id={name}
+                      //           value={value}
+                      //           placeholder="Select Branch"
+                      //           onChange={(e)=>{handelDataValue({
+                      //             name,
+                      //             value: e
+                      //           });checkMandatoryField()}}
+
+                      //         >
+                      //             {branchData?.branches?.map((option)=>(<Option value={option._id}> {option?.branchname} </Option>))}
+                      //         </Select>
+                      // </Form.Item>  
                       :
                       <Form.Item>
                           <label>{property?.propertyDetail?.label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>

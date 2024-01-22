@@ -29,13 +29,8 @@ const { SubMenu } = Menu;
 
 
 
-const UserMenu = ({visible, setVisible}) => {
+const UserMenu = ({visible, setVisible, employeeDetail}) => {
 
-    // Dummy user data
-    const user = {
-      name: 'John Doe',
-    //   avatar: 'https://example.com/avatar.jpg',
-    };
   
     const navigate = useNavigate();
     const menu = (
@@ -49,9 +44,9 @@ const UserMenu = ({visible, setVisible}) => {
   
     return (
       <Dropdown overlay={menu} visible={visible} placement="bottomLeft" onClick={()=>setVisible(!visible)}>
-        <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-          <Avatar src={user.avatar} alt={user.name} />
-          <span style={{ marginLeft: '8px' }}>{user.name}</span>
+        <div className='user-avatar' style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+          <Avatar size={"large"}>{employeeDetail.firstname[0]+ " " +employeeDetail?.lastname[0]}</Avatar>
+          <span style={{ marginLeft: '8px' }}>{employeeDetail.firstname}</span>
           {/* <DownOutlined style={{ marginLeft: '8px' }} /> */}
         </div>
       </Dropdown>
@@ -75,6 +70,7 @@ export function Navbar(){
         skip: !localStorage.getItem('employeeId')
     });
 
+    
     const dispatch = useDispatch();
 
     useEffect(()=>{
@@ -98,7 +94,7 @@ export function Navbar(){
     },[data?.getUserByEmpId?.response]);
 
     const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
-    
+    console.log(authenticatedUserDetail, "authenticatedUserDetail")
     const IsBranchView = authenticatedUserDetail?.permission?.Branch?.view!=="None";
     const IsEmployeeView = authenticatedUserDetail?.permission?.Employee?.view!=="None";
     
@@ -172,7 +168,7 @@ export function Navbar(){
             </Menu.Item>
 
             <Menu.Item>
-                <UserMenu visible={visible} setVisible={setVisible} />
+                <UserMenu visible={visible} employeeDetail={authenticatedUserDetail?.employeeDetail[0]} setVisible={setVisible} />
             </Menu.Item>
 
             {/* <SubMenu key="account" icon={<WordLetterAvatar word={"Muhammad Safyan"} />} title={"Safyan"} >

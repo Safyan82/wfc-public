@@ -1,8 +1,8 @@
 import './leftsidebar.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBarsStaggered, faCalendarDay, faCheck, faChevronLeft, faClose, faCross, faDesktop, faEllipsis, faHandHolding, faHandHoldingHand, faList, faList12, faListDots, faPaw, faPen, faPencil, faPhone, faTasks, faTasksAlt } from '@fortawesome/free-solid-svg-icons';
-import { Avatar, Popover, Collapse, Panel, Form, Input, Select, Badge, Checkbox, Skeleton } from 'antd';
+import { faBarsStaggered, faCalendarDay, faCheck, faChevronLeft, faClose, faCross, faDesktop, faEllipsis, faHandHolding, faHandHoldingHand, faList, faList12, faListDots, faPaw, faPen, faPencil, faPhone, faSearch, faTasks, faTasksAlt } from '@fortawesome/free-solid-svg-icons';
+import { Avatar, Popover, Collapse, Panel, Form, Input, Select, Badge, Checkbox, Skeleton, Tag } from 'antd';
 import { faBuilding, faCalendar, faCalendarAlt, faCalendarDays, faCopy, faEnvelope, faMeh, faNoteSticky, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import {    EditOutlined, CopyOutlined, CopyTwoTone, PhoneOutlined, EllipsisOutlined, CalendarOutlined, MediumWorkmarkOutlined, TableOutlined, TagsOutlined, ContainerOutlined, RedEnvelopeOutlined, MailOutlined, FormOutlined } from '@ant-design/icons';
 import { GET_BRANCHES, GetBranchObject, getSingleBranch } from '../../../util/query/branch.query';
@@ -116,6 +116,91 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
         // console.log(Object.values(authenticatedUserDetail?.permission?.Employee), "authenticatedUserDetail");
     }, [authenticatedUserDetail]);
     // console.log(authenticatedUserDetail?.permission?.Employee, "authenticatedUserDetail", employeeObject);
+
+
+    // branch multi select
+        
+  const popoverRef = useRef(null);
+  const inputRef = useRef(null);
+  const [localGroup, setLocalGroup] = useState(branchData?.branches||[]);
+  const [groupInput, setGroupInput] = useState();
+  const [groupPopover, setGroupPopover] = useState(false);
+
+  useEffect(()=>{
+    if(branchData?.branches?.length>0){
+        setLocalGroup(branchData?.branches);
+    }
+  },[branchData?.branches]);
+
+  
+  const [parentWidth, setParentWidth] = useState(null);
+  const parentRef = useRef(null);
+
+  const [tags, setTags] = useState([]);
+
+  useEffect(() => {
+
+    const updateParentWidth = () => {
+      if (parentRef.current) {
+        const width = parentRef.current.offsetWidth;
+        setParentWidth(width);
+      }
+    };
+
+    // Call the update function on initial mount and window resize
+    updateParentWidth();
+    window.addEventListener('resize', updateParentWidth);
+    inputRef?.current?.focus();
+
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener('resize', updateParentWidth);
+    };
+
+  }, [groupPopover]);
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.group-wrapper')) {
+        setGroupPopover(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+ 
+  useEffect(()=>{
+    if(groupInput && !tags?.find((tag)=>tag?.name==groupInput?.name) && groupInput?.id!="dumy"){
+        setTags([...tags, groupInput]);
+        handelInputChange({name: "branch", value: [...tags, groupInput]});
+    }
+  }, [groupInput]);
+
+
+
+  useEffect(()=>{
+        if(singleEmployee?.hasOwnProperty("branch")  || singleEmployee['metadata']?.hasOwnProperty("branch")){
+            const branchIds = singleEmployee["branch"] || singleEmployee['metadata']["branch"] ;
+            setTags(
+                branchIds.map((branchId)=>{
+
+                    const filteredBranch = localGroup?.find((lg)=>(lg._id==branchId));
+                    return {
+                        name: filteredBranch.branchname,
+                        id: filteredBranch._id
+                    }
+                    
+                })
+            )
+        }
+    
+  },[singleEmployee]);
 
     return(
         <div className='sidebar-wrapper'>
@@ -274,20 +359,101 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
 
                                 </div>
                                 {prop?.label?.toLowerCase()=="branch"?
-                                <Select 
-                                 disabled={readonlyProp.includes(prop._id)}
-                                 className={readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
+                                    <>
+                                        
+                                        {tags?.length>0?
+                                        <>
+                                            
+                                            <div className="grouptabs" style={{marginBottom: '16px'}}>
+                                                {tags?.map((property)=>(
+                                                    <Tag closable={true} onClose={()=>{setGroupInput({id:"dumy"}); setTags(tags?.filter((tag)=>tag.id!=property.id)); handelInputChange({name: "branch", value: [...tags?.filter((tag)=>tag.id!=property.id)]});  }} className='tag'>
+                                                        {property.name}
+                                                    </Tag>
+                                                ))}
+                                            </div>
+                                        </>
+                                        : null
+                                        }
+                                        <div className="group-wrapper">
+                                            <div
+                                                name="groupInput"
+                                                // className='generic-input-control groupInput' 
+                                                style={{cursor:'pointer', padding:'0 0px'}}
+                                                onClick={()=>{readonlyProp.includes(prop._id)? console.log("not allowed") :setGroupPopover(!groupPopover)}}                                                
+                                                disabled={readonlyProp.includes(prop._id)}
+                                                // className={true? 'disabled-text detailInput' :'detailInput'} 
+                                                className={readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
+                                        
+                                            >
+                                                <div  style={{fontSize:'14px', fontWeight: 'normal', margin: '0px', display: 'flex'}}
+                                                
+                                                >
+                                                    Select branch
+                                                    <span onClick={()=>setGroupPopover(!groupPopover)} 
+                                                        style={{
+                                                            position: 'absolute',
+                                                            right: '16px',
+                                                        }} className='caret'></span>
+                                                </div>
+                                            </div>
+
+                                            <div ref={parentRef} id="branch-selector" className={groupPopover? 'show ': 'hide'}>
+                                                <div className="moveGroupData" style={{width: parentWidth-1.5}} >
+                                                    <div className="popover-search" >
+                                                        <Input type="text" 
+                                                            ref={inputRef}
+                                                            name='popoverSearch'
+                                                            style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
+                                                            className='generic-input-control' 
+                                                            placeholder="Search..."
+                                                            autoFocus={groupPopover}
+                                                            autoComplete="off"
+                                                            onChange={(e)=> setLocalGroup(branchData?.branches?.filter((group)=> (group.branchname)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
+                                                            suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
+                                                        />
+                                                    </div>
+
+                                                    <div ref={popoverRef}>
+                                                        {localGroup?.length ? localGroup?.map((gl)=>(
+                                                            <div 
+                                                                className={"popoverdataitem"} 
+                                                                onClick={(e)=>{setGroupInput({name:gl.branchname, id:gl._id});  setGroupPopover(false)}}>
+                                                                {gl.branchname}
+                                                            </div>
+                                                        )):
+                                                        
+                                                        <div 
+                                                            className={"popoverdataitem"} 
+                                                            style={{cursor:'no-drop'}}
+                                                            onClick={(e)=>{ setGroupPopover(false)}}>
+                                                            No results found
+                                                        </div>
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        
+                                                
+                                                
+                                        
+                                        </div>
+                                    </>
                                 
-                                 style={{border: "none"}}
-                                 suffixIcon={<span className='dropdowncaret'></span>}
-                                 defaultValue={singleEmployee?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || singleEmployee['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())? 
-                                 singleEmployee[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleEmployee['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()] : ""}  
-                                 placeholder="Select Branch"
-                                 onChange={(e)=>{handelInputChange({name: "branch", value: e});}}
+                                // <Select 
+                                //  disabled={readonlyProp.includes(prop._id)}
+                                //  className={readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
+                                
+                                //  style={{border: "none"}}
+                                //  suffixIcon={<span className='dropdowncaret'></span>}
+                                //  defaultValue={singleEmployee?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || singleEmployee['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())? 
+                                //  singleEmployee[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleEmployee['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()] : ""}  
+                                //  placeholder="Select Branch"
+                                //  onChange={(e)=>{handelInputChange({name: "branch", value: e});}}
                  
-                                >
-                                    {branchData?.branches?.map((option)=>(<Select.Option value={option._id}> {option?.branchname} </Select.Option>))}
-                                </Select>
+                                // >
+                                //     {branchData?.branches?.map((option)=>(<Select.Option value={option._id}> {option?.branchname} </Select.Option>))}
+                                // </Select>
                                 :
                                 <input type="text" 
                                     disabled={readonlyProp.includes(prop._id)}

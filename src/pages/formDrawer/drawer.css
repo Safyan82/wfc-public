@@ -174,3 +174,7 @@
     fill: rgb(0, 145, 174) !important; /* Change the color to your desired color */
     color: rgb(0, 145, 174) !important; /* Change the color to your desired color */
 }
+
+#branch-selector .moveGroupData{
+    position: relative !important;
+}

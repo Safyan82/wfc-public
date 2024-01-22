@@ -10,8 +10,9 @@ import { resetPermission } from '../../middleware/redux/reducers/permission.redu
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useMutation } from '@apollo/client';
-import { createUserRoleMutation } from '../../util/mutation/userRole.mutation';
+import { createUserRoleMutation, updateUserRoleMutation } from '../../util/mutation/userRole.mutation';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
+import { setUserRoleToBeEdit } from '../../middleware/redux/reducers/userRole.reducer';
 
 
 
@@ -25,7 +26,9 @@ export const CreateUserRoleModal = ({visible, onClose})=>{
     const handleNext = (e) => {
         setCurrentStep(currentStep + 1);
     };
-    const [roleName, setRoleName] = useState("");
+    const {userRoleToBeEdit} = useSelector((state)=>state?.userRoleReducer);
+    console.log(userRoleToBeEdit, "userRoleToBeEdit")
+    const [roleName, setRoleName] = useState(userRoleToBeEdit?.rolename||"");
         
     const steps = [
         {
@@ -45,27 +48,54 @@ export const CreateUserRoleModal = ({visible, onClose})=>{
     const dispatch = useDispatch();
     const {propAccess} = useSelector(state=>state.permissionReducer);
     const [createUserRole, {loading}] = useMutation(createUserRoleMutation);
-    console.log(loading, "loadingg")
+    const [updateUserRole, {loading:updateUserRoleLoading}] = useMutation(updateUserRoleMutation);
+   
     const handelSubmit = async ()=>{
     
         try{
-            await createUserRole({
-                variables:{
-                    input:{
-                        rolename: roleName.toString(),
-                        permission: Object.fromEntries(Object.entries(propAccess).slice(0,5)),
+            if(userRoleToBeEdit?.hasOwnProperty('rolename')){
+
+                
+                await updateUserRole({
+                    variables:{
+                        input:{
+                            _id: userRoleToBeEdit?._id,
+                            rolename: roleName.toString(),
+                            permission: Object.fromEntries(Object.entries(propAccess).slice(0,5)),
+                        }
                     }
-                }
-            });
-            dispatch(setNotification({
-                notificationState:true, 
-                message:"New System User Role has been added",
-                error: false,
-            }));
+                });
+                dispatch(setNotification({
+                    notificationState:true, 
+                    message:"User Role was updated",
+                    error: false,
+                }));
+
+            }else{
+             
+                await createUserRole({
+                    variables:{
+                        input:{
+                            rolename: roleName.toString(),
+                            permission: Object.fromEntries(Object.entries(propAccess).slice(0,5)),
+                        }
+                    }
+                });
+                dispatch(setNotification({
+                    notificationState:true, 
+                    message:"New System User Role has been added",
+                    error: false,
+                }));
+            }
+
+            dispatch(setUserRoleToBeEdit(null));
+            sessionStorage.removeItem("RoleEditDone");
 
             onClose();
         }
         catch(err){
+            sessionStorage.removeItem("RoleEditDone");
+            dispatch(setUserRoleToBeEdit(null));
             
             dispatch(setNotification({
                 notificationState:true, 
@@ -90,7 +120,9 @@ export const CreateUserRoleModal = ({visible, onClose})=>{
                         <FontAwesomeIcon style={{marginRight:'0.5em'}} icon={faChevronLeft}/> {'Back'} 
                       </button>
                     }
-                      <button className='drawer-btn' onClick={()=>{dispatch(resetPermission()); onClose();}} >Cancel</button>
+            
+            
+                      <button className='drawer-btn' onClick={()=>{dispatch(resetPermission()); dispatch(setUserRoleToBeEdit(null)); onClose(); sessionStorage.removeItem("RoleEditDone");}} >Cancel</button>
                     </div>
                     
                     {(currentStep < steps.length - 1) &&
@@ -100,7 +132,7 @@ export const CreateUserRoleModal = ({visible, onClose})=>{
                     } 
                     {currentStep == steps.length - 1 && 
                       <button disabled={loading} onClick={handelSubmit} className={(currentStep ==0) || false ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
-                      {loading? <Spinner/> :'Create'}
+                      {loading? <Spinner/> : userRoleToBeEdit?.hasOwnProperty('rolename')?'Update' :'Create' }
                       </button>
                     }
   

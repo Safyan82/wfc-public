@@ -191,20 +191,23 @@ export const CreateUserModal = ({visible, onClose})=>{
         await dispatch(resetPermission());
         await dispatch(resetUserDetail());
         await dispatch(setEditUserData({}));
+        sessionStorage.removeItem("editDone");
         onClose();
         
       }
       catch(err){
+        sessionStorage.removeItem("editDone");
         dispatch(setNotification({
           notificationState:true, 
           message:err.message,
           error: true,
         }));
+
       }
 
     }
       
-    console.log(currentStep===2 && userDetail?.email && !isEmailValid, currentStep===2 , userDetail?.email , !isEmailValid, "validatoin")
+    console.log(currentStep===2 && userDetail?.email=="" && !isEmailValid, currentStep===2 , userDetail?.email , !isEmailValid, "validatoin", currentStep===2 && editUserData?.user?.email=="")
     return(
         <Modal
             visible={visible}     
@@ -226,6 +229,7 @@ export const CreateUserModal = ({visible, onClose})=>{
                         await dispatch(resetPermission());
                         await dispatch(resetUserDetail());
                         await dispatch(setEditUserData({}));
+                        sessionStorage.removeItem("editDone")
                         onClose();}} >Cancel</button>
                     </div>
                     
@@ -233,10 +237,10 @@ export const CreateUserModal = ({visible, onClose})=>{
                       <button id="nextBtn" 
                       disabled={
                         currentStep==1 && userAccessType===accessType.StandardPermission && userRole?.length<1  ||
-                        currentStep===2 && userDetail && Object.keys(userDetail)?.length<1 || currentStep===2 && userDetail?.email && !isEmailValid ? true : false}
+                        currentStep===2 && userDetail && Object.keys(userDetail)?.length<1 || currentStep===2 && userDetail?.email=="" && !isEmailValid ? true : false}
                       className={
                         currentStep==1 && userAccessType===accessType.StandardPermission && userRole?.length<1 || 
-                        currentStep===2 && userDetail && Object.keys(userDetail)?.length<1  || currentStep===2 && userDetail?.email && !isEmailValid ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handleNext}>
+                        currentStep===2 && userDetail && Object.keys(userDetail)?.length<1  || currentStep===2 && userDetail?.email=="" && !isEmailValid ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={handleNext}>
                       {'Next'} <FontAwesomeIcon className='next-btn-icon' icon={faChevronRight}/>
                       </button>
                     } 

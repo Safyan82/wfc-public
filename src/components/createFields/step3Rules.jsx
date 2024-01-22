@@ -549,7 +549,7 @@ export const Rules = ({basicInfo, setWidth})=>{
                                     />
                                 </Popover>
                                 <div style={{ marginTop: '8px' }}>
-                                    {tags.map((tag, index) => (
+                                    {tags?.map((tag, index) => (
                                     <Tag key={index} closable onClose={()=>{handelTag(index)}} style={{marginTop:'4%'}}>{tag}</Tag>
                                     ))}
                                 </div>
