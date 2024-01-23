@@ -17,20 +17,23 @@ import { faBell, faComment, faComments, faGear, faRing } from '@fortawesome/free
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './navbar.css';
 import { useSelector } from 'react-redux';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { GetUserByEmpIdQuery } from '../../util/query/user.query';
 import { useDispatch } from 'react-redux';
-import { setAuthUserDetail, setAuthUserRefresh } from '../../middleware/redux/reducers/userAuth.reducer';
+import { resetAuthUserDetail, setAuthUserDetail, setAuthUserRefresh } from '../../middleware/redux/reducers/userAuth.reducer';
 import { isArray } from '@apollo/client/utilities';
 import { accessType } from '../../util/types/access.types';
+import { resetAllReducerState } from '../../middleware/redux/resetAll';
+import { deactiveSessionMutation } from '../../util/mutation/userAccess.mutation';
 
 
 const { SubMenu } = Menu;
 
 
 
-const UserMenu = ({visible, setVisible, employeeDetail}) => {
+const UserMenu = ({visible, setVisible, employeeDetail, handelLogout}) => {
 
+    const dispatch = useDispatch();
   
     const navigate = useNavigate();
     const menu = (
@@ -38,16 +41,16 @@ const UserMenu = ({visible, setVisible, employeeDetail}) => {
         <Menu.Item key="1">Profile</Menu.Item>
         <Menu.Item key="2">Active Session</Menu.Item>
         <Menu.Divider />
-        <Menu.Item key="3" onClick={()=>{localStorage.clear(); navigate("/")}}>Logout</Menu.Item>
+        <Menu.Item key="3" onClick={handelLogout}>Logout</Menu.Item>
       </Menu>
     );
   
     return (
       <Dropdown overlay={menu} visible={visible} placement="bottomLeft" onClick={()=>setVisible(!visible)}>
         <div className='user-avatar' style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-          <Avatar size={"large"}>{employeeDetail.firstname[0]+ " " +employeeDetail?.lastname[0]}</Avatar>
-          <span style={{ marginLeft: '8px' }}>{employeeDetail.firstname}</span>
-          {/* <DownOutlined style={{ marginLeft: '8px' }} /> */}
+          <Avatar size={"large"}>{employeeDetail?.firstname[0]+ " " +employeeDetail?.lastname[0]}</Avatar>
+          <span style={{ marginLeft: '8px' }}>{employeeDetail?.firstname}</span>
+          <DownOutlined style={{ marginLeft: '8px' }} />
         </div>
       </Dropdown>
     );
@@ -94,7 +97,6 @@ export function Navbar(){
     },[data?.getUserByEmpId?.response]);
 
     const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
-    console.log(authenticatedUserDetail, "authenticatedUserDetail")
     const IsBranchView = authenticatedUserDetail?.permission?.Branch?.view!=="None";
     const IsEmployeeView = authenticatedUserDetail?.permission?.Employee?.view!=="None";
     
@@ -106,6 +108,15 @@ export function Navbar(){
         }
     }, [authenticatedUserDetail?.permission])
 
+    const [deactiveSession] = useMutation(deactiveSessionMutation);
+    const handelLogout = async()=>{
+        await deactiveSession({
+            variables:{
+                deactiveSessionId: localStorage.getItem("deviceId")
+            }
+        });
+        resetAllReducerState();
+    }
 
     return(
     <Layout>
@@ -145,14 +156,11 @@ export function Navbar(){
             </Space>
             </Menu.Item>
             
-            {/* {data?.getUserByEmpId?.response[0]?.userAccessType===accessType.AdminPermission? */}
-
             <Menu.Item className='menu-item '>
                 <Link to="/setting">
                     <FontAwesomeIcon icon={faGear} className='menu-icon' />
                 </Link>
             </Menu.Item>
-            {/* // :null} */}
             
             
             <Menu.Item className='menu-item '>
@@ -166,17 +174,13 @@ export function Navbar(){
             <Menu.Item>
                 <div className='vertical-separator'></div>
             </Menu.Item>
-
+            {authenticatedUserDetail?.employeeDetail?
             <Menu.Item>
-                <UserMenu visible={visible} employeeDetail={authenticatedUserDetail?.employeeDetail[0]} setVisible={setVisible} />
+                <UserMenu visible={visible} handelLogout={handelLogout} employeeDetail={authenticatedUserDetail?.employeeDetail[0]} setVisible={setVisible} />
             </Menu.Item>
+            : null}
 
-            {/* <SubMenu key="account" icon={<WordLetterAvatar word={"Muhammad Safyan"} />} title={"Safyan"} >
-                <Menu.Item key="profile">Profile</Menu.Item>
-                <Menu.Item key="logout" icon={<LogoutOutlined />}>
-                    Logout
-                </Menu.Item>
-            </SubMenu> */}
+           
 
             {/* mini max btn */}
             {/* <Menu.Item style={{marginTop:'-1%'}}  key="minimize" className='minimize' id="minimize" itemRef='minimize'> <FontAwesomeIcon icon={faWindowMinimize} /> </Menu.Item>

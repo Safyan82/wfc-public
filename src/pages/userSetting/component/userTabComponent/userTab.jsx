@@ -50,8 +50,8 @@ export const UserTab = ({createUser, setUserRoleModal})=>{
         },
         {
           title: 'Last Active',
-          dataIndex: 'lastactive',
-          key: 'lastactive',
+          dataIndex: 'lastActive',
+          key: 'lastActive',
         },
         {
           title: 'Created Date',
@@ -84,6 +84,7 @@ export const UserTab = ({createUser, setUserRoleModal})=>{
           key: user?._id,
           name: user?.employee[0]?.lastname+" "+user?.employee[0]?.firstname, 
           access: user?.userAccessType, 
+          lastActive: dayjs(user?.lastActive).format('DD/MM/YYYY HH:mm'),
           createdAt: 
           dayjs(user?.createdAt).format('DD/MM/YYYY HH:mm'),
           user: user 

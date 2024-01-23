@@ -11,10 +11,16 @@ const editUserReducer = createSlice({
             ...state,
             editUserData: action.payload
         }
+    },
+    resetEditUserData : (state, action) =>{
+      return {
+        ...state,
+        editUserData: {}
+      }
     }
   },
 });
 
 
-export const { setEditUserData } = editUserReducer.actions;
+export const { setEditUserData, resetEditUserData } = editUserReducer.actions;
 export default editUserReducer.reducer;

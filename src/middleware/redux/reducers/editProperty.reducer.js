@@ -13,9 +13,15 @@ const editPropertyReducer = createSlice({
        }     
     },
     resetGroup:()=>{ return {group:{}}},
+    resetEditProperty:(state, action)=>{
+      return {
+        ...state,
+        isbtnEnabled: true,
+      }
+    }
   },
 });
 
 
-export const { setBtnState } = editPropertyReducer.actions;
+export const { setBtnState, resetEditProperty } = editPropertyReducer.actions;
 export default editPropertyReducer.reducer;

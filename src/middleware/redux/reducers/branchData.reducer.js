@@ -33,6 +33,15 @@ const branchDataReducer = createSlice({
             ...state,
             remvFieldSpecificBranchView: null,
         }
+    },
+
+    // this reset function call for logout 
+    resetBranchData : (state, action) =>{
+        return{
+            ...state,
+            specificBranchData: null,
+            remvFieldSpecificBranchView: null
+        }
     }
 
 
@@ -41,5 +50,5 @@ const branchDataReducer = createSlice({
 });
 
 
-export const { resetDataFieldForNewView, AddDataFieldFromView, setSpecificBranchData, removeDataFieldFromSpecificBranchView } = branchDataReducer.actions;
+export const { resetBranchData, resetDataFieldForNewView, AddDataFieldFromView, setSpecificBranchData, removeDataFieldFromSpecificBranchView } = branchDataReducer.actions;
 export default branchDataReducer.reducer;

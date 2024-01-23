@@ -26,3 +26,24 @@
 .classic-login:hover{
     text-decoration: underline;
 }
+
+.login-btnGrp{
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: -36px;
+    align-items: center;
+}
+
+.forgetPassword{
+    cursor: pointer;
+    color: rgb(0, 145, 174);
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.login-form-container svg{
+    width: 7px !important;
+    margin-bottom: 10px;
+    color: black;
+}

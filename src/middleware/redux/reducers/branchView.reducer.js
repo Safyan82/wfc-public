@@ -11,10 +11,18 @@ const BranchViewReducer = createSlice({
             ...state,
             refetchBranchView: action.payload
         }
+    },
+
+    // reset branch view
+    resetBranchView: (state, action) =>{
+      return{
+        ...state,
+        refetchBranchView: null
+      }
     }
   },
 });
 
 
-export const { setRefetchBranchView } = BranchViewReducer.actions;
+export const { setRefetchBranchView, resetBranchView } = BranchViewReducer.actions;
 export default BranchViewReducer.reducer;

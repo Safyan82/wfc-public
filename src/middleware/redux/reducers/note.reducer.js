@@ -13,9 +13,15 @@ const noteReducer = createSlice({
         noteToggle: action.payload
        }     
     },
+    resetNoteState : (state, action) =>{
+      return{
+        ...state,
+        noteToggle: false
+      }
+    }
   },
 });
 
 
-export const { setNoteToggle } = noteReducer.actions;
+export const { setNoteToggle, resetNoteState } = noteReducer.actions;
 export default noteReducer.reducer;

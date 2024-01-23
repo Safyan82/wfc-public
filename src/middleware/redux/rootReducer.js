@@ -9,7 +9,7 @@ import editPropertyReducer from './reducers/editProperty.reducer';
 import branchReducer from './reducers/branch.reducer';
 import quickFilterReducer from './reducers/quickFilter';
 import branchViewReducer from './reducers/branchView.reducer';
-import resetReducer from './reducers/reset.reducer';
+// import resetReducer from './reducers/reset.reducer';
 import noteReducer from './reducers/note.reducer';
 import branchDataReducer from './reducers/branchData.reducer';
 import permissionReducer from './reducers/permission.reducer';
@@ -30,7 +30,7 @@ export const rootReducer = combineReducers({
       branchReducer: branchReducer,
       quickFilterReducer: quickFilterReducer,
       branchViewReducer: branchViewReducer,
-      reset: resetReducer,
+    //   resetReducer: resetReducer,
       noteReducer: noteReducer,
       branchDataReducer: branchDataReducer,
       permissionReducer: permissionReducer, 

@@ -44,9 +44,18 @@ const userReducer = createSlice({
       }
     },
 
+    resetUserState : (state, action) => {
+      return {
+        ...state,
+        userDetail: {},
+        emailVerificationDetail: {},
+        refetchUser: false
+      }
+    }
+
   },
 });
 
 
-export const { setUserDetail, resetUserDetail, checkEmailDetails, refetchAllUser } = userReducer.actions;
+export const { setUserDetail, resetUserDetail, checkEmailDetails, refetchAllUser, resetUserState } = userReducer.actions;
 export default userReducer.reducer;

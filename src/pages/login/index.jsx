@@ -81,7 +81,7 @@ export const Login=()=>{
                     </div>
                     <Form.Item style={{marginTop: '45px'}}>
                         <Input autoFocus placeholder='Email' className='generic-input-control' type="email" onChange={(e)=>{handelEmail(e.target.value)}}/>
-                        <div className="ant-form-text helper-text" style={{textAlign: 'left', marginTop: '5px'}}>{email?.error && email?.error}</div>
+                        <div className="ant-form-text helper-text" style={{textAlign: 'left', marginTop: '5px', height:'15px'}}>{email?.error && email?.error}</div>
                         
                         <Form.Item className='validationCheckboxGroup' style={{textAlign:'left'}}>
                         
@@ -92,22 +92,21 @@ export const Login=()=>{
                     </Form.Item>
 
 
-                    <Form.Item className='validationCheckboxGroup' style={{position: 'absolute', top: '430px', }}>
+                    <div className="login-btnGrp">
                         
-                        <span className="ant-form-text forgetPassword" style={{marginTop:'5px'}} >Forget email ?</span>
+                        <div className="forgetPassword" >Forget email ?</div>
                        
-                    </Form.Item>
-                    
-                    <Form.Item style={{position: 'absolute', top: '450px', marginLeft: 'calc(450px - 80px)'}}>
                         <button 
-                        disabled={
-                            // !data?.checkUserByEmail?.response?.hasOwnProperty('_id') || 
-                            email?.value?.length<1 || email?.error!==""}
-                        className={
-                            // !data?.checkUserByEmail?.response?.hasOwnProperty('_id') || 
-                            email?.value?.length<1 || email?.error!==""? "drawer-filled-btn disabled-btn" : "drawer-filled-btn" } 
-                        onClick={()=>navigate('/pwd')}>Next</button>
-                    </Form.Item>
+                            disabled={
+                                // !data?.checkUserByEmail?.response?.hasOwnProperty('_id') || 
+                                email?.value?.length<1 || email?.error!==""}
+                            className={
+                                // !data?.checkUserByEmail?.response?.hasOwnProperty('_id') || 
+                                email?.value?.length<1 || email?.error!==""? "drawer-filled-btn disabled-btn" : "drawer-filled-btn" } 
+                            onClick={()=>navigate('/pwd')}>
+                            Next
+                        </button>
+                    </div>
 
                 </div>
                 {/* <div className="text classic-login" onClick={()=>navigate('/classic')}>
