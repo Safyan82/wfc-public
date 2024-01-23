@@ -21,6 +21,14 @@ const userAuthReducer = createSlice({
         ...state,
         refreshAuthUser: action.payload
       }
+    },
+
+    resetAuthUserDetail: (state, action)=>{
+      return {
+        ...state,
+        authenticatedUserDetail: {},
+        refreshAuthUser: {}
+      }
     }
    
 
@@ -28,5 +36,5 @@ const userAuthReducer = createSlice({
 });
 
 
-export const { setAuthUserDetail, setAuthUserRefresh } = userAuthReducer.actions;
+export const { setAuthUserDetail, setAuthUserRefresh, resetAuthUserDetail } = userAuthReducer.actions;
 export default userAuthReducer.reducer;

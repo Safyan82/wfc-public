@@ -1,7 +1,7 @@
 import "./login.css";
 import React, { useEffect, useState } from 'react';
 import {useNavigate} from 'react-router-dom';
-import { Row, Col, Form, Input, Typography, Checkbox, notification, Tag } from 'antd';
+import { Row, Col, Form, Input, Typography, Checkbox, notification, Tag, Avatar } from 'antd';
 import workforcecityLogin from '../../assets/img/workForceCityLogin.png';
 import logo from '../../assets/img/wc-logo-big.png';
 import { useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import Spinner from "../../components/spinner";
 import { useDispatch } from "react-redux";
 import { setAuthUserDetail } from "../../middleware/redux/reducers/userAuth.reducer";
 import { browserName, CustomView } from 'react-device-detect';
+import { UserOutlined } from "@ant-design/icons";
 
 export const Password=()=>{
 
@@ -99,15 +100,19 @@ export const Password=()=>{
                 <div className='login-form-container'>
                     <img src={logo} alt="" width={75} height={65}/>
                     
-                    <Typography.Title level={3} className='text-center login-title' >Hi. {emailVerificationDetail?.name}</Typography.Title>
-                    
+                    <Typography.Title level={3} className='text-center login-title' >
+                        Welcome     {/* {emailVerificationDetail?.name} */}
+                    </Typography.Title>
+                        
                     <div className="text">
-                        <Tag>{emailVerificationDetail?.email}</Tag>
+                        <Tag style={{color:'black', fontWeight:'500', padding:'2px 10px'}}>
+                            <Avatar size={20}> <UserOutlined/> </Avatar>    {emailVerificationDetail?.email}
+                        </Tag>
                     </div>
 
                     <Form.Item style={{marginTop: '45px'}}>
                         <Input autoFocus placeholder='Password' className='generic-input-control' type={showPass? "text" : "password"}  onChange={(e)=>{handelPassword(e.target.value)}}/>
-                        <div className="ant-form-text helper-text" style={{textAlign: 'left', marginTop: '5px'}}>{password?.error && password?.error}</div>
+                        <div className="ant-form-text helper-text" style={{textAlign: 'left', marginTop: '5px', height:'15px'}}>{password?.error && password?.error}</div>
 
                     
                         <Form.Item className='validationCheckboxGroup' style={{textAlign:'left'}}>
@@ -120,17 +125,14 @@ export const Password=()=>{
 
 
                     
-                    <Form.Item className='validationCheckboxGroup' style={{position: 'absolute', top: '430px', }}>
+                    <div  className="login-btnGrp" >
                         
-                        <span className="ant-form-text forgetPassword" style={{marginTop:'5px'}} >Forget password ?</span>
+                        <div className="forgetPassword" style={{marginTop:'5px'}} >Forget password ?</div>
                        
-                    </Form.Item>
-
-                    
-                    <Form.Item style={{position: 'absolute', top: '450px', marginLeft: 'calc(450px - 80px)'}}>
+            
                         <button disabled={loading} onClick={handelAuth} className={loading? " disabled-btn drawer-filled-btn " :"drawer-filled-btn"}>Next</button>
-                    </Form.Item>
-
+                    
+                    </div>
                 </div>
                 
                 {/* <div className="text classic-login"  onClick={()=>navigate('/classic')}>

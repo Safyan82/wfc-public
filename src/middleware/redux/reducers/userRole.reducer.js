@@ -18,10 +18,16 @@ const userRoleReducer = createSlice({
        }    
     },
 
+    resetUserRoleState : (state, action) =>{
+      return{
+        ...state,
+        userRoleToBeEdit: null
+      }
+    }
 
   },
 });
 
 
-export const { setUserRoleToBeEdit } = userRoleReducer.actions;
+export const { setUserRoleToBeEdit, resetUserRoleState } = userRoleReducer.actions;
 export default userRoleReducer.reducer;

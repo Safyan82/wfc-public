@@ -89,7 +89,18 @@ const createFieldReducer = createSlice({
         toggleSaveBtn: false,
         globalFieldType: '',
         propertyToBeEdit:{}})
-  },
+    },
+    resetCreateField : (state, action) => {
+        return {
+            ...state,
+            labelValue: [],
+            propertyToBeEditId: null,
+            rules:{},
+            toggleSaveBtn: false,
+            globalFieldType: '',
+            propertyToBeEdit:{}
+        }
+    }
 });
 
 
@@ -98,6 +109,6 @@ export const {
     setPropertyTobeEdit, setRules, resetRules,
     toggleSaveWhileUpdateProperty,
     setGlobalFieldType, resetEditRules, resetFieldState,
-    setEmailTags,
+    setEmailTags,resetCreateField,
     } = createFieldReducer.actions;
 export default createFieldReducer.reducer;

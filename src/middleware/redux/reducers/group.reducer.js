@@ -19,10 +19,17 @@ const groupReducer = createSlice({
         ...state,
         propertiesToBeMoved: action.payload
       }
+    },
+    resetGroupState : (state, action)=>{
+      return {
+        ...state,    
+        group: {},
+        propertiesToBeMoved:[]
+      }
     }
   },
 });
 
 
-export const { setGroupData, resetGroup, moveToGroup } = groupReducer.actions;
+export const { setGroupData, resetGroup, moveToGroup, resetGroupState } = groupReducer.actions;
 export default groupReducer.reducer;

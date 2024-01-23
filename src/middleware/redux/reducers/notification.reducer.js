@@ -20,10 +20,16 @@ const notificationReducer = createSlice({
         ...state,
         notificationToast: {...action.payload}
        }     
+    },
+    resetNotification: (state, action) =>{
+      return{
+        ...state,
+        notificationToast: {}
+      }
     }
   },
 });
 
 
-export const { setNotification } = notificationReducer.actions;
+export const { setNotification, resetNotification } = notificationReducer.actions;
 export default notificationReducer.reducer;

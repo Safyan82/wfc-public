@@ -13,9 +13,15 @@ const moduleCustomPermissionReducer = createSlice({
         moduleCustomPermission:{ ...state.moduleCustomPermission ,...action.payload}
        }     
     },
+    resetModuleCustomPermission: (state, action)=>{
+      return{
+        ...state,
+        moduleCustomPermission: {}
+      }
+    }
   },
 });
 
 
-export const { setModuleCustomPermission } = moduleCustomPermissionReducer.actions;
+export const { setModuleCustomPermission, resetModuleCustomPermission } = moduleCustomPermissionReducer.actions;
 export default moduleCustomPermissionReducer.reducer;

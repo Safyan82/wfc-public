@@ -19,10 +19,17 @@ const propertyReducer = createSlice({
         ...state,
         editGridColumn: action.payload,
       }
+    },
+    resetPropertyState : (state, action) =>{
+      return{
+        ...state,
+        groupFilterId: null,
+        editGridColumn: false,
+      }
     }
   },
 });
 
 
-export const { setPropertyFilterByGroup,  resetPropertyFilterByGroup, setEditGridColumn } = propertyReducer.actions;
+export const { setPropertyFilterByGroup,  resetPropertyFilterByGroup, setEditGridColumn, resetPropertyState } = propertyReducer.actions;
 export default propertyReducer.reducer;

@@ -2,10 +2,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const resetSlice = createSlice({
-  name: 'reset',
+  name: 'resetReducer',
   initialState: false,
   reducers: {
-    resetAll: () => true,
+    resetAll: () => {},
   },
 });
 

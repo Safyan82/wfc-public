@@ -80,8 +80,17 @@ export const UserDetailPage = ()=>{
     });
 
     // console.log(userAccessLog?.getUsersAccessLogByEmpId)
-    const [ip, setip] = useState("");
+    const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})){3}$/;
     const [ipList, setIpList] = useState([]);
+    const [ipMsg, setIpMsg] = useState("");
+    const handelIp = (ip)=>{
+        if(ipv4Regex.test(ip)){
+            setIpMsg("");
+        }else{
+            setIpMsg(" IP address is not valid");
+        }
+    }
+
 
     return (
         <div className="userDetail-container">
@@ -125,7 +134,7 @@ export const UserDetailPage = ()=>{
                                 </div>
                                 <div className="user-detail-overview-card-inner">
                                     <div className="card-header-text">Last active</div>
-                                    <b>--</b>
+                                    <div>{dayjs(userDetail?.lastActive).format('DD/MM/YYYY HH:mm:ss')}</div>
                                 </div>
                                 <div className="user-detail-overview-card-inner">
                                     <div className="card-header-text">Last login type</div>
@@ -245,13 +254,18 @@ export const UserDetailPage = ()=>{
                                         <div className="text">Restrict this user to access the system with defined IPs.</div>
                                         
                                         <div className="mt32 mb32" style={{display:'flex', gap:'64px'}}>
-                                            <Input
-                                                placeholder="IP address ..."
-                                                className="generic-input-control"
-                                                style={{width:'190%'}}
-                                                autoFocus
-                                            />
-                                            <button className="disabled-btn drawer-filled-btn" style={{width:'100%'}}>Add IP</button>
+                                            <span>
+                                                <Input
+                                                    placeholder="IP address ..."
+                                                    className="generic-input-control"
+                                                    onChange={(e)=>handelIp(e.target.value)}
+                                                    autoFocus
+                                                />
+
+                                                <span style={{color:'red'}}>{ipMsg}</span>
+
+                                            </span>
+                                            <button className={ipMsg?.length>0? "disabled-btn drawer-filled-btn" : " drawer-filled-btn"} >Add IP</button>
                                         </div>
 
                                     </div>

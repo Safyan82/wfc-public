@@ -27,10 +27,18 @@ const QuickFilterReducer = createSlice({
         state,
         selectedViewId: action.payload
       }
+    },
+    resetAllFilter: (state, action) =>{
+      return{
+        ...state,
+        quickFilter: {},
+        advanceFilter: [],
+        selectedViewId: null,
+      }
     }
   },
 });
 
 
-export const { setQuickFilter, setAdvanceFilter, resetQuickFilter, resetAdvanceFilter, setSelectedViewId } = QuickFilterReducer.actions;
+export const { setQuickFilter, setAdvanceFilter, resetQuickFilter, resetAdvanceFilter, setSelectedViewId, resetAllFilter } = QuickFilterReducer.actions;
 export default QuickFilterReducer.reducer;

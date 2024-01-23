@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { FormView } from "../../pages/formView/formView";
 import { useEffect, useLayoutEffect, useState } from "react";
 import Spinner from "../../components/spinner";
@@ -7,6 +7,8 @@ import { resetAll } from "../../middleware/redux/reducers/reset.reducer";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { isLoginCheckQuery } from "../query/user.query";
 import { setNotification } from "../../middleware/redux/reducers/notification.reducer";
+import { resetAuthUserDetail, setAuthUserDetail } from "../../middleware/redux/reducers/userAuth.reducer";
+import { resetAllReducerState } from "../../middleware/redux/resetAll";
 
 export const PrivateRoutes = ({children})=>{
     const [loading, setLoading] = useState(true);
@@ -33,8 +35,11 @@ export const PrivateRoutes = ({children})=>{
             
             const token = localStorage.getItem('authToken');
             if(!token){
+                resetAllReducerState();
                 localStorage.clear();
                 dispatch(resetAll());
+                localStorage.clear();
+                sessionStorage.clear();
                 window.location="/";
             }
             localStorage.clear();
@@ -43,16 +48,18 @@ export const PrivateRoutes = ({children})=>{
     }, [error]);
 
     const dispatch = useDispatch();
+    const {pathname} = useLocation();
+    console.log(pathname, "pathhh")
     useEffect(()=>{
-        getUser();
-
         setInterval(()=>{
             if(localStorage.getItem('authToken')){
                 getUser();
             }else{
-                window.location="/";
+                if(pathname!=="/"){
+                    window.location="/";
+                }
             }
-        }, 10000)
+        }, 2000)
         setLoading(false);
 
     },[]);
