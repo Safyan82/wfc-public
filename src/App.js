@@ -76,6 +76,7 @@ function App() {
           className: 'notification-without-close',
         });
       }
+      dispatch(setNotification({}));
     }
   },[notificationToast]);
 
