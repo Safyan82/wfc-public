@@ -308,7 +308,7 @@ export const UserDetailPage = ()=>{
                                                     <span style={{color:'red'}}>{ipMsg}</span>
 
                                                 </span>
-                                                <button onClick={async()=>{updateUserIpLoading ? console.log("not-allowed") : await updateUserIp({variables:{input:{ip: [...userDetail?.ip, ip],employeeId}}}); setIp(""); await refetch() }} className={ipMsg?.length>0 || updateUserIpLoading? "disabled-btn drawer-filled-btn" : " drawer-filled-btn"} >Add IP</button>
+                                                <button onClick={async()=>{updateUserIpLoading ? console.log("not-allowed") : await updateUserIp({variables:{input:{ip: userDetail?.hasOwnProperty('ip') && userDetail?.ip?.length>0 ?[...userDetail?.ip, ip] : [ip],employeeId}}}); setIp(""); await refetch() }} className={ipMsg?.length>0 || updateUserIpLoading? "disabled-btn drawer-filled-btn" : " drawer-filled-btn"} >Add IP</button>
                                             </div>
                                             {
                                                 userDetail?.ip?.length>0?
