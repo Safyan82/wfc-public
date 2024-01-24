@@ -54,10 +54,6 @@ export const DataTable = ({
             render: (_, record) => {
               const showActions = sessionStorage.getItem('hoverItem') == record.key && prop.propertyDetail.label == objectData[0].propertyDetail.label &&  selectedRowKeys?.length===0;
               if(prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="phonenumber"
-              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="phone"
-              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="telephone"
-              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="contact"
-              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="contactnumber"
               ){
                 return(
                   <a style={{textDecoration:'underline'}} href={"tel:"+record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}>
@@ -66,9 +62,6 @@ export const DataTable = ({
                 )
               }
               else if(prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="email"
-              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="emailaddress"
-              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="mail"
-              || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="mailaddress"
               ){
                 return(
                   <a style={{textDecoration:'underline'}} target='_blank' href={"mailto:"+record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}>
@@ -81,8 +74,8 @@ export const DataTable = ({
                 <div style={{display:'flex', alignItems:'center', justifyContent:'space-between',}}>
                   
                   <div 
-                    style={{}}
-                    className={prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname"? 'prev-btn' : null}
+                    onClick={()=>history('/user/'+detailpage+record.key)}
+                    className={showActions? 'prev-btn' : null}
                   >
                     {record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}
                   
