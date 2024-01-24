@@ -36,12 +36,16 @@ import { UnAuthroizedAccess } from './pages/unAuthroizedAccess/unAuthroizedAcces
 import { UserAccess } from './pages/userAccess/userAccess.page';
 import { Join } from './pages/join/join';
 import { UserDetailPage } from './pages/userDetail/userDetail.page';
+import { useDispatch } from 'react-redux';
+import { setNotification } from './middleware/redux/reducers/notification.reducer';
 
 
 function App() {
   
+  const dispatch = useDispatch();
+
   useEffect(()=>{
-    
+    dispatch(setNotification({}));
     setInterval(() => {  
       if (navigator.onLine) {
        
@@ -75,9 +79,6 @@ function App() {
     }
   },[notificationToast]);
 
-
-
-  
   const hasError = useErrorBoundary();
 
   return (

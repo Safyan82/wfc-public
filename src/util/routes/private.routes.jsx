@@ -24,17 +24,18 @@ export const PrivateRoutes = ({children})=>{
     useEffect(()=>{
         if(error?.message?.length>0){
             localStorage.clear();
-            dispatch(setNotification(
-                {
-                    error: false,
-                    notificationState:true, 
-                    message:"Logout gracefully!",
-
-                }
-            ));
+            
             
             const token = localStorage.getItem('authToken');
             if(!token){
+                dispatch(setNotification(
+                    {
+                        error: false,
+                        notificationState:true, 
+                        message:"Logout gracefully!",
+    
+                    }
+                ));
                 resetAllReducerState();
                 localStorage.clear();
                 dispatch(resetAll());
