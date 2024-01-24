@@ -77,6 +77,7 @@ function App() {
         });
       }
     }
+    dispatch(setNotification({}));
   },[notificationToast]);
 
   const hasError = useErrorBoundary();
