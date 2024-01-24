@@ -6,12 +6,16 @@ import { Avatar, Dropdown, Form, Input, Menu, Table, Tabs, Tag } from "antd";
 import { useEffect, useState } from "react";
 import TabPane from 'antd/es/tabs/TabPane';
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GetUserByEmpIdQuery } from '../../util/query/user.query';
 import dayjs from "dayjs";
 import { EditableAvatar } from "../../components/avatar/editableAvatar";
 import { UserAccessLogByEmployeeIdQuery } from "../../util/query/userAccess.query";
-
+import { LogoutAllSessionMutation } from "../../util/mutation/logoutAllSession";
+import { useDispatch } from "react-redux";
+import {setNotification} from "../../middleware/redux/reducers/notification.reducer";
+import { updateUserMutation } from "../../util/mutation/user.mutation";
+import Spinner from "../../components/spinner";
 
 
 const Actionmenu =({userDetail})=> {
@@ -39,7 +43,7 @@ export const UserDetailPage = ()=>{
     
     const {employeeId} = useParams();
 
-    const {data, loading} = useQuery(GetUserByEmpIdQuery,{
+    const {data, loading, refetch} = useQuery(GetUserByEmpIdQuery,{
         variables:{
             employeeId
         }
@@ -79,17 +83,53 @@ export const UserDetailPage = ()=>{
         skip: !employeeId
     });
 
+    // mutation to terminate all session of particular user
+    const[ logoutAllSession, {loading: logoutAllSessionLoading} ] = useMutation(LogoutAllSessionMutation)
+    
+    const dispatch = useDispatch();
+
+    const handelLogoutAllSession = async (employeeId) =>{
+        try{
+            await logoutAllSession({
+                variables:{
+                    employeeId
+                }
+            });
+            
+            dispatch(setNotification({
+                notificationState:true, 
+                message: "User logged out from all devices",
+                error: false,
+            }))
+        }
+        catch(err){
+            dispatch(setNotification({
+                notificationState:true, 
+                message: err.message,
+                error: true,
+            }))
+        }
+    };
+
     // console.log(userAccessLog?.getUsersAccessLogByEmpId)
     const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})){3}$/;
     const [ipList, setIpList] = useState([]);
     const [ipMsg, setIpMsg] = useState("");
+    const [ip, setIp] = useState("");
+
+    const [updateUserIp, {loading: updateUserIpLoading}] = useMutation(updateUserMutation);
+    
     const handelIp = (ip)=>{
         if(ipv4Regex.test(ip)){
+            setIp(ip);
             setIpMsg("");
+
         }else{
+            setIp(ip);
             setIpMsg(" IP address is not valid");
         }
     }
+
 
 
     return (
@@ -235,8 +275,8 @@ export const UserDetailPage = ()=>{
                                         <div className="permission-header">User Access Log</div>
                                         <div className="text">Account access details would be here.</div>
 
-                                        <h4 className="grid-hover" style={{margin:0, textDecoration:'underline'}}>Logout from all devices</h4>
-                                        <div className="text">To logout this user from all devices.</div>
+                                        <h4 className={logoutAllSessionLoading? "grid-hover disabled" : "grid-hover" } style={{margin:0, textDecoration:'underline'}} onClick={()=>handelLogoutAllSession(employeeId)}>Logout from all devices</h4>
+                                        <div className={logoutAllSessionLoading? "text disabled" :"text"} >To logout this user from all devices.</div>
                                         
                                         {/* user logs */}
 
@@ -252,21 +292,44 @@ export const UserDetailPage = ()=>{
                                     <div>
                                         <div className="permission-header">Restrict user access</div>
                                         <div className="text">Restrict this user to access the system with defined IPs.</div>
-                                        
-                                        <div className="mt32 mb32" style={{display:'flex', gap:'64px'}}>
-                                            <span>
-                                                <Input
-                                                    placeholder="IP address ..."
-                                                    className="generic-input-control"
-                                                    onChange={(e)=>handelIp(e.target.value)}
-                                                    autoFocus
-                                                />
+                                        {loading? 
+                                        <Spinner  color={'#ff7a53'} />:
+                                        <>
+                                            <div className="mt32 mb32" style={{display:'flex', gap:'64px'}}>
+                                                <span>
+                                                    <Input
+                                                        placeholder="IP address ..."
+                                                        className="generic-input-control"
+                                                        onChange={(e)=>handelIp(e.target.value)}
+                                                        value={ip}
+                                                        autoFocus
+                                                    />
 
-                                                <span style={{color:'red'}}>{ipMsg}</span>
+                                                    <span style={{color:'red'}}>{ipMsg}</span>
 
-                                            </span>
-                                            <button className={ipMsg?.length>0? "disabled-btn drawer-filled-btn" : " drawer-filled-btn"} >Add IP</button>
-                                        </div>
+                                                </span>
+                                                <button onClick={async()=>{updateUserIpLoading ? console.log("not-allowed") : await updateUserIp({variables:{input:{ip: [...userDetail?.ip, ip],employeeId}}}); setIp(""); await refetch() }} className={ipMsg?.length>0 || updateUserIpLoading? "disabled-btn drawer-filled-btn" : " drawer-filled-btn"} >Add IP</button>
+                                            </div>
+                                            {
+                                                userDetail?.ip?.length>0?
+
+                                                userDetail?.ip?.map((allowedIp)=>
+                                                    <Tag closable onClose={async()=>{
+                                                        await updateUserIp({
+                                                        variables:{
+                                                            input:{
+                                                                ip:(userDetail?.ip?.filter((ip)=>ip!==allowedIp)),
+                                                                employeeId
+                                                            }
+                                                        }});
+                                                        await refetch();
+                                                    }}>{allowedIp}</Tag>
+                                                )
+                                                
+                                                : null
+                                            }
+                                        </>
+                                        }
 
                                     </div>
                                     }   
