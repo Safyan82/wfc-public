@@ -76,8 +76,8 @@ function App() {
           className: 'notification-without-close',
         });
       }
+      dispatch(setNotification({}));
     }
-    dispatch(setNotification({}));
   },[notificationToast]);
 
   const hasError = useErrorBoundary();

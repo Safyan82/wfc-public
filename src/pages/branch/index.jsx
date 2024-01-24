@@ -46,6 +46,9 @@ export const Branch = () =>{
         }
     });
 
+    useEffect(()=>{
+      refetch();
+    },[]);
     
 
     const {data:branchObjectData, loading: branchObjectLoading, refetch: schemaRefetch} = useQuery(GetBranchObject,{
