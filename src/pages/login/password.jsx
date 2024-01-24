@@ -72,7 +72,7 @@ export const Password=()=>{
             }
         }
         catch(err){
-            openNotification('topRight', err.message);
+            openNotification('topRight', "Password is wrong");
         }
     }
 
