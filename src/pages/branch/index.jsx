@@ -221,7 +221,7 @@ export const Branch = () =>{
     useEffect(()=>{
       if(sessionStorage.getItem("selectedViewId")){
         const selectedSession = sessionStorage.getItem("selectedViewId");
-        const {advanceFilter: remoteAdvanceFilter, quickFilter: remoteQuickFilter} = branchViewList?.branchViews?.find((view)=> view?._id==selectedSession);
+        // const {advanceFilter: remoteAdvanceFilter, quickFilter: remoteQuickFilter} = branchViewList?.branchViews?.find((view)=> view?._id==selectedSession);
         // console.log(compareAdvanceFilter(advanceFilter, remoteAdvanceFilter), "filterResult", compareQuickFilters(quickFilter, remoteQuickFilter));
 
       }
