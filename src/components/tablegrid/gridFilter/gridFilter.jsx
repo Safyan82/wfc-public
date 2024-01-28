@@ -10,9 +10,10 @@ import { createdDateList } from "../../../util/date";
 import { useMutation } from "@apollo/client";
 import { updateBranchView } from "../../../util/mutation/branchView.mutation";
 import { setNotification } from "../../../middleware/redux/reducers/notification.reducer";
+import "./gridFilter.css";
+import { setTogglenewCreateView } from "../../../middleware/redux/reducers/newView.reducer";
 
-
-export const GridFilter = ({openAdvanceFilter, updateView, refetch})=>{
+export const GridFilter = ({openAdvanceFilter, updateView, refetch, viewList})=>{
     const [createdDate, setCreatedDate] = useState([...createdDateList]);
     const [createdDateSearch, setCreatedDateSearch] = useState();
     const [createdDatePop, setCreatedDatePop] = useState();
@@ -22,6 +23,22 @@ export const GridFilter = ({openAdvanceFilter, updateView, refetch})=>{
     const [activityDateFilter, setActivityDateFilter] = useState();
     const [activityDateList, setActivityDateList] = useState([...createdDateList]);
     const [activityDateSearch, setActivityDateSearch] = useState();
+    
+    // get id of user who created this view to check it is allowed to edit or not
+
+    const [viewCreatedBy, setViewCreatedBy] = useState(null);
+    
+    useEffect(()=>{
+        if(viewList?.length>0){
+            const viewDetail = viewList.find((view)=>view?._id==sessionStorage.getItem('selectedViewId'));
+            if(viewDetail?.createdBy){
+                setViewCreatedBy(viewDetail?.createdBy);
+            }else{
+                setViewCreatedBy(null)
+            }
+        }
+    },[sessionStorage.getItem('selectedViewId')]);
+
 
     const popoverRef = useRef(null);
     const inputRef = useRef(null);
@@ -52,7 +69,8 @@ export const GridFilter = ({openAdvanceFilter, updateView, refetch})=>{
     const { refetchBranchView } = useSelector(state => state.branchViewReducer);
 
     const [loading, setLoading] = useState(false);
-    
+    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
+    console.log(viewCreatedBy,authenticatedUserDetail?._id, "viewCreatedBy==authenticatedUserDetail?._id?")
     const handelSaveView = async () =>{
         setLoading(true);
         await updateView({
@@ -61,6 +79,7 @@ export const GridFilter = ({openAdvanceFilter, updateView, refetch})=>{
                     _id: sessionStorage.getItem('selectedViewId'),
                     quickFilter,
                     advanceFilter,
+                    updatedBy: authenticatedUserDetail?._id
                 }
             }
         });
@@ -78,7 +97,13 @@ export const GridFilter = ({openAdvanceFilter, updateView, refetch})=>{
         return accumulator + currentArray.length;
     }, 0)
 
-    console.log(quickFilter?.createdDate, "quickFilter?.createdDate")
+    const [openSaveView, setOpenSaveView] = useState(false);
+    const {togglenewCreateView} = useSelector(state=>state.newViewReducer)
+
+    useEffect(()=>{
+        setOpenSaveView(false);
+    },[togglenewCreateView]);
+
     return(
         <div className='grid-head-section' style={{paddingTop:'0px', paddingBottom:'10px'}}>
                 <div className='grid-head-left-btn-section'>
@@ -236,9 +261,50 @@ export const GridFilter = ({openAdvanceFilter, updateView, refetch})=>{
                     > Clear All </span>
 
                 </div>
-                <Button className='grid-head-right-btn' onClick={handelSaveView}>
-                    <SaveFilled /> Save view
-                </Button>
+
+                <Popover
+                    open={openSaveView}
+                    content={
+                        <div className="saveView-inner">
+                            <h4 style={{color:'#33475B'}}>
+                               { viewCreatedBy==authenticatedUserDetail?._id? "Editable view" : "Read-only view" }
+                            </h4>
+                            {
+                                viewCreatedBy==authenticatedUserDetail?._id?
+                            
+                                <div className="text">
+                                    This view was created by you. You can save filters, sort, and column edits to this view.
+                                </div>
+                                :
+                                <div className="text">
+                                    This is a standard view or created by someone else. Save as new view to keep your changes.
+                                </div>
+                            }
+                            <div style={{display:'flex', gap:'16px'}}>
+                                <button className={viewCreatedBy!==authenticatedUserDetail?._id?'filter-btn disabled-btn':"filter-btn"} disabled={viewCreatedBy!==authenticatedUserDetail?._id}
+                                    onClick={viewCreatedBy!==authenticatedUserDetail?._id? console.warn("method not allowed") :handelSaveView}
+                                >Save</button>
+                                <button className="reset-btn"
+                                onClick={()=>{
+                                    dispatch(resetAdvanceFilter());
+                                    dispatch(resetQuickFilter());  
+                                }}
+                                >Reset</button>
+                            </div>
+
+                            <div className="text-deco mt16" onClick={()=>dispatch(setTogglenewCreateView(true))}>Save as new view</div>
+                        </div>
+                    }
+                    overlayClassName='saveView'
+                    placement="bottom"
+                    trigger={"click"}
+                >
+                    {/* onClick={handelSaveView} */}
+                    <Button className='grid-head-right-btn' onClick={()=>setOpenSaveView(!openSaveView)}>
+                        <SaveFilled /> Save view
+                    </Button>
+                </Popover>
+
             </div>
     )
 }

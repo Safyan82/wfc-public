@@ -1,0 +1,65 @@
+/* custom popover to save view */
+
+.saveView .ant-popover-content{
+    width: 300px;
+    right: 63px;
+    
+}
+
+.saveView .ant-popover-arrow{
+    width: 29px; /* Set the desired width */
+    height: 29px;
+    top:1px !important;
+}
+
+.saveView  .ant-popover-arrow:before{
+    background-color: white !important;
+    color: white !important;
+    clip-path: none !important;
+    border: 1px solid #cbd6e2;
+    top: 79% !important;
+    padding: 10px !important;
+    transform: rotate(-47deg) !important;
+    height: 8px;
+}
+
+.saveView .ant-popover-arrow:after{
+    content: none !important;
+}
+
+.saveView .ant-popover-inner{
+    background-color: white !important;
+    color:white !important;
+    padding:0 !important;
+    border-radius: 3px;
+    border: 1px solid #cbd6e2;
+}
+
+
+.saveView-inner{
+
+    padding: 0px 25px 20px 25px;
+    color: black;
+
+}
+
+.reset-btn{
+    background-color: #eaf0f6;
+    border: 1px solid #eaf0f6;
+    color: #33475b;
+    font-size: 12px;
+    line-height: 14px;
+    padding: 8px 16px;
+
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px;
+
+    cursor: pointer;
+}
+
+.reset-btn:hover{
+    background-color: #f5f8fa;
+    border-color: #425b76;
+}
+

@@ -7,6 +7,7 @@ import { resetEditProperty } from "./reducers/editProperty.reducer";
 import { resetEditUserData } from "./reducers/editUser.reducer";
 import { resetGroupState } from "./reducers/group.reducer";
 import { resetModuleCustomPermission } from "./reducers/moduleCustomPermission.reducer";
+import { resetTogglenewCreateView } from "./reducers/newView.reducer";
 import { resetNoteState } from "./reducers/note.reducer";
 import { resetNotification } from "./reducers/notification.reducer";
 import { resetPermission } from "./reducers/permission.reducer";
@@ -36,7 +37,7 @@ export const resetAllReducerState = ()=>{
     store.dispatch(resetUserState())
     store.dispatch(resetAuthUserDetail());
     store.dispatch(resetUserRoleState());
-
+    store.dispatch(resetTogglenewCreateView());
     sessionStorage.clear();
     localStorage.clear();
 }

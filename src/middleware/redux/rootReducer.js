@@ -18,6 +18,7 @@ import userReducer from './reducers/user.reducer';
 import editUserReducer from './reducers/editUser.reducer';
 import userAuthReducer from './reducers/userAuth.reducer';
 import userRoleReducer from './reducers/userRole.reducer';
+import newViewReducer from './reducers/newView.reducer';
 
 
 export const rootReducer = combineReducers({ 
@@ -40,5 +41,7 @@ export const rootReducer = combineReducers({
       // this reducer is dedicated for user auth detail only
       userAuthReducer: userAuthReducer,
       // this reducer is to handel the edit part of the pre defined user roles in setting
-      userRoleReducer: userRoleReducer
+      userRoleReducer: userRoleReducer,
+      // toggle new create view from save btn of grid
+      newViewReducer: newViewReducer,
   });

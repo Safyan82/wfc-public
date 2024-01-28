@@ -22,6 +22,7 @@ import { updateBranchView } from '../../util/mutation/branchView.mutation';
 import { useSelector } from 'react-redux';
 import { setRefetchBranchView } from '../../middleware/redux/reducers/branchView.reducer';
 import { resetAll } from '../../middleware/redux/reducers/reset.reducer';
+import { setTogglenewCreateView } from '../../middleware/redux/reducers/newView.reducer';
 
 
 const DraggableTabNode = ({ className, ...props }) => {
@@ -57,7 +58,7 @@ const DraggableTab = ({viewList, refetch,
 
 
   useEffect(()=>{
-    dispatch(setRefetchBranchView(refetch));
+    // dispatch(setRefetchBranchView(refetch));
   },[]);
 
   const [activeKey, setActiveKey] = useState();
@@ -122,25 +123,27 @@ const DraggableTab = ({viewList, refetch,
       setCreatedView(
         viewList?.filter((branchView)=> branchView?.isManual)?.map((list, index)=>({key: index.toString(), label:list.name, id: list._id, ...list}))
       );
-      sessionStorage.setItem("selectedViewId", d[0]?.id);
+      if(!sessionStorage.getItem('selectedViewId')){
+        sessionStorage.setItem("selectedViewId", d[0]?.id);
       
       
-      // Handel page load first time to active tab
+        // Handel page load first time to active tab
 
-      dispatch(resetAll());
-      setActiveKey('0');
-      setPinView('0');
+        dispatch(resetAll());
+        setActiveKey('0');
+        setPinView('0');
 
-      if(viewList[0]?.quickFilter && Object.keys(viewList[0]?.quickFilter).length>0){
-        
-        dispatch(setQuickFilter(viewList[0]?.quickFilter));
-      }else{
-        dispatch(resetQuickFilter());
-      }
-      if(viewList[0]?.advanceFilter && viewList[0]?.advanceFilter?.length>0){
-        dispatch(setAdvanceFilter(viewList[0]?.advanceFilter));
-      }else{
-        dispatch(resetAdvanceFilter());
+        if(viewList[0]?.quickFilter && Object.keys(viewList[0]?.quickFilter).length>0){
+          
+          dispatch(setQuickFilter(viewList[0]?.quickFilter));
+        }else{
+          dispatch(resetQuickFilter());
+        }
+        if(viewList[0]?.advanceFilter && viewList[0]?.advanceFilter?.length>0){
+          dispatch(setAdvanceFilter(viewList[0]?.advanceFilter));
+        }else{
+          dispatch(resetAdvanceFilter());
+        }
       }
 
     }
@@ -224,6 +227,10 @@ const DraggableTab = ({viewList, refetch,
       dispatch(resetAdvanceFilter());
     }
   }
+
+  // toggle create view from save as option in save btn
+  const {togglenewCreateView} = useSelector(state=>state.newViewReducer)
+  console.log(togglenewCreateView, "togglenewCreateView");
 
   return (
     <>
@@ -385,8 +392,8 @@ const DraggableTab = ({viewList, refetch,
       </div>
       
       <CreateView
-            visible={createViewForm}
-            onClose={()=>setCreateViewForm(false)}
+            visible={createViewForm || togglenewCreateView}
+            onClose={()=>{setCreateViewForm(false); dispatch(setTogglenewCreateView(false))}}
             setcreatedView = {setCreatedView}
             createdView={createdView}
             branchViewRefetch={refetch}
