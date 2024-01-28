@@ -10,7 +10,7 @@ import { createBranchViewMutation } from '../../../util/mutation/branchView.muta
 import { useSelector } from 'react-redux';
 
 
-export const CreateView = ({ visible, onClose, setcreatedView, createdView, branchViewRefetch, createView, createViewLoading }) => {
+export const CreateView = ({saveAs, visible, onClose, setcreatedView, createdView, branchViewRefetch, createView, createViewLoading }) => {
 
   const [name, setName] = useState("");
   const [access, setAccess] = useState("");
@@ -19,13 +19,18 @@ export const CreateView = ({ visible, onClose, setcreatedView, createdView, bran
   const {quickFilter, advanceFilter} = useSelector(state=>state.quickFilterReducer);
 
   const { branchSchemaNewFields } = useSelector(state => state.branchReducer);
-  
+  const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
+
   const handelSave = async () => {
     setcreatedView([...createdView, {label:name, access}]);
-    await createView({variables:{input:{
+    
+    const newView = await createView({variables:{input:{
       name, visibility: access, quickFilter, advanceFilter, isManual: true,
-      viewFields: branchSchemaNewFields
+      viewFields: branchSchemaNewFields,
+      createdBy: authenticatedUserDetail?._id
     }}});
+
+    sessionStorage.setItem('selectedViewId', newView?.data?.newEmployeeView?.response?._id)
     dispatch(setNotification({
         error:false,
         notificationState:true, 

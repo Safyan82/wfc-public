@@ -44,6 +44,7 @@
     /* margin-top: 70px; */
 }
 
+
 .filter-btn{
     background-color: #425b76;
     border-color: #425b76;
@@ -58,6 +59,12 @@
 
     cursor: pointer;
 }
+
+.filter-btn:hover{
+    background-color: #516f90;
+    border-color: #516f90;
+}
+
 
 .proplistHead{
     /* height: 40px; */

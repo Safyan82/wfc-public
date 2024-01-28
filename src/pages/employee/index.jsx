@@ -221,7 +221,7 @@ export const Employee = () =>{
             <GridFilter
                 openAdvanceFilter={()=>setFilterModal(true)}
                 updateView={upsertEmployeeView}
-                
+                viewList = {employeeViewData?.employeeView?.response}
                 refetch= {async()=>{
                   await viewRefetch();
                   await refetch();

@@ -20,6 +20,7 @@ import { GetPropertyByGroupQuery } from '../../util/query/properties.query';
 import { EditColumn } from '../../components/table/editColumn/editColumn.modal';
 import { setEditGridColumn } from '../../middleware/redux/reducers/properties.reducer';
 import { objectType } from '../../util/types/object.types';
+import { compareAdvanceFilter, compareQuickFilters } from '../../util/compareFilterArrays/compareFilters';
 
 export const Branch = () =>{
     const [branchModal, setBranchModal] = useState(false);
@@ -216,6 +217,15 @@ export const Branch = () =>{
     
     // const IsBranchView = authenticatedUserDetail?.permission?.Branch?.view!=="None";
     
+    // verify if the filters are not identical then we have to enable save view button
+    useEffect(()=>{
+      if(sessionStorage.getItem("selectedViewId")){
+        const selectedSession = sessionStorage.getItem("selectedViewId");
+        const {advanceFilter: remoteAdvanceFilter, quickFilter: remoteQuickFilter} = branchViewList?.branchViews?.find((view)=> view?._id==selectedSession);
+        // console.log(compareAdvanceFilter(advanceFilter, remoteAdvanceFilter), "filterResult", compareQuickFilters(quickFilter, remoteQuickFilter));
+
+      }
+  }, [quickFilter, advanceFilter, sessionStorage.getItem("selectedViewId")]);
 
     return(
       // authenticatedUserDetail?.userAccessType? IsBranchView?  
@@ -245,6 +255,8 @@ export const Branch = () =>{
               openAdvanceFilter={()=>setFilterModal(true)}
               updateView={upsertBranchView}
               refetch={refetchAll}
+              viewList = {branchViewList?.branchViews}
+
           />
 
           <AdvanceFilter 
