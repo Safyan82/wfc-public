@@ -228,7 +228,9 @@ export const CreateUserComponent = ()=>{
                     </div>
                 </Form.Item>    */}
                 
-                <Form.Item>
+                <Form.Item
+                    style={{padding: '0 41px'}}
+                >
                     <Input
                         placeholder="Email Address"
                         className="generic-input-control"
@@ -256,6 +258,8 @@ export const CreateUserComponent = ()=>{
                 }
 
                 <Form.Item
+                
+                    style={{padding: '0 41px'}}
                 >
                     <Checkbox
                      onChange= {(e)=>{setManualPasswordPopover(e.target.checked);setPassword('');}}

@@ -1,6 +1,6 @@
 import "./userDetail.page.css";
 import { UserOutlined } from "@ant-design/icons";
-import { faChevronLeft, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faInfoCircle, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, Dropdown, Form, Input, Menu, Table, Tabs, Tag } from "antd";
 import { useEffect, useState } from "react";
@@ -208,8 +208,19 @@ export const UserDetailPage = ()=>{
                                     {activeSession==="profile"?
                                     // {/* handel profile tab */}
                                     <div>
-                                        <div className="permission-header">User Preferences</div>
+                                        <div className="permission-header">
+                                            <span>
+                                                User Preferences
+                                            </span> 
+                                            <span className={"grid-hover" } 
+                                            style={{fontSize:'12px'}}
+                                            onClick={()=>navigate('/user/employee-detail/'+employeeId)}>
+                                                Edit This User Details &emsp;<FontAwesomeIcon icon={faPencil}/>
+                                            </span>
+
+                                        </div> 
                                         <div className="text">This applies across any Workforce city account they have.</div>
+                                        
                                         <h3>Profile image</h3>
                                         <EditableAvatar size={80} src={<UserOutlined/>}/> <br/><br/>
                                         <Form.Item className="mt32 mb32">

@@ -1,16 +1,53 @@
-import { Avatar, Collapse } from "antd";
+import { Avatar, Collapse, Table } from "antd";
 import "./reviewPermission.css";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { objectType } from "../../util/types/object.types";
 import { accessType } from "../../util/types/access.types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCancel, faCheck, faCross, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 export const ReviewPermission = ({roleName, user, userAccessType}) =>{
 
     const {propAccess} = useSelector((state)=>state?.permissionReducer);
-    console.log(userAccessType, "propAccesspropAccess", propAccess);
 
     const [items, setItems] = useState([]);
+
+    const getChild = (propAccess, module)=>{
+        const dataSource = Object.values(propAccess[module])?.filter((prop)=>prop?.label).map((prop)=>({
+            label: prop?.label,
+            view: prop?.visible==0? <FontAwesomeIcon style={{color:'red'}} icon={faTimes}/>: <FontAwesomeIcon style={{color:'rgb(0, 189, 165)'}} icon={faCheck}/>,
+            edit: prop?.edit==0? <FontAwesomeIcon style={{color:'red'}} icon={faTimes}/>: <FontAwesomeIcon style={{color:'rgb(0, 189, 165)'}}  icon={faCheck}/>
+        }))
+
+        return (
+            <div className="review-child">
+                
+                <div>
+                    <b>Delete</b> ({propAccess[module]?.delete}),  &nbsp;
+                    <b> Edit</b> ({propAccess[module]?.edit}), &nbsp; and
+                    <b> View</b> ({propAccess[module]?.view})
+                </div>
+
+                {propAccess[module].hasOwnProperty('custom'+module)?
+                <div style={{margin: '16px 0px'}}>
+                    <b>Custom {module}</b> <br/>
+                    { JSON.stringify(propAccess[module]['custom'+module]?.map((obj)=>obj.name).join(",", " , ").replaceAll(",", ", ")) }
+                </div>
+                : null}
+                
+                {dataSource?.length>0?
+                <Table
+                    style={{margin:'32px 0'}}
+                    columns={[{title:'Property name', dataIndex:'label'}, {title:'View', dataIndex:'view'}, {title: 'Edit', dataIndex:'edit'}]}
+                    dataSource={dataSource}
+                />
+                : null
+                }
+
+            </div>
+        )
+    };
 
     useEffect(()=>{
         if(propAccess){
@@ -21,38 +58,14 @@ export const ReviewPermission = ({roleName, user, userAccessType}) =>{
                 <div  style={{margin: '0px 40px', fontWeight: 'bold'}} >
                     {module}
                 </div>,
-                children: 
-                <div className="review-child">
-                    <div>
-                        <b>Delete</b> ({propAccess[module]?.delete}),  &nbsp;
-                        <b> Edit</b> ({propAccess[module]?.edit}), &nbsp; and
-                        <b> View</b> ({propAccess[module]?.view})
-                    </div>
-                    {propAccess[module].hasOwnProperty('custom'+module)?
-                    <div style={{margin: '16px 0px'}}>
-                        <b>Custom {module}</b> <br/>
-                        { JSON.stringify(propAccess[module]['custom'+module]?.map((obj)=>obj.name).join(",", " , ").replaceAll(",", ", ")) }
-                    </div>
-                    : null}
-
-                    {/* {Object.values(propAccess[module])[0]?.label} */}
-                    {Object.values(propAccess[module])?.map((prop)=>{
-                        if(prop?.label){
-                            return(<div style={{margin: '16px 0px'}}>
-                                <b>Property access </b>
-                                <br/>
-                                {prop?.label} 
-                                 &nbsp; <b>View</b> ({prop?.visible==0? <span style={{fontStyle: 'italic', color: 'red'}}> Not allowed </span> : "Allow"})  &nbsp; <b>Edit</b> ({prop?.edit==0? <span style={{fontStyle: 'italic', color: 'red'}}> Not Allowed </span> : "Allow"}) 
-                            </div>)
-                        }
-                    })}
-                </div>
+                children: getChild(propAccess, module)
+                
             })))
         }
     }, [propAccess]);
 
     return (
-        <div style={{ maxHeight: '380px', overflowY: 'scroll'}}>
+        <div style={{ maxHeight: '70vh', height:'70vh', overflowY: 'scroll'}}>
             {user && Object.keys(user)?.length>0?
             <div id="userDetail" style={{margin: '0px 40px'}}>
                 <Avatar size={60}>

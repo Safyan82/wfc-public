@@ -334,7 +334,7 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
             <div className="btm-border"></div>
 
             <Collapse defaultActiveKey={['1']}>
-                <Collapse.Panel header="About this branch" key="1" style={{paddingBottom:'28%'}} >
+                <Collapse.Panel header="About this employee" key="1" style={{paddingBottom:'28%'}} >
                     {loading ?
                     <div style={{display: 'flex', justifyContent: 'center', paddingTop: '8%'}}>
                         <Spinner/>
