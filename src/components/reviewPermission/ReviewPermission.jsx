@@ -17,7 +17,7 @@ export const ReviewPermission = ({roleName, user, userAccessType}) =>{
         const dataSource = Object.values(propAccess[module])?.filter((prop)=>prop?.label).map((prop)=>({
             label: prop?.label,
             view: prop?.visible==0? <FontAwesomeIcon style={{color:'red'}} icon={faTimes}/>: <FontAwesomeIcon style={{color:'rgb(0, 189, 165)'}} icon={faCheck}/>,
-            edit: prop?.edit==0? <FontAwesomeIcon style={{color:'red'}} icon={faTimes}/>: <FontAwesomeIcon style={{color:'rgb(0, 189, 165)'}}  icon={faCheck}/>
+            edit: propAccess[module]?.edit==="None"? <FontAwesomeIcon style={{color:'red'}} icon={faTimes}/> : prop?.edit==0? <FontAwesomeIcon style={{color:'red'}} icon={faTimes}/>: <FontAwesomeIcon style={{color:'rgb(0, 189, 165)'}}  icon={faCheck}/>
         }))
 
         return (
@@ -35,7 +35,7 @@ export const ReviewPermission = ({roleName, user, userAccessType}) =>{
                     { JSON.stringify(propAccess[module]['custom'+module]?.map((obj)=>obj.name).join(",", " , ").replaceAll(",", ", ")) }
                 </div>
                 : null}
-                
+
                 {dataSource?.length>0?
                 <Table
                     style={{margin:'32px 0'}}
