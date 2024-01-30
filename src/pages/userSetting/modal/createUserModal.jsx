@@ -48,7 +48,7 @@ export const CreateUserModal = ({visible, onClose})=>{
       if(Object.keys(editUserData)?.length>0){
         if(editUserData?.user?.userRole){
           setuserRole({name: editUserData?.user?.userRole[0]?.rolename, id: editUserData?.user?.userRole[0]?._id, permission: editUserData?.user?.userRole[0]?.permission} );
-          dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
+          // dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
         }
       }
     },[editUserData]);
@@ -63,7 +63,7 @@ export const CreateUserModal = ({visible, onClose})=>{
 
     useEffect(()=>{
       if(userRole.hasOwnProperty('permission')){
-        dispatch(setPreDefinedDBPermission(userRole?.permission));
+        // dispatch(setPreDefinedDBPermission(userRole?.permission));
       }
     },[userRole]);
 
@@ -114,7 +114,7 @@ export const CreateUserModal = ({visible, onClose})=>{
        }
    }, [userEmailVerification])
 
-    const steps = [
+    const steps =[
         {
           title: 'PERMISSIONS',
           component: <PermissionComponent 
@@ -146,6 +146,29 @@ export const CreateUserModal = ({visible, onClose})=>{
           // component: userRole?.permission ? <ReviewPermission user={userDetail}/> : null
         }
     ];
+
+    const editSteps =[
+      {
+        title: 'ACCESS LEVEL',
+        component: <PermissionComponent 
+        userAccessType={userAccessType} 
+        setUserAccessType={setUserAccessType} 
+        userRole={userRole}
+        setuserRole={setuserRole}
+        role
+        selectedItem={0}/> 
+      },
+      {
+        title: 'USER DETAIL',
+        component: <CreateUserComponent />
+      },
+      {
+        title: 'REVIEW',
+        component: <ReviewPermission user={userDetail}  userAccessType={userAccessType} />
+        // component: userRole?.permission ? <ReviewPermission user={userDetail}/> : null
+      }
+  ];
+    
 
 
     const { refreshAuthUser } = useSelector((state)=>state.userAuthReducer);
@@ -205,9 +228,9 @@ export const CreateUserModal = ({visible, onClose})=>{
 
       }
 
-    }
-      
-    console.log(currentStep===2 && userDetail?.email=="" && !isEmailValid, currentStep===2 , userDetail?.email , !isEmailValid, "validatoin", currentStep===2 && editUserData?.user?.email=="")
+    };
+    
+    const stepToRender = editUserData?.user? editSteps : steps || [];
     return(
         <Modal
             visible={visible}     
@@ -233,7 +256,7 @@ export const CreateUserModal = ({visible, onClose})=>{
                         onClose();}} >Cancel</button>
                     </div>
                     
-                    {(currentStep < steps.length - 1) &&
+                    {(currentStep < stepToRender.length - 1) &&
                       <button id="nextBtn" 
                       disabled={
                         currentStep==1 && userAccessType===accessType.StandardPermission && userRole?.length<1  ||
@@ -244,7 +267,7 @@ export const CreateUserModal = ({visible, onClose})=>{
                       {'Next'} <FontAwesomeIcon className='next-btn-icon' icon={faChevronRight}/>
                       </button>
                     } 
-                    {currentStep == steps.length - 1 && 
+                    {currentStep == stepToRender.length - 1 && 
                       <button disabled={loading} onClick={handelSubmit} className={(currentStep ==0) || loading ? ' disabled-btn drawer-filled-btn' : 'drawer-filled-btn'}>
                       {loading? <Spinner/> : editUserData?.user? 'Update' :'Create'}
                       </button>
@@ -258,13 +281,13 @@ export const CreateUserModal = ({visible, onClose})=>{
                 <div className="user-header">
                     <div className="text w-100">{editUserData?.user? "Update " : "Create "} User</div>
                     <Steps current={currentStep} progressDot={customDot}>
-                    {steps.map((step, index) => (
+                    {stepToRender?.map((step, index) => (
                         <Step key={index} title={step.title} />
                     ))}
                     </Steps>
-                    <div className="text w-100">Step {currentStep+1} of {steps?.length}</div>
+                    <div className="text w-100">Step {currentStep+1} of {stepToRender?.length}</div>
                 </div>
-                <div>{steps[currentStep].component}</div>
+                <div>{stepToRender[currentStep].component}</div>
 
 
             </div>

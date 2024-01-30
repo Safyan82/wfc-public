@@ -1,5 +1,5 @@
 import './permission.css';
-import { Avatar, Checkbox, Collapse, Input, Popover, Radio, Select, Table } from "antd";
+import { Collapse, Input, Popover, Radio, Select } from "antd";
 import { useEffect, useRef, useState } from "react";
 import standard from './robot.svg'
 import pencil from './pencil.svg'
@@ -25,6 +25,7 @@ export const PermissionComponent = ({userAccessType, setUserAccessType, userRole
     const [isExpanded, setExpand] = useState(selectedItem);
     
     
+    console.log(userAccessType, "editUserData")
     
     const [items, setItems] = useState([]);
 
@@ -32,95 +33,43 @@ export const PermissionComponent = ({userAccessType, setUserAccessType, userRole
         fetchPolicy: 'network-only'
     });
 
-    const {editUserData} = useSelector((state)=>state?.editUserReducer);
-
     useEffect(()=>{
         if(userAccessType){
-            if(editUserData?.user){
-                setItems([
-                    {
-                        key: 0,
-                        label: <div className="permission-accordin">
-                                    <div>
-                                        Choose how to set access
-                                    </div>
-                                    {/* {isExpanded==1? null: */}
-                                        <div className="helping-heading">Start with standard user access</div>
-                                    {/* } */}
+            setItems([
+                selectedItem==0? {
+                    key: selectedItem,
+                    label: <div className="permission-accordin">
+                                <div>
+                                    Choose how to set access
                                 </div>
-                        ,
-                        children: <UserAccess userAccessType={userAccessType} setUserAccessType={setUserAccessType} />,
-                    }
+                                {/* {isExpanded==1? null: */}
+                                    <div className="helping-heading">Start with standard user access</div>
+                                {/* } */}
+                            </div>
                     ,
-                    {
-                        key: 1,
-                        label:<div className="permission-accordin">
-                                <div>
-                                   {userAccessType===accessType.StandardPermission ? "Choose user role" : "Choose permission"} 
-                                </div>
-                                {/* {isExpanded==0? null: */}
-                                    <div className="helping-heading">Change permissions</div>
-                                {/* } */}
+                    children: <UserAccess userAccessType={userAccessType} setUserAccessType={setUserAccessType} />,
+                }
+                :
+                {
+                    key: 0,
+                    label:<div className="permission-accordin">
+                            <div>
+                               {userAccessType===accessType.StandardPermission ? "Choose user role" : "Choose permission"} 
                             </div>
-                        ,
-                        children: userAccessType===accessType.StandardPermission ? <PreDefineRoles setuserRole={setuserRole} userRole={userRole} data={data?.userRoleList?.response} /> : <Permission userAccessType={userAccessType} /> ,
-                    }
-                ]);
-            }else{
-                setItems([
-                    selectedItem==0? {
-                        key: selectedItem,
-                        label: <div className="permission-accordin">
-                                    <div>
-                                        Choose how to set access
-                                    </div>
-                                    {/* {isExpanded==1? null: */}
-                                        <div className="helping-heading">Start with standard user access</div>
-                                    {/* } */}
-                                </div>
-                        ,
-                        children: <UserAccess userAccessType={userAccessType} setUserAccessType={setUserAccessType} />,
-                    }
-                    :
-                    {
-                        key: 0,
-                        label:<div className="permission-accordin">
-                                <div>
-                                   {userAccessType===accessType.StandardPermission ? "Choose user role" : "Choose permission"} 
-                                </div>
-                                {/* {isExpanded==0? null: */}
-                                    <div className="helping-heading">Change permissions</div>
-                                {/* } */}
-                            </div>
-                        ,
-                        children: userAccessType===accessType.StandardPermission ? <PreDefineRoles setuserRole={setuserRole} userRole={userRole} data={data?.userRoleList?.response} /> : <Permission userAccessType={userAccessType} /> ,
-                    }
-                ]);
-            }
+                            {/* {isExpanded==0? null: */}
+                                <div className="helping-heading">Change permissions</div>
+                            {/* } */}
+                        </div>
+                    ,
+                    children: userAccessType===accessType.StandardPermission ? <PreDefineRoles setuserRole={setuserRole} userRole={userRole} data={data?.userRoleList?.response} /> : <Permission userAccessType={userAccessType} /> ,
+                }
+            ])
         }
     }, [userAccessType, data?.userRoleList?.response, isExpanded, userRole, selectedItem]);
 
 
     return(
         <div className="stepperBody createUser-block">
-
-
-           
-            
-            
-            {/* update user detail segment to show */}
-            {editUserData?.user?
-            <>
-                <div className="createUser-block-header">
-                    <h3 className="h3">
-                        Editing access for {editUserData?.user?.employee[0]?.firstname+" "+editUserData?.user?.employee[0]?.lastname}
-                    </h3>
-                    <div className="text">
-                    {editUserData?.user?.employee[0]?.firstname+" "+editUserData?.user?.employee[0]?.lastname} Has {editUserData?.user?.userAccessType} Level
-                    </div>
-                </div>
-            </>
-            :
             <div className="createUser-block-header">
                 <h3 className="h3">
                     Set up user access levels
@@ -129,15 +78,10 @@ export const PermissionComponent = ({userAccessType, setUserAccessType, userRole
                     Assign a seat to give users access to features. Narrow down that access with permissions.
                 </div>
             </div>
-            }
-            
-
-
-            {/* update user details */}
             
             <div>
                 <Collapse 
-                    defaultActiveKey={editUserData?.user?'1':'0'}  
+                    defaultActiveKey={'0'}  
                     items={items}
                     onChange={(e)=>console.log(e, "pp")}
                 />      
@@ -153,21 +97,34 @@ const UserAccess = ({setUserAccessType, userAccessType})=>{
 
 
     return(
-        <div style={{ margin:'40px 20px', display:'flex', columnGap:'40px', justifyContent: 'center' }}>
+        <div style={{ margin:'20px 20px', display:'flex', columnGap:'40px', justifyContent: 'center' }}>
             
-            <Select className='custom-select'
-                placeholder="Choose Access Level"
-                style={{width:'50%'}}
-                autoFocus
-                onChange={(e)=>setUserAccessType(e)}
-                value={userAccessType}
-                suffixIcon={<span className='caret' style={{marginTop:'2px'}}></span>}
-            >
-                {Object.values(accessType)?.map((access, index)=>(
+            <div className={userAccessType==accessType.StandardPermission? "userAccess-box-active" :"userAccess-box"} onClick={()=>setUserAccessType(accessType.StandardPermission)} >
+                <Radio name="access" checked={userAccessType==accessType.StandardPermission? true: false} value={accessType.StandardPermission} onChange={(e)=>setUserAccessType(e.target.value)}    className="radio-btn"/>
+                <img style={{marginTop:'-25px'}} src={standard} width="40%" height="40%" alt="" />
+                <h5 className='premission-head'>Start with standard user access</h5>
+                <div className="text">
+                    Assign default access to your users as-is or customize for your needs.
+                </div>
+            </div>
 
-                    <Select.Option value={access} key={index}>{access}</Select.Option>
-                ))}
-            </Select>
+            <div className={userAccessType==accessType.CustomerPermission? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setUserAccessType(accessType.CustomerPermission)} >
+                <Radio name="access" checked={userAccessType==accessType.CustomerPermission? true: false} value={accessType.CustomerPermission} onChange={(e)=>setUserAccessType(e.target.value)}      className="radio-btn"/>
+                <img style={{marginTop:'-25px'}}  src={pencil} width="40%" height="40%" alt="" />
+
+                <h5 className='premission-head'>Start from scratch</h5>
+                <div className="text">Create permissions specifically for this user.</div>
+
+            </div>
+
+            <div className={userAccessType==accessType.AdminPermission? "userAccess-box-active" :"userAccess-box"}  onClick={()=>setUserAccessType(accessType.AdminPermission)}>
+                <Radio name="access"  checked={userAccessType==accessType.AdminPermission? true: false}  value={accessType.AdminPermission} onChange={(e)=>setUserAccessType(e.target.value)}   className="radio-btn"/>
+                <img style={{marginTop:'-25px'}}  src={admin} width="40%" height="40%" alt="" />
+                <h5 className='premission-head'>Make Super Admin</h5>
+                <div className="text">
+                Super Admins can manage all users, tools, and settings.
+                </div>
+            </div>
 
         </div>
     )
@@ -191,73 +148,70 @@ export const Permission = ({access, role, userAccessType})=>{
 
     const {propAccess} = useSelector((state)=>state?.permissionReducer);
 
-    console.log(propAccess, "safyan accessprop")
+    console.log(propAccess)
 
     //  first time rendering when property data recieves
     useEffect(()=>{
         const d = groupProperty?.getPropertyByGroup?.data?.map((data)=>{
             
             return{
-            key: data._id,          
+            key: data._id,
+            
             label: 
-                    <div  style={{fontWeight:'bold'}} >
+                    <div style={{}} >
                         <span>{data?._id}</span>
                     </div>,
 
-            children: getChild(data)
+            children: data?.properties?.map((property, index)=>{
+                return(
+                    <div key={index} className={moduleView =="None" ? 'disabled object-prop-item' : 'object-prop-item'}>
+                        <span>{property?.label}</span>
+                        <div style={{display:'flex', columnGap:'20px'}} >
+        
+                            <FontAwesomeIcon className={propAccess[obj]?.view=="None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                                if(moduleView=="None"){
+                                    return;
+                                } 
+                                else {
+                                    dispatch(updateDefaultPropPermissin({
+                                        id: property?._id,
+                                        permission:{
+                                            visible: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.visible==1? 0 : 1,
+                                            edit: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit,
+                                            delete: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.delete || moduleDelete
+                                        },
+                                        objectType: obj
+                                    }))
+                                }}
+                            } 
+                                icon={propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.visible==1? faEye : faEyeSlash} />    
+                        
+                            <FontAwesomeIcon className={propAccess[obj]?.view=="None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                                 if(moduleView=="None"){
+                                    return;
+                                }else{
+                                    dispatch(updateDefaultPropPermissin({
+                                        id: property?._id,
+                                        objectType: obj,
+                                        permission:{
+                                            edit: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit==1? 0 : 1,
+                                            visible: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.visible,
+                                            delete: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.delete || moduleDelete
+                                        }
+                                    }))
+                                }
+                            }}  
+                            icon={faPencil}  />
+                            {propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit==1? null : <span className={propAccess[obj]?.view=="None" ? 'slash-disabled' : 'slash'}></span> }
+                            
+                        </div>
+                    </div>
+                )
+            }),
         }});
         setList(d);
     },[groupProperty?.getPropertyByGroup?.data]);
 
-    const getChild =  (data) => {
-        const dataSource =  data?.properties?.map((property, index)=>{
-            return({
-                label: property?.label,
-                view: <Checkbox disabled={propAccess[obj]?.view=="None"} onClick={()=>{
-                    if(moduleView=="None"){
-                        return;
-                    } 
-                    else {
-                        dispatch(updateDefaultPropPermissin({
-                            id: property?._id,
-                            permission:{
-                                visible: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.visible==1? 0 : 1,
-                                edit: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit,
-                                delete: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.delete || moduleDelete
-                            },
-                            objectType: obj
-                        }))
-                    }}
-                } 
-
-                    checked={propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.visible==1} 
-                />,
-                edit: <Checkbox disabled={propAccess[obj]?.view=="None"} onChange={()=>{
-                    if(moduleView=="None"){
-                       return;
-                   }else{
-                       dispatch(updateDefaultPropPermissin({
-                           id: property?._id,
-                           objectType: obj,
-                           permission:{
-                               edit: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit==1? 0 : 1,
-                               visible: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.visible,
-                               delete: propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.delete || moduleDelete
-                           }
-                       }))
-                   }
-               }}  
-               checked={propAccess?.hasOwnProperty(obj) && propAccess[obj][property?._id]?.edit==1}
-               />
-            })
-        })
-        return(
-            <Table
-                dataSource={dataSource}
-                columns={[{title:"Property Name", dataIndex:'label', sorter: (a, b) => a.label.localeCompare(b.label),}, {title:'View', dataIndex:'view'}, {title:'Edit', dataIndex:'edit'}]}
-            />
-        );
-    }
 
 // Top access control of each module
     const [moduleView, setModuleView] = useState(propAccess[obj]?.view || null);
@@ -411,6 +365,7 @@ export const Permission = ({access, role, userAccessType})=>{
     
     // handel rendering when any thing change in depth access of each module
     useEffect(()=>{
+        console.log("propAccesspropAccess", propAccess)
         if(groupProperty?.getPropertyByGroup?.data){
             const d = groupProperty?.getPropertyByGroup?.data?.map((data)=>{
                 
@@ -418,15 +373,69 @@ export const Permission = ({access, role, userAccessType})=>{
                 key: data._id,
                 
                 label: 
-                    <div style={{fontWeight:'bold'}} >
+                    <div style={{}} >
                         <span>{data?._id}</span>
                     </div>,
 
-                children: getChild(data),
+                children: data?.properties?.map((property, index)=>{
+                    return(
+                        <div key={index} className={moduleView =="None" ? 'disabled object-prop-item' : 'object-prop-item'}>
+                            <span>{property?.label}</span>
+                            <div style={{display:'flex', columnGap:'20px'}} >
+            
+                                <FontAwesomeIcon className={propAccess[obj]?.view=="None"? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                                    if(moduleView=="None"){
+                                        return;
+                                    } 
+                                    else {
+                                        dispatch(updateDefaultPropPermissin({
+                                            id: property?._id,
+                                            permission:{
+                                                visible: propAccess[obj][property?._id]?.visible==1? 0 : 1,
+                                                edit: propAccess[obj][property?._id]?.edit,
+                                                label: property?.label,
+                                                delete: propAccess[obj][property?._id]?.delete || moduleDelete
+                                            },
+                                            objectType: obj
+                                        }))
+                                    }}
+                                } 
+                                    icon={propAccess && propAccess[obj] && propAccess[obj][property?._id]?.visible==1? faEye : faEyeSlash} />    
+                                
+                                <FontAwesomeIcon className={propAccess[obj]?.view=="None" ? 'access-icon disabled' :'access-icon'} onClick={()=>{
+                                     if(moduleView=="None"){
+                                        return;
+                                    }else{
+                                        dispatch(updateDefaultPropPermissin({
+                                            id: property?._id,
+                                            objectType: obj,
+                                            permission:{
+                                                edit: propAccess[obj][property?._id]?.edit==1? 0 : 1,
+                                                visible: propAccess[obj][property?._id]?.visible,
+                                                delete: propAccess[obj][property?._id]?.delete || moduleDelete,
+                                                label: property?.label,
+                                            }
+                                        }))
+                                    }
+                                }}  
+                                icon={faPencil}  />
+                                {propAccess && propAccess[obj] && propAccess[obj][property?._id]?.edit==1? null : <span className={propAccess[obj]?.view=="None"?'slash-disabled ':'slash'}></span> }
+                                
+                            </div>
+                        </div>
+                    )
+                }),
             }});
             setList(d);
-        };
-        console.log(propAccess, "propAccess ashu")
+        }
+        if(propAccess && propAccess?.hasOwnProperty(obj)){
+            // alert("a b c")
+            console.log(propAccess, "obj access")
+
+            // setModuleView(propAccess[obj]?.view)
+            // setModuleDelete(propAccess[obj]?.delete)
+            // setModuleEdit(propAccess[obj]?.edit)
+        }
     },[propAccess]);
 
     const [objectPropertyDefaultDetail, setobjectPropertyDefaultDetail] = useState({});
@@ -452,6 +461,26 @@ export const Permission = ({access, role, userAccessType})=>{
             setModuleView("All "+obj);
         }
     }, [objectPropertyDefaultDetail]);
+
+    // ======================= User edit specific only
+    // HANDEL WHILE TO EDIT for user
+    const {editUserData} = useSelector((state)=>state?.editUserReducer);
+
+
+    useEffect(()=>{
+        if(editUserData?.user?.permission && !sessionStorage.getItem("editDone")){
+            sessionStorage.setItem("editDone", true);
+            dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
+        }
+
+    },[editUserData]);
+
+    // TERMINATE EDIT HANDEL 
+    // ======================= User edit specific only terminated
+
+
+
+
     // ======================= Handel pre-define role only
     // Handel pre-define role only
     const {userRoleToBeEdit} = useSelector((state)=>state?.userRoleReducer);
@@ -471,28 +500,6 @@ export const Permission = ({access, role, userAccessType})=>{
 
     const objectToRender = userAccessType===accessType.AdminPermission? Object.values(objectType) : Object.values(normalUser);
     
-    
-    // ======================= User edit specific only
-    // HANDEL WHILE TO EDIT for user
-    const {editUserData} = useSelector((state)=>state?.editUserReducer);
-
-
-    useEffect(()=>{
-        if(editUserData?.user?.permission && !sessionStorage.getItem("editDone")){
-            console.log(editUserData?.user?.permission, "editUserData?.user?.permission")
-            dispatch(setPreDefinedDBPermission(editUserData?.user?.permission));
-            sessionStorage.setItem("editDone", true);
-        }
-
-    },[editUserData]);
-
-    // TERMINATE EDIT HANDEL 
-    // ======================= User edit specific only terminated
-
-
-
-
-
     return(
         <div className='permission-block' 
         style={role?{minHeight: '330px', maxHeight: '330px', overflowY: 'scroll'}:null}
@@ -513,18 +520,22 @@ export const Permission = ({access, role, userAccessType})=>{
                 ))}
             </div>
 
+           
+
             <div className='object-prop'>
                 <div className='module-block'>
-                    <h2 style={{letterSpacing: '1px', marginBottom:'-5px'}}>{obj}</h2>
-                    <div className="text">Save important info about your {obj}. So your team can interact with branch data. 
-                    {/* <Link className='link' target='_blank' to="/setting" > Manage Properties <FontAwesomeIcon icon={faExternalLink}/> </Link> */}
-                    </div>
-                    <div style={{display:'flex', justifyContent:'space-between' , flexDirection: 'row',}}>
+                    <h4 style={{letterSpacing: '1px'}}>{obj}</h4>
+                    <div className="text">Save important info about your {obj}. So your team can interact with branch data. <Link className='link' target='_blank' to="/setting" > Manage Properties <FontAwesomeIcon icon={faExternalLink}/> </Link></div>
+                    <div style={{display:'flex', rowGap:'16px', flexDirection: 'column'}}>
                         
-                        <div style={{display:'flex', justifyContent:'space-between',}}>
-                            <div style={{display: 'flex', columnGap: '15px', flexDirection:'column'}}>
+                        <div style={{display:'flex', justifyContent:'space-between'}}>
+                            <div style={{display: 'flex', columnGap: '15px'}}>
                                 <b>View</b>
-                                
+                                {
+                                    propAccess?.hasOwnProperty(obj) && (propAccess[obj])?.hasOwnProperty("custom"+obj) && moduleView!==""?
+                                    <span onClick={()=> obj=="Branch" ? setCustomModulePermission(true) : setCustomEmployeePermission(true)} className='moduleList'>See {obj} List <FontAwesomeIcon icon={faLink}/> </span>
+                                    : null
+                                }
                             </div>
 
                             <div className="filter-item">
@@ -544,13 +555,8 @@ export const Permission = ({access, role, userAccessType})=>{
                                             <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText)}}>
                                                 Team owns
                                             </div>
-                                            <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView("Custom "+ obj);setCustomModulePermission(true)}}>
-                                            {propAccess?.hasOwnProperty(obj) && (propAccess[obj])?.hasOwnProperty("custom"+obj) && moduleView!==""?
-                                                <span onClick={()=> obj=="Branch" ? setCustomModulePermission(true) : setCustomEmployeePermission(true)} className='moduleList'>See {obj} List <FontAwesomeIcon icon={faLink}/> </span>
-                                                
-                                                :
-                                                "Custom "+ obj
-                                            }
+                                            <div className="popoverdataitem" onClick={(e)=>{setViewPopover(!viewPopover); setModuleView(e.target.innerText);}}>
+                                                Custom {obj}
                                             </div>
                                         </>
                                         }
@@ -565,11 +571,8 @@ export const Permission = ({access, role, userAccessType})=>{
                                     <span className='caret'></span>
                                     </span>
                                 </Popover>
-                            
                             </div>
                         </div>
-
-                        &emsp;
 
                         {adminObjectType?.includes(obj)? 
                             null
@@ -617,8 +620,6 @@ export const Permission = ({access, role, userAccessType})=>{
                                     </Popover>
                                 </div>
                             </div>
-                            &emsp;
-
                             <div className={propAccess[obj]?.view=="None"? "disabled" : null}  style={{display:'flex', justifyContent:'space-between'}}>
                                 <b>Delete <span className='badge'> Critical</span></b>
 
@@ -741,7 +742,7 @@ export const PreDefineRoles = ({setuserRole, data, userRole})=>{
     const navigate = useNavigate();
     console.log(userRole?.name, "userRole?.name")
     return (
-        <div className="group-wrapper"  style={{width: '500px', margin: 'auto', marginTop: '40px'}}>
+        <div className="group-wrapper"  style={{width: '500px', margin: 'auto', marginTop: '8px'}}>
             <div
                 name="groupInput"
                 className='generic-input-control groupInput' 
@@ -761,7 +762,7 @@ export const PreDefineRoles = ({setuserRole, data, userRole})=>{
             <div ref={parentRef} className={groupPopover? 'show': 'hide'} style={{width: '500px', margin: 'auto'}}>
                 <div className="moveGroupData" style={{width: parentWidth-1.5}} >
                     <div className="popover-search" >
-                        <Input type="text"
+                        <Input type="text" 
                             ref={inputRef}
                             name='popoverSearch'
                             style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
