@@ -1,7 +1,7 @@
 import './leftsidebar.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBarsStaggered, faCalendarDay, faCheck, faChevronLeft, faClose, faCross, faDesktop, faEllipsis, faHandHolding, faHandHoldingHand, faList, faList12, faListDots, faPaw, faPen, faPencil, faPhone, faTasks, faTasksAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBarsStaggered, faCalendarDay, faCheck, faChevronLeft, faClose, faCross, faDesktop, faEllipsis, faHandHolding, faHandHoldingHand, faList, faList12, faListDots, faPaw, faPen, faPencil, faPhone, faTasks, faTasksAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Avatar, Popover, Collapse, Panel, Form, Input, Select, Badge, Checkbox, Skeleton } from 'antd';
 import { faBuilding, faCalendar, faCalendarAlt, faCalendarDays, faCopy, faEnvelope, faMeh, faNoteSticky, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import {    EditOutlined, CopyOutlined, CopyTwoTone, PhoneOutlined, EllipsisOutlined, CalendarOutlined, MediumWorkmarkOutlined, TableOutlined, TagsOutlined, ContainerOutlined, RedEnvelopeOutlined, MailOutlined, FormOutlined } from '@ant-design/icons';
@@ -131,6 +131,9 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
         // console.log(Object.values(authenticatedUserDetail?.permission?.Employee), "authenticatedUserDetail");
     }, [authenticatedUserDetail]);
 
+    const [readOnly, setReadOnly] = useState(true);
+
+    
     return(
         <div className='sidebar-wrapper' ref={dataFieldRef}>
             <div className='leftsidebar'>
@@ -308,7 +311,19 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
             <div className="btm-border"></div>
 
             <Collapse defaultActiveKey={['1']}>
-                <Collapse.Panel header="About this branch" key="1" style={{paddingBottom:'28%'}} >
+                <Collapse.Panel disabled={true} header={
+                    
+                    <div style={{display:'flex', justifyContent:'space-between', marginBottom:'16px'}}>
+                        <span>About this branch</span>
+                        {
+                            readOnly?
+                            <FontAwesomeIcon style={{fontSize:'16px'}} onClick={()=>setReadOnly(!readOnly)} icon={faPencil}/>
+                            :
+                            <FontAwesomeIcon style={{fontSize:'20px'}}  onClick={()=>setReadOnly(!readOnly)} icon={faTimes}/>
+                        }
+                    </div>
+                    
+                } key="1" style={{paddingBottom:'28%'}} >
                     {branchViewForUserLoading || branchObjectLoading ?
                     <div style={{display: 'flex', justifyContent: 'center', paddingTop: '8%'}}>
                         <Spinner/>
@@ -337,64 +352,70 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                     <span>
                                         {prop?.label}
                                     </span>
-                                    <span className={'detail-section'}>
-                                        {prop?.label?.toLowerCase()?.replaceAll(" ", "")=="phonenumber" || prop?.label?.toLowerCase()?.replaceAll(" ", "")=="phone" || prop?.labelprop?.label?.toLowerCase()?.replaceAll(" ","")=="telephone"?
-                                        <Popover
-                                            placement='right'
-                                            trigger={"click"}
-                                            open={phoneDialouge}
-                                            overlayClassName='phonePopover'
-                                            content={
-                                                <div className='phonePopover-main'>
-                                                    <div className="phonePopover-header">
-                                                        <b>Phone number</b>
-                                                        <FontAwesomeIcon onClick={()=>setPhoneDialouge(false)} icon={faClose}/>
-                                                    </div>
-                                                    <div className="phonePopover-body">
-                                                        <div className="phonePopover-input">
-                                                        <PhoneInput
-                                                            country={'gb'}
-                                                            onlyCountries={['gb']}
-                                                            onChange={setPhoneNumber}
-                                                            onKeyDown={handleKeyPress}
-                                                            value={phoneNumber}
-                                                            ref={phoneInputRef}
-                                                            autoFormat={true}
-                                                            inputProps={{
-                                                                name: 'phone',
-                                                                required: true,
-                                                                autoFocus: true
-                                                            }}
-                                                            
-                                                        />
-                                                            {/* <Select
-                                                                suffixIcon={<span className='caret'></span>}
-                                                                value={"GB"}
-                                                                className='custom-select'
-                                                                style={{margin:'0px'}}
-                                                            >
-                                                                <Select.Option>GB</Select.Option>
-                                                            </Select>
-                                                            <Input className='generic-input-control' /> */}
-                                                        </div>
-                                                        <Checkbox>Mark it primary</Checkbox>
-                                                    </div>
-                                                    <div className="bio-footer">
-                                                        <button className='middle-note-btn' onClick={()=>{handelInputChange({name:'phonenumber', value:phoneNumber});setPhoneDialouge(false);}}>Apply</button>
-                                                        <button className='light-btn' onClick={()=>setPhoneDialouge(false)}>Cancel</button>
-                                                    </div>
-                                                </div>
-                                            }
-                                        >
-                                            <FontAwesomeIcon onClick={()=>setPhoneDialouge(!phoneDialouge)} icon={faPencil}/>
-                                        </Popover>
-                                        :
-                                        <FontAwesomeIcon icon={faPencil}/>
-                                        }&emsp;
-                                        <button className='grid-sm-btn' type='link' style={{padding: '4px 10px'}} onClick={()=>{setPropertyDetailDrawer(true); setSelectedProp({propertyId: prop?._id, propertyName: prop?.label})}}>Details</button>
-                                    </span>
 
+                                    {
+                                        readOnly ? null :
+                                    
+                                        <span className={'detail-section'}>
+                                            {prop?.label?.toLowerCase()?.replaceAll(" ", "")=="phonenumber" || prop?.label?.toLowerCase()?.replaceAll(" ", "")=="phone" || prop?.labelprop?.label?.toLowerCase()?.replaceAll(" ","")=="telephone"?
+                                            <Popover
+                                                placement='right'
+                                                trigger={"click"}
+                                                open={phoneDialouge}
+                                                overlayClassName='phonePopover'
+                                                content={
+                                                    <div className='phonePopover-main'>
+                                                        <div className="phonePopover-header">
+                                                            <b>Phone number</b>
+                                                            <FontAwesomeIcon onClick={()=>setPhoneDialouge(false)} icon={faClose}/>
+                                                        </div>
+                                                        <div className="phonePopover-body">
+                                                            <div className="phonePopover-input">
+                                                            <PhoneInput
+                                                                country={'gb'}
+                                                                onlyCountries={['gb']}
+                                                                onChange={setPhoneNumber}
+                                                                onKeyDown={handleKeyPress}
+                                                                value={phoneNumber}
+                                                                ref={phoneInputRef}
+                                                                autoFormat={true}
+                                                                inputProps={{
+                                                                    name: 'phone',
+                                                                    required: true,
+                                                                    autoFocus: true
+                                                                }}
+                                                                
+                                                            />
+                                                                {/* <Select
+                                                                    suffixIcon={<span className='caret'></span>}
+                                                                    value={"GB"}
+                                                                    className='custom-select'
+                                                                    style={{margin:'0px'}}
+                                                                >
+                                                                    <Select.Option>GB</Select.Option>
+                                                                </Select>
+                                                                <Input className='generic-input-control' /> */}
+                                                            </div>
+                                                            <Checkbox>Mark it primary</Checkbox>
+                                                        </div>
+                                                        <div className="bio-footer">
+                                                            <button className='middle-note-btn' onClick={()=>{handelInputChange({name:'phonenumber', value:phoneNumber});setPhoneDialouge(false);}}>Apply</button>
+                                                            <button className='light-btn' onClick={()=>setPhoneDialouge(false)}>Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            >
+                                                <FontAwesomeIcon onClick={()=>setPhoneDialouge(!phoneDialouge)} icon={faPencil}/>
+                                            </Popover>
+                                            :
+                                            <FontAwesomeIcon icon={faPencil}/>
+                                            }&emsp;
+                                            <button className='grid-sm-btn' type='link' style={{padding: '4px 10px'}} onClick={()=>{setPropertyDetailDrawer(true); setSelectedProp({propertyId: prop?._id, propertyName: prop?.label})}}>Details</button>
+                                        </span>
+
+                                    }
                                 </div>
+
                                 {prop?.label?.toLowerCase()?.replaceAll(" ","")=="phonenumber"?
                                 <span>
 
@@ -404,8 +425,8 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                             name="phonenumber"
                                             onClick={()=>setPhoneDialouge(!phoneDialouge)}
                                             defaultValue={defaultVal}
-                                            disabled={readonlyProp.includes(prop._id)}
-                                            className={readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
+                                            disabled={readOnly? true: readonlyProp.includes(prop._id)}
+                                            className={readOnly? 'read-only' :readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
                                            
                                         />
                                         <code className='primary detail-section'>Primary</code>
@@ -440,9 +461,10 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                                         
                                         : null
                                     }  
-                                    disabled={readonlyProp.includes(prop._id)}
+                                    disabled={readOnly? true: readonlyProp.includes(prop._id)}
                                    
                                     className={
+                                        readOnly? 'read-only' :
                                         dataFields?.find((dprop)=>dprop?.name==prop?.label?.replaceAll(" ","")?.toLowerCase())? 'detailInput-focus':
                                         prop?.label=="Phone Number"? 
                                         phoneDialouge?'detailInput-focus':'detailInput-focus' 

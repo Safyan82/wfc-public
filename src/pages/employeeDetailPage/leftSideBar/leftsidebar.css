@@ -471,3 +471,11 @@
 .detailInputParent:hover .ant-select-selector{
     border-bottom: 1px solid #00a4bd !important;
 }
+
+
+/* side bar design */
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-collapse .ant-collapse-item-disabled>.ant-collapse-header, :where(.css-dev-only-do-not-override-12jzuas).ant-collapse .ant-collapse-item-disabled>.ant-collapse-header>.arrow{
+    color:#33475b;
+    cursor: pointer;
+}
