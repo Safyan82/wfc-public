@@ -1,8 +1,8 @@
 import './leftsidebar.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBarsStaggered, faCalendarDay, faCheck, faChevronLeft, faClose, faCross, faDesktop, faEllipsis, faHandHolding, faHandHoldingHand, faList, faList12, faListDots, faPaw, faPen, faPencil, faPhone, faSearch, faTasks, faTasksAlt } from '@fortawesome/free-solid-svg-icons';
-import { Avatar, Popover, Collapse, Panel, Form, Input, Select, Badge, Checkbox, Skeleton, Tag } from 'antd';
+import { faBarsStaggered, faCalendarDay, faCheck, faChevronLeft, faClose, faCross, faDesktop, faEllipsis, faHandHolding, faHandHoldingHand, faList, faList12, faListDots, faPaw, faPen, faPencil, faPhone, faSearch, faTasks, faTasksAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Avatar, Popover, Collapse, Panel, Form, Input, Select, Badge, Checkbox, Skeleton, Tag, DatePicker } from 'antd';
 import { faBuilding, faCalendar, faCalendarAlt, faCalendarDays, faCopy, faEnvelope, faMeh, faNoteSticky, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import {    EditOutlined, CopyOutlined, CopyTwoTone, PhoneOutlined, EllipsisOutlined, CalendarOutlined, MediumWorkmarkOutlined, TableOutlined, TagsOutlined, ContainerOutlined, RedEnvelopeOutlined, MailOutlined, FormOutlined } from '@ant-design/icons';
 import { GET_BRANCHES, GetBranchObject, getSingleBranch } from '../../../util/query/branch.query';
@@ -17,6 +17,7 @@ import { PropertyDetailDrawer } from '../../allProperties/propertyDetail.drawer'
 import { getUserEmployeeDetailView } from '../../../util/query/employeeDetailView.query';
 import { getEmployeePropHistoryQuery } from '../../../util/query/employee.query';
 import { useSelector } from 'react-redux';
+import dayjs from 'dayjs';
 
 export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, handelInputChange})=>{
   
@@ -202,6 +203,8 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
     
   },[singleEmployee]);
 
+    const [readOnly, setReadOnly] = useState(true);
+
     return(
         <div className='sidebar-wrapper'>
             <div className='leftsidebar'>
@@ -334,7 +337,17 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
             <div className="btm-border"></div>
 
             <Collapse defaultActiveKey={['1']}>
-                <Collapse.Panel header="About this employee" key="1" style={{paddingBottom:'28%'}} >
+                <Collapse.Panel disabled={true} header={
+                    <div style={{display:'flex', justifyContent:'space-between', marginBottom:'16px'}}>
+                        <span>About this employee</span>
+                        {
+                            readOnly?
+                            <FontAwesomeIcon style={{fontSize:'16px'}} onClick={()=>setReadOnly(!readOnly)} icon={faPencil}/>
+                            :
+                            <FontAwesomeIcon style={{fontSize:'20px'}}  onClick={()=>setReadOnly(!readOnly)} icon={faTimes}/>
+                        }
+                    </div>
+                    } key="1" style={{paddingBottom:'28%'}} >
                     {loading ?
                     <div style={{display: 'flex', justifyContent: 'center', paddingTop: '8%'}}>
                         <Spinner/>
@@ -346,9 +359,11 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                         return(
                             <div className='detailInputParent'>
                                 <div className='detailInputHead'>
-                                    <span>
+                                    <b>
                                         {prop?.label}
-                                    </span>
+                                    </b>
+
+                                    {readOnly? null :
                                     <span className={'detail-section'}>
                                         <FontAwesomeIcon icon={faPencil}/>
                                         &emsp;
@@ -356,6 +371,7 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                                         onClick={()=>{setPropertyDetailDrawer(true); setSelectedProp({propertyId: prop?._id, propertyName: prop?.label})}}
                                         >Details</button>
                                     </span>
+                                    }
 
                                 </div>
                                 {prop?.label?.toLowerCase()=="branch"?
@@ -366,7 +382,7 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                                             
                                             <div className="grouptabs" style={{marginBottom: '16px'}}>
                                                 {tags?.map((property)=>(
-                                                    <Tag closable={true} onClose={()=>{setGroupInput({id:"dumy"}); setTags(tags?.filter((tag)=>tag.id!=property.id)); handelInputChange({name: "branch", value: [...tags?.filter((tag)=>tag.id!=property.id)]});  }} className='tag'>
+                                                    <Tag closable={readOnly?false:true} onClose={()=>{setGroupInput({id:"dumy"}); setTags(tags?.filter((tag)=>tag.id!=property.id)); handelInputChange({name: "branch", value: [...tags?.filter((tag)=>tag.id!=property.id)]});  }} className='tag'>
                                                         {property.name}
                                                     </Tag>
                                                 ))}
@@ -374,71 +390,98 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                                         </>
                                         : null
                                         }
-                                        <div className="group-wrapper">
-                                            <div
-                                                name="groupInput"
-                                                // className='generic-input-control groupInput' 
-                                                style={{cursor:'pointer', padding:'0 0px'}}
-                                                onClick={()=>{readonlyProp.includes(prop._id)? console.log("not allowed") :setGroupPopover(!groupPopover)}}                                                
-                                                disabled={readonlyProp.includes(prop._id)}
-                                                // className={true? 'disabled-text detailInput' :'detailInput'} 
-                                                className={readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
-                                        
-                                            >
-                                                <div  style={{fontSize:'14px', fontWeight: 'normal', margin: '0px', display: 'flex'}}
-                                                
+                                        {
+                                        readOnly? null:
+                                            <div className="group-wrapper">
+                                                <div
+                                                    name="groupInput"
+                                                    // className='generic-input-control groupInput' 
+                                                    style={{cursor:'pointer', padding:'0 0px'}}
+                                                    onClick={()=>{readOnly? console.log("not allowed") : readonlyProp.includes(prop._id)? console.log("not allowed") :setGroupPopover(!groupPopover)}}                                                
+                                                    disabled={readOnly? true : readonlyProp.includes(prop._id)}
+                                                    // className={true? 'disabled-text detailInput' :'detailInput'} 
+                                                    className={readOnly? "read-only" : readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
+                                            
                                                 >
-                                                    Select branch
-                                                    <span onClick={()=>setGroupPopover(!groupPopover)} 
-                                                        style={{
-                                                            position: 'absolute',
-                                                            right: '16px',
-                                                        }} className='caret'></span>
-                                                </div>
-                                            </div>
-
-                                            <div ref={parentRef} id="branch-selector" className={groupPopover? 'show ': 'hide'}>
-                                                <div className="moveGroupData" style={{width: parentWidth-1.5}} >
-                                                    <div className="popover-search" >
-                                                        <Input type="text" 
-                                                            ref={inputRef}
-                                                            name='popoverSearch'
-                                                            style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
-                                                            className='generic-input-control' 
-                                                            placeholder="Search..."
-                                                            autoFocus={groupPopover}
-                                                            autoComplete="off"
-                                                            onChange={(e)=> setLocalGroup(branchData?.branches?.filter((group)=> (group.branchname)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
-                                                            suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
-                                                        />
+                                                    <div  style={{fontSize:'14px', fontWeight: 'normal', margin: '0px', display: 'flex'}}
+                                                    
+                                                    >
+                                                        Select branch
+                                                        <span onClick={()=>{readOnly? console.log("read-only") : setGroupPopover(!groupPopover)}} 
+                                                            style={{
+                                                                position: 'absolute',
+                                                                right: '16px',
+                                                            }} className='caret'></span>
                                                     </div>
+                                                </div>
 
-                                                    <div ref={popoverRef}>
-                                                        {localGroup?.length ? localGroup?.map((gl)=>(
+                                                <div ref={parentRef} id="branch-selector" className={groupPopover? 'show ': 'hide'}>
+                                                    <div className="moveGroupData" style={{width: parentWidth-1.5}} >
+                                                        <div className="popover-search" >
+                                                            <Input type="text" 
+                                                                ref={inputRef}
+                                                                name='popoverSearch'
+                                                                style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }} 
+                                                                className='generic-input-control' 
+                                                                placeholder="Search..."
+                                                                autoFocus={groupPopover}
+                                                                autoComplete="off"
+                                                                onChange={(e)=> setLocalGroup(branchData?.branches?.filter((group)=> (group.branchname)?.toLowerCase()?.includes(e.target.value?.toLowerCase())))}
+                                                                suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
+                                                            />
+                                                        </div>
+
+                                                        <div ref={popoverRef}>
+                                                            {localGroup?.length ? localGroup?.map((gl)=>(
+                                                                <div 
+                                                                    className={"popoverdataitem"} 
+                                                                    onClick={(e)=>{setGroupInput({name:gl.branchname, id:gl._id});  setGroupPopover(false)}}>
+                                                                    {gl.branchname}
+                                                                </div>
+                                                            )):
+                                                            
                                                             <div 
                                                                 className={"popoverdataitem"} 
-                                                                onClick={(e)=>{setGroupInput({name:gl.branchname, id:gl._id});  setGroupPopover(false)}}>
-                                                                {gl.branchname}
+                                                                style={{cursor:'no-drop'}}
+                                                                onClick={(e)=>{ setGroupPopover(false)}}>
+                                                                No results found
                                                             </div>
-                                                        )):
-                                                        
-                                                        <div 
-                                                            className={"popoverdataitem"} 
-                                                            style={{cursor:'no-drop'}}
-                                                            onClick={(e)=>{ setGroupPopover(false)}}>
-                                                            No results found
+                                                            }
                                                         </div>
-                                                        }
                                                     </div>
-                                                </div>
 
+                                                </div>
+                                            
+                                                    
+                                                    
+                                            
                                             </div>
-                                        
-                                                
-                                                
-                                        
-                                        </div>
+                                        }
                                     </>
+                                
+                                :
+
+                                prop?.fieldType?.toLowerCase()=="date"?
+                                <DatePicker
+                                    name={prop?.label?.replaceAll(" ","")?.toLowerCase()}
+                                    defaultValue={
+                                        singleEmployee?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || singleEmployee['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())? 
+                                        dayjs(singleEmployee[prop?.label?.replaceAll(" ","")?.toLowerCase()]) || dayjs(singleEmployee['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()])
+                                        : ""
+                                        }
+                                    disabled={readOnly}
+                                    className={readOnly?'read-only':'detailInput'}
+                                    id={prop?.label?.replaceAll(" ","")?.toLowerCase()}
+                                    onChange={(e, dateString)=>{handelInputChange({
+                                    name: prop?.label?.replaceAll(" ","")?.toLowerCase(),
+                                    value: dateString
+                                });}}
+                                    // disabledDate={
+                                    // (current)=>handelDateRule(property?.propertyDetail?.rules, current)
+                                    // }
+                                    suffixIcon={null}
+                                    style={{borderRadius:'0'}}
+                                />
                                 
                                 // <Select 
                                 //  disabled={readonlyProp.includes(prop._id)}
@@ -456,12 +499,12 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                                 // </Select>
                                 :
                                 <input type="text" 
-                                    disabled={readonlyProp.includes(prop._id)}
+                                    disabled={readOnly?true:readonlyProp.includes(prop._id)}
                                     onChange={(e) => handelInputChange(e.target)} 
                                     name={prop?.label?.replaceAll(" ","")?.toLowerCase()}
                                     defaultValue={singleEmployee?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || singleEmployee['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())? 
                                         singleEmployee[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleEmployee['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()] : ""}  
-                                    className={readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
+                                    className={readOnly? 'read-only' : readonlyProp.includes(prop._id)? 'disabled-text detailInput' :'detailInput'} 
                                 />
                                 }
                                 
