@@ -1,5 +1,5 @@
 import React,{ useEffect, useState } from 'react';
-import { Menu, Input, Space, Avatar, Layout, Header, Dropdown } from 'antd';
+import { Menu, Input, Space, Avatar, Layout, Header, Dropdown, Checkbox } from 'antd';
 import {
   SearchOutlined,
   MoreOutlined,
@@ -10,10 +10,8 @@ import {
 } from '@ant-design/icons';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faWindowRestore, faWindowMaximize, faWindowMinimize} from '@fortawesome/free-regular-svg-icons';
-import WordLetterAvatar from '../avatar';
 import logo from '../../assets/img/wfc-new-logo.png';
-import { faBell, faComment, faComments, faGear, faRing } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCircleDot, faComment, faComments, faEllipsisVertical, faGear, faListDots, faRing } from '@fortawesome/free-solid-svg-icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './navbar.css';
 import { useSelector } from 'react-redux';
@@ -21,10 +19,11 @@ import { useMutation, useQuery } from '@apollo/client';
 import { GetUserByEmpIdQuery } from '../../util/query/user.query';
 import { useDispatch } from 'react-redux';
 import { resetAuthUserDetail, setAuthUserDetail, setAuthUserRefresh } from '../../middleware/redux/reducers/userAuth.reducer';
-import { isArray } from '@apollo/client/utilities';
-import { accessType } from '../../util/types/access.types';
+
 import { resetAllReducerState } from '../../middleware/redux/resetAll';
 import { deactiveSessionMutation } from '../../util/mutation/userAccess.mutation';
+import { handelSearchFilter, setSearchQuery, setSearchViewModal } from '../../middleware/redux/reducers/search.reducer';
+import { SearchView } from '../searchView/searchView';
 
 
 const { SubMenu } = Menu;
@@ -59,8 +58,7 @@ const UserMenu = ({visible, setVisible, employeeDetail, handelLogout}) => {
 
 export function Navbar(){
     const [visible, setVisible] = useState(false);
-
-    const [isWindowMaximized, setWindowMaximized] = useState(true);
+    
     const [placeholder, setPlaceholder] = useState(false);
     const navigate = useNavigate();
     const {pathname} = useLocation();
@@ -118,9 +116,23 @@ export function Navbar(){
         resetAllReducerState();
     }
 
+
+    // set search query reterive from store here to update the input value
+    const {query, isModalOpen, searchFilter} = useSelector(state => state.searchReducer);
+
+    // useEffect(()=>{
+    //     if(query?.length>0 && !isModalOpen){
+    //         dispatch(setSearchViewModal(true));
+    //     }
+    // },[query]);
+
+    const [openSearchOption, setOpenSearchOption] = useState(false);
+
     return(
     <Layout>
-        <Menu mode="horizontal" theme="dark" className='top-menu-layout' triggerSubMenuAction="click">
+        <Menu mode="horizontal" theme="dark" className='top-menu-layout' triggerSubMenuAction="click" 
+            style={isModalOpen?{zIndex:1}:{}}
+        >
             <Menu.Item>
                 <img src={logo} style={{width:'30px', height:'30px', borderRadius:'4px'}}  className='menu-icon' />
             </Menu.Item>
@@ -134,6 +146,7 @@ export function Navbar(){
             <Menu.Item key="site" className='menu-item'>Site</Menu.Item>
             <Menu.Item key="schedule" className='menu-item'>Schedule</Menu.Item>
             <Menu.Item key="timeline" className='menu-item'>Timeline</Menu.Item>
+            
             <SubMenu title={<span>More <span className='caret-white'></span></span>} key="more" >
                 {IsBranchView?
                     <Menu.Item onClick={()=>navigate("/user/branch")} key="more" className='menu-item'>Branches</Menu.Item>
@@ -145,15 +158,43 @@ export function Navbar(){
             </SubMenu>
             
             <Menu.Item className='search' key="search" style={{margin: 'auto', background:"none !important", backgroundColor: 'none !important',}}>
-            <Space style={{background:"none", marginLeft: '-14%' }}>
-                <Input
-                    suffix={<SearchOutlined />}
-                    placeholder={placeholder? "Employees, Sites, Schedule" : "Search"}
-                    className='menu-searchbar'
-                    onClick={()=>setPlaceholder(true)}
-                    onBlur={()=>setPlaceholder(false)}
-                />
-            </Space>
+            
+                <Space style={{background:"none", marginLeft: '-14%' }}>
+        
+                    <Input
+                        suffix={placeholder?
+                        <Dropdown overlay={
+                            <Menu style={{width: '200px', borderRadius:0}}>
+                                <Menu.Item key="1">
+                                <Checkbox checked={searchFilter?.find((f)=>f=="Branch")} onChange={(e)=>dispatch(handelSearchFilter("Branch"))}>Branch</Checkbox> 
+                                </Menu.Item>
+                                <Menu.Item key="2">
+                                <Checkbox checked={searchFilter?.find((f)=>f=="Employee")}  onChange={(e)=>dispatch(handelSearchFilter("Employee"))}>Employee</Checkbox> 
+                                </Menu.Item>
+                                <Menu.Item key="3">
+                                    <Checkbox checked={searchFilter?.find((f)=>f=="Schedule")}  onChange={(e)=>dispatch(handelSearchFilter("Schedule"))}>Schedule</Checkbox>
+                                </Menu.Item>
+                                <Menu.Item key="4">
+                                    <Checkbox checked={searchFilter?.find((f)=>f=="Site")}  onChange={(e)=>dispatch(handelSearchFilter("Site"))}>Site</Checkbox>
+                                </Menu.Item>
+                                <Menu.Item key="5">
+                                    <Checkbox checked={searchFilter?.find((f)=>f=="Customer")}  onChange={(e)=>dispatch(handelSearchFilter("Customer"))}>Customer</Checkbox>
+                                </Menu.Item>
+                            </Menu>
+                        } visible={openSearchOption} placement="bottomLeft">
+                            <FontAwesomeIcon style={{margin:'0 5px'}} icon={faEllipsisVertical} onClick={()=>setOpenSearchOption(!openSearchOption)}/> 
+                        </Dropdown>
+                        
+                        : <SearchOutlined style={{margin:'0 5px'}} />}
+                        placeholder={placeholder? "Employees, Sites, Schedule" : "Search"}
+                        className='menu-searchbar'
+                        onClick={()=>{setPlaceholder(true); dispatch(setSearchViewModal(true));}}
+                        onChange={(e)=>dispatch(setSearchQuery(e.target.value))}
+                        value={query}
+                        prefix={placeholder?<SearchOutlined style={{margin:'0 5px'}} />:null}
+                    />
+                </Space>
+
             </Menu.Item>
             
             <Menu.Item className='menu-item '>
@@ -179,23 +220,12 @@ export function Navbar(){
                 <UserMenu visible={visible} handelLogout={handelLogout} employeeDetail={authenticatedUserDetail?.employeeDetail[0]} setVisible={setVisible} />
             </Menu.Item>
             : null}
-
            
-
-            {/* mini max btn */}
-            {/* <Menu.Item style={{marginTop:'-1%'}}  key="minimize" className='minimize' id="minimize" itemRef='minimize'> <FontAwesomeIcon icon={faWindowMinimize} /> </Menu.Item>
-            
-            <Menu.Item key="maximize" id="maximize" onClick={()=>setWindowMaximized(!isWindowMaximized)}> 
-            {isWindowMaximized ? 
-                <FontAwesomeIcon icon={faWindowRestore} />
-                :
-                <FontAwesomeIcon icon={faWindowMaximize} />
-            }
-            </Menu.Item>
-
-            <Menu.Item key="close" className='menu-close' id="close"> <CloseOutlined /> </Menu.Item>
-             */}
         </Menu>
+
+        {
+            isModalOpen && <SearchView/>
+        }
 
     </Layout> 
     )

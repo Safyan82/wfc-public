@@ -19,6 +19,7 @@ import editUserReducer from './reducers/editUser.reducer';
 import userAuthReducer from './reducers/userAuth.reducer';
 import userRoleReducer from './reducers/userRole.reducer';
 import newViewReducer from './reducers/newView.reducer';
+import searchReducer from './reducers/search.reducer';
 
 
 export const rootReducer = combineReducers({ 
@@ -44,4 +45,7 @@ export const rootReducer = combineReducers({
       userRoleReducer: userRoleReducer,
       // toggle new create view from save btn of grid
       newViewReducer: newViewReducer,
+      // handel search pop-up and query for search as well
+      searchReducer: searchReducer,
+
   });

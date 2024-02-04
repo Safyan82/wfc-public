@@ -203,8 +203,17 @@ body{
     transition: all 0.2s;
 }
 
+.search .ant-dropdown .css-dev-only-do-not-override-12jzuas .ant-dropdown-placement-bottomLeft{
+    z-index: 9999999999999999 !important;
+}
+
+.menu-searchbar {
+    background: white !important;
+    background-color: white !important;
+}
+
 .menu-searchbar input{
-    background-color: #CDD6D5 !important;
+    background-color: white !important;
 }
 
 .ant-menu-item-selected {

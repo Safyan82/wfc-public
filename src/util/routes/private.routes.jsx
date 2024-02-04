@@ -50,7 +50,6 @@ export const PrivateRoutes = ({children})=>{
 
     const dispatch = useDispatch();
     const {pathname} = useLocation();
-    console.log(pathname, "pathhh")
     useEffect(()=>{
         setInterval(()=>{
             if(localStorage.getItem('authToken')){

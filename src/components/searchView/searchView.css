@@ -1,0 +1,60 @@
+
+.searchViewModalParent{
+    position: fixed;
+    z-index: 9;
+    background: white;
+    width: 100%;
+    top: 7vh;
+    min-height: 93vh;
+    overflow-y: auto;
+    height: 93vh;
+    max-height: 93vh;
+}
+
+.searchViewModal{
+    top: 7vh !important;
+    pointer-events: auto;
+}
+
+.search-header{
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px 48px;
+    justify-content: space-between;
+    background-color: rgb(245, 248, 250);
+}
+
+.search-header-text{
+    font-size: 14px;
+    color: rgb(124, 152, 182);
+}
+
+.search-body{
+    width: 80%;
+    margin: auto;
+    display: table;
+    padding: 20px 48px;
+}
+
+.filterSection{
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.searchFilter{
+    font-size: 14px;
+    color: rgb(124, 152, 182);
+}
+
+.searchFilter .ant-tag{
+    border-radius: 0px;
+    border: 1px solid rgb(124, 152, 182);
+    padding: 0 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
