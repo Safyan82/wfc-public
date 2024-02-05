@@ -48,9 +48,6 @@
     margin-top: 150px;
 }
 
-.createUserModal:where(.css-dev-only-do-not-override-12jzuas).ant-modal .ant-modal-footer{
-    margin-top: auto !important;
-}
 
 .pt-20{padding-top: 20px;}
 
@@ -82,4 +79,21 @@
   border-color: rgba(0,208,228,.5) !important;
   box-shadow: 0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4 !important;
   outline: 0;
+}
+
+
+/* create user modal */
+
+.createUserModal:where(.css-dev-only-do-not-override-12jzuas).ant-modal .ant-modal-footer{
+    margin-top: auto !important;
+}
+
+.createUserModal .ant-modal-content{
+    margin-left: -1%;
+    width: 102%;
+    height: 100vh;
+}   
+
+.createUserModal{
+    top: 0 !important
 }

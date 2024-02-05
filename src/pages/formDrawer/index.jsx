@@ -518,11 +518,13 @@ export const FormDrawer = ({ objectLoading,
 
   useEffect(()=>{
     console.log(tags, "ttt");
-    handelDataValue({
-      name:"branch",
-      value: [...tags]
-    });
-    checkMandatoryField()
+    if(tags?.length>0){
+      handelDataValue({
+        name:"branch",
+        value: [...tags]
+      });
+      checkMandatoryField()
+    }
   },[tags]);
 
 
@@ -533,6 +535,7 @@ export const FormDrawer = ({ objectLoading,
   }, [groupInput]);
 
       const {Option} = Select;
+      console.log(isBtnEnable, "isBtnEnable")
       return (
         <div>
           <Drawer

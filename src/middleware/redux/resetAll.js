@@ -13,6 +13,7 @@ import { resetNotification } from "./reducers/notification.reducer";
 import { resetPermission } from "./reducers/permission.reducer";
 import { resetPropertyState } from "./reducers/properties.reducer";
 import { resetAllFilter } from "./reducers/quickFilter";
+import { resetSearchState } from "./reducers/search.reducer";
 import { resetUserState } from "./reducers/user.reducer";
 import { resetAuthUserDetail } from "./reducers/userAuth.reducer";
 import { resetUserRoleState } from "./reducers/userRole.reducer";
@@ -38,6 +39,7 @@ export const resetAllReducerState = ()=>{
     store.dispatch(resetAuthUserDetail());
     store.dispatch(resetUserRoleState());
     store.dispatch(resetTogglenewCreateView());
+    store.dispatch(resetSearchState())
     sessionStorage.clear();
     localStorage.clear();
 }

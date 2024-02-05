@@ -8,6 +8,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Outlet } from "react-router-dom";
 import { Navbar } from '../../components/navbar';
 import { routes } from '../../util/routes/routes';
+import { useSelector } from 'react-redux';
 
 
 export const Setting = ()=>{
@@ -15,6 +16,8 @@ export const Setting = ()=>{
     const {pathname} = useLocation();
     const active = 'setting-sidebar-nav-list-item setting-navbar-active';
     const inactive = 'setting-sidebar-nav-list-item';
+    const {isModalOpen} = useSelector(state => state.searchReducer);
+
     return(
         <>
             <Navbar/>
@@ -66,7 +69,8 @@ export const Setting = ()=>{
                     </div>
             </div> 
             {/* <div style={{width: '100%',}}> */}
-                <Outlet/>
+                {isModalOpen? null : <Outlet/>}
+                
             {/* </div> */}
             </div>
         </>
