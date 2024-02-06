@@ -27,7 +27,7 @@ import { UserRole } from './pages/userRole/userRole';
 import { Password } from './pages/login/password';
 import { ClassicLogin } from './pages/login/login';
 import { PrivateRoutes } from './util/routes/private.routes';
-import { ApolloProvider, useLazyQuery } from '@apollo/client';
+import { ApolloProvider, useLazyQuery, useQuery } from '@apollo/client';
 import { privateClient, publicClient } from './config/apollo';
 import { useErrorBoundary } from './util/errorBoundary/errorboundary';
 import { ErrorFallback } from './util/errorFallback/errorFallback';

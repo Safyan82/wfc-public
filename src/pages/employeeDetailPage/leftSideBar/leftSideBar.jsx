@@ -522,7 +522,7 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                 selectedProp={selectedProp} 
                 clearState={setSelectedProp} 
                 loading={employeePropLoading}
-                data={employeeProp?.getEmployeePropHistory?.response}
+                data={employeeProp?.getEmployeePropHistory?.response?.map((data)=>({ ...data, createdby: data?.sourceDetail?.length>0? data?.sourceDetail[0]?.firstname  +" "+ data?.sourceDetail[0]?.lastname : <div style={{textAlign:'center'}}>--</div> }))}
                 close={()=>setPropertyDetailDrawer(false)} />
                
         </div>

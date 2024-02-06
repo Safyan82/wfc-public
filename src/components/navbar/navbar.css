@@ -1,16 +1,27 @@
 .ant-menu-submenu-popup{
     top: 42px !important;
     width: 20px !important;
-    background-color: #2e3f50 !important;
-    background: #2e3f50 !important;
+    
 }
 
 .ant-menu-submenu-popup .ant-menu-vertical.ant-menu-sub{
-    background-color: #2e3f50 !important;
-    background: #2e3f50 !important;
     border-radius: 0 !important;
-    color: white !important;
+    color: #ffffff !important;
+    padding: 0 0px;
+    margin: 0;
+    width: 100%;
+    border-radius: 0;
 }
+
+
+
+
+/* on hover currently working */
+.top-menu-layout .menu-item:hover{
+    background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* theme ended */
 
 .top-menu-layout li{
     font-size: 13px;
@@ -19,4 +30,44 @@
 .user-avatar .ant-avatar-string{
     line-height: 31px !important;
     transform: scale(1) translateX(-50%) translateY(10%) !important;
+}
+
+.theme{
+    padding: 10px 20px;
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-direction: row;
+}
+
+.theme svg{
+    color: white !important;
+}
+
+.color-shade{
+    width: 35px;
+    height: 35px;
+    border: 1px solid #cbd6e2;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#profile-menu .ant-dropdown-menu-item{
+    padding: 12px 12px;
+    /* margin:0 !important; */
+}
+
+.theme-section:hover{
+    background-color: transparent !important;
+}
+
+.more-menu .ant-dropdown-menu-item{
+    color:white !important;
 }

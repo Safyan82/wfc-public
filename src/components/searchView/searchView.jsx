@@ -148,6 +148,10 @@ export const SearchView = React.memo(()=>{
         setFilters([...searchFilter]);
     },[searchFilter]);
 
+    // get unique recent search result
+    const isUnique = (obj, index, self) => {
+        return self.findIndex((o) => o._id === obj._id) === index;
+    }
 
     return(
         <div className='searchViewModalParent'>
@@ -243,14 +247,19 @@ export const SearchView = React.memo(()=>{
                         <>
                             <h3 style={{borderBottom:'1px solid rgb(203, 214, 226)', paddingBottom:'12px'}}>Recently Selected Result</h3>
 
-                            {recentSearchResult?.getSelectedSearchByUser?.map((result)=>(
+                            {recentSearchResult?.getSelectedSearchByUser?.reduce((acc, obj) => {
+                                if (!acc.some((item) => item.selectedSearchObject?._id === obj.selectedSearchObject?._id)) {
+                                    acc.push(obj);
+                                }
+                                return acc;
+                                }, [])?.map((result)=>(
                                 result?.category=="branch"?
                                 <div style={{padding:'10px 0 20px 0', borderBottom:'1px solid rgb(203, 214, 226)', margin:'16px 0'}}>
-                                    <Tag style={{background:'rgb(234, 240, 246)', fontWeight:'bold', padding:'0 20px'}}>{result?.category.toUpperCase()}</Tag> &emsp; <span className='prev-btn' onClick={()=>handelDetailNavigation("branch",result?.selectedSearchObject)}>{result?.selectedSearchObject?.branchname}</span>
+                                    <Tag style={{background:'rgb(234, 240, 246)', fontWeight:'bold', padding:'0 20px', width:'100px'}}>{result?.category.toUpperCase()}</Tag> &emsp; <span className='prev-btn' onClick={()=>handelDetailNavigation("branch",result?.selectedSearchObject)}>{result?.selectedSearchObject?.branchname}</span>
                                 </div>:
                                 result?.category=="employee"?
                                 <div style={{padding:'10px 0 20px 0', borderBottom:'1px solid rgb(203, 214, 226)', margin:'16px 0'}}>
-                                    <Tag style={{background:'rgb(234, 240, 246)', fontWeight:'bold', padding:'0 20px'}}>{result?.category.toUpperCase()}</Tag> &emsp; <span className='prev-btn' onClick={()=>handelDetailNavigation("employee",result?.selectedSearchObject)}>{result?.selectedSearchObject?.firstname +" "+ result?.selectedSearchObject?.lastname}</span>
+                                    <Tag style={{background:'rgb(234, 240, 246)', fontWeight:'bold', padding:'0 20px', width:'100px'}}>{result?.category.toUpperCase()}</Tag> &emsp; <span className='prev-btn' onClick={()=>handelDetailNavigation("employee",result?.selectedSearchObject)}>{result?.selectedSearchObject?.firstname +" "+ result?.selectedSearchObject?.lastname}</span>
                                 </div>: null
                             ))}
 

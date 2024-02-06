@@ -172,7 +172,7 @@ body{
 }
 
 .top-menu-layout{
-    background-color: #2e3f50 !important;
+    /* background-color: #2e3f50 !important; */
     padding-left: 30px;
     height: 50px;
     color: white;
@@ -245,16 +245,14 @@ body{
     background: #253342 !important;
 } */
 
-.top-menu-layout .menu-item:hover{
-    background: #253342 !important;
-}
+
 
 .ant-menu-submenu-selected{
     background: transparent !important;
     /* z-index: 9999; */
 }
 a:visited{
-    color: white;
+    color: initial;
 }
 
 /* layout */

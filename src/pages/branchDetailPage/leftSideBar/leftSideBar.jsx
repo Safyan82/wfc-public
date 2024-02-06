@@ -491,7 +491,7 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
                 selectedProp={selectedProp} 
                 clearState={setSelectedProp} 
                 loading={loading}
-                data={branchPropertyHistoryDetail?.getBranchPropHistory?.response}
+                data={branchPropertyHistoryDetail?.getBranchPropHistory?.response?.map((data)=>({...data, createdby: data?.sourceDetail?.length>0? data?.sourceDetail[0]?.firstname  +" "+ data?.sourceDetail[0]?.lastname : <div style={{textAlign:'center'}}>--</div> }))}
                 close={()=>setPropertyDetailDrawer(false)} />
                
         </div>
