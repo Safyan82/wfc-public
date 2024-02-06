@@ -9,9 +9,12 @@ import { Outlet } from "react-router-dom";
 import { Navbar } from '../../components/navbar';
 import { routes } from '../../util/routes/routes';
 import { useSelector } from 'react-redux';
+import { useQuery } from '@apollo/client';
+import { themeQuery } from '../../util/query/theme.query';
+import Spinner from '../../components/spinner';
 
 
-export const Setting = ()=>{
+export const Setting = ({themeData, themeLoading, refetchTheme})=>{
     const navigate = useNavigate();
     const {pathname} = useLocation();
     const active = 'setting-sidebar-nav-list-item setting-navbar-active';
@@ -19,8 +22,13 @@ export const Setting = ()=>{
     const {isModalOpen} = useSelector(state => state.searchReducer);
 
     return(
+        themeLoading?
+            <div style={{height:'100vh', display:'flex', alignItems:'center', justifyContent:'center'}}>
+                <Spinner color={'#ff7a53'} fontSize={80}/>
+            </div>
+            :
         <>
-            <Navbar/>
+            <Navbar  themeData={themeData} themeLoading={themeLoading} refetchTheme={refetchTheme} />
             <div style={{display:'flex'}}>
             <div className='setting-sidebar'>
                     <div className='setting-sidebar-body'>

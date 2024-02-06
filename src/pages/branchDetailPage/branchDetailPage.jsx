@@ -161,7 +161,7 @@ export const BranchDetailPage = ()=>{
 
                 <Col span={6} ref={leftSideRef} style={{paddingRight:'0px',
                     maxHeight: 'calc(100vh - 54px)',
-                    overflowY: 'scroll',
+                    overflowY: 'auto',
                     transition: 'scroll-behavior 1s',
                 }}>
                     <DetailPageLeftSideBar 

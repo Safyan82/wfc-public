@@ -17,7 +17,7 @@ export const PropertyDetailDrawer = ({visible, close, selectedProp, clearState, 
         },
         {
           title: 'Source',
-          dataIndex: 'createdBy',
+          dataIndex: 'createdby',
           key: 'createdby',
         },
         {

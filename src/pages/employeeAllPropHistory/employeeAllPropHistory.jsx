@@ -29,8 +29,8 @@ const columns=[
     },
     {
         title: "Source",
-        dataIndex: "", 
-        key: "",
+        dataIndex: "createdby", 
+        key: "createdby",
     },
 ]
 
@@ -60,6 +60,7 @@ export const EmployeeAllPropHistory = ()=>{
         if(!loading){
             setDataSource(data?.getEmployeeAllPropHistory?.response?.map((prop)=>({
                 property: prop?.propertyDetail?.label,
+                createdby: prop?.sourceDetail?.length>0? prop?.sourceDetail[0]?.firstname  +" "+ prop?.sourceDetail[0]?.lastname : <div style={{textAlign:'center'}}>--</div>,
                 ...prop
             })));
         }
@@ -70,12 +71,15 @@ export const EmployeeAllPropHistory = ()=>{
         if(search?.length>0 && !loading && data){
             setDataSource(data?.getBranchAllPropHistory?.response?.map((prop)=>({
                 property: prop?.propertyDetail?.label,
+                createdby: prop?.sourceDetail?.length>0? prop?.sourceDetail[0]?.firstname  +" "+ prop?.sourceDetail[0]?.lastname : <div style={{textAlign:'center'}}>--</div>,
                 ...prop
             }))?.filter((props)=> props?.property.toLowerCase().includes(search.toLowerCase())));
         }else if(!loading && data){
             
             setDataSource(data?.getBranchAllPropHistory?.response?.map((prop)=>({
                 property: prop?.propertyDetail?.label,
+                createdby: prop?.sourceDetail?.length>0? prop?.sourceDetail[0]?.firstname  +" "+ prop?.sourceDetail[0]?.lastname : <div style={{textAlign:'center'}}>--</div>,
+
                 ...prop
             })));
         }

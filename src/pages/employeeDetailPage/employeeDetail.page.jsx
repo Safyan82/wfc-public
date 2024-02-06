@@ -130,7 +130,7 @@ export const EmployeeDetailPage = ()=>{
 
                 <Col span={6} style={{paddingRight:'0px',
                     maxHeight: 'calc(100vh - 54px)',
-                    overflowY: 'scroll',
+                    overflowY: 'auto',
                     transition: 'scroll-behavior 1s',
                 }}>
                     {singleEmployee?

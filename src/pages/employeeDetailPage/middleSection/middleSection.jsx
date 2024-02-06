@@ -31,7 +31,7 @@ export const DetailPageMiddleSection = ()=>{
 
     return(
         <div className='setting-body-inner detailPageTab'
-        style={{background:'rgb(245, 248, 250)', padding:'16px', paddingRight: '0', overflowY: 'scroll',}}>
+        style={{background:'rgb(245, 248, 250)', padding:'16px', paddingRight: '0', overflowY: 'auto',}}>
             
             <Tabs defaultActiveKey="1" >
 

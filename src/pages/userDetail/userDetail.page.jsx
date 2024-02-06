@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import {setNotification} from "../../middleware/redux/reducers/notification.reducer";
 import { updateUserMutation } from "../../util/mutation/user.mutation";
 import Spinner from "../../components/spinner";
+import { ActiveDeviceSession } from "../../util/query/activeDeviceSession.query";
 
 
 const Actionmenu =({userDetail})=> {
@@ -130,7 +131,13 @@ export const UserDetailPage = ()=>{
         }
     }
 
+    const {data: activeDeviceSession} = useQuery(ActiveDeviceSession,{
+        variables:{
+            userId: "6593dba679f1d91f37753914"
+        }
+    });
 
+    console.log(activeDeviceSession, "activeDevice Session")
 
     return (
         <div className="userDetail-container">
