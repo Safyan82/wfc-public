@@ -2,7 +2,7 @@
 
 .rightsidebar-wrapper{
     padding-right: 0px;
-    max-height: calc(100vh - 70px);
+    max-height: calc(100vh - 120px);
     overflow-y: auto;
     min-height: 89vh;
     background-color: rgb(245, 248, 250) !important;

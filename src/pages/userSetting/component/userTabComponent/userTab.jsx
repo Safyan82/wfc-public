@@ -1,6 +1,6 @@
 import '../../user.css';
 import 'dayjs/locale/en-gb';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { GenericTable } from '../../../../components/genericTable/genericTable';
 import { GetAllUserQuery } from '../../../../util/query/user.query';
 import { useEffect, useState } from 'react';
@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { refetchAllUser } from '../../../../middleware/redux/reducers/user.reducer';
 import { setEditUserData } from '../../../../middleware/redux/reducers/editUser.reducer';
 import { useNavigate } from 'react-router-dom';
+import { deleteUserMutation } from '../../../../util/mutation/deleteUser.mutation';
 
 
 export const UserTab = ({createUser, setUserRoleModal})=>{
@@ -116,6 +117,18 @@ export const UserTab = ({createUser, setUserRoleModal})=>{
       setUserRoleModal(true);
     };
 
+    const [userDeleteMutation] = useMutation(deleteUserMutation);
+
+    const deleteUser = async () => {
+      await userDeleteMutation({
+        variables:{
+          deleteUserId: selectedRowKeys[0]
+        }
+      });
+     await refetch();
+     setSelectedRowKeys([]);
+    }
+
     return(
         <div className='userTab'>
             {/* descriptive text */}
@@ -141,8 +154,8 @@ export const UserTab = ({createUser, setUserRoleModal})=>{
                   selectedRowKeys={selectedRowKeys}
                   setSelectedRowKeys={setSelectedRowKeys}
                   
-                  tableOption={["Edit User"]}
-                  tableOptionFunc={[handelUserEdit]}
+                  tableOption={["Edit User", "Delete User"]}
+                  tableOptionFunc={[handelUserEdit, deleteUser]}
                 />
             </div>
 

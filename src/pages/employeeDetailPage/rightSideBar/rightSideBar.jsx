@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './rightsidebar.css';
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { faMobile, faMobileAndroidAlt, faPhone, faPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faChevronCircleRight, faChevronRight, faCircleChevronRight, faMobile, faMobileAndroidAlt, faPhone, faPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import noData from '../noData.svg';
 import { Guage } from './guage';
 
@@ -57,7 +57,7 @@ export const DetailPageRightSideBar = () => {
     { id: '5', content: 
     <div className='rightItem'>
         <b style={{letterSpacing:'1px', zIndex:99999999999999999999 }}> Skills</b>
-        <p style={{textAlign:'center', display:'flex', justifyContent:'space-between', width:'100%', height:'120px', alignItems:'center'}}>
+        <p style={{marginTop:'32px', marginLeft:'5px', textAlign:'center', display:'flex', justifyContent:'space-between', width:'auto', height:'120px', alignItems:'center'}}>
             <Guage/>
             <Guage/>
             <Guage/>
@@ -78,8 +78,11 @@ export const DetailPageRightSideBar = () => {
   };
 
   return (
-    <div className="rightsidebar-wrapper">
-        <DragDropContext onDragEnd={onDragEnd}>
+    <div className="emp-rightsidebar-wrapper" style={{background:'rgb(245, 248, 250)'}}>
+        {/* <div className='rightCollapseBtn'>
+            <FontAwesomeIcon icon={faChevronRight}/>
+        </div> */}
+        <DragDropContext onDragEnd={onDragEnd} style={{background:'rgb(245, 248, 250)'}}>
         <Droppable droppableId="items">
             {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
