@@ -31,8 +31,10 @@ export const DetailPageMiddleSection = ()=>{
 
     return(
         <div className='setting-body-inner detailPageTab'
-        style={{background:'rgb(245, 248, 250)', padding:'16px', paddingRight: '0', overflowY: 'auto',}}>
-            
+        style={{background:'rgb(245, 248, 250)', padding:'16px', paddingRight: '0'}}>
+             {/* <div className='leftCollapseBtn'>
+                <FontAwesomeIcon icon={faChevronLeft}/>
+            </div> */}
             <Tabs defaultActiveKey="1" >
 
                 <TabPane tab={`Overview`} key="1"> 

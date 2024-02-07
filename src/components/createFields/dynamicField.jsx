@@ -395,8 +395,10 @@ export function CreateField({sortType,fieldType,label,search}){
             setTimeout(()=>{
 
                 const nextField = document.getElementById(`key${(labelValue.length)}`);
-                nextField.focus();
-            },100)
+                if(nextField){
+                    nextField.focus();
+                }
+            },200)
     }
 
     // row selection

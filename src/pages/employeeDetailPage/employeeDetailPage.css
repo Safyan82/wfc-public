@@ -1,0 +1,18 @@
+.emp-menubar{
+    font-weight: 500;
+    font-size: 14px;
+    width: max-content;
+    cursor: pointer;
+    padding-bottom: 7px;
+    border-bottom: 2px solid transparent;
+
+}
+
+.emp-menubar:hover{
+    color: #0091ae;
+}
+
+.emp-menubar-active{
+    color: #0091ae;
+    border-bottom: 2px solid;
+}

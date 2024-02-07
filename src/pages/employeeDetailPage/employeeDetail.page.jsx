@@ -1,22 +1,22 @@
+import "./employeeDetailPage.css";
 import { Row, Col } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { DetailPageLeftSideBar } from './leftSideBar/leftSideBar';
 import { DetailPageMiddleSection } from './middleSection/middleSection';
 import { DetailPageRightSideBar } from './rightSideBar/rightSideBar';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Notes } from './middleSection/notes/notes';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
-import { GetBranchObject, getSingleBranch } from '../../util/query/branch.query';
 import { useDispatch } from 'react-redux';
-import { setSpecificBranchData } from '../../middleware/redux/reducers/branchData.reducer';
-import { BranchViewForSpecificUser } from '../../util/query/branchView.query';
-import { updateBranchMutation } from '../../util/mutation/branch.mutation';
 import { setNotification } from '../../middleware/redux/reducers/notification.reducer';
 import { EmployeeObjectQuery, getSingleEmployeeRecord } from '../../util/query/employee.query';
 import { Loader } from '../../components/loader';
 import { updateEmployeeMutation } from '../../util/mutation/employee.mutation';
 import Spinner from '../../components/spinner';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { HRTab } from "./hr/hr.tab";
 
 
 export const EmployeeDetailPage = ()=>{
@@ -118,50 +118,114 @@ export const EmployeeDetailPage = ()=>{
         }
     };
 
-    console.log(employeeObject,"singleEmployee", singleEmployee)
+    const navigate = useNavigate();
+    const [tabs, setTabs] = useState([
+        {title:"Profile", url:''},
+        {title:"HR", url:''},
+        {title:"Pay Details", url:''},
+        {title:"HR Task", url:''},
+        {title:"Absense", url:''},
+        {title:"Notes", url:''},
+        {title:"Sites Trained/Banned", url:''},
+        {title:"Skills", url:''},
+        {title:"Premiums", url:''},
+        {title:"User Fields", url:''},
+        {title:"Document Library", url:''},
+    ]);
 
+    const [activeTab, setActiveTab] = useState("Profile");
 
     return(
-        <>
-            <Row>
-                {noteToggle?
-                <Notes/>
-                :null}
+        <div style={{background:'rgb(245, 248, 250)'}}>
 
-                <Col span={6} style={{paddingRight:'0px',
-                    maxHeight: 'calc(100vh - 54px)',
-                    overflowY: 'auto',
-                    transition: 'scroll-behavior 1s',
-                }}>
-                    {singleEmployee?
-                    <DetailPageLeftSideBar 
-                        employeeObject={employeeObject?.map((object)=> ({_id: object.propertyId, ...object.propertyDetail}))}
-                        singleEmployee={singleEmployee}
-                        loading={employeeObjectLoading || singleEmployeeLoading}
-                        handelInputChange={handelInputChange}
-                    />:
-                    <Loader/>
-                    }
-                </Col>
-                <Col span={12} style={{paddingLeft:'0px'}} >
-                    <DetailPageMiddleSection  />
-                </Col>
-                <Col span={6}>
-                    <DetailPageRightSideBar  />
-                </Col>
-            </Row>
-            {dataFields?.length>0 ?
-            <div className='action-footer'>
-                <button className={loading? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} disabled={loading} onClick={handelUpdateSave}>{loading?<Spinner/>:"Save"}</button>
-                <button className={loading? 'disabled-btn drawer-outlined-btn' : 'drawer-outlined-btn'}  disabled={loading} onClick={()=>{setDataFields([]);setRefreshProp(!refreshProp)}}>Cancel</button>
-                {
-                    dataFields?.length?
-                    <span className='text' style={{margin: 0}}>You've changed {dataFields?.length} properties</span>
-                    : null
-                }
+        {/* employee dashboard main top navbar  */}
+
+            <div style={{background: 'white', padding: '15px 45px 7px 15px', display:'flex', gap: '100px', alignItems: 'center', }}>
+                
+                {/* back + user name btn */}
+                <div style={{display:'flex', alignItems:'center', gap:'25px', paddingBottom:'8px'}}>
+
+                    <div onClick={()=>navigate(-1)} >
+                        <FontAwesomeIcon className='left-chevron-icon' icon={faChevronLeft}/> <span className='text-deco' style={{left: '5%', position: 'relative', fontSize:'14px'}}>Back</span> 
+                    </div>
+
+                    <div style={{fontSize:'14px'}}>
+                        {singleEmployee?.firstname +" "+ singleEmployee?.lastname}
+                    </div>
+                </div>
+
+                {/* navigation tabs */}
+                <div style={{display:'flex', alignItems:'center', gap:'20px'}}>
+                    {tabs?.map((tab)=>(
+                        <div className={activeTab==tab.title? 'emp-menubar emp-menubar-active': 'emp-menubar'} onClick={()=>setActiveTab(tab.title)}>{tab.title}</div>
+                    ))}
+                </div>
+
             </div>
-            : null}
-        </>
+
+        {/* employee detail page 3 section main employee dashboard */}
+            <div style={{padding:'0px 5px 5px 5px'}}>
+                
+                {/* ProfileTAB */}
+                {activeTab.toLowerCase()=="profile"?
+                    <div>
+                        <Row>
+                            {noteToggle?
+                            <Notes/>
+                            :null}
+
+                            <Col span={6} style={{paddingRight:'0px',
+                                maxHeight: 'calc(100vh - 110px)',
+                                overflowY: 'auto',
+                                transition: 'scroll-behavior 1s',
+                                background:'white'
+                            }}>
+                                {singleEmployee?
+                                <DetailPageLeftSideBar 
+                                    employeeObject={employeeObject?.map((object)=> ({_id: object.propertyId, ...object.propertyDetail}))}
+                                    singleEmployee={singleEmployee}
+                                    loading={employeeObjectLoading || singleEmployeeLoading}
+                                    handelInputChange={handelInputChange}
+                                />:
+                                <Loader/>
+                                }
+                            </Col>
+                            <Col span={12}
+                            style={{paddingRight:'0px',
+                                width:'100%',
+                                maxHeight: 'calc(100vh - 110px)',
+                                overflowY: 'auto',
+                                transition: 'scroll-behavior 1s',
+                                background: 'white'
+                            }}>
+                                <DetailPageMiddleSection  />
+                            </Col>
+                            <Col span={6} style={{background:'rgb(245, 248, 250)'}}>
+                                <DetailPageRightSideBar  />
+                            </Col>
+                        </Row>
+                        {dataFields?.length>0 ?
+                        <div className='action-footer'>
+                            <button className={loading? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} disabled={loading} onClick={handelUpdateSave}>{loading?<Spinner/>:"Save"}</button>
+                            <button className={loading? 'disabled-btn drawer-outlined-btn' : 'drawer-outlined-btn'}  disabled={loading} onClick={()=>{setDataFields([]);setRefreshProp(!refreshProp)}}>Cancel</button>
+                            {
+                                dataFields?.length?
+                                <span className='text' style={{margin: 0}}>You've changed {dataFields?.length} properties</span>
+                                : null
+                            }
+                        </div>
+                        : null}
+                    </div>
+                :
+                activeTab.toLowerCase()=="hr"?
+                    <HRTab/>
+                :null
+                }
+
+                
+
+            </div>
+        </div>
         
     );
 }

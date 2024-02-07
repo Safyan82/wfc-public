@@ -206,10 +206,10 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
     const [readOnly, setReadOnly] = useState(true);
 
     return(
-        <div className='sidebar-wrapper'>
+        <div className='sidebar-wrapper' >
             <div className='leftsidebar'>
 
-                <div className="header-navigator">
+                {/* <div className="header-navigator">
                     <div onClick={()=>navigate(-1)}>
                         <FontAwesomeIcon className='left-chevron-icon' icon={faChevronLeft}/> <span className='text-deco' style={{left: '5%', position: 'relative'}}>Employee</span> 
                     </div>
@@ -233,7 +233,7 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                             </a>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className='side-intro'>
                     {singleEmployee?

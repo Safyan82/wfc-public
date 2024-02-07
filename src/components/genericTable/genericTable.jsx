@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { faPencil, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input, Table } from "antd"
 
@@ -64,9 +64,10 @@ export const GenericTable = ({column,
                             <FontAwesomeIcon icon={faPencil} style={{marginRight:'5px', fontSize:'10px'}} /> <span>{tableOption[0]}</span>
                           </div>
 
-                          {/* <div style={{fontSize:'11px'}} className='disabled'>
-                            <FontAwesomeIcon icon={faPencil} style={{marginRight:'5px', fontSize:'10px'}} className='disabled'/> <span className='disabled'>Add to team</span>
-                          </div> */}
+
+                          {tableOption?.length>1?<div style={{fontSize:'11px'}} className={selectedRowKeys?.length>1? 'disabled': null} onClick={selectedRowKeys?.length>1? ()=>{return false;} :tableOptionFunc[1]}>
+                            <FontAwesomeIcon icon={faTrash} style={{marginRight:'5px', fontSize:'10px'}} /> <span >{tableOption[1]}</span>
+                          </div>:null}
                       </>
                     }
                   </div>

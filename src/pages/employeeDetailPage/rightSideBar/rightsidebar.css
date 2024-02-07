@@ -1,15 +1,14 @@
 
 
-.rightsidebar-wrapper{
+.emp-rightsidebar-wrapper{
     padding-right: 0px;
-    max-height: calc(100vh - 70px);
+    max-height: calc(100vh - 134px);
     overflow-y: scroll;
-    min-height: 89vh;
     background-color: rgb(245, 248, 250) !important;
     padding-top: 5%;
 }
 
-.rightsidebar-wrapper div{
+.emp-rightsidebar-wrapper div{
     display: flex !important;
     flex-direction: column !important;
     /* column-gap: 26px !important; */
@@ -61,3 +60,27 @@
     fill: #333; /* Text color */
     /* Add other styling properties as needed */
 }
+
+.rightCollapseBtn{
+    width: 15px;
+    position: absolute;
+    margin-top: 10px;
+    background: rgba(0,0,0,.49);
+    padding: 15px;
+    border-radius: 50%;
+    margin-left: -16px;
+    cursor: pointer;
+    animation: shake 3s ease 1 forwards;
+}
+
+.rightCollapseBtn svg{
+    color: white;
+    font-size: 14px;
+}
+
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60%, 100% { transform: translateX(-10px) rotate(-5deg); }
+    40%, 80% { transform: translateX(10px) rotate(5deg); }
+  }
