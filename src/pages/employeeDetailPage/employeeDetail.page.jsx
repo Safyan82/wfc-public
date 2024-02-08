@@ -139,32 +139,33 @@ export const EmployeeDetailPage = ()=>{
         <div style={{background:'rgb(245, 248, 250)'}}>
 
         {/* employee dashboard main top navbar  */}
+            {/* <div style={{marginBottom:'50px'}}> */}
+                <div style={{background: 'white', padding: '15px 45px 7px 15px', display:'flex', gap: '100px', alignItems: 'center', position: 'fixed',  width: '100%', zIndex: '9999'}}>
+                    
+                    {/* back + user name btn */}
+                    <div style={{display:'flex', alignItems:'center', gap:'25px', paddingBottom:'8px'}}>
 
-            <div style={{background: 'white', padding: '15px 45px 7px 15px', display:'flex', gap: '100px', alignItems: 'center', }}>
-                
-                {/* back + user name btn */}
-                <div style={{display:'flex', alignItems:'center', gap:'25px', paddingBottom:'8px'}}>
+                        <div onClick={()=>navigate(-1)} >
+                            <FontAwesomeIcon className='left-chevron-icon' icon={faChevronLeft}/> <span className='text-deco' style={{left: '5%', position: 'relative', fontSize:'14px'}}>Back</span> 
+                        </div>
 
-                    <div onClick={()=>navigate(-1)} >
-                        <FontAwesomeIcon className='left-chevron-icon' icon={faChevronLeft}/> <span className='text-deco' style={{left: '5%', position: 'relative', fontSize:'14px'}}>Back</span> 
+                        <div style={{fontSize:'14px'}}>
+                            {singleEmployee?.firstname +" "+ singleEmployee?.lastname}
+                        </div>
                     </div>
 
-                    <div style={{fontSize:'14px'}}>
-                        {singleEmployee?.firstname +" "+ singleEmployee?.lastname}
+                    {/* navigation tabs */}
+                    <div style={{display:'flex', alignItems:'center', gap:'20px'}}>
+                        {tabs?.map((tab)=>(
+                            <div className={activeTab==tab.title? 'emp-menubar emp-menubar-active': 'emp-menubar'} onClick={()=>setActiveTab(tab.title)}>{tab.title}</div>
+                        ))}
                     </div>
-                </div>
 
-                {/* navigation tabs */}
-                <div style={{display:'flex', alignItems:'center', gap:'20px'}}>
-                    {tabs?.map((tab)=>(
-                        <div className={activeTab==tab.title? 'emp-menubar emp-menubar-active': 'emp-menubar'} onClick={()=>setActiveTab(tab.title)}>{tab.title}</div>
-                    ))}
                 </div>
-
-            </div>
+            {/* </div> */}
 
         {/* employee detail page 3 section main employee dashboard */}
-            <div style={{padding:'0px 5px 5px 5px'}}>
+            <div style={{padding:'50px 5px 5px 5px'}}>
                 
                 {/* ProfileTAB */}
                 {activeTab.toLowerCase()=="profile"?

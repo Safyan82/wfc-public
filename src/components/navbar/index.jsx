@@ -206,7 +206,7 @@ export function Navbar({themeData, themeLoading, refetchTheme}){
         themeLoading?
         null
         :
-        <Layout >
+        <Layout style={{marginBottom:'50px'}}>
             <Menu mode="horizontal" theme="dark" className='top-menu-layout' triggerSubMenuAction="click" 
                 style={isModalOpen?{zIndex:1, background: localStorage.getItem('color') || selectedTheme}:{background: localStorage.getItem('color') ||selectedTheme}}
             >
