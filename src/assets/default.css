@@ -681,9 +681,14 @@ a:visited{
     border-color: #cbd6e2 !important;
 }
 
+.ant-notification {
+    z-index: 999999999999999999999999999999999999999999999999999999999999999999;
+}
+
 .ant-notification .ant-notification-notice {
     padding: 15px 24px;
     width: 320px;
+    z-index: 999999999999999999999999999999999999999999999;
 }
 
 .truncated-text{
@@ -748,10 +753,13 @@ a:visited{
 
 :where(.css-dev-only-do-not-override-12jzuas).ant-notification .ant-notification-notice .ant-notification-notice-with-icon .ant-notification-notice-message{
     font-weight: bold;
+    z-index: 999999999999999999999999999999999999999999999999999999999;
+
 }
 
 .ant-notification-notice-with-icon{
     display: flex !important;
+    z-index: 999999999999999999999999999999999999999999999999999999999;
 }
 
 .alert-close-icon{
