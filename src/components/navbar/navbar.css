@@ -21,6 +21,10 @@
     background: rgba(0, 0, 0, 0.1) !important;
 }
 
+ .ant-dropdown{
+    z-index: 99999 !important;
+}
+
 /* theme ended */
 
 .top-menu-layout li{
