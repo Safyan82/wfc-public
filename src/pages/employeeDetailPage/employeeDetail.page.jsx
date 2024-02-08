@@ -129,7 +129,7 @@ export const EmployeeDetailPage = ()=>{
         {title:"Sites Trained/Banned", url:''},
         {title:"Skills", url:''},
         {title:"Premiums", url:''},
-        {title:"User Fields", url:''},
+        {title:"Custom Fields", url:''},
         {title:"Document Library", url:''},
     ]);
 
