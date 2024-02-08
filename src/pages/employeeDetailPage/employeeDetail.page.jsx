@@ -140,7 +140,7 @@ export const EmployeeDetailPage = ()=>{
 
         {/* employee dashboard main top navbar  */}
             {/* <div style={{marginBottom:'50px'}}> */}
-                <div style={{background: 'white', padding: '15px 45px 7px 15px', display:'flex', gap: '100px', alignItems: 'center', position: 'fixed',  width: '100%', zIndex: '9999'}}>
+                <div style={{background: 'white', padding: '15px 45px 7px 15px', display:'flex', gap: '100px', alignItems: 'center', position: 'fixed',  width: '100%', zIndex: '996'}}>
                     
                     {/* back + user name btn */}
                     <div style={{display:'flex', alignItems:'center', gap:'25px', paddingBottom:'8px'}}>
