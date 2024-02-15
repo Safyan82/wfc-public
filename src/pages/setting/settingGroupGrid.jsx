@@ -91,7 +91,7 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
                   Edit
                 </button>
                 <button  className="grid-sm-btn" style={{width:'max-content'}} type="link" onClick={() => handleViewProperty(record)}>
-                  View properties
+                  View fields
                 </button>
 
                 <button  className="grid-sm-btn" type="link" onClick={() => handleDelete(record)}>

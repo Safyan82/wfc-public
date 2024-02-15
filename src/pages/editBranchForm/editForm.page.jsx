@@ -24,7 +24,7 @@ import { FormHeader } from '../../components/header/header';
 export const EditForm=()=>{
     const location = useLocation();
     const navigate = useNavigate();
-    const {title, url} = location?.state;
+    const {title, url} = location?.state || {title:"Branch", url:""};
     const [modalState, setModalState] = useState(false);
 
     const [reorderBranchSchema,{loading: rearragementLoading}] = useMutation(ReorderBranchSchema);
@@ -149,8 +149,9 @@ export const EditForm=()=>{
     },[]);
 
     return(
-        <React.Fragment>
+      <div className="setting-body" style={url?{margin:'0',padding:'0'}:{}}>
           {contextHolder}
+          <div style={url?{}:{margin:'15px 0 15px 15px'}}>
               <FormHeader
                 title={"Edit " +title+ " Form"}
                 loading={loading}
@@ -264,8 +265,9 @@ export const EditForm=()=>{
 
                   </div>
               </div>
+          </div>
             
-        </React.Fragment>
+        </div>
     );
 }
 

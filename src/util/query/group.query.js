@@ -6,6 +6,7 @@ query($objectType: String!){
             key
             name
             properties
+            tabs
         }
 }
 `;

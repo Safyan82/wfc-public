@@ -1,14 +1,12 @@
 import { useQuery } from "@apollo/client";
-import "./hr.css";
 import { GetPropertyByGroupQuery } from "../../../util/query/properties.query";
 import { useEffect, useState } from "react";
 import { GenerateFields } from "../../../util/generateFields/generateFields";
-import { countries } from "../../../util/datalist/countries";
 import { setNotification } from "../../../middleware/redux/reducers/notification.reducer";
 import { useDispatch } from "react-redux";
 import { ImplementedGroupList } from "../../../util/types/groups";
 
-export const HRTab = ()=>{
+export const PayDetailsTab = ()=>{
     const {data, loading} = useQuery(GetPropertyByGroupQuery,{
         variables:{
             objectType: 'Employee'
@@ -16,21 +14,20 @@ export const HRTab = ()=>{
         fetchPolicy:'network-only'
     });
 
-    const [hrProp, setHrProp] = useState([]);
-    const [empProp, setEmpProp] = useState([]);
-    const [contractProp, setContractProp] = useState([]);
+    const [payDetailProp, setPayDetailProp] = useState([]);
+    const [bankDetailProp, setBankDetailProp] = useState([]);
+    const [payrollProp, setPayrollProp] = useState([]);
 
     useEffect(()=>{
         if(data?.getPropertyByGroup?.data){
-            const props = data?.getPropertyByGroup?.data?.filter((prop)=>(prop?._id==ImplementedGroupList.HR || prop?._id==ImplementedGroupList.EMPLOYEMENT_DATES || prop?._id==ImplementedGroupList.CONTRACT))
-           
-            setHrProp(props?.find((prop)=>prop?._id==ImplementedGroupList.HR)?.properties);
-            setEmpProp(props?.find((prop)=>prop?._id==ImplementedGroupList.EMPLOYEMENT_DATES)?.properties);
-            setContractProp(props?.find((prop)=>prop?._id==ImplementedGroupList.CONTRACT)?.properties);
-        }
-        console.log(data?.getPropertyByGroup?.data, "data?.getPropertyByGroup?.data");
-    },[data?.getPropertyByGroup?.data]);
 
+            const props = data?.getPropertyByGroup?.data?.filter((prop)=>(prop?._id==ImplementedGroupList.PAY_DETAILS || prop?._id==ImplementedGroupList.BANK_DETAILS || prop?._id== ImplementedGroupList?.PAYROLL_RUN_INFORMATION))
+           
+            setPayDetailProp(props?.find((prop)=>prop?._id==ImplementedGroupList?.PAY_DETAILS)?.properties);
+            setBankDetailProp(props?.find((prop)=>prop?._id==ImplementedGroupList?.BANK_DETAILS)?.properties);
+            setPayrollProp(props?.find((prop)=>prop?._id==ImplementedGroupList?.PAYROLL_RUN_INFORMATION)?.properties);
+        }
+    },[data?.getPropertyByGroup?.data]);
 
 
     const [field, setField] = useState([]);
@@ -59,18 +56,7 @@ export const HRTab = ()=>{
         }
     }
 
-    const [countryList, setCountryList] = useState();
 
-    useEffect(()=>{
-        setCountryList(
-            countries?.map((c, i)=>({
-                id: i,
-                key: c,
-                value: c,
-                showFormIn: true
-            }))
-        );
-    }, [countries]);
 
     const dispatch = useDispatch();
 
@@ -80,13 +66,13 @@ export const HRTab = ()=>{
             
             <div className="hr-section">
                     <div className="hr-info">
-                        <h3>HR Information</h3>
+                        <h3>Pay Details</h3>
                         {
-                            hrProp?.map((prop)=> {
+                            payDetailProp?.map((prop)=> {
                                 const label = prop?.label;
                                 const name = prop?.label.toLowerCase().replace(/\s/g,"");
                                 const fieldType = prop?.fieldType;
-                                const newprop = name=="nationality"? {...prop, options: countryList} : prop;
+                                const newprop = prop;
                                 const {value} = field?.find((f)=>f.name==name) || {value: ""};
                                 return GenerateFields(label, name, fieldType, handelDataValue, newprop, value);
                             })
@@ -99,13 +85,13 @@ export const HRTab = ()=>{
             <div style={{display:'flex', flexDirection:'column', width:'100%', gap:'25px'}}>
                 
                 <div className="employment-info">
-                        <h3>Employment Dates</h3>
+                        <h3>Bank Details</h3>
                             {
-                                empProp?.map((prop)=> {
+                                bankDetailProp?.map((prop)=> {
                                     const label = prop?.label;
                                     const name = prop?.label.toLowerCase().replace(/\s/g,"");
                                     const fieldType = prop?.fieldType;
-                                    const newprop = name=="nationality"? {...prop, options: countryList} : prop;
+                                    const newprop = prop;
                                     const {value} = field?.find((f)=>f.name==name) || {value: ""};
                                     
                                     return GenerateFields(label, name, fieldType, handelDataValue, newprop, value);
@@ -114,13 +100,13 @@ export const HRTab = ()=>{
                 </div>
 
                 <div className="contract">
-                    <h3>Contract History</h3>
+                    <h3>Payroll Run Information</h3>
                     {
-                        contractProp?.map((prop)=> {
+                        payrollProp?.map((prop)=> {
                             const label = prop?.label;
                             const name = prop?.label.toLowerCase().replace(/\s/g,"");
                             const fieldType = prop?.fieldType;
-                            const newprop = name=="nationality"? {...prop, options: countryList} : prop;
+                            const newprop = prop;
                             const {value} = field?.find((f)=>f.name==name) || {value: ""};
                             
                             return GenerateFields(label, name, fieldType, handelDataValue, newprop, value);

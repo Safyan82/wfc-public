@@ -1,6 +1,7 @@
 .hr-body{
     background: rgb(245, 248, 250);
     /* height: calc(100vh - 120px); */
+    min-height: 100vh;
     margin: 5px 20px;
     display: flex;
     gap: 50px;
@@ -50,6 +51,6 @@
     top: 90vh;
 }
 
-.hr-body .ant-select-selection-search input{
+.ant-select-selection-search input{
     padding-bottom: 20px !important;
 }

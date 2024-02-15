@@ -24,7 +24,9 @@ import { BulkDeleteEmployeeObjectMutation, BulkEmployeeObjectCreationMutation, b
 
 export const EditEmployeeForm=()=>{
     const location = useLocation();
-    const {title, url} = location?.state;
+    // const title= "Employee Form";
+    // const url= "";
+    const {title="Employee", url=""} = location?.state || {title:"Employee", url:""};
     const [modalState, setModalState] = useState(false);
 
 
@@ -153,127 +155,132 @@ export const EditEmployeeForm=()=>{
     },[]);
     
     return(
-        <React.Fragment>
+        <div className="setting-body" style={url?{margin:'0',padding:'0'}:{}}>
           {contextHolder}
-              <FormHeader
-                title={"Edit " +title+ " Form"}
-                loading={loading}
-                btnDisabled={btnDisabled}
-                setModalState={setModalState}
-                modalState={modalState}
-                handelSave={handelSave}
-                url={url}
+            
+              <div style={url?{}:{margin:'15px 0 15px 15px'}}>
+
+                <FormHeader
+                  title={"Edit " +title+ " Form"}
+                  loading={loading}
+                  btnDisabled={btnDisabled}
+                  setModalState={setModalState}
+                  modalState={modalState}
+                  handelSave={handelSave}
+                  url={url}
+                  
+                  btnVisibility={true}
+                />
+
+                {/* left side properties */}
+                <div className="left-sidebar">
+                    <div className="left-sidebar-inner">
+
+                        {
+                        isPropOpen?
+                        
+                        <AddProperty back={()=>setProp(false)}/>
+                        
+                        :
+                        <>
+                            {/* main content of property */}
+                            <div className="left-sidebar-item">
+                                <div className="left-sidebar-item-text" onClick={()=>setProp(true)} >Add properties</div>
+                                <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                            </div>
+                            <Divider/>
+                            <div className="left-sidebar-item">
+                                <div className="left-sidebar-item-text">Add conditional logic</div>
+                                <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                            </div>
+                            <Divider/>
+                            <div className="left-sidebar-item">
+                                <div className="left-sidebar-item-text">Add associations </div>
+                                <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                            </div>
+                        </>
+                        }
+
+                    </div>
+                </div>
+
+                {/* main body */}
                 
-                btnVisibility={true}
-              />
-              {/* left side properties */}
-              <div className="left-sidebar">
-                  <div className="left-sidebar-inner">
-
-                      {
-                      isPropOpen?
-                      
-                      <AddProperty back={()=>setProp(false)}/>
-                      
-                      :
-                      <>
-                          {/* main content of property */}
-                          <div className="left-sidebar-item">
-                              <div className="left-sidebar-item-text" onClick={()=>setProp(true)} >Add properties</div>
-                              <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                          </div>
-                          <Divider/>
-                          <div className="left-sidebar-item">
-                              <div className="left-sidebar-item-text">Add conditional logic</div>
-                              <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                          </div>
-                          <Divider/>
-                          <div className="left-sidebar-item">
-                              <div className="left-sidebar-item-text">Add associations </div>
-                              <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                          </div>
-                      </>
-                      }
-
-                  </div>
-              </div>
-
-              {/* main body */}
-              
-              <div className="form-section">
-                  <div className="form-section-inner">
-                      <div className="modal-header-title">
-                          Create {title}
-                      </div>
-                      
-                      <div className="form-section-body form"> 
-                      {loading &&
-                      <div style={{
-                        height:'100%',
-                        width: "90%",
-                        background: "white",position:'absolute',
-                        opacity: 0.8,}}>
-                          <Loader/>
+                <div className="form-section">
+                    <div className="form-section-inner">
+                        <div className="modal-header-title">
+                            Create {title}
                         </div>
-                      }
-
-                      
-
-                        {/* branch name */}
-                        {mandatory?.map((field)=>(
-                          <div className="icon-wrapper">
-                            <div className="delete-icon">
-                              <Popover 
-                                overlayClassName="custom-popover"
-                                content={"This Property is a part of object schema"} 
-                                placement='top'
-                              >
-                                <FontAwesomeIcon icon={faTrashAlt} />
-                              </Popover>
-                              
-                              <Popover 
-                                overlayClassName="custom-popover"
-                                content={"Conditional logic is not available for non-enumerated properties."} 
-                                placement='top'
-                              >
-                                <ApartmentOutlined />
-                              </Popover>
-
-                              
-                              <Popover 
-                              overlayClassName="custom-popover"
-                              content={"Make this property mandatory"} 
-                              placement='top'
-                              >
-                                <FontAwesomeIcon icon={faAsterisk} />
-                              </Popover>
-
-                            </div>
-                            <div
-                              className="edit-form-input-control input inputItemList"   
-                              style={{backgroundImage: "none", cursor: "auto"}}                    
-                            >
-                              <span className='draggeableTable-text'>
-                                {field?.propertyDetail?.label}
-                              </span>
-                            </div>
+                        
+                        <div className="form-section-body form"> 
+                        {loading &&
+                        <div style={{
+                          height:'100%',
+                          width: "90%",
+                          background: "white",position:'absolute',
+                          opacity: 0.8,}}>
+                            <Loader/>
                           </div>
-                        ))}
+                        }
 
-                        <DraggableList
-                          reorderSchema = {reorderEmployeeObjectSchema}
-                          list={branchSchemaNewFields?.length>0 ? branchSchemaLocal.sort((a, b) => a?.order - b?.order) : []} 
-                          objectRefetch={employeeObjectRefetch}
-                        />        
-                                      
-                        </div>
-                      
-                      
+                        
 
-                  </div>
+                          {/* branch name */}
+                          {mandatory?.map((field)=>(
+                            <div className="icon-wrapper">
+                              <div className="delete-icon">
+                                <Popover 
+                                  overlayClassName="custom-popover"
+                                  content={"This Property is a part of object schema"} 
+                                  placement='top'
+                                >
+                                  <FontAwesomeIcon icon={faTrashAlt} />
+                                </Popover>
+                                
+                                <Popover 
+                                  overlayClassName="custom-popover"
+                                  content={"Conditional logic is not available for non-enumerated properties."} 
+                                  placement='top'
+                                >
+                                  <ApartmentOutlined />
+                                </Popover>
+
+                                
+                                <Popover 
+                                overlayClassName="custom-popover"
+                                content={"Make this property mandatory"} 
+                                placement='top'
+                                >
+                                  <FontAwesomeIcon icon={faAsterisk} />
+                                </Popover>
+
+                              </div>
+                              <div
+                                className="edit-form-input-control input inputItemList"   
+                                style={{backgroundImage: "none", cursor: "auto"}}                    
+                              >
+                                <span className='draggeableTable-text'>
+                                  {field?.propertyDetail?.label}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+
+                          <DraggableList
+                            reorderSchema = {reorderEmployeeObjectSchema}
+                            list={branchSchemaNewFields?.length>0 ? branchSchemaLocal.sort((a, b) => a?.order - b?.order) : []} 
+                            objectRefetch={employeeObjectRefetch}
+                          />        
+                                        
+                          </div>
+                        
+                        
+
+                    </div>
+                </div>
               </div>
             
-        </React.Fragment>
+        </div>
     );
 }
 

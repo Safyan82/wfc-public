@@ -11,6 +11,8 @@ import { resetAuthUserDetail, setAuthUserDetail } from "../../middleware/redux/r
 import { resetAllReducerState } from "../../middleware/redux/resetAll";
 import { useSelector } from "react-redux";
 import { themeQuery } from "../query/theme.query";
+import { socket } from "../../config/socket";
+
 
 export const PrivateRoutes = ({children})=>{
     const [loading, setLoading] = useState(true);
@@ -89,7 +91,20 @@ export const PrivateRoutes = ({children})=>{
           }
           return child;
         });
-      };
+    };
+
+    useEffect(()=>{
+        // client-side
+        console.log("socket connect")
+        socket.on("connect", () => {
+            console.log(socket.id, "socket connect"); // x8WIv7-mJelg7on_ALbx
+        });
+  
+        socket.on("disconnect", () => {
+            console.log(socket.id, "socket connect disconnect"); // undefined
+        });
+
+    },[]);
 
     return(
         loading || !token? 

@@ -4,7 +4,7 @@ import error from './assets/unauth.svg';
 export const UnAuthroizedAccess = ()=>{
     return(
         <>
-            <Navbar/>
+            {/* <Navbar/> */}
             <div style={{display:'flex', alignItems:'center', flexDirection:'column', alignContent:'center', justifyContent:'center', height:'90vh'}}>
                     <img width={200} height={200} src={error} alt="" />
                     <div>

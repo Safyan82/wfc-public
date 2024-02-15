@@ -1,0 +1,6 @@
+.group-tabs .ant-form-item-control-input-content{
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 20px;
+    align-items: center;
+}

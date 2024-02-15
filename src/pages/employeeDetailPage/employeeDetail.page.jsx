@@ -17,6 +17,8 @@ import Spinner from '../../components/spinner';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HRTab } from "./hr/hr.tab";
+import { PayDetailsTab } from "./payDetails/payDetails.tab";
+import { CalendarTab } from "./calendar/calendar.tab";
 
 
 export const EmployeeDetailPage = ()=>{
@@ -125,7 +127,7 @@ export const EmployeeDetailPage = ()=>{
         {title:"Pay Details", url:''},
         {title:"HR Task", url:''},
         {title:"Absense", url:''},
-        {title:"Notes", url:''},
+        {title:"Calendar", url:''},
         {title:"Sites Trained/Banned", url:''},
         {title:"Skills", url:''},
         {title:"Premiums", url:''},
@@ -134,6 +136,8 @@ export const EmployeeDetailPage = ()=>{
     ]);
 
     const [activeTab, setActiveTab] = useState("Profile");
+    const [isAction, setAction] = useState(false);
+    const containerRef = useRef(null);
 
     return(
         <div style={{background:'rgb(245, 248, 250)'}}>
@@ -159,6 +163,27 @@ export const EmployeeDetailPage = ()=>{
                         {tabs?.map((tab)=>(
                             <div className={activeTab==tab.title? 'emp-menubar emp-menubar-active': 'emp-menubar'} onClick={()=>setActiveTab(tab.title)}>{tab.title}</div>
                         ))}
+                    </div>
+
+                    
+                    <div className="dropdown" ref={containerRef}>
+
+                        <span className='text-deco' onClick={()=>setAction(!isAction)}>Actions<span className='caret'></span></span> 
+                        
+                        <div  className="dropdown-content dropdown-content-prev" style={isAction ? {display:'block'}: {display:'none'}}>
+                            <a href="" onClick={(e)=>{ e.preventDefault(); }}>
+                                Edit view
+                            </a>
+                            <a href="" onClick={(e)=>{ e.preventDefault(); navigate("/user/employee-detail-view/"+singleEmployee?._id)}}>
+                                Edit data fields
+                            </a>
+                            <a href="" onClick={(e)=>{ e.preventDefault(); navigate(`/user/employee-prop-history/`+singleEmployee?._id)}}>
+                                Audit log
+                            </a>
+                            <a href="" onClick={(e)=>{ e.preventDefault(); }}>
+                                Generate report
+                            </a>
+                        </div>
                     </div>
 
                 </div>
@@ -220,6 +245,12 @@ export const EmployeeDetailPage = ()=>{
                 :
                 activeTab.toLowerCase()=="hr"?
                     <HRTab/>
+                :
+                activeTab.toLowerCase()=="pay details"?
+                    <PayDetailsTab/>
+                :
+                activeTab.toLowerCase()=="calendar"?
+                    <CalendarTab/>
                 :null
                 }
 

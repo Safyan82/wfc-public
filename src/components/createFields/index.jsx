@@ -167,7 +167,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
         clearandClose();
         dispatch(setNotification({
           notificationState:true, 
-          message:"Property was created successfully",
+          message:"Field was created successfully",
           error: false,
         }))
   
@@ -200,7 +200,7 @@ export const CreateFieldDrawer = ({ visible, onClose, refetch, propertyListRefet
         <div>
 
           <Drawer
-            title="Create a new property "
+            title="Create a new field "
             placement="right"
             closable={true}
             onClose={clearandClose}

@@ -40,6 +40,8 @@ import { useDispatch } from 'react-redux';
 import { setNotification } from './middleware/redux/reducers/notification.reducer';
 
 
+
+
 function App() {
   
   const dispatch = useDispatch();
@@ -139,10 +141,13 @@ function App() {
 
           {/* setting navigation layout under hte main navigation*/}
           <Route path={routes.setting} element={<PrivateRoutes><Setting /></PrivateRoutes>}  >
-            <Route index element={<PropertySetting/>} />
+            <Route path={routes.propertySetting} exact element={<PropertySetting/>} />
             <Route path={routes.addUser} element={<User/>} />
             <Route path={routes.userRole} element={<UserRole/>} />
             <Route path={routes.userAccess} element={<UserAccess/>} />
+            <Route path={routes.employeeEditForm} exact element={<EditEmployeeForm />} />
+            <Route path={routes.branchEditForm} exact element={<EditForm />} />
+
             <Route path={"user/:employeeId"} element={<UserDetailPage/>} />
           </Route>
           

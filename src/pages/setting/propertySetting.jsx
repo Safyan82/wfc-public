@@ -8,7 +8,7 @@ import { Filter } from './settingfilter';
 import {SettingPropertyGrid} from './setting-property-grid';
 import { SettingGroupPropertyGrid } from './settingGroupGrid';
 import { GroupFilter } from './groupfilter';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ArcheiveFilter } from './archeiveFilter';
 import { ArcheivePropertyGrid } from './archeiveGrid';
 import { CreateFieldDrawer } from '../../components/createFields/index';
@@ -31,8 +31,25 @@ export const PropertySetting=()=>{
     const [editfieldModal, setEditFieldModal] = useState(false);
     const [propertyFakeLoad, setPropertyFakeLoading] = useState(false);
     const [groupmodal, setGroupModal] = useState(false);
-    const [objectTypelocal, setObjectType] = useState("Branch");
 
+    // Use URLSearchParams to parse the query string
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    const myParam = query.get('field'); // Replace 'myParam' with your parameter name
+
+    const [objectTypelocal, setObjectType] = useState(myParam && myParam[0].toUpperCase()+myParam.slice(1).toLowerCase()  || "Branch");
+
+    const navigate = useNavigate();
+
+    useEffect(()=>{
+        setObjectType(myParam && myParam[0].toUpperCase()+myParam.slice(1));
+        if(myParam){
+            const isObjectExist = Object.keys(objectType)?.includes(myParam[0].toUpperCase()+myParam.slice(1))
+            if(!isObjectExist){
+                navigate("/error");
+            }
+        }
+    },[myParam]);
 
     // setting popover 
     
@@ -58,7 +75,6 @@ export const PropertySetting=()=>{
         {field:'fieldType', value: '' },
         {field: 'objectType', value: 'branch'},
     ]);
-    const [value, setValue] = useState(null);
 
 
     useEffect(()=>{
@@ -187,9 +203,7 @@ export const PropertySetting=()=>{
         }
     }, [groupFilterId]);
 
-    useEffect(()=>{
-        console.log("mounted again");
-    },[]);
+
    
 
     const [activeTab, setActiveTab] = useState('1');
@@ -257,7 +271,7 @@ export const PropertySetting=()=>{
                     <div className='setting-body-inner'>
                         <div className="setting-body-title">
                             <div className='setting-body-inner-title'>
-                                Properties
+                                Data Fields
                             </div>
 
                             <div className='btn-group'>
@@ -265,12 +279,12 @@ export const PropertySetting=()=>{
                                     <FontAwesomeIcon icon={faLock}/> &nbsp; <span className='text-decore'>Data Quality</span>
                                 </button>
                                 <Button className='setting-filled-btn'>
-                                    Export all properties
+                                    Export all data fields
                                 </Button>
                             </div>
                         </div>
                         <div className="text">
-                            Properties are used to collect and store information about your records in WorkForce City. For example, a contact might have properties like First Name or Lead Status.
+                            Data Fields are used to collect and store information about your records in WorkForce City. For example, a contact might have properties like First Name or Lead Status.
                         </div>
                         {/* object selection box */}
                         <div className="object-selection-box">
@@ -278,15 +292,17 @@ export const PropertySetting=()=>{
 
                                 <div className='left-selection-box'>
                                     <div className='object-item'>
-                                        Select an object:
+                                        Selected object:
                                     </div>
                                     <div className="object-item">
                                         <Select
                                             className='custom-select'
                                             style={{width:'250px'}}
                                             suffixIcon={<span className="dropdowncaret"></span>}
-                                            defaultValue={"Branch"}
+                                            defaultValue={myParam && myParam[0].toUpperCase()+myParam.slice(1) || "Branch"}
+                                            value={objectTypelocal}
                                             onChange={(e)=>setObjectType(e)}
+                                            disabled
                                         >
                                             {
                                                 Object.keys(objectType)?.map((object)=>(
@@ -297,8 +313,8 @@ export const PropertySetting=()=>{
                                         </Select>
                                     </div>
                                 </div>
-                                <div className="right-selection-box">
-                                    <div className='object-item object-text text-decore'>Go to branch settings</div>
+                                <div className="right-selection-box"style={{pointer:'not-allowed'}}>
+                                    <div className='object-item object-text text-decore' >Go to {objectTypelocal} settings</div>
                                 </div>
                             </div>
                         </div>
@@ -307,7 +323,7 @@ export const PropertySetting=()=>{
                         {/* propertie views */}
                         <div className="propertyTab"></div>
                         <Tabs defaultActiveKey="1" onTabClick={resetToPropertyTab} activeKey={activeTab } onChange={handelTabChange}>
-                            <TabPane tab={`Properties (${propertyList?.length || 0})`} key="1">
+                            <TabPane tab={`Data Field (${propertyList?.length || 0})`} key="1">
                                 <Filter 
                                     group={group}
                                     groupPopover={groupPopover}
@@ -341,7 +357,7 @@ export const PropertySetting=()=>{
 
                                 />
                             </TabPane>
-                        <TabPane tab="Group" key="2">
+                        <TabPane tab="Data Fields Group" key="2">
                             <GroupFilter setGroupModal={()=>setGroupModal(true)}/>
                             <SettingGroupPropertyGrid
                                 groupList={groupList}
@@ -351,7 +367,7 @@ export const PropertySetting=()=>{
                                 setActiveTab={setActiveTab}
                             />
                         </TabPane>
-                        <TabPane tab={`Archived Properties (${data?.getArchiveProperties?.length || 0})`} key="3" onClick={(e)=>console.log(e)}>
+                        <TabPane tab={`Archived Data Fields (${data?.getArchiveProperties?.length || 0})`} key="3" onClick={(e)=>console.log(e)}>
                             <ArcheiveFilter
                                 archive={archive}
                                 setArchive={setArchive}
@@ -361,7 +377,7 @@ export const PropertySetting=()=>{
 
                             />
                             <Alert
-                                description={<b className='info-alert'>After 90 days your custom properties will be deleted and can no longer be restored.</b>}
+                                description={<b className='info-alert'>After 90 days your custom fields will be deleted and can no longer be restored.</b>}
                                 type="info"
                                 closable
                                 closeText={<FontAwesomeIcon  className='alert-close-icon' icon={faTimes}/>}
