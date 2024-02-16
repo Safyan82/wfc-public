@@ -256,10 +256,12 @@ export const PropertyToBeAdd=({objectType, view, processing})=>{
                             paddingTop: '3%'
                         }}>
                             {list?.map((data)=>(
+                                data?.children?.length>0?
                                 <>
                                 <div style={{color:'black',marginBottom:'10px', letterSpacing:'0.6px'}}>{data?.key}</div>
                                 {data?.children.map((c)=>c)}
                                 </>
+                                : null
                             ))}
                         </div>
                     }

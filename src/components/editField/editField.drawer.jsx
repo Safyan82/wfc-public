@@ -120,7 +120,7 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
         // await propertyListRefetch();
         dispatch(setNotification({
           notificationState:true, 
-          message:"Property was updated successfully",
+          message:"Data field was updated successfully",
           error: false,
         }))      
 
@@ -170,7 +170,7 @@ export const EditFieldDrawer = ({ visible, onClose, refetch, groupList, groupLoa
         <div>
 
           <Drawer
-            title="Edit property "
+            title="Edit field "
             placement="right"
             closable={true}
             onClose={clearandClose}

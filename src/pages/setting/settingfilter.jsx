@@ -297,7 +297,7 @@ export const Filter = ({
                                         <Input type="text" 
                                             style={{width:'250px'}} 
                                             className='generic-input-control' 
-                                            placeholder="Search properties"
+                                            placeholder="Search fields"
                                             onChange={(e)=>handelSearch(e.target.value)}
                                             value={searchInput}
                                             autoComplete="off"
@@ -305,7 +305,7 @@ export const Filter = ({
                                             <FontAwesomeIcon style={{color:'#7c98b6', cursor:'pointer', fontSize: '20px'}} onClick={()=>{setSearchInput('');handelSearch('');}} icon={faClose}/> : 
                                             <FontAwesomeIcon style={{color:'#0091ae'}} icon={faSearch}/> }
                                         />
-                                        <button className='drawer-filled-btn' onClick={editProperty} style={{height:'40px'}}> Create Property </button>
+                                        <button className='drawer-filled-btn' onClick={editProperty} style={{height:'40px'}}> Create Data Field </button>
                                     </div>
                                 </div>
                             </div>

@@ -375,6 +375,7 @@ export const AdvanceFilter = ({
             />
             <div className="proplistView">
                 {propList?.map((list)=>(
+                    list?.properties?.length>0?
                     <>
                         <div className="proplistHead">{list._id}</div>
                         {list?.properties?.map((prop)=>(
@@ -384,6 +385,7 @@ export const AdvanceFilter = ({
                             >{prop.label}</div>
                         ))}
                     </>
+                    : null
                 ))}
             </div>
         </div>

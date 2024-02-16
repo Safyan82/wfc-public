@@ -133,7 +133,7 @@ export const UserDetailPage = ()=>{
 
     const {data: activeDeviceSession} = useQuery(ActiveDeviceSession,{
         variables:{
-            userId: "6593dba679f1d91f37753914"
+            userId: employeeId
         }
     });
 

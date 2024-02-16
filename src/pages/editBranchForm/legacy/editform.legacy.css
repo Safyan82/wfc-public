@@ -90,19 +90,20 @@
 }
 
 .form-section{
+    margin-left: 33%;
     position: relative;
     padding:20px;
     
 }
 
 .form-section-inner{
-    width: 60%;
-    /* margin:auto; */
+    width: 600px;
+    margin:auto;
     background-color: rgb(255, 255, 255);
     box-shadow: rgba(45, 62, 80, 0.12) 0px 1px 5px 0px;
     border-radius: 3px;
     padding-bottom: 20px;
-    /* margin-top: 8%; */
+    margin-top: 8%;
 }
 
 .form-section-body{

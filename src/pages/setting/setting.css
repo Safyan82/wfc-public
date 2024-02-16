@@ -18,9 +18,9 @@
 }
 
 .setting-sidebar-body{
-    max-height: calc(100vh - 54px);
+    /* height: auto; */
     margin-left: -12px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     padding-left: 12px;
     position: sticky;
     top: 0px;
@@ -30,7 +30,7 @@
     padding-top: 20px;
     padding-right: 32px;
     padding-left: 32px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
 }
 
 .back-link{
@@ -198,10 +198,10 @@
     justify-content: flex-end;
     gap: 0px;
     display: flex;
-    -webkit-box-flex: 1;
-    flex-grow: 1;
-    max-width: 100%;
-    width: 100%;
+    /* -webkit-box-flex: 1; */
+    /* flex-grow: 1; */
+    /* max-width: 100%; */
+    /* width: 100%; */
 }
 
 .setting-filled-btn{
@@ -275,6 +275,10 @@
     padding:16px 24px;
     font-weight: 600;
     font-size: 16px;
+}
+
+.object-item .ant-select-selection-item{
+    color: black !important;
 }
 
 .object-text{
@@ -956,4 +960,28 @@
     box-shadow: none;
     width: max-content;
     z-index: 9999999999999999999999999999999999999999999999999;
+}
+
+/* ant holder */
+.setting-sidebar .ant-collapse-content-inactive, .setting-sidebar .ant-collapse-content-active{
+    background-color: transparent !important;
+    background: transparent !important;
+    /* margin-top: -12%; */
+    margin-left: 10px;
+}
+
+.setting-sidebar .ant-collapse-header{
+    margin-bottom: -12% !important;
+}
+
+.setting-sidebar .ant-collapse-content-box{
+    background: transparent !important;
+}
+
+.setting-sidebar .ant-collapse-expand-icon {
+    /* height: 22px; */
+    display: flex;
+    align-items: center;
+    padding-inline-end: 5px !important;
+    margin-inline-start: 0px !important;
 }
