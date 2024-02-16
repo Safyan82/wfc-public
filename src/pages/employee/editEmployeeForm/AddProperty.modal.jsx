@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {SearchOutlined} from '@ant-design/icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft, faClose, faSearch } from "@fortawesome/free-solid-svg-icons";
-import { Checkbox, Collapse, Input } from "antd";
+import { faChevronLeft, faChevronRight, faClose, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { Checkbox, Collapse, Divider, Drawer, Input } from "antd";
 import { useQuery } from '@apollo/client';
 import { GetPropertyByGroupQuery } from '../../../util/query/properties.query';
 import { useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ import { Loader } from '../../../components/loader';
 import { objectType } from '../../../util/types/object.types';
 
 
-export const AddProperty=({back})=>{
+export const AddProperty=({back, close, visible})=>{
 
     const {data, loading, refetch} = useQuery(GetPropertyByGroupQuery,{
         fetchPolicy:'network-only',
@@ -184,54 +184,100 @@ export const AddProperty=({back})=>{
         }
     };  
 
+    const [isPropOpen, setProp] = useState(false);
+
     return(
         <>
+        <Drawer
+            title={
+                isPropOpen?
+                <div style={{display: 'flex', gap: '20px', alignItems: 'center'}}>
+                    
+                    <span>Add properties</span>
+                    <FontAwesomeIcon icon={faChevronLeft} style={{cursor:'pointer'}} onClick={()=>setProp(false)} />
+                </div>
+                :
+                "Edit Employee Form"
+            }
+            placement="right"
+            closable={true}
+            onClose={()=>{close();setProp(false)}}
+            closeIcon={<FontAwesomeIcon icon={faClose} onClick={close} className='close-icon'/>}
+            visible={visible}
+            width={600}
             
-            <div className="sidebarheader">
-                <div className='sidebarheader-innerText'>
-
-                    <div className='sidebarheader-inner' onClick={back}>
-                        <FontAwesomeIcon icon={faChevronLeft} />
+            maskClosable={false}
+            mask={false}
+            footer={
+              <div className='drawer-footer'>
+                 
+                  <button className='drawer-outlined-btn' onClick={()=>{close();setProp(false)}}>Cancel</button>
+              </div>
+            }
+        >
+        {
+            isPropOpen?
+            <>
+                <div className='content-text'>
+                    <div className="text">
+                        <p style={{marginBottom:'12px'}}>
+                            Properties are fields that capture and store information. Choose the properties users will see when they create a Employee. 
+                        </p>
+                        Either the post code, branch name, or address must be required.
                     </div>
-                    <span className='prop-text'>Add properties</span>
-                </div>
-            </div>
-            <div className='content-text'>
-                <div className="text">
-                    <p style={{marginBottom:'12px'}}>
-                        Properties are fields that capture and store information. Choose the properties users will see when they create a Branch. 
-                    </p>
-                    Either the post code, branch name, or address must be required.
-                </div>
-                
-                    <Input 
-                        className='generic-input-control search-prop'
-                        suffix={query? 
-                            <FontAwesomeIcon style={{color:'#7c98b6', cursor:'pointer', fontSize: '20px'}} onClick={()=>{setQuery('');handelSearch('');}} icon={faClose}/> : 
-                            <FontAwesomeIcon style={{color:'#0091ae'}} icon={faSearch}/> }
-                        placeholder='Search properties'
-                        onChange={(e)=>{
-                            handelSearch(e);
-                            setQuery(e.target.value);
-                        }}
-                        value={query}
-                    />
-                <div style={{marginTop:'5%', marginBottom:'5%'}}>
-                    {loading?
-                        <>
-                        <br/>
-                        <Loader />
-                        </>
-                        :
-                        
-                        query?.length>0 ?
-                        <Collapse activeKey={activeKeys}  items={list}/>
-                        :
-                        <Collapse   items={list}/>
-                    }
-                </div>
+                    
+                        <Input 
+                            className='generic-input-control search-prop'
+                            suffix={query? 
+                                <FontAwesomeIcon style={{color:'#7c98b6', cursor:'pointer', fontSize: '20px'}} onClick={()=>{setQuery('');handelSearch('');}} icon={faClose}/> : 
+                                <FontAwesomeIcon style={{color:'#0091ae'}} icon={faSearch}/> }
+                            placeholder='Search properties'
+                            onChange={(e)=>{
+                                handelSearch(e);
+                                setQuery(e.target.value);
+                            }}
+                            value={query}
+                        />
+                    <div style={{marginTop:'5%', marginBottom:'5%'}}>
+                        {loading?
+                            <>
+                            <br/>
+                            <Loader />
+                            </>
+                            :
+                            
+                            query?.length>0 ?
+                            <Collapse activeKey={activeKeys}  items={list}/>
+                            :
+                            <Collapse   items={list}/>
+                        }
+                    </div>
 
-            </div>
+                </div>
+            </>
+
+            :
+
+            <>
+                {/* main content of property */}
+                <div className="left-sidebar-item">
+                    <div className="left-sidebar-item-text" onClick={()=>setProp(true)} >Add properties</div>
+                    <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                </div>
+                <Divider/>
+                <div className="left-sidebar-item">
+                    <div className="left-sidebar-item-text">Add conditional logic</div>
+                    <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                </div>
+                <Divider/>
+                <div className="left-sidebar-item">
+                    <div className="left-sidebar-item-text">Add associations </div>
+                    <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+                </div>
+            </>
+        }
+        </Drawer>
+
         </>
     )
 }

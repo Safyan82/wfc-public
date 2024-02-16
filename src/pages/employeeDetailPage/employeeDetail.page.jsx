@@ -16,9 +16,12 @@ import { updateEmployeeMutation } from '../../util/mutation/employee.mutation';
 import Spinner from '../../components/spinner';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { HRTab } from "./hr/hr.tab";
-import { PayDetailsTab } from "./payDetails/payDetails.tab";
-import { CalendarTab } from "./calendar/calendar.tab";
+import { HRTab } from "./tabs/hr/hr.tab";
+import { PayDetailsTab } from "./tabs/payDetails/payDetails.tab";
+import { CalendarTab } from "./tabs/calendar/calendar.tab";
+import { moduleTabs } from "../../util/tabs/employee.tab";
+import { HRTaskTab } from "./tabs/hrtask/hrtask.tab";
+import { AbsenseTab } from "./tabs/absense/absense.tab";
 
 
 export const EmployeeDetailPage = ()=>{
@@ -144,7 +147,7 @@ export const EmployeeDetailPage = ()=>{
 
         {/* employee dashboard main top navbar  */}
             {/* <div style={{marginBottom:'50px'}}> */}
-                <div style={{background: 'white', padding: '15px 45px 7px 15px', display:'flex', gap: '100px', alignItems: 'center', position: 'fixed',  width: '100%', zIndex: '996'}}>
+                <div style={{background: 'white', padding: '15px 45px 7px 15px', display:'flex', justifyContent:'space-between', alignItems: 'center', position: 'fixed',  width: '100%', zIndex: '996'}}>
                     
                     {/* back + user name btn */}
                     <div style={{display:'flex', alignItems:'center', gap:'25px', paddingBottom:'8px'}}>
@@ -166,7 +169,7 @@ export const EmployeeDetailPage = ()=>{
                     </div>
 
                     
-                    <div className="dropdown" ref={containerRef}>
+                    <div className="dropdown" ref={containerRef} style={{paddingRight:'40px'}}>
 
                         <span className='text-deco' onClick={()=>setAction(!isAction)}>Actions<span className='caret'></span></span> 
                         
@@ -193,7 +196,7 @@ export const EmployeeDetailPage = ()=>{
             <div style={{padding:'50px 5px 5px 5px'}}>
                 
                 {/* ProfileTAB */}
-                {activeTab.toLowerCase()=="profile"?
+                {activeTab=="Profile"?
                     <div>
                         <Row>
                             {noteToggle?
@@ -243,13 +246,19 @@ export const EmployeeDetailPage = ()=>{
                         : null}
                     </div>
                 :
-                activeTab.toLowerCase()=="hr"?
+                activeTab==moduleTabs.Employee[0]?
                     <HRTab/>
                 :
-                activeTab.toLowerCase()=="pay details"?
+                activeTab==moduleTabs.Employee[1]?
                     <PayDetailsTab/>
                 :
-                activeTab.toLowerCase()=="calendar"?
+                activeTab==moduleTabs.Employee[2]?
+                    <HRTaskTab/>
+                :
+                activeTab==moduleTabs.Employee[3]?
+                    <AbsenseTab/>
+                :
+                activeTab==moduleTabs.Employee[4]?
                     <CalendarTab/>
                 :null
                 }

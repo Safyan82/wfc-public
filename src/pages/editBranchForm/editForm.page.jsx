@@ -2,7 +2,7 @@ import './editform.css';
 import '../../assets/default.css';
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAsterisk, faChevronLeft, faChevronRight, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faAsterisk, faChevronLeft, faChevronRight, faEllipsisH, faStar } from "@fortawesome/free-solid-svg-icons";
 import { Button, Divider, Form, Input, notification } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import DraggableList from '../../components/shuffle/draggeableList';
@@ -147,127 +147,114 @@ export const EditForm=()=>{
         dispatch(resetbranchSchemaNewFields());
       }
     },[]);
+    
+    const [openDrawer, setOpenDrawer] = useState(false);
 
     return(
-      <div className="setting-body" style={url?{margin:'0',padding:'0'}:{}}>
-          {contextHolder}
-          <div style={url?{}:{margin:'15px 0 15px 15px'}}>
-              <FormHeader
-                title={"Edit " +title+ " Form"}
-                loading={loading}
-                btnDisabled={btnDisabled}
-                setModalState={setModalState}
-                modalState={modalState}
-                handelSave={handelSave}
-                url={url}
-                
-                btnVisibility={true}
-              />
-              {/* left side properties */}
-              <div className="left-sidebar">
-                  <div className="left-sidebar-inner">
+      <div className="setting-body">
+        {contextHolder}
+        <div className="setting-body-inner">
+          <div className="setting-body-inner">
 
-                      {
-                      isPropOpen?
-                      
-                      <AddProperty back={()=>setProp(false)}/>
-                      
-                      :
-                      <>
-                          {/* main content of property */}
-                          <div className="left-sidebar-item">
-                              <div className="left-sidebar-item-text" onClick={()=>setProp(true)} >Add properties</div>
-                              <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                          </div>
-                          <Divider/>
-                          <div className="left-sidebar-item">
-                              <div className="left-sidebar-item-text">Add conditional logic</div>
-                              <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                          </div>
-                          <Divider/>
-                          <div className="left-sidebar-item">
-                              <div className="left-sidebar-item-text">Add associations </div>
-                              <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                          </div>
-                      </>
-                      }
+            <div className="setting-body-title">
 
-                  </div>
+              <div className='setting-body-inner-title'>
+                Edit Branch Form
               </div>
 
-              {/* main body */}
-              
-              <div className="form-section">
-                  <div className="form-section-inner">
-                      <div className="modal-header-title">
-                          Create {title}
+              <div className='btn-group' style={{gap:'20px'}}>
+                <button disabled={loading} className={loading?"drawer-outlined-btn disabled-btn": "drawer-outlined-btn"} onClick={()=>navigate("/formview")}>Preview</button>
+                <button disabled={loading || btnDisabled} className={loading || btnDisabled? "drawer-filled-btn disabled-btn":"drawer-filled-btn "} onClick={handelSave}> {loading? <Spinner/> : "Save"}</button>   
+              </div>
+
+            </div>
+
+            <div className="text">
+              The Edit Branch Form streamlines the creation of new branches. It collects essential information like branch name, location, contact details.
+            </div>
+
+            <div className="form-section">
+                <div className="form-section-inner">
+                    <div className="modal-header-title">
+                      <span> Edit {title} Form </span>  
+                      <Popover
+                        content={"Click to edit this form"}
+                      > 
+                        <FontAwesomeIcon onClick={()=>setOpenDrawer(true)} icon={faEllipsisH} style={{color:'white', cursor: 'pointer'}}/> 
+                      </Popover>
+                    </div>
+                    
+                    <div className="form-section-body form" style={{marginTop:'3%'}}> 
+                    {loading &&
+                    <div style={{
+                      height:'100%',
+                      width: "90%",
+                      background: "white",position:'absolute',
+                      opacity: 0.8,}}>
+                        <Loader/>
                       </div>
-                      
-                      <div className="form-section-body form"> 
-                      {loading &&
-                      <div style={{
-                        height:'100%',
-                        width: "90%",
-                        background: "white",position:'absolute',
-                        opacity: 0.8,}}>
-                          <Loader/>
-                        </div>
-                      }
+                    }
 
-                      
+                    
 
-                        {/* branch name */}
-                        {mandatory?.map((field)=>(
-                          <div className="icon-wrapper">
-                            <div className="delete-icon">
-                              <Popover 
-                                overlayClassName="custom-popover"
-                                content={"This Property is a part of object schema"} 
-                                placement='top'
-                              >
-                                <FontAwesomeIcon icon={faTrashAlt} />
-                              </Popover>
-                              
-                              <Popover 
-                                overlayClassName="custom-popover"
-                                content={"Conditional logic is not available for non-enumerated properties."} 
-                                placement='top'
-                              >
-                                <ApartmentOutlined />
-                              </Popover>
-
-                              
-                              <Popover 
+                      {/* branch name */}
+                      {mandatory?.map((field)=>(
+                        <div className="icon-wrapper">
+                          <div className="delete-icon">
+                            <Popover 
                               overlayClassName="custom-popover"
-                              content={"Make this property mandatory"} 
+                              content={"This Property is a part of object schema"} 
                               placement='top'
-                              >
-                                <FontAwesomeIcon icon={faAsterisk} />
-                              </Popover>
-
-                            </div>
-                            <div
-                              className="edit-form-input-control input inputItemList"   
-                              style={{backgroundImage: "none", cursor: "auto"}}                    
                             >
-                              <span className='draggeableTable-text'>
-                                {field?.propertyDetail?.label}
-                              </span>
-                            </div>
+                              <FontAwesomeIcon icon={faTrashAlt} />
+                            </Popover>
+                            
+                            <Popover 
+                              overlayClassName="custom-popover"
+                              content={"Conditional logic is not available for non-enumerated properties."} 
+                              placement='top'
+                            >
+                              <ApartmentOutlined />
+                            </Popover>
+
+                            
+                            <Popover 
+                            overlayClassName="custom-popover"
+                            content={"Make this property mandatory"} 
+                            placement='top'
+                            >
+                              <FontAwesomeIcon icon={faAsterisk} />
+                            </Popover>
+
                           </div>
-                        ))}
-
-                        <DraggableList objectRefetch={branchObjectRefetch} reorderSchema={reorderBranchSchema} list={branchSchemaNewFields?.length>0 ? branchSchemaLocal.sort((a, b) => a?.order - b?.order) : []} />        
-                                      
+                          <div
+                            className="edit-form-input-control input inputItemList"   
+                            style={{backgroundImage: "none", cursor: "auto"}}                    
+                          >
+                            <span className='draggeableTable-text'>
+                              {field?.propertyDetail?.label}
+                            </span>
+                          </div>
                         </div>
-                      
-                      
+                      ))}
 
-                  </div>
-              </div>
+                      <DraggableList objectRefetch={branchObjectRefetch} reorderSchema={reorderBranchSchema} list={branchSchemaNewFields?.length>0 ? branchSchemaLocal.sort((a, b) => a?.order - b?.order) : []} />        
+                                    
+                      </div>
+                    
+                    
+
+                </div>
+            </div>
+
           </div>
-            
         </div>
+        {/* side drawer */}
+        <AddProperty
+          close={()=>setOpenDrawer(false)}
+          visible={openDrawer}
+        />
+      </div>
     );
 }
 

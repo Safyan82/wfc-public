@@ -7,6 +7,7 @@ query($objectType: String!){
             name
             properties
             tabs
+            propertyList
         }
 }
 `;

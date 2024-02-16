@@ -1,19 +1,55 @@
-.hr-body{
+
+.tab-body{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
     background: rgb(245, 248, 250);
     /* height: calc(100vh - 120px); */
     min-height: 100vh;
-    margin: 5px 20px;
-    display: flex;
-    gap: 50px;
-    /* overflow: auto; */
-    margin-bottom: 35px;
-    padding-bottom: 100px;
 }
+
+.tab-grp{
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    width: 15%;
+    background-color: white;
+    padding:50px 20px;
+}
+
+.tab-grp li{
+    list-style: none;
+    background-color: rgb(245, 248, 250);
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.tab-grp li:hover{
+    background-color: #e5f5f8;
+    cursor: pointer;
+}
+
+.activeTab{
+    border-left: 4px solid rgb(0, 164, 189);
+    background-color: #e5f5f8;
+}
+
+.tab-header{
+    font-size: 18px;
+    font-weight: 400;
+    width: 200px;
+    border-bottom: 2px solid rgb(0, 164, 189);
+    padding-bottom: 5px;
+    margin-bottom: 16px;
+}
+
 
 .hr-info, .employment-info, .contract{
     background-color: white;
     box-shadow: 1px 1px 1px rgb(245, 248, 250);
     padding: 16px 20px;
+    margin: 2%;
 }
 
 .hr-info{
@@ -48,9 +84,9 @@
     column-gap: 20px;
     z-index: 999;
     width: -webkit-fill-available;
-    top: 90vh;
+    bottom: 0;
 }
 
-.ant-select-selection-search input{
-    padding-bottom: 20px !important;
+.ant-select-selection-search {
+    margin-top: -25px !important;
 }
