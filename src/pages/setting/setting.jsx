@@ -118,11 +118,15 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                         </div>
                     </div>
             </div> 
-            {/* <div style={{width: '100%',}}> */}
-                {isModalOpen? null : <Outlet/>}
-                
-            {/* </div> */}
+            <Outlet/> 
+            
             </div>
         </>
     );
 }
+
+{/* <div style={{width: '100%',}}> */}
+                // {isModalOpen? null : 
+                // }
+                
+            {/* </div> */}

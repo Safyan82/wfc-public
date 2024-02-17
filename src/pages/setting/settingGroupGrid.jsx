@@ -152,7 +152,7 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
       <>
       <Table 
         columns={columns} 
-        dataSource={[...groupList?.groupList]} 
+        dataSource={groupList?.length>0?[...groupList?.groupList]:null} 
         // rowSelection={rowSelection}
         onChange={handleChange}
         

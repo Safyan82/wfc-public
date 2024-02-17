@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { selectedSearchMutation } from '../../util/mutation/selectedSearch.mutation';
 import { selectedSearchQuery } from '../../util/query/selectedSearch.query';
 
-export const SearchView = React.memo(()=>{
+export const SearchView = React.memo(({setPlaceholder})=>{
     const [filters, setFilters] = useState(['Branch', 'Employee', 'Schedule', 'Site', 'Customer'])
     const [getSearchResult, {loading, error}] = useMutation(SearchMutation);
     const {query, isModalOpen, searchFilter} = useSelector(state => state.searchReducer);
@@ -201,7 +201,7 @@ export const SearchView = React.memo(()=>{
                         </div>:null}
 
                         <FontAwesomeIcon 
-                            onClick={()=>dispatch(resetSearchState())}
+                            onClick={()=>{dispatch(resetSearchState()); setPlaceholder(false);}}
                             style={{fontSize:'16px',cursor:'pointer'}}
                             icon={faTimes}
                         />

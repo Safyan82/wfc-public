@@ -141,6 +141,7 @@ function App() {
 
           {/* setting navigation layout under hte main navigation*/}
           <Route path={routes.setting} element={<PrivateRoutes><Setting /></PrivateRoutes>}  >
+            <Route index element={<User/>} />
             <Route path={routes.propertySetting} exact element={<PropertySetting/>} />
             <Route path={routes.addUser} element={<User/>} />
             <Route path={routes.userRole} element={<UserRole/>} />
