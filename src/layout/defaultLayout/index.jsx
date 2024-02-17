@@ -16,9 +16,9 @@ export function DefaultLayout({themeData, themeLoading, refetchTheme}){
             :
             <>
                 <Navbar themeData={themeData} themeLoading={themeLoading} refetchTheme={refetchTheme} />
-                {isModalOpen? null:
+                {/* {isModalOpen? null: */}
                     <Outlet/>
-                }
+                {/* } */}
             </>
             }
         </div>

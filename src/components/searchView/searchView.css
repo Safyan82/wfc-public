@@ -1,7 +1,7 @@
 
 .searchViewModalParent{
     position: fixed;
-    z-index: 9;
+    z-index: 997;
     background: white;
     width: 100%;
     top: 5.2vh;

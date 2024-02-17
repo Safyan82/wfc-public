@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from 'react';
+import React,{ useEffect, useRef, useState } from 'react';
 import { Menu, Input, Space, Avatar, Layout, Header, Dropdown, Checkbox } from 'antd';
 import {
   SearchOutlined,
@@ -33,7 +33,7 @@ const { SubMenu } = Menu;
 
 
 
-const UserMenu = ({visible, setVisible, employeeDetail, handelLogout, selectedTheme, setThemeToChange}) => {
+const UserMenu = ({visible, setVisible, employeeDetail, handelLogout, selectedTheme, setThemeToChange, setMoreOption}) => {
 
     const themes = ['#2e3f50', '#008080', '#673ab7', '#708090', '#FF6B6B'];
 
@@ -75,7 +75,7 @@ const UserMenu = ({visible, setVisible, employeeDetail, handelLogout, selectedTh
     );
   
     return (
-      <Dropdown overlay={menu} visible={visible} placement="bottomLeft" onClick={()=>setVisible(!visible)}>
+      <Dropdown overlay={menu} visible={visible} placement="bottomLeft" onClick={()=>{setVisible(!visible);setMoreOption(false);}}>
         <div className='user-avatar' style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
           <Avatar size={"large"}>{employeeDetail?.firstname[0]+ " " +employeeDetail?.lastname[0]}</Avatar>
           <span style={{ marginLeft: '8px' }}>{employeeDetail?.firstname}</span>
@@ -202,6 +202,39 @@ export function Navbar({themeData, themeLoading, refetchTheme}){
         navigate(path);
     }
 
+    // search dropdown
+
+    // Event listener to close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // Get the dropdown DOM node
+            if (!event.target.closest('.ant-dropdown') && !event.target.closest('.ant-input-suffix')) {
+                setOpenSearchOption(false);
+              
+            }
+
+            if(!event.target.closest('.ant-dropdown') && !event.target.closest('.ant-dropdown-trigger')){
+                setVisible(false);
+                setMoreOption(false);
+            }   
+
+            if( !event.target.closest('.searchViewModalParent') && !event.target.closest(".search") && !event.target.closest('.ant-dropdown') && !event.target.closest('.ant-input-suffix') ){
+                dispatch(resetSearchState());
+                setPlaceholder(false);
+            }
+
+
+        };
+    
+        // Add the event listener
+        document.addEventListener('click', handleClickOutside);
+    
+        // Clean up
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
     return(
         themeLoading?
         null
@@ -235,7 +268,7 @@ export function Navbar({themeData, themeLoading, refetchTheme}){
                             <Menu.Item key="siteGrp" onClick={()=>handelNavigate("/user/sitegroup")} className='menu-item'>Site Groups</Menu.Item>
                             <Menu.Item key="customer" onClick={()=>handelNavigate("/user/customer")} className='menu-item'>Customers</Menu.Item>
                         </Menu>
-                    } visible={moreOption} placement="bottomLeft" onClick={()=>setMoreOption(!moreOption)}>
+                    } visible={moreOption} placement="bottomLeft" onClick={()=>{ setMoreOption(!moreOption); setVisible(false); }}>
                         <span>More <span className='caret-white'></span></span>
                     </Dropdown>
 
@@ -266,8 +299,11 @@ export function Navbar({themeData, themeLoading, refetchTheme}){
                                         <Checkbox checked={searchFilter?.find((f)=>f=="Customer")}  onChange={(e)=>dispatch(handelSearchFilter("Customer"))}>Customer</Checkbox>
                                     </Menu.Item>
                                 </Menu>
-                            } visible={openSearchOption} placement="bottomLeft">
-                                <FontAwesomeIcon style={{margin:'0 5px', color: localStorage.getItem('color') || selectedTheme}} icon={faEllipsisVertical} onClick={()=>setOpenSearchOption(!openSearchOption)}/> 
+                            } visible={openSearchOption} placement="bottomLeft"
+
+                            >
+                                <FontAwesomeIcon style={{margin:'0 5px', color: localStorage.getItem('color') || selectedTheme}} icon={faEllipsisVertical} onClick={()=>{setOpenSearchOption(!openSearchOption);  setVisible(false);
+                                setMoreOption(false);}}/> 
                             </Dropdown>
                             
                             : <SearchOutlined style={{margin:'0 5px', color: localStorage.getItem('color') || selectedTheme}} />}
@@ -302,14 +338,14 @@ export function Navbar({themeData, themeLoading, refetchTheme}){
                 </Menu.Item>
                 {authenticatedUserDetail?.employeeDetail?
                 <Menu.Item>
-                    <UserMenu selectedTheme={selectedTheme} setThemeToChange={setThemeToChange} visible={visible} handelLogout={handelLogout} employeeDetail={authenticatedUserDetail?.employeeDetail[0]} setVisible={setVisible} />
+                    <UserMenu selectedTheme={selectedTheme} setThemeToChange={setThemeToChange} visible={visible} handelLogout={handelLogout} employeeDetail={authenticatedUserDetail?.employeeDetail[0]} setVisible={setVisible} setMoreOption={setMoreOption} />
                 </Menu.Item>
                 : null}
             
             </Menu>
 
             {
-                isModalOpen && <SearchView/>
+                isModalOpen && <SearchView setPlaceholder={setPlaceholder} />
             }
 
         </Layout> 

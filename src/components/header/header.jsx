@@ -12,7 +12,7 @@ export const FormHeader = (
             <div className="toolbar">
                 <div className="toolbar-inner">
                     {url?
-                    <div className="toolbar-inner-link"  onClick={()=>navigate(url)}>
+                    <div className="toolbar-inner-link"  onClick={()=>navigate(-1)}>
                         <div><FontAwesomeIcon icon={faChevronLeft} style={{fontSize:'20px'}} /></div>
                         <div>Back</div>
                     </div>
