@@ -13,7 +13,7 @@ import { Loader } from '../../components/loader';
 import { objectType } from '../../util/types/object.types';
 
 
-export const AddProperty=({back, close, visible})=>{
+export const AddProperty=({back, close, visible, isPropOpen, setProp})=>{
 
     const {data, loading, refetch} = useQuery(GetPropertyByGroupQuery,{
         fetchPolicy:'network-only',
@@ -185,7 +185,6 @@ export const AddProperty=({back, close, visible})=>{
         }
     };  
 
-    const [isPropOpen, setProp] = useState(false);
 
     return(
         <>
@@ -195,7 +194,7 @@ export const AddProperty=({back, close, visible})=>{
                 <div style={{display: 'flex', gap: '20px', alignItems: 'center'}}>
                     
                     <span>Add properties</span>
-                    <FontAwesomeIcon icon={faChevronLeft} style={{cursor:'pointer'}} onClick={()=>setProp(false)} />
+                    {/* <FontAwesomeIcon icon={faChevronLeft} style={{cursor:'pointer'}} onClick={()=>setProp(false)} /> */}
                 </div>
                 :
                 "Edit Branch Form"
@@ -262,24 +261,24 @@ export const AddProperty=({back, close, visible})=>{
             </>
 
             :
-
-            <>
-                {/* main content of property */}
-                <div className="left-sidebar-item">
-                    <div className="left-sidebar-item-text" onClick={()=>setProp(true)} >Add properties</div>
-                    <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                </div>
-                <Divider/>
-                <div className="left-sidebar-item">
-                    <div className="left-sidebar-item-text">Add conditional logic</div>
-                    <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                </div>
-                <Divider/>
-                <div className="left-sidebar-item">
-                    <div className="left-sidebar-item-text">Add associations </div>
-                    <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
-                </div>
-            </>
+                null
+            // <>
+            //     {/* main content of property */}
+            //     <div className="left-sidebar-item">
+            //         <div className="left-sidebar-item-text" onClick={()=>setProp(true)} >Add properties</div>
+            //         <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+            //     </div>
+            //     <Divider/>
+            //     <div className="left-sidebar-item">
+            //         <div className="left-sidebar-item-text">Add conditional logic</div>
+            //         <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+            //     </div>
+            //     <Divider/>
+            //     <div className="left-sidebar-item">
+            //         <div className="left-sidebar-item-text">Add associations </div>
+            //         <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
+            //     </div>
+            // </>
 
         }
 

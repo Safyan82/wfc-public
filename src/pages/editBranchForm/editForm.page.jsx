@@ -178,9 +178,15 @@ export const EditForm=()=>{
                     <div className="modal-header-title">
                       <span> Edit {title} Form </span>  
                       <Popover
-                        content={"Click to edit this form"}
+                        content={
+                          <div className="editFormPop">
+                            <span  onClick={()=>{setOpenDrawer(true);setProp(true);}} >Add properties</span>
+                            <span className='disabled'>Add conditional logic</span>
+                            <span className='disabled'>Add associations</span>
+                          </div>
+                        }
                       > 
-                        <FontAwesomeIcon onClick={()=>setOpenDrawer(true)} icon={faEllipsisH} style={{color:'white', cursor: 'pointer'}}/> 
+                        <FontAwesomeIcon icon={faEllipsisH} style={{color:'white', cursor: 'pointer'}}/> 
                       </Popover>
                     </div>
                     
@@ -253,6 +259,8 @@ export const EditForm=()=>{
         <AddProperty
           close={()=>setOpenDrawer(false)}
           visible={openDrawer}
+          isPropOpen={isPropOpen}
+          setProp={setProp}
         />
       </div>
     );

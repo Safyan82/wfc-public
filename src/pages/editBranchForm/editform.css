@@ -362,3 +362,22 @@
 :where(.css-dev-only-do-not-override-12jzuas).ant-checkbox-disabled+span {
     color: rgba(0, 0, 0, 1) !important;
 }
+
+.editFormPop{
+    
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+}
+
+.editFormPop span{
+
+    padding: 16px 10px;
+    cursor: pointer;
+
+}
+
+.editFormPop span:hover{
+    background-color: rgba(0, 0, 0, 0.4);
+}

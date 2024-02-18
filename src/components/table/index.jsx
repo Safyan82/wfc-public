@@ -76,7 +76,7 @@ export const DataTable = ({
                   <div 
                     onClick={()=>history('/user/'+detailpage+record.key)}
                     className={showActions? 'prev-btn' : null}
-                    style={{color:'#0091ae'}}
+                    style={prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="firstname" || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname"?{color:'#0091ae'}:{}}
                   >
                     {record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}
                   
