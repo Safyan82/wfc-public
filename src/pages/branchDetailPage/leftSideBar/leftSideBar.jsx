@@ -23,10 +23,12 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
 
     
     const {data: branchObjectdata , loading: branchObjectLoading} = useQuery(GetBranchObject);
+    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);   
+
 
     const {data: branchViewForUser, loading: branchViewForUserLoading, refetch: branchViewForUserRefetch} = useQuery(BranchViewForSpecificUser,{
         variables:{
-            createdBy: "M Safyan",
+            createdBy: authenticatedUserDetail?._id,
             createdFor: branchId,
         },
         fetchPolicy: 'cache-and-network'
@@ -112,7 +114,6 @@ export const DetailPageLeftSideBar = ({branchId, singleBranchData,
     });
 
     
-    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
     const [readonlyProp, setReadOnlyProp] = useState([]);
     useEffect(()=>{
         let readOnly = [];

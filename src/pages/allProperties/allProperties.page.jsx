@@ -26,6 +26,9 @@ export const AllProperties  = () => {
 
     const [propToRemove, setPropToRemove] = useState(null);
     
+    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);   
+
+
     useEffect(()=>{
 
         if(!branchObjectLoading){
@@ -44,7 +47,7 @@ export const AllProperties  = () => {
     const [addBranchViewDetail, {loading, error}] = useMutation(AddBranchDetailViewMutation);
     const {data: branchViewForUser, loading: branchViewForUserLoading, refetch: branchViewForUserRefetch} = useQuery(BranchViewForSpecificUser,{
         variables:{
-            createdBy: "M Safyan",
+            createdBy: authenticatedUserDetail?._id,
             createdFor: singleBranchData?.id,
         },
         fetchPolicy: 'network-only'
@@ -59,7 +62,7 @@ export const AllProperties  = () => {
                 input:{
                     properties: properties,
                     createdFor: singleBranchData?.id,
-                    createdBy: "M Safyan",
+                    createdBy: authenticatedUserDetail?._id,
                     _id: branchViewForUser?.getUserBranchView?.response?._id,
                 }
             }

@@ -561,7 +561,7 @@ export const FormDrawer = ({ objectLoading,
               </div>
             }
           >
-            <div className='title' 
+            {/* <div className='title' 
                 style={objectLoading?{opacity:0.4}:{opacity:1}}
                 onClick={()=>navigate(to,{
                     state: {
@@ -569,7 +569,7 @@ export const FormDrawer = ({ objectLoading,
                     url:from,
                     }
                 })}
-            ><FontAwesomeIcon icon={faExternalLink} style={{ marginLeft: 4 }} /> Edit this form </div>
+            ><FontAwesomeIcon icon={faExternalLink} style={{ marginLeft: 4 }} /> Edit this form </div> */}
           
             <form id="branchForm" className='form'>
                 <div className={isoverlay? 'overlay' : 'overlay hidden'}>

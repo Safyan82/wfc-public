@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Tabs, Popover, Input, Button } from 'antd';
 import dragimg from '../../assets/img/draggable.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { faClose, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { faAdd, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { CreateView } from './modal/createView.modal';
 import { useMutation, useQuery } from '@apollo/client';
@@ -73,6 +73,8 @@ const DraggableTab = ({viewList, refetch,
 
   const [pinView, setPinView] = useState();
   
+  const [newView, setNewView] = useState(false);
+
   const handelSelectedView = async(prop)=>{
     dispatch(resetAll());
     const selectedSingleView = viewList?.find((view)=>view._id==prop.id);
@@ -80,21 +82,23 @@ const DraggableTab = ({viewList, refetch,
 
     sessionStorage.setItem("selectedViewId", prop?._id)
 
-
-    setSelectedView(prop.label);
-    setPinView(prop.key);
-    await updateView({
-      variables:{
-        input: {
-          _id: prop._id,
-          isStandard: true,
-        }
-      }
-    });
-
     if(!isExist){
-      setItems([...items, {key: (items.length+1).toString(), label: selectedSingleView?.name, ...selectedSingleView}]);
-      setActiveKey((items.length+1).toString());
+      if(items?.length<5){
+
+        await updateView({
+          variables:{
+            input: {
+              _id: prop._id,
+              isStandard: true,
+            }
+          }
+        });
+        setItems([...items, {key: prop.id, label: selectedSingleView?.name, ...selectedSingleView}]);
+        setNewView(prop?.id);
+      }else{
+        setItems([...items.slice(0,5), {key: prop.id, label: selectedSingleView?.name, ...selectedSingleView}])
+        setNewView(prop?.id);
+      }
     }else{
       setActiveKey(isExist.key.toString());
     }
@@ -110,37 +114,49 @@ const DraggableTab = ({viewList, refetch,
       dispatch(resetAdvanceFilter());
     }
   };
+
+  // handel to active new view
+
+  useEffect(()=>{
+    if(newView){
+      setActiveKey((newView).toString());
+      setSelectedView((newView).toString())
+      setPinView((newView).toString())
+      setNewView(false);
+    }
+  },[newView, items]);
  
 
   useEffect(()=>{
     if(viewList){
-      const d = viewList?.filter((item)=>item?.isStandard)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id}))
+      const d = viewList?.filter((item)=>item?.isStandard)?.map((list, index)=>({...list, key: list._id, label:list.name, id: list._id})).sort((a, b) => a.updatedAt - b.updatedAt);
         
       setItems(
-        viewList?.filter((item)=>item?.isStandard)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id}))
+        viewList?.filter((item)=>item?.isStandard)?.map((list, index)=>({...list, key: list._id, label:list.name, id: list._id})).sort((a, b) => a.updatedAt - b.updatedAt)
       );
-      setView(viewList?.filter((branchView)=> !branchView?.isManual)?.map((list, index)=>({...list, key: index.toString(), label:list.name, id: list._id})));
+      setView(viewList?.filter((branchView)=> !branchView?.isManual)?.map((list, index)=>({...list, key: list._id, label:list.name, id: list._id})));
       setCreatedView(
-        viewList?.filter((branchView)=> branchView?.isManual)?.map((list, index)=>({key: index.toString(), label:list.name, id: list._id, ...list}))
+        viewList?.filter((branchView)=> branchView?.isManual)?.map((list, index)=>({key: list._id, label:list.name, id: list._id, ...list}))
       );
       if(!sessionStorage.getItem('selectedViewId')){
+
         sessionStorage.setItem("selectedViewId", d[0]?.id);
       
       
         // Handel page load first time to active tab
 
         dispatch(resetAll());
-        setActiveKey('0');
-        setPinView('0');
+        setActiveKey(d[0]?.id);
+        setPinView(d[0]?.id);
 
-        if(viewList[0]?.quickFilter && Object.keys(viewList[0]?.quickFilter).length>0){
+        if( d[0]?.quickFilter && Object.keys(d[0]?.quickFilter).length>0){
           
-          dispatch(setQuickFilter(viewList[0]?.quickFilter));
+          dispatch(setQuickFilter(d[0]?.quickFilter));
         }else{
           dispatch(resetQuickFilter());
         }
-        if(viewList[0]?.advanceFilter && viewList[0]?.advanceFilter?.length>0){
-          dispatch(setAdvanceFilter(viewList[0]?.advanceFilter));
+        if(d[0]?.advanceFilter && d[0]?.advanceFilter?.length>0){
+          dispatch(setAdvanceFilter(d[0]?.advanceFilter));
         }else{
           dispatch(resetAdvanceFilter());
         }
@@ -191,7 +207,7 @@ const DraggableTab = ({viewList, refetch,
   }, []);
 
   const removeView = async (rmItm) => {
-    setItems(items?.filter(item=>item.key!=rmItm.key));
+    setItems(items?.filter(item=>item.key!=rmItm.key).sort((a, b) => a.updatedAt - b.updatedAt));
     await updateView({
       variables:{
         input: {
@@ -200,12 +216,12 @@ const DraggableTab = ({viewList, refetch,
         }
       }
     });
-    handelActiveTab((Number(items?.length)-1).toString());
+    handelActiveTab((items?.filter(item=>item.key!=rmItm.key).sort((a, b) => a.updatedAt - b.updatedAt)[0]?.key).toString());
   };
 
 
   const handelActiveTab = (e)=>{
-    console.log(viewList, "viewList", items)
+    console.log(e, "viewList")
     dispatch(resetAll());
     setActiveKey(e);
     setPinView(e.toString());
@@ -235,7 +251,7 @@ const DraggableTab = ({viewList, refetch,
   return (
     <>
       <div
-        className='setting-body-inner' style={{
+        className='setting-body-inner grid-tabs' style={{
           padding: '25px 48px 0px', 
           display: 'flex', alignItems:'center'
         }}
@@ -243,7 +259,7 @@ const DraggableTab = ({viewList, refetch,
         <Tabs       
           closeIcon={true}
           onChange={(e)=>handelActiveTab(e)}
-          style={items?.length===3?{minWidth:'35%'}:null}
+          
           renderTabBar={(tabBarProps, DefaultTabBar) => (
             <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
               <SortableContext items={items.map((i) => i.key)} strategy={horizontalListSortingStrategy}>
@@ -259,14 +275,22 @@ const DraggableTab = ({viewList, refetch,
           )}
           activeKey={activeKey}
         >
-          {items?.map((item)=>(
+          {items?.map((item, index)=>(
 
             <Tabs.TabPane  tab={
               <div className='dragContent'>
                 {items?.length>1?
                 <>
+                  {index>4?
+                  <Popover
+                    content={"You have hit the limit of open views."}
+                  >
+                    <FontAwesomeIcon icon={faWarning} style={{color: 'orange', margin: '0 10px'}} />
+                  </Popover>
+                  : 
                   <img src={dragimg} alt="" className='dragimg'/> 
-                  <div>{item.label}</div> 
+                  }
+                  <div style={{width:'100%'}}>{item.label}</div> 
                   <FontAwesomeIcon 
                   style={{marginLeft:'15px',marginRight:'-15px'}} 
                   className={pinView==item.key?'':'dragimg'} icon={faClose} 
@@ -274,12 +298,16 @@ const DraggableTab = ({viewList, refetch,
                   />
                 </> : 
                 <>
+                  {index>4?
+                  <FontAwesomeIcon icon={faWarning} />
+                  : 
                   <img src={dragimg} alt="" className='dragimg'/> 
-                  <div>{item.label}</div>
+                  }
+                  <div style={{width:'100%'}}>{item.label}</div>
                 </>
                 }
               </div>
-            } key={item.key} tabKey={item.key} />
+            } key={item?.key} tabKey={item?.key} />
 
           ))}
         </Tabs>

@@ -231,6 +231,10 @@ input:disabled{
     /* margin-top: 8%; */
 }
 
+.detailInputParent b{
+    font-weight:400;
+}
+
 .detail-section-focus{
     display: block;
 }

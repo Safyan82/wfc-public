@@ -3,7 +3,7 @@
     justify-content: flex-start;
     align-items: center;
     margin-left: -25px;
-    width: 100%;
+    /* width: 100%; */
 }
 
 .dragimg{
@@ -14,4 +14,12 @@
 }
 .ant-tabs-tab:hover .dragimg{
     visibility: visible;
+}
+
+.grid-tabs .ant-tabs-tab{
+    width: 250px;
+}
+
+.grid-tabs .ant-tabs-tab-btn{
+    width: 100% !important;
 }
