@@ -20,7 +20,9 @@ import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 
 export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, handelInputChange})=>{
-  
+    
+    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
+
     const [phoneNumber, setPhoneNumber] = useState();
 
     const phoneInputRef = useRef(null);
@@ -30,7 +32,7 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
 
     const {data: employeeDetailViewData, loading: employeeDetailViewLoading, refetch: employeeDetailViewRefetch} = useQuery(getUserEmployeeDetailView,{
         variables:{
-            createdBy: "M Safyan",
+            createdBy: authenticatedUserDetail?._id,
             createdFor: singleEmployee?._id,
         },
         fetchPolicy: 'network-only'
@@ -41,17 +43,17 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
         if(employeeDetailViewData?.getUserEmployeeDetailView?.response){
             
             const view = employeeDetailViewData?.getUserEmployeeDetailView?.response?.properties?.filter((prop)=>(
-                employeeObject?.find(prp => prp.propertyId== prop)));
+                employeeObject?.find(prp => prp._id== prop)));
                 
                 setViewProperties(view?.map((prop)=>{
-                const property = employeeObject?.find(prp => prp.propertyId == prop)
+                const property = employeeObject?.find(prp => prp._id == prop)
                 return {
-                    _id: property?.propertyId,
+                    _id: property?._id,
                     ...property
                 }
             }));
-
-            console.log(employeeObject, "employeeObject", view);
+            
+            console.log(employeeDetailViewData?.getUserEmployeeDetailView?.response, "employeeObject", employeeObject, view);
 
 
         }
@@ -98,7 +100,6 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
         }
     });
 
-    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
     const [readonlyProp, setReadOnlyProp] = useState([]);
     useEffect(()=>{
         let readOnly = [];

@@ -24,6 +24,7 @@ import { AddEmployeeDetailView } from "../../util/mutation/employeeDetailView.mu
 export const EmployeeDetailViewPage  = () => {
 
     const param = useParams();
+    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);   
 
 
     // Employee Default object
@@ -48,7 +49,7 @@ export const EmployeeDetailViewPage  = () => {
             }, {});
             setGroupedProp(groupedData);
         }
-    },[employeeSchema]);
+    },[employeeSchema, employeeObjectLoading]);
     
     
 
@@ -57,7 +58,7 @@ export const EmployeeDetailViewPage  = () => {
     
     const {data: employeeDetailViewData, loading: employeeDetailViewLoading, refetch: employeeDetailViewRefetch} = useQuery(getUserEmployeeDetailView,{
         variables:{
-            createdBy: "M Safyan",
+            createdBy: authenticatedUserDetail?._id,
             createdFor: param?.id,
         },
         fetchPolicy: 'network-only'
@@ -79,7 +80,7 @@ export const EmployeeDetailViewPage  = () => {
                 input:{
                     properties: properties[0]?._id? properties.map((prop)=>prop._id) : properties,
                     createdFor: param?.id,
-                    createdBy: "M Safyan",
+                    createdBy: authenticatedUserDetail?._id,
                     _id: employeeDetailView?._id,
                 }
             }
@@ -326,9 +327,9 @@ export const EmployeeDetailViewPage  = () => {
                         <div style={{display:'flex', justifyContent:'center', paddingTop:'3%'}}><Spinner/></div>
                         :
                         <div style={{paddingLeft: '5%', paddingBottom: '5%'}} className='allprop'>
-                            {loading || employeeDetailViewLoading || employeeObjectLoading?
+                            {/* {loading || employeeDetailViewLoading || employeeObjectLoading?
                             null
-                            :
+                            : */}
                             <DraggableList editColumn={true} 
                                 handelAddBranches={handelAddBranches} 
                                 updateUserBranchView = {updateUserBranchView} 
@@ -341,7 +342,7 @@ export const EmployeeDetailViewPage  = () => {
                                     }))
                                 } /> 
 
-                            }      
+                            {/* }       */}
                         </div>
                     }
 
