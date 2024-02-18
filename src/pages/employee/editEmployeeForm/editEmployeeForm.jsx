@@ -186,11 +186,20 @@ export const EditEmployeeForm=()=>{
                   <div className="form-section-inner">
                       <div className="modal-header-title">
                           Edit Employee Form
+                            
                           <Popover
-                            content={"Click to edit this form"}
+                            content={
+                              <div className="editFormPop">
+                                <span  onClick={()=>{setOpenDrawer(true);setProp(true);}} >Add properties</span>
+                                <span className='disabled'>Add conditional logic</span>
+                                <span className='disabled'>Add associations</span>
+                              </div>
+                            }
+
                           > 
-                            <FontAwesomeIcon onClick={()=>setOpenDrawer(true)} icon={faEllipsisH} style={{color:'white', cursor: 'pointer'}}/> 
+                            <FontAwesomeIcon icon={faEllipsisH} style={{color:'white', cursor: 'pointer'}}/> 
                           </Popover>
+
                       </div>
                       
                       <div className="form-section-body form"  style={{marginTop:'3%'}}> 
@@ -267,6 +276,8 @@ export const EditEmployeeForm=()=>{
           <AddProperty
             close={()=>setOpenDrawer(false)}
             visible={openDrawer}
+            setProp={setProp}
+            isPropOpen={isPropOpen}
           />
             
         </div>
