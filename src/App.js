@@ -38,6 +38,7 @@ import { Join } from './pages/join/join';
 import { UserDetailPage } from './pages/userDetail/userDetail.page';
 import { useDispatch } from 'react-redux';
 import { setNotification } from './middleware/redux/reducers/notification.reducer';
+import { UserPerference } from './pages/userPerference/userPerference';
 
 
 
@@ -119,6 +120,8 @@ function App() {
 
           {/* private routes */}
           <Route path='/user/' element={<PrivateRoutes><DefaultLayout/></PrivateRoutes>}>
+
+            <Route path='perference' exact element={<UserPerference/>}/>
 
             <Route path='branch' exact element={<Branch />}/>
             <Route path='branch-detail/:id' element={<BranchDetailPage/>} />

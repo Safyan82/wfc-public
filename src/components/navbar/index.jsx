@@ -11,7 +11,7 @@ import {
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import logo from '../../assets/img/wfc-new-logo.png';
-import { faBell, faCheck, faCircleDot, faComment, faComments, faEllipsisVertical, faGear, faListDots, faRing } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCheck, faChevronDown, faComment, faComments, faEllipsisVertical, faGear, faListDots, faRing } from '@fortawesome/free-solid-svg-icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './navbar.css';
 import { useSelector } from 'react-redux';
@@ -36,6 +36,7 @@ const { SubMenu } = Menu;
 const UserMenu = ({visible, setVisible, employeeDetail, handelLogout, selectedTheme, setThemeToChange, setMoreOption}) => {
 
     const themes = ['#2e3f50', '#008080', '#673ab7', '#708090', '#FF6B6B'];
+    const navigate = useNavigate();
 
     const menu = (
       <Menu id="profile-menu" style={{width: '290px', borderRadius:'0', border:'1px solid #cbd6e2', marginTop:'-2px',}}>
@@ -46,7 +47,7 @@ const UserMenu = ({visible, setVisible, employeeDetail, handelLogout, selectedTh
                 <div>
                     <div style={{fontSize:'14px', fontWeight:'600'}}>{employeeDetail?.firstname+" "+employeeDetail.lastname}</div>
                     <div className='text' style={{margin:0, color:'#7c98b6'}}>{employeeDetail?.metadata?.email}</div>
-                    <div className='prev-btn'>Profile & Preferences</div>
+                    <div className='prev-btn' onClick={()=>{navigate("/user/perference");setVisible(false)}}>Profile & Preferences</div>
                 </div>
             </div>
 
@@ -79,7 +80,7 @@ const UserMenu = ({visible, setVisible, employeeDetail, handelLogout, selectedTh
         <div className='user-avatar' style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
           <Avatar size={"large"}>{employeeDetail?.firstname[0]+ " " +employeeDetail?.lastname[0]}</Avatar>
           <span style={{ marginLeft: '8px' }}>{employeeDetail?.firstname}</span>
-          <DownOutlined style={{ marginLeft: '8px' }} />
+          <FontAwesomeIcon icon={faChevronDown} style={{ marginLeft: '8px' }} />
         </div>
       </Dropdown>
     );
