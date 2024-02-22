@@ -187,7 +187,7 @@ export const CreateUserComponent = ()=>{
                 <div className="text">Add a new user to your workforce city account with an email address.</div>
             </div>
             
-            <div style={{width:'40%',margin:'auto', display:'table'}}>
+            <div style={{width:'500px',margin:'auto', display:'table'}}>
                 {UserLiveData?.getUserByEmpId?.response?.length!==undefined && !editUserData?.user? <Alert
                     message="Error"
                     description="We can't proceed as this Employee is already associated with an other account."
@@ -195,7 +195,7 @@ export const CreateUserComponent = ()=>{
                     showIcon
                     closable
                 /> : null}
-                <Form.Item>
+                <Form.Item >
                     <LookupSearch
                         setSelectedOption={setemp}
                         selectedOption={emp}
@@ -229,7 +229,6 @@ export const CreateUserComponent = ()=>{
                 </Form.Item>    */}
                 
                 <Form.Item
-                    style={{padding: '0 41px'}}
                 >
                     <Input
                         placeholder="Email Address"
@@ -259,7 +258,6 @@ export const CreateUserComponent = ()=>{
 
                 <Form.Item
                 
-                    style={{padding: '0 41px'}}
                 >
                     <Checkbox
                      onChange= {(e)=>{setManualPasswordPopover(e.target.checked);setPassword('');}}

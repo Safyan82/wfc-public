@@ -1,0 +1,16 @@
+.skill-btn-section{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    gap: 20px;
+    align-items: center;
+}
+
+.otherOption{
+    color:#0091ae
+}
+
+.otherOption:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}

@@ -131,7 +131,7 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
   const [api, contextHolder] = notification.useNotification();
   const deleteRecord = async ()=>{
     if(Object.keys(groupToBeDelete)){
-      await deleteGroup({variables:{deleteGroupId: groupToBeDelete?.key, groupIdToMoveIn: groupIdToMoveIn?.id }});
+      await deleteGroup({variables:{deleteGroupId: groupToBeDelete?.key, groupIdToMoveIn: groupIdToMoveIn?.id || "" }});
       setDeleteConfirmationModal(false);
       await groupRefetch();
       setGroupToBeDelete(null);
@@ -142,6 +142,8 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
       });
     };
   }
+
+  console.log(groupList?.groupList?.map((grp)=>({key: grp?.key, name: grp?.name, properties: grp?.properties})), "groupList?.groupList");
   
   
   return (
@@ -152,7 +154,7 @@ export const SettingGroupPropertyGrid = ({groupList, groupLoading, groupRefetch,
       <>
       <Table 
         columns={columns} 
-        dataSource={groupList?.length>0?[...groupList?.groupList]:null} 
+        dataSource={groupList?.groupList?.length>0?[...groupList?.groupList?.map((grp)=>({key: grp?.key, name: grp?.name, properties: grp?.properties}))]:null} 
         // rowSelection={rowSelection}
         onChange={handleChange}
         

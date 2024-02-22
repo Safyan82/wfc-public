@@ -83,6 +83,7 @@ const DraggableTab = ({viewList, refetch,
     sessionStorage.setItem("selectedViewId", prop?._id)
 
     if(!isExist){
+      console.log(selectedSingleView, items?.length, "viewTest", prop)
       if(items?.length<5){
 
         await updateView({

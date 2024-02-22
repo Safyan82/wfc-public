@@ -1,0 +1,22 @@
+.dropzone {
+    border: 2px dashed #e9e9e9;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.24s ease-in-out;
+  }
+  
+  .dropzone:hover {
+    border-color: #1890ff;
+  }
+  
+  .ant-upload-text {
+    margin-top: 8px;
+    color: rgba(0, 0, 0, 0.85);
+  }
+  
+  .ant-upload-drag-icon {
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 32px;
+  }
+  
