@@ -2,3 +2,9 @@
     height: 87vh;
     overflow: auto;
 }
+
+.createUserModal .ant-modal-footer{
+    bottom: 0 !important;
+    width: 100%;
+    position: absolute;
+}

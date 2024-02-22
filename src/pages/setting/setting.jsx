@@ -50,7 +50,7 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                             </div>
 
                             <nav>
-                                <Collapse  defaultActiveKey={['2', '3']}>
+                                <Collapse  defaultActiveKey={['2',]}>
                                     
                                     <Collapse.Panel key='1' header={<div className='setting-sidebar-nav'>Your Preferences</div>}>
                                         <ul className='setting-sidebar-nav-list'>
@@ -71,7 +71,7 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                     </Collapse.Panel>
 
                                     <Collapse.Panel key='3'  header={<div className='setting-sidebar-nav'>Manage & Customise</div>}> 
-                                        <Collapse accordion defaultActiveKey={['m-1']} style={{paddingTop:'16px', paddingBottom:'16px'}}>
+                                        <Collapse accordion defaultActiveKey={['']} style={{paddingTop:'16px', paddingBottom:'16px'}}>
                                             {/* branch */}
                                             <Collapse.Panel  key="m-1" header={<div className='setting-sidebar-nav' style={{fontWeight:500}}>Branch</div>}>
                                                 <ul className='setting-sidebar-nav-list'>
@@ -87,6 +87,7 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                                     {/* <Link to={"#"} onClick={(e)=>e.preventDefault()}><li className={inactive}>Tab Customisation</li></Link> */}
                                                     <Link to={routes.propertySetting+"?field=employee"}><li className={path==routes.propertySetting+"?field=employee"?active:inactive}>Edit Fields</li></Link>
                                                     <Link to={routes.employeeEditForm}><li className={path==routes?.employeeEditForm?active:inactive}>Edit Form</li></Link>
+                                                    <Link to={routes.editskill}><li className={path==routes?.editskill?active:inactive}>Edit Skills</li></Link>
                                                 </ul>
                                             </Collapse.Panel>
 

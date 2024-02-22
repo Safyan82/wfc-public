@@ -203,7 +203,7 @@ export const DataTable = ({
                 },
               }}
               dataSource={dataSource} 
-              pagination={{pageSize:5,}}
+              
               title={
                                 
                 !header? null : () => {

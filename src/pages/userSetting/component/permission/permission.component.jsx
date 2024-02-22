@@ -157,7 +157,7 @@ const UserAccess = ({setUserAccessType, userAccessType})=>{
             
             <Select className='custom-select'
                 placeholder="Choose Access Level"
-                style={{width:'50%'}}
+                style={{width:'500px'}}
                 autoFocus
                 onChange={(e)=>setUserAccessType(e)}
                 value={userAccessType}
@@ -265,7 +265,6 @@ export const Permission = ({access, role, userAccessType})=>{
     const [moduleDelete, setModuleDelete] = useState(propAccess[obj]?.delete || null);
 
     useEffect(()=>{
-        console.log("User generic role")
         setModuleEdit(propAccess[obj]?.edit || null);
         setModuleDelete(propAccess[obj]?.delete || null);
         setModuleView(propAccess[obj]?.view || null);

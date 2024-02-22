@@ -245,7 +245,7 @@ export const Branch = () =>{
           <DraggableTab  
             viewList = {branchViewList?.branchViews}
             loading = {branchViewListLoading}
-            refetch = {branchViewRefetch}
+            refetch = {branchViewListRefetch}
             updateView = {updateSelectedBranchView}
             createView = {createBranchView}
             createViewLoading = {createBranchViewLoading}

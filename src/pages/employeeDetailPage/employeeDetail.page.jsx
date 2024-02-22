@@ -22,6 +22,7 @@ import { CalendarTab } from "./tabs/calendar/calendar.tab";
 import { moduleTabs } from "../../util/tabs/employee.tab";
 import { HRTaskTab } from "./tabs/hrtask/hrtask.tab";
 import { AbsenseTab } from "./tabs/absense/absense.tab";
+import { SkillTab } from "./tabs/skill/skill.tab";
 
 
 export const EmployeeDetailPage = ()=>{
@@ -260,7 +261,10 @@ export const EmployeeDetailPage = ()=>{
                 :
                 activeTab==moduleTabs.Employee[4]?
                     <CalendarTab/>
-                :null
+                :
+                activeTab==moduleTabs.Employee[6]?
+                    <SkillTab/>
+                : null
                 }
 
                 

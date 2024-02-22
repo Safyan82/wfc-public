@@ -57,7 +57,7 @@ export const LookupSearch = ({setSelectedOption, data, selectedOption, title, ad
 
 
     return (
-        <div className="group-wrapper"  style={{width: '500px', margin: 'auto', marginTop: '32px'}}>
+        <div className="group-wrapper" >
             <div
                 name="groupInput"
                 className='generic-input-control groupInput' 
@@ -75,7 +75,7 @@ export const LookupSearch = ({setSelectedOption, data, selectedOption, title, ad
                 </div>
             </div>
 
-            <div ref={parentRef} className={searchPopover? 'show': 'hide'} style={{width: '500px', margin: 'auto'}}>
+            <div ref={parentRef} className={searchPopover? 'show': 'hide'} >
                 <div className="moveGroupData" style={{width: parentWidth-1.5, zIndex: 111}} >
                     <div className="popover-search" >
                         <Input type="text" 
@@ -99,8 +99,8 @@ export const LookupSearch = ({setSelectedOption, data, selectedOption, title, ad
                             {localData?.length ? localData?.map((data)=>(
                                 <div 
                                     className={"popoverdataitem"} 
-                                    onClick={(e)=>{setSelectedOption({label:data.label, _id:data._id}); setSearchPopover(false)}}>
-                                    {data.label}
+                                    onClick={(e)=>{setSelectedOption({label:data?.label, _id:data?._id}); setSearchPopover(false)}}>
+                                    {data?.label}
                                 </div>
                             )):
                             

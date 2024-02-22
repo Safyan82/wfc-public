@@ -39,6 +39,7 @@ import { UserDetailPage } from './pages/userDetail/userDetail.page';
 import { useDispatch } from 'react-redux';
 import { setNotification } from './middleware/redux/reducers/notification.reducer';
 import { UserPerference } from './pages/userPerference/userPerference';
+import { SkillSetting } from './pages/skillsetting/skill.setting';
 
 
 
@@ -151,7 +152,7 @@ function App() {
             <Route path={routes.userAccess} element={<UserAccess/>} />
             <Route path={routes.employeeEditForm} exact element={<EditEmployeeForm />} />
             <Route path={routes.branchEditForm} exact element={<EditForm />} />
-
+            <Route path={routes.editskill} exact element={<SkillSetting/>} />
             <Route path={"user/:employeeId"} element={<UserDetailPage/>} />
           </Route>
           
