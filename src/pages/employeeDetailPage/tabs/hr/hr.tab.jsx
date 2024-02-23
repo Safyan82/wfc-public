@@ -46,7 +46,7 @@ export const HRTab = ()=>{
         if(selectedGrp){
             const props = filteredGroup?.find((grp)=> grp.name==selectedGrp)
 
-            setSelectedGroupProp(props?.propertyList);
+            setSelectedGroupProp(props?.propertyList?.filter((prop)=>prop?.isArchive==false && prop?.isDelete==false));
 
         }
     },[selectedGrp])
@@ -114,6 +114,7 @@ export const HRTab = ()=>{
                             <h3> {selectedGrp} </h3>
                             {
                                 selectedGroupProp?.map((prop)=> {
+                                    
                                     const label = prop?.label;
                                     const name = prop?.label.toLowerCase().replace(/\s/g,"");
                                     const fieldType = prop?.fieldType;
