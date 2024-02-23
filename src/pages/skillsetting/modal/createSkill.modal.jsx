@@ -6,8 +6,10 @@ import {LookupSearch} from "../../../components/lookupSearch/lookupSearch";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../../../middleware/redux/reducers/notification.reducer";
+import { useMutation } from "@apollo/client";
+import { SkillMutation } from "../../../util/mutation/skill.mutation";
 
-export const CreateSkillModal = ({visible, close, openSkillCategoryModal, categories})=>{
+export const CreateSkillModal = ({visible, close, openSkillCategoryModal, categories, refetchSkill})=>{
 
     const [selectedCategory, setSelectedCategory] = useState({label:'Please select or add new category', _id:''});
 
@@ -25,7 +27,6 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
 
     // handel btn enable disabled
     useEffect(()=>{
-        console.log(skill, selectedCategory, "skill, selectedCategory", skill?.length>0 && selectedCategory?._id);
         if(skill?.length>0 && selectedCategory?._id!==''){
             setDisabled(false);
         }else{
@@ -70,13 +71,24 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
     };
 
     const dispatch = useDispatch();
+    
+    const [newSkill, {loading}] = useMutation(SkillMutation)
 
-    const handelSubmit = (isAdding)=>{
+    const handelSubmit = async(isAdding)=>{
         const skillInput = {
-            category:selectedCategory, skill, description, anyDate, dateFields: anyDate? dateFields: null, digitalCertificate: digitalCertificate? digitalFields: null,
+            hardSkill,
+            categoryId:selectedCategory?._id, skill, description, anyDate, dateFields: anyDate? dateFields: null, digitalCertificate ,digitalFields: digitalCertificate? digitalFields: null,
         };
 
         try{
+
+            await newSkill({
+                variables:{
+                    input:
+                        skillInput
+                    
+                }
+            })
             
             dispatch(setNotification({
                 notificationState:true,
@@ -95,6 +107,7 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
         if(!isAdding){
             close();
         }
+        await refetchSkill();
     }
 
     return(
@@ -111,10 +124,10 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
         mask={false}
         footer={
           <div className='drawer-footer'>
-              <button disabled={disabled} className={disabled ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={()=>console.log(true)}>
+              <button disabled={disabled} className={disabled ? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={()=>handelSubmit(false)}>
                {false? <Spinner color={"#ff7a53"}/> : 'Create'} 
               </button>
-              <button disabled={disabled} className={disabled ? 'disabled-btn drawer-outlined-btn' : 'drawer-outlined-btn'} >
+              <button disabled={disabled} className={disabled ? 'disabled-btn drawer-outlined-btn' : 'drawer-outlined-btn'} onClick={()=>handelSubmit(true)}>
                 {false? <Spinner color={"#ff7a53"}/> : 'Create and add another'} 
               </button>
               <button disabled={false} className='drawer-outlined-btn' onClick={close}>Cancel</button>

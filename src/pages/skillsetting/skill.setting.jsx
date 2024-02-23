@@ -9,6 +9,8 @@ import { CreateSkillModal } from "./modal/createSkill.modal";
 import { CategoryGrid } from "./categoryGrid/category.grid";
 import { SkillCategoryQuery } from "../../util/query/skillCategory.query";
 import { useQuery } from "@apollo/client";
+import { skillQuery } from "../../util/query/skill.query";
+import { SkillGrid } from "./categoryGrid/skill.grid";
 
 
 export const SkillSetting = ()=>{
@@ -26,6 +28,12 @@ export const SkillSetting = ()=>{
         fetchPolicy:'network-only'
     });
 
+    const {data: skillData, loading: skillDataLoading, refetch: refetchSkill} = useQuery(skillQuery,{
+        fetchPolicy: 'network-only'
+    });
+
+
+    console.log(skillData, "skillData");
 
 
     return(
@@ -64,6 +72,14 @@ export const SkillSetting = ()=>{
                                     />
                                     <button className='drawer-filled-btn' onClick={()=>setSkillModal(true)} style={{height:'40px'}}> Create Skill </button>
                             </div>
+
+                            <div className="setting-grid">
+                                <SkillGrid
+                                    skill={skillData?.getSkills}
+                                    loading={skillDataLoading}
+                                />
+                            </div>
+
                         </TabPane>
 
 
@@ -117,6 +133,7 @@ export const SkillSetting = ()=>{
                 categories = {categoryData?.getSkillCategories?.map((category)=>({_id:category?._id, label: category?.category})) || []}
                 close={()=>setSkillModal(false)}
                 openSkillCategoryModal={()=>{setCategoryModal(true);}}
+                refetchSkill={refetchSkill}
             />
 
 
