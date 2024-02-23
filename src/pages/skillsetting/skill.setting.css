@@ -14,3 +14,12 @@
     cursor: pointer;
     text-decoration: underline;
 }
+
+/* search field in dropdown */
+.skillFieldType .ant-select-selection-search input{
+    margin-top: 6% !important;
+}
+
+.maxWidthSkillFieldType .ant-select-selection-search input{
+    margin-top: 4% !important;
+} 

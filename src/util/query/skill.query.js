@@ -13,6 +13,8 @@ query{
       dateFields
       digitalCertificate
       anyDate
+      createdBy
+      createdAt
     }
 }
 `;

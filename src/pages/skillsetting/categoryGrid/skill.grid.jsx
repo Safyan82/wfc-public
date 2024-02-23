@@ -4,7 +4,7 @@ import { SkillCategoryQuery } from "../../../util/query/skillCategory.query";
 import Spinner from "../../../components/spinner";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCancel, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCancel, faCheck, faPlus, faTimes, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 export const SkillGrid = ({skill, loading})=>{
     const columns = [
@@ -15,6 +15,8 @@ export const SkillGrid = ({skill, loading})=>{
         {title:'Any Date', dataIndex:'anyDate'},
         // {title:'Date Fields', dataIndex:'dateFields'},
         {title:'Digital Certificate', dataIndex:'digitalCertificate'},
+        {title:'Created By', dataIndex:'createdBy'},
+        {title:'Created At', dataIndex:'createdAt'},
         // {title:'Digital Fields', dataIndex:'digitalFields'},
     ];
 
@@ -48,7 +50,25 @@ export const SkillGrid = ({skill, loading})=>{
         setHoveredRow(null);
     };
 
-    console.log(skill, "skillData");
+    
+  const customHeader =(
+
+    <div className='table-footer' style={{marginLeft:'-23px', backgroundColor: 'rgb(245, 248, 250)'}} id="selection-options">
+      
+
+    {selectedRowKeys?.length>0 &&
+      <>
+          <small class='small-text'> {selectedRowKeys?.length} selected</small>
+
+
+          <div onClick={()=>console.log(true)}>
+              <FontAwesomeIcon icon={faTrashCan} style={{marginRight:'5px'}}/> <span>Delete</span>
+          </div>
+
+      </>
+    }
+    </div>
+);
 
     return(
         
@@ -59,6 +79,8 @@ export const SkillGrid = ({skill, loading})=>{
                 :
     
                 <Table
+                    title={selectedRowKeys?.length>0 ? () => customHeader : null}
+                    className="moveGroupTable"
                     dataSource={skill?.map((data)=>({
                         ...data, 
                         key: data?._id, 

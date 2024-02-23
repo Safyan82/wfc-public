@@ -8,6 +8,8 @@ import { useDispatch } from "react-redux";
 import { setNotification } from "../../../middleware/redux/reducers/notification.reducer";
 import { useMutation } from "@apollo/client";
 import { SkillMutation } from "../../../util/mutation/skill.mutation";
+import { FieldType } from "../../../components/createFields/step2fieldType";
+import { SkillFieldType } from "../fields/skill.fields";
 
 export const CreateSkillModal = ({visible, close, openSkillCategoryModal, categories, refetchSkill})=>{
 
@@ -25,14 +27,6 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
 
     const [disabled, setDisabled] = useState(true);
 
-    // handel btn enable disabled
-    useEffect(()=>{
-        if(skill?.length>0 && selectedCategory?._id!==''){
-            setDisabled(false);
-        }else{
-            setDisabled(true);
-        }
-    },[skill, selectedCategory]);
 
     // handel to add and update new date fields
     const handelDateFields = (field)=>{
@@ -70,6 +64,11 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
         }
     };
 
+    
+    const [width, setWidth] = useState(false);
+    const [fields, setFields] = useState([]);
+
+
     const dispatch = useDispatch();
     
     const [newSkill, {loading}] = useMutation(SkillMutation)
@@ -77,6 +76,7 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
     const handelSubmit = async(isAdding)=>{
         const skillInput = {
             hardSkill,
+            fields,
             categoryId:selectedCategory?._id, skill, description, anyDate, dateFields: anyDate? dateFields: null, digitalCertificate ,digitalFields: digitalCertificate? digitalFields: null,
         };
 
@@ -110,6 +110,18 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
         await refetchSkill();
     }
 
+
+    
+    // handel btn enable disabled
+    useEffect(()=>{
+        if(skill?.length>0 && selectedCategory?._id!=='' && fields?.every((f)=>f.isExist==1)){
+            setDisabled(false);
+        }else{
+            setDisabled(true);
+        }
+    },[skill, selectedCategory, fields]);
+    
+
     return(
     <Drawer
         title={"Add Skill"}
@@ -118,7 +130,7 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
         onClose={close}
         closeIcon={<FontAwesomeIcon icon={faClose} onClick={close} className='close-icon'/>}
         visible={visible}
-        width={600}
+        width={width?900:600}
         
         maskClosable={false}
         mask={false}
@@ -163,7 +175,7 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
                 />
             </Form.Item>
 
-            <Form.Item className="mb32">
+            {/* <Form.Item className="mb32">
                 <label>Description</label>
                 <Input.TextArea
                     value={description}
@@ -171,15 +183,64 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
                     placeholder="Description"
                     className="generic-input-control"
                 />
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item className="mb32">
+
+
+            {fields?.map((field, index)=>(
+
+                <SkillFieldType 
+                    field={field}
+                    allFields={fields}
+                    index={index}
+                    setFields={setFields}
+                    width={width} 
+                    setWidth={setWidth}
+                />
+            ))}
+
+
+            {fields?.length>0 ? fields[fields?.length-1]?.isExist==1?
+
+                <Form.Item className="mb32" onClick={()=>setFields([...fields, {
+                    id:fields?.length,
+                    label:'',
+                    fieldType:'',
+                    options:{},
+                    values:{},
+                    isExist:0
+                }])}>
+                        
+                    <FontAwesomeIcon icon={faAdd} /> <span className="otherOption">Add another field</span>
+                    
+                </Form.Item> : null
+                :
+                fields?.length==0 &&
+                <Form.Item className="mb32" onClick={()=>setFields([...fields, {
+                    id:fields?.length,
+                    label:'',
+                    fieldType:'',
+                    options:{},
+                    values:{},
+                    isExist:0
+                }])}>
+                        
+                    <FontAwesomeIcon icon={faAdd} /> <span className="otherOption">Add another field</span>
+                    
+                </Form.Item>
+            }
+
+
+
+{/* ========================================== Legacy Fields ======================================================= */}
+            
+            {/* <Form.Item className="mb32">
                 <Checkbox onChange={(e)=>setHardSkill(e.target.checked)}> Hard Skill </Checkbox>
-            </Form.Item>
+            </Form.Item> */}
 
             {/* Date Field Start */}
             
-            <Form.Item className="mb32">
+            {/* <Form.Item className="mb32">
                 <Checkbox onChange={(e)=>setDate(e.target.checked)}> Date Field </Checkbox>
             </Form.Item>
 
@@ -199,17 +260,17 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
                     
                 </Form.Item>
             </div>
-            :null}
+            :null} */}
 
             {/* Date Fields end */}
 
             {/* digital certificate start */}
 
-            <Form.Item className="mb32">
+            {/* <Form.Item className="mb32">
                 <Checkbox onChange={(e)=>setDigitalCertificate(e.target.checked)}> Digital Certificate/ License/ Badge </Checkbox>
-            </Form.Item>
+            </Form.Item> */}
             
-            {digitalCertificate?
+            {/* {digitalCertificate?
             <div style={{padding:'0 16px'}}>
                 {digitalFields?.map((field, index)=>(
 
@@ -225,7 +286,7 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
                     
                 </Form.Item>
             </div>
-            :null}
+            :null} */}
 
             {/* digital certificate end */}
             

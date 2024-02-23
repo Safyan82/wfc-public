@@ -46,7 +46,7 @@ export const PayDetailsTab = ()=>{
         if(selectedGrp){
             const props = filteredGroup?.find((grp)=> grp.name==selectedGrp)
 
-            setSelectedGroupProp(props?.propertyList);
+            setSelectedGroupProp(props?.propertyList?.filter((prop)=>prop?.isArchive==false && prop?.isDelete==false));
 
         }
     },[selectedGrp])

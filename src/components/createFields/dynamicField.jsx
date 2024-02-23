@@ -45,7 +45,7 @@ export const New = ({selectedKeys, isAnyChecked})=>{
     )
 }
 
-export function CreateField({sortType,fieldType,label,search}){
+export function CreateField({sortType,fieldType,label,search, preview=true}){
     const [fields, setFields] = useState([]);
     const [singleInput, setSingleInput] = useState([
     'text',
@@ -557,6 +557,7 @@ export function CreateField({sortType,fieldType,label,search}){
                 />
             }
         
+            {preview &&
             <Form.Item>
                 <label>Preview</label>
                 <div className='preview-box'>
@@ -616,6 +617,7 @@ export function CreateField({sortType,fieldType,label,search}){
                     }
                 </div>
             </Form.Item>
+            }
         </>
     )
 }
