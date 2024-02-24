@@ -32,7 +32,8 @@ export const DataTable = ({
   useEffect(()=>{
     if(objectData?.length>0 && view ){
       const mandatoryField = objectData?.filter((prop)=>  prop?.isReadOnly);
-      const viewProp = view.filter((viewProp)=> objectData?.find((object)=> object.propertyId == viewProp?._id))?.map((prop)=> ({propertyDetail: prop}));
+      // const viewProp = view.filter((viewProp)=> objectData?.find((object)=> object.propertyId == viewProp?._id))?.map((prop)=> ({propertyDetail: prop}));
+      const viewProp = view?.map((prop)=> ({propertyDetail: prop}));
       const updateView = [...mandatoryField, ...viewProp];
       // const col = objectData?.filter((prop)=>  prop?.isReadOnly || view?.find((viewProp)=>viewProp?._id==prop?.propertyId)).map((prop)=>{
       const col = updateView.map((prop)=>{

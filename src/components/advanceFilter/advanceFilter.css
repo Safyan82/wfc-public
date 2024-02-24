@@ -83,7 +83,7 @@
 
 .proplistView{
     min-height: 55px;
-    height: 400px;
+    /* height: 400px; */
     overflow: auto;
     margin-top: 5%;
 }

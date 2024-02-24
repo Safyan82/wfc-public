@@ -75,3 +75,7 @@
 .selectedTextCloseIcon { 
     visibility: hidden;
 } */
+
+.ant-table-container{
+    overflow-x: auto !important;
+}

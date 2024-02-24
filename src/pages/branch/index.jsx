@@ -263,6 +263,7 @@ export const Branch = () =>{
             visible = {filterModal} 
             onClose = {()=>setFilterModal(false)}
             objectData = {branchObjectData?.getBranchProperty?.response}
+            object={"Branch"}
             groupProperty = {BranchGroupProperty?.getPropertyByGroup?.data || []}
           />
           

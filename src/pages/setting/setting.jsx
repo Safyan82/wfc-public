@@ -70,13 +70,13 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                         </ul>
                                     </Collapse.Panel>
 
-                                    <Collapse.Panel key='3'  header={<div className='setting-sidebar-nav'>Manage & Customise</div>}> 
-                                        <Collapse accordion defaultActiveKey={['']} style={{paddingTop:'16px', paddingBottom:'16px'}}>
+                                    <Collapse.Panel key='3'  header={<div className='setting-sidebar-nav'>System Setup</div>}> 
+                                        <Collapse accordion defaultActiveKey={['m-1','m-2','m-3']} style={{paddingTop:'16px', paddingBottom:'16px'}}>
                                             {/* branch */}
                                             <Collapse.Panel  key="m-1" header={<div className='setting-sidebar-nav' style={{fontWeight:500}}>Branch</div>}>
                                                 <ul className='setting-sidebar-nav-list'>
                                                     {/* <Link to={"#"} onClick={(e)=>e.preventDefault()} className='disabled-text'><li className={inactive}>Tab Customisation</li></Link> */}
-                                                    <Link to={routes.propertySetting+"?field=branch"}><li className={path==routes.propertySetting+"?field=branch"?active:inactive}>Edit Fields</li></Link>
+                                                    <Link to={routes.propertySetting+"?field=branch"}><li className={path==routes.propertySetting+"?field=branch"?active:inactive}>Manage Fields & Groups</li></Link>
                                                     <Link to={routes.branchEditForm}><li className={path==routes?.branchEditForm?active:inactive}>Edit Form</li></Link>
                                                 </ul>
                                             </Collapse.Panel>
@@ -85,9 +85,8 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                             <Collapse.Panel key="m-2" header={<div className='setting-sidebar-nav' style={{fontWeight:500}}>Employee</div>}>
                                                 <ul className='setting-sidebar-nav-list'>
                                                     {/* <Link to={"#"} onClick={(e)=>e.preventDefault()}><li className={inactive}>Tab Customisation</li></Link> */}
-                                                    <Link to={routes.propertySetting+"?field=employee"}><li className={path==routes.propertySetting+"?field=employee"?active:inactive}>Edit Fields</li></Link>
-                                                    <Link to={routes.employeeEditForm}><li className={path==routes?.employeeEditForm?active:inactive}>Edit Form</li></Link>
-                                                    <Link to={routes.editskill}><li className={path==routes?.editskill?active:inactive}>Edit Skills</li></Link>
+                                                    <Link to={routes.propertySetting+"?field=employee"}><li className={path==routes.propertySetting+"?field=employee"?active:inactive}>Manage Fields & Groups</li></Link>
+                                                    <Link to={routes.employeeEditForm}><li className={path==routes?.employeeEditForm?active:inactive}>Employee Setup Form</li></Link>
                                                 </ul>
                                             </Collapse.Panel>
 
@@ -109,6 +108,24 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                                 </ul>
                                             </Collapse.Panel>
 
+                                            {/* Skill */}
+                                            <Collapse.Panel key="m-5" header={<div className='setting-sidebar-nav' style={{fontWeight:500}}>Skill</div>}>
+                                                <ul className='setting-sidebar-nav-list'>
+                                                    {/* <Link to={"#"} onClick={(e)=>e.preventDefault()}><li className={inactive}>Tab Customisation</li></Link> */}
+                                                    {/* <Link to={routes.propertySetting+"?field=customer"}><li className={path==routes.propertySetting+"?field=customer"?active:inactive}>Edit Fields</li></Link> */}
+                                                    <Link to={routes.editskill}><li className={path==routes?.editskill?active:inactive}>Edit Skills</li></Link>
+                                                    {/* <Link to={"#"}  onClick={(e)=>e.preventDefault()}><li className={inactive}>Edit Form</li></Link> */}
+                                                </ul>
+                                            </Collapse.Panel>
+
+                                            {/*
+                                                Need to implement
+                                                Data  Managment 
+                                                
+                                                - Data Fields
+                                                - Modules
+                                                - Forms (should be clone of same as properties in our/hub sys)
+                                            */}
 
                                         </Collapse>  
                                     </Collapse.Panel>                                 

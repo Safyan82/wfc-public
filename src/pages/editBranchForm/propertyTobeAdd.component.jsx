@@ -114,7 +114,7 @@ export const PropertyToBeAdd=({objectType, view, processing})=>{
             dispatch(addFieldToBranchSchema({...propertyData, isMandatory: isExist?.isMandatory, order: isExist?.order}));
         }
         
-        if(isExistInSchema){
+        // if(isExistInSchema){
             return(
                 <div style={{marginBottom:'16px'}} className='propertiesCheckboxes'>
                     <Checkbox 
@@ -128,7 +128,7 @@ export const PropertyToBeAdd=({objectType, view, processing})=>{
                     </Checkbox>
                 </div>
             );
-        }   
+        // }   
         
         
         

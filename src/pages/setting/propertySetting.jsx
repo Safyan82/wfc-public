@@ -302,7 +302,7 @@ export const PropertySetting=()=>{
                                             defaultValue={myParam && myParam[0].toUpperCase()+myParam.slice(1) || "Branch"}
                                             value={objectTypelocal}
                                             onChange={(e)=>setObjectType(e)}
-                                            disabled
+                                            // disabled
                                         >
                                             {
                                                 Object.keys(objectType)?.map((object)=>(
