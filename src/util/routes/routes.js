@@ -7,6 +7,7 @@ export const routes = {
     userDetail: "/setting/user/:employeeId",
     employeeEditForm: "/setting/employee/editform",
     editskill: "/setting/employee/editskill",
+    forms: "/setting/forms",
     branchEditForm: "/setting/branch/editform",
 }
 

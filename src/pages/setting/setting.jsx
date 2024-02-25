@@ -49,8 +49,8 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                 </div>
                             </div>
 
-                            <nav>
-                                <Collapse  defaultActiveKey={['2',]}>
+                            <nav className='setting-custom-nav'>
+                                <Collapse  defaultActiveKey={['2','1','3']}>
                                     
                                     <Collapse.Panel key='1' header={<div className='setting-sidebar-nav'>Your Preferences</div>}>
                                         <ul className='setting-sidebar-nav-list'>
@@ -70,64 +70,37 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                         </ul>
                                     </Collapse.Panel>
 
-                                    <Collapse.Panel key='3'  header={<div className='setting-sidebar-nav'>System Setup</div>}> 
-                                        <Collapse accordion defaultActiveKey={['m-1','m-2','m-3']} style={{paddingTop:'16px', paddingBottom:'16px'}}>
-                                            {/* branch */}
-                                            <Collapse.Panel  key="m-1" header={<div className='setting-sidebar-nav' style={{fontWeight:500}}>Branch</div>}>
-                                                <ul className='setting-sidebar-nav-list'>
-                                                    {/* <Link to={"#"} onClick={(e)=>e.preventDefault()} className='disabled-text'><li className={inactive}>Tab Customisation</li></Link> */}
-                                                    <Link to={routes.propertySetting+"?field=branch"}><li className={path==routes.propertySetting+"?field=branch"?active:inactive}>Manage Fields & Groups</li></Link>
-                                                    <Link to={routes.branchEditForm}><li className={path==routes?.branchEditForm?active:inactive}>Edit Form</li></Link>
-                                                </ul>
-                                            </Collapse.Panel>
+                                    <Collapse.Panel key='3'  header={<div className='setting-sidebar-nav'>Data Management</div>}> 
+                                        <ul className='setting-sidebar-nav-list'>
+                                            {/* Data fields management */}
+                                            <Link to={routes.propertySetting}><li className={path==routes.propertySetting?active:inactive}>Data Fields</li></Link>
+                                            <Link to={routes.forms}><li className={path==routes.forms?active:inactive}>Forms</li></Link>
+                                            <Link to={routes.editskill}><li className={path==routes.editskill?active:inactive}>Skills</li></Link>
 
-                                            {/* employee */}
-                                            <Collapse.Panel key="m-2" header={<div className='setting-sidebar-nav' style={{fontWeight:500}}>Employee</div>}>
-                                                <ul className='setting-sidebar-nav-list'>
-                                                    {/* <Link to={"#"} onClick={(e)=>e.preventDefault()}><li className={inactive}>Tab Customisation</li></Link> */}
-                                                    <Link to={routes.propertySetting+"?field=employee"}><li className={path==routes.propertySetting+"?field=employee"?active:inactive}>Manage Fields & Groups</li></Link>
-                                                    <Link to={routes.employeeEditForm}><li className={path==routes?.employeeEditForm?active:inactive}>Employee Setup Form</li></Link>
-                                                </ul>
-                                            </Collapse.Panel>
+                                            <Collapse accordion defaultActiveKey={['m-1']} style={{paddingBottom:'16px'}}>
+                                                {/* modules */}
+                                                <Collapse.Panel  key="m-1" header={<div className='setting-sidebar-nav' style={{fontWeight:500, marginLeft:'-11px'}}>Modules</div>}>
+                                                    <ul className='setting-sidebar-nav-list' style={{marginTop:'10px', marginLeft:'-17px'}}>
+                                                        <Link to={routes.branchEditForm}><li className={path==routes?.branchEditForm?active:inactive}>Branch</li></Link>
+                                                        <Link to={routes.branchEditForm}><li className={path==routes?.branchEditForm?active:inactive}>Employee</li></Link>
+                                                        <Link to={routes.branchEditForm}><li className={path==routes?.branchEditForm?active:inactive}>Site</li></Link>
+                                                        <Link to={routes.branchEditForm}><li className={path==routes?.branchEditForm?active:inactive}>Customer</li></Link>
+                                                    </ul>
+                                                </Collapse.Panel>
 
-                                            {/* site */}
-                                            <Collapse.Panel key="m-3" header={<div className='setting-sidebar-nav' style={{fontWeight:500}}>Site</div>}>
-                                                <ul className='setting-sidebar-nav-list'>
-                                                    {/* <Link to={"#"} onClick={(e)=>e.preventDefault()}><li className={inactive}>Tab Customisation</li></Link> */}
-                                                    <Link to={routes.propertySetting+"?field=site"}><li className={path==routes.propertySetting+"?field=site"?active:inactive}>Edit Fields</li></Link>
-                                                    <Link to={"#"} onClick={(e)=>e.preventDefault()}><li className={inactive}>Edit Form</li></Link>
-                                                </ul>
-                                            </Collapse.Panel>
+                                                {/*
+                                                    Need to implement
+                                                    Data  Managment 
+                                                    
+                                                    - Data Fields
+                                                    - Modules
+                                                    - Forms (should be clone of same as properties in our/hub sys)
+                                                */}
 
-                                            {/* customer */}
-                                            <Collapse.Panel key="m-4" header={<div className='setting-sidebar-nav' style={{fontWeight:500}}>Customer</div>}>
-                                                <ul className='setting-sidebar-nav-list'>
-                                                    {/* <Link to={"#"} onClick={(e)=>e.preventDefault()}><li className={inactive}>Tab Customisation</li></Link> */}
-                                                    <Link to={routes.propertySetting+"?field=customer"}><li className={path==routes.propertySetting+"?field=customer"?active:inactive}>Edit Fields</li></Link>
-                                                    <Link to={"#"}  onClick={(e)=>e.preventDefault()}><li className={inactive}>Edit Form</li></Link>
-                                                </ul>
-                                            </Collapse.Panel>
+                                            </Collapse>  
 
-                                            {/* Skill */}
-                                            <Collapse.Panel key="m-5" header={<div className='setting-sidebar-nav' style={{fontWeight:500}}>Skill</div>}>
-                                                <ul className='setting-sidebar-nav-list'>
-                                                    {/* <Link to={"#"} onClick={(e)=>e.preventDefault()}><li className={inactive}>Tab Customisation</li></Link> */}
-                                                    {/* <Link to={routes.propertySetting+"?field=customer"}><li className={path==routes.propertySetting+"?field=customer"?active:inactive}>Edit Fields</li></Link> */}
-                                                    <Link to={routes.editskill}><li className={path==routes?.editskill?active:inactive}>Edit Skills</li></Link>
-                                                    {/* <Link to={"#"}  onClick={(e)=>e.preventDefault()}><li className={inactive}>Edit Form</li></Link> */}
-                                                </ul>
-                                            </Collapse.Panel>
-
-                                            {/*
-                                                Need to implement
-                                                Data  Managment 
-                                                
-                                                - Data Fields
-                                                - Modules
-                                                - Forms (should be clone of same as properties in our/hub sys)
-                                            */}
-
-                                        </Collapse>  
+                                        </ul>
+                                        
                                     </Collapse.Panel>                                 
                                     
                                 </Collapse>

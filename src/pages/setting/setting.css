@@ -92,6 +92,7 @@
     padding-left: 0px;
     line-height: 16px;
     margin-bottom: 0px;
+    margin-left: 0px;
 }
 
 .setting-sidebar-nav-list-item{
@@ -984,4 +985,10 @@
     align-items: center;
     padding-inline-end: 5px !important;
     margin-inline-start: 0px !important;
+}
+
+
+.setting-custom-nav .ant-collapse-header{
+    direction: rtl !important;
+    text-align: left !important;
 }

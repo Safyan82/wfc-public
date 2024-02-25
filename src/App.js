@@ -20,10 +20,10 @@ import { EditEmployeeForm } from './pages/employee/editEmployeeForm/editEmployee
 import { EmployeeDetailPage } from './pages/employeeDetailPage/employeeDetail.page';
 import { EmployeeDetailViewPage } from './pages/employeeDetailPage/employeeDetailView.page';
 import { EmployeeAllPropHistory } from './pages/employeeAllPropHistory/employeeAllPropHistory';
-import { PropertySetting } from './pages/setting/propertySetting';
-import { User } from './pages/userSetting/user';
+import { PropertySetting } from './pages/setting/dataFields/propertySetting';
+import { User } from './pages/setting/userSetting/user';
 import { routes } from './util/routes/routes';
-import { UserRole } from './pages/userRole/userRole';
+import { UserRole } from './pages/setting/userRole/userRole';
 import { Password } from './pages/login/password';
 import { ClassicLogin } from './pages/login/login';
 import { PrivateRoutes } from './util/routes/private.routes';
@@ -33,13 +33,14 @@ import { useErrorBoundary } from './util/errorBoundary/errorboundary';
 import { ErrorFallback } from './util/errorFallback/errorFallback';
 import { isLoginCheckQuery } from './util/query/user.query';
 import { UnAuthroizedAccess } from './pages/unAuthroizedAccess/unAuthroizedAccess.page';
-import { UserAccess } from './pages/userAccess/userAccess.page';
+import { UserAccess } from './pages/setting/userAccess/userAccess.page';
 import { Join } from './pages/join/join';
-import { UserDetailPage } from './pages/userDetail/userDetail.page';
+import { UserDetailPage } from './pages/setting/userDetail/userDetail.page';
 import { useDispatch } from 'react-redux';
 import { setNotification } from './middleware/redux/reducers/notification.reducer';
-import { UserPerference } from './pages/userPerference/userPerference';
-import { SkillSetting } from './pages/skillsetting/skill.setting';
+import { UserPerference } from './pages/setting/userPerference/userPerference';
+import { SkillSetting } from './pages/setting/skillsetting/skill.setting';
+import { ModuleForms } from './pages/setting/moduleForms/moduleForms';
 
 
 
@@ -150,10 +151,12 @@ function App() {
             <Route path={routes.addUser} element={<User/>} />
             <Route path={routes.userRole} element={<UserRole/>} />
             <Route path={routes.userAccess} element={<UserAccess/>} />
+            <Route path={"user/:employeeId"} element={<UserDetailPage/>} />
+            <Route path={routes.forms} element={<ModuleForms/>} />
+
             <Route path={routes.employeeEditForm} exact element={<EditEmployeeForm />} />
             <Route path={routes.branchEditForm} exact element={<EditForm />} />
             <Route path={routes.editskill} exact element={<SkillSetting/>} />
-            <Route path={"user/:employeeId"} element={<UserDetailPage/>} />
           </Route>
           
         </Routes>
