@@ -81,6 +81,13 @@ const branchReducer = createSlice({
         }
     },
 
+    resetSchemaNewFieldsOnCancel : (state, action) => {
+        return {
+            ...state,
+            branchSchemaNewFields:[...state?.branchSchemaNewFields?.filter((field)=>field?.isNew!==1 || !field?.hasOwnProperty('isNew'))?.map((f)=>({...f,isLocalDeleted:0}))]
+        }
+    },
+
     removeFieldFromBranchSchema: (state, action) => {
         return{
             ...state,
@@ -129,7 +136,7 @@ const branchReducer = createSlice({
 });
 
 
-export const { resetBranch, resetAndReorderBranchSchema, setBranchSchema, addFieldToBranchSchema, refreshBranchGrid,
+export const { resetSchemaNewFieldsOnCancel, resetBranch, resetAndReorderBranchSchema, setBranchSchema, addFieldToBranchSchema, refreshBranchGrid,
     addFieldToBranchEditColumn, removeFieldFromBranchSchema, 
     setPropertyToBeRemoveFromSchema, resetbranchSchemaNewFields, removeAllColumns } = branchReducer.actions;
 export default branchReducer.reducer;

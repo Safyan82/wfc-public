@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button, Select } from "antd"
 import { objectType } from "../../../util/types/object.types"
 import { useState } from "react"
+import { EditForm } from "../../editBranchForm/editForm.page"
+import { EditEmployeeForm } from "../../employee/editEmployeeForm/editEmployeeForm"
 
 export const ModuleForms = () =>{
 
@@ -49,9 +51,9 @@ export const ModuleForms = () =>{
                                         // disabled
                                     >
                                         {
-                                            Object.keys(objectType).slice(0,6)?.map((object)=>(
+                                            Object.keys(objectType).slice(0,4)?.map((object)=>(
 
-                                                <Select.Option value={objectType[object]}>{objectType[object]} properties</Select.Option>
+                                                <Select.Option value={objectType[object]}>{objectType[object]}</Select.Option>
                                             ))
                                         }
                                     </Select>
@@ -62,6 +64,18 @@ export const ModuleForms = () =>{
                             </div>
                         </div>
                     </div>
+
+                    {/* Body */}
+                    {
+                        objectTypelocal=="Branch"?
+                            <EditForm/>
+                        :
+                        objectTypelocal=="Employee"?
+                            <EditEmployeeForm/>
+                        :null
+                    }
+                    {/* Body terminated */}
+
                 </div>
             </div>
         </div>

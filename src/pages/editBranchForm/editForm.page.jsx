@@ -11,7 +11,7 @@ import { Popover } from "antd";
 import { ApartmentOutlined } from "@ant-design/icons";
 import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from 'react-redux';
-import { addFieldToBranchSchema, removeFieldFromBranchSchema, resetbranchSchemaNewFields, setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
+import { addFieldToBranchSchema, removeFieldFromBranchSchema, resetBranch, resetbranchSchemaNewFields, setBranchSchema } from '../../middleware/redux/reducers/branch.reducer';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { BulkBranchObjectMutation, BulkDeleteBranchObjectMutation, ReorderBranchSchema } from '../../util/mutation/branch.mutation';
@@ -38,9 +38,11 @@ export const EditForm=()=>{
 
     const { branchSchemaNewFields } = useSelector(state=>state.branchReducer);
     const [branchSchemaLocal, setBranchSchemaLocal] = useState([...branchSchemaNewFields]);
+    
     useEffect(()=>{
       branchObjectRefetch();
     }, []);
+
     useEffect(()=>{
       setBranchSchemaLocal([...branchSchemaNewFields]);
     }, [branchSchemaNewFields]);
@@ -51,9 +53,12 @@ export const EditForm=()=>{
     },[branchSchemaLocal]);
     
     const dispatch = useDispatch();
+    const [cancel,setCancel] = useState(false);
+
     useEffect(()=>{
       if(!branchObjectLoading){
-
+        dispatch(resetBranch());
+        
         const mandatoryFields = branchProperties?.getBranchProperty?.response?.filter((property)=> property.isReadOnly===true);
         setMandatory(mandatoryFields);
         dispatch(setBranchSchema(branchProperties?.getBranchProperty?.response));
@@ -69,7 +74,7 @@ export const EditForm=()=>{
           dispatch(addFieldToBranchSchema (propData));
         });
 
-        
+        setCancel(false);
       }
     },[branchProperties]);
 
@@ -89,17 +94,26 @@ export const EditForm=()=>{
 
     const [api, contextHolder] = notification.useNotification();
 
-    const [btnDisabled, setBtnDisabled] = useState(false);
+    const [btnDisabled, setBtnDisabled] = useState(true);
+
     useEffect(()=>{
       
-      const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0 && schema?.isNew==1));
-      const deletedProps = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==1));
-      if(props?.length>0 || deletedProps?.length>0){
-        setBtnDisabled(false);
-      }else{
-        setBtnDisabled(false);
+      if(branchProperties?.getBranchProperty?.response){
+
+        const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0 && schema?.isNew==1));
+        const deletedProps = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==1));
+        const object = branchProperties?.getBranchProperty?.response?.filter((property)=> property.isReadOnly!==true );
+        const isChange =  branchSchemaNewFields.find((schema)=>(object.find((property)=> property?.propertyId === schema?._id && property?.isMandatory !== schema?.isMandatory)));
+          
+        if(props?.length>0 || deletedProps?.length>0 || isChange){
+          setBtnDisabled(false);
+        }else{
+          setBtnDisabled(true);
+        }
+      
       }
-    },[branchSchemaNewFields]);
+
+    },[branchSchemaNewFields, branchObjectLoading, deletePropertiesLoading, createBulkPropertiesLoading]);
 
     
     const handelSave = async() => {
@@ -128,6 +142,8 @@ export const EditForm=()=>{
           error: false,
         }));
         await branchObjectRefetch();
+        setCancel(true);
+
       }
     }
 
@@ -147,47 +163,92 @@ export const EditForm=()=>{
         dispatch(resetbranchSchemaNewFields());
       }
     },[]);
+
+    
+    useEffect(() =>{
+      if(cancel){
+        if(!branchObjectLoading){
+          dispatch(resetBranch());
+
+          const mandatoryFields = branchProperties?.getBranchProperty?.response?.filter((property)=> property.isReadOnly===true);
+          setMandatory(mandatoryFields);
+          dispatch(setBranchSchema(branchProperties?.getBranchProperty?.response));
+  
+          branchProperties?.getBranchProperty?.response?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
+            const propData = {
+              label:field?.propertyDetail?.label,
+              _id:field?.propertyId,
+              isMandatory:field?.isMandatory,
+              isLocalDeleted: 0,
+              order: field?.order
+            }
+            dispatch(addFieldToBranchSchema (propData));
+          });
+  
+          setCancel(false);
+          
+        }
+      }
+    },[cancel]);
     
     const [openDrawer, setOpenDrawer] = useState(false);
 
+    useEffect(()=>{
+      if(openDrawer){
+        branchObjectRefetch();
+      }
+    },[openDrawer]);
+
     return(
-      <div className="setting-body">
-        {contextHolder}
-        <div className="setting-body-inner">
-          <div className="setting-body-inner">
-
-            <div className="setting-body-title">
-
-              <div className='setting-body-inner-title'>
-                Edit Branch Form
-              </div>
-
-              <div className='btn-group' style={{gap:'20px'}}>
-                <button disabled={loading} className={loading?"drawer-outlined-btn disabled-btn": "drawer-outlined-btn"} onClick={()=>navigate("/formview")}>Preview</button>
-                <button disabled={loading || btnDisabled} className={loading || btnDisabled? "drawer-filled-btn disabled-btn":"drawer-filled-btn "} onClick={handelSave}> {loading? <Spinner/> : "Save"}</button>   
-              </div>
-
-            </div>
-
-            <div className="text">
-              The Edit Branch Form streamlines the creation of new branches. It collects essential information like branch name, location, contact details.
-            </div>
-
-            <div className="form-section">
+      <div>
+            <div className="form-section" >
                 <div className="form-section-inner">
                     <div className="modal-header-title">
-                      <span> Edit {title} Form </span>  
-                      <Popover
-                        content={
-                          <div className="editFormPop">
-                            <span  onClick={()=>{setOpenDrawer(true);setProp(true);}} >Add properties</span>
-                            <span className='disabled'>Add conditional logic</span>
-                            <span className='disabled'>Add associations</span>
-                          </div>
+                      
+                      <div style={{width:'100%'}}>
+                        <span> Edit {title} Form </span> 
+                      </div>
+
+                      
+                      <div style={{width:'30%', display:'flex', justifyContent:'flex-end', alignItems:'center'}}>
+
+                        {btnDisabled?null:
+                        <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', width:'75%', marginRight:'16px'}}>
+                            <button
+                            style={{
+                              padding: "5px 15px",
+                              fontSize: '12px'
+                            }}
+                            className={btnDisabled?'disabled-btn drawer-filled-btn':'drawer-filled-btn'} disabled={btnDisabled} 
+                            onClick={async ()=>{await handelSave();setOpenDrawer(false);setBtnDisabled(true);}}
+                            >Apply</button>
+                          
+                            <button 
+                            style={{
+                              padding: "5px 15px",
+                              fontSize: '12px'
+                            }} className='drawer-outlined-btn' 
+                            onClick={async ()=>{setCancel(true);}}
+                            >Cancel</button>
+                            
+                        </div>
                         }
-                      > 
-                        <FontAwesomeIcon icon={faEllipsisH} style={{color:'white', cursor: 'pointer'}}/> 
-                      </Popover>
+
+                      
+                        <Popover
+                          content={
+                            <div className="editFormPop">
+                              <span  onClick={()=>{setOpenDrawer(true);setProp(true);}} >Add properties</span>
+                              <span className='disabled'>Add conditional logic</span>
+                              <span className='disabled'>Add associations</span>
+                            </div>
+                          }
+                        > 
+                          <FontAwesomeIcon icon={faEllipsisH} style={{color:'white', cursor: 'pointer'}}/> 
+                        </Popover>
+
+                      </div>
+
                     </div>
                     
                     <div className="form-section-body form" style={{marginTop:'3%'}}> 
@@ -253,14 +314,16 @@ export const EditForm=()=>{
                 </div>
             </div>
 
-          </div>
-        </div>
+          {/* </div> */}
+        {/* </div> */}
         {/* side drawer */}
         <AddProperty
-          close={()=>setOpenDrawer(false)}
+          close={()=>{setOpenDrawer(false);setBtnDisabled(true)}}
           visible={openDrawer}
           isPropOpen={isPropOpen}
           setProp={setProp}
+          save={async()=>{await handelSave();setOpenDrawer(false);setBtnDisabled(true);}}
+          btnDisabled={btnDisabled}
         />
       </div>
     );

@@ -11,7 +11,7 @@ import { Popover } from "antd";
 import { ApartmentOutlined } from "@ant-design/icons";
 import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from 'react-redux';
-import { addFieldToBranchSchema, removeFieldFromBranchSchema, resetbranchSchemaNewFields, setBranchSchema } from '../../../middleware/redux/reducers/branch.reducer';
+import { addFieldToBranchSchema, removeFieldFromBranchSchema, resetBranch, resetSchemaNewFieldsOnCancel, resetbranchSchemaNewFields, setBranchSchema } from '../../../middleware/redux/reducers/branch.reducer';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
 import { BulkBranchObjectMutation, BulkDeleteBranchObjectMutation } from '../../../util/mutation/branch.mutation';
@@ -55,8 +55,11 @@ export const EditEmployeeForm=()=>{
     },[branchSchemaLocal]);
     
     const dispatch = useDispatch();
+    const [cancel,setCancel] = useState(false);
+
     useEffect(()=>{
       if(!employeeObjectLoading){
+        dispatch(resetBranch());
 
         const mandatoryFields = employeeObject?.getEmployeeObject?.response?.filter((property)=> property.isReadOnly===true);
         setMandatory(mandatoryFields);
@@ -70,10 +73,10 @@ export const EditEmployeeForm=()=>{
             isLocalDeleted: 0,
             order: field?.order
           }
-          dispatch(addFieldToBranchSchema (propData));
+          dispatch(addFieldToBranchSchema(propData));
         });
 
-        
+        setCancel(false);
       }
     },[employeeObject]);
 
@@ -91,19 +94,27 @@ export const EditEmployeeForm=()=>{
       }
     },[deletePropertiesLoading, createBulkPropertiesLoading, employeeObjectLoading ]); 
 
-    const [api, contextHolder] = notification.useNotification();
-
-    const [btnDisabled, setBtnDisabled] = useState(false);
+    
+    const [btnDisabled, setBtnDisabled] = useState(true);
+    
     useEffect(()=>{
       
-      const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0 && schema?.isNew==1));
-      const deletedProps = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==1));
-      if(props?.length>0 || deletedProps?.length>0){
-        setBtnDisabled(false);
-      }else{
-        setBtnDisabled(false);
+      if(employeeObject?.getEmployeeObject?.response){
+
+        const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0 && schema?.isNew==1));
+        const deletedProps = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==1));
+        const object = employeeObject?.getEmployeeObject?.response?.filter((property)=> property.isReadOnly!==true );
+        const isChange =  branchSchemaNewFields.find((schema)=>(object.find((property)=> property?.propertyId === schema?._id && property?.isMandatory !== schema?.isMandatory)));
+        // console.log(props?.length>0 || deletedProps?.length>0 || isChange, isChange, "tttttds",object , branchSchemaNewFields)
+
+        if(props?.length>0 || deletedProps?.length>0 || isChange){
+          setBtnDisabled(false);
+        }else{
+          setBtnDisabled(true);
+        }
+
       }
-    },[branchSchemaNewFields]);
+    },[branchSchemaNewFields,createBulkPropertiesLoading,deletePropertiesLoading,employeeObject]);
 
     
     const handelSave = async() => {
@@ -131,9 +142,38 @@ export const EditEmployeeForm=()=>{
           message:"Changes were saved",
           error: false,
         }));
+        // setBtnDisabled(true);
         await employeeObjectRefetch();
+        setCancel(true);
+
       }
     }
+
+    
+    useEffect(() =>{
+      if(cancel){
+        if(!employeeObjectLoading){
+          dispatch(resetBranch());
+  
+          const mandatoryFields = employeeObject?.getEmployeeObject?.response?.filter((property)=> property.isReadOnly===true);
+          setMandatory(mandatoryFields);
+          dispatch(setBranchSchema(employeeObject?.getEmployeeObject?.response));
+  
+          employeeObject?.getEmployeeObject?.response?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
+            const propData = {
+              label:field?.propertyDetail?.label,
+              _id:field?.propertyId,
+              isMandatory:field?.isMandatory,
+              isLocalDeleted: 0,
+              order: field?.order
+            }
+            dispatch(addFieldToBranchSchema(propData));
+          });
+  
+          setCancel(false);
+        }
+      }
+    },[cancel]);
 
 
     const {propertyToBeRemoveFromSchema} = useSelector((state)=>state.branchReducer);
@@ -158,47 +198,52 @@ export const EditEmployeeForm=()=>{
     const navigate = useNavigate();
     const [openDrawer, setOpenDrawer] = useState(false);
     return(
-        <div className="setting-body" style={url?{margin:'0',padding:'0'}:{}}>
-          {contextHolder}
-          <div className="setting-body-inner">
-            <div className="setting-body-inner">
-
-            <div className="setting-body-title">
-
-              <div className='setting-body-inner-title'>
-                Edit Employee Form 
-                
-              </div>
-
-              <div className='btn-group' style={{gap:'20px'}}>
-                <button disabled={loading} className={loading?"drawer-outlined-btn disabled-btn": "drawer-outlined-btn"} onClick={()=>navigate(url)}>Preview</button>
-                <button disabled={loading || btnDisabled} className={loading || btnDisabled? "drawer-filled-btn disabled-btn":"drawer-filled-btn "} onClick={handelSave}> {loading? <Spinner/> : "Save"}</button>   
-              </div>
-
-            </div>
-
-            
-            <div className="text">
-              The Edit Employee Form streamlines the creation of new branches. It collects essential information like branch name, location, contact details.
-            </div>
+        <div>
                   
               <div className="form-section">
                   <div className="form-section-inner">
                       <div className="modal-header-title">
-                          Edit Employee Form
-                            
-                          <Popover
-                            content={
-                              <div className="editFormPop">
-                                <span  onClick={()=>{setOpenDrawer(true);setProp(true);}} >Add properties</span>
-                                <span className='disabled'>Add conditional logic</span>
-                                <span className='disabled'>Add associations</span>
-                              </div>
+                          <div style={{width:'100%'}}>
+                            Edit Employee Form
+                          </div>
+                          
+                          <div style={{width:'30%', display:'flex', justifyContent:'flex-end', alignItems:'center'}}>
+
+                            {btnDisabled?null:
+                            <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', width:'75%', marginRight:'16px'}}>
+                                <button
+                                style={{
+                                  padding: "5px 15px",
+                                  fontSize: '12px'
+                                }}
+                                className={btnDisabled?'disabled-btn drawer-filled-btn':'drawer-filled-btn'} disabled={btnDisabled} 
+                                onClick={async ()=>{await handelSave();setOpenDrawer(false);setBtnDisabled(true);}}
+                                >Apply</button>
+                              
+                                <button 
+                                style={{
+                                  padding: "5px 15px",
+                                  fontSize: '12px'
+                                }} className='drawer-outlined-btn' 
+                                onClick={async ()=>{setCancel(true);}}
+                                >Cancel</button>
+                                
+                            </div>
                             }
 
-                          > 
-                            <FontAwesomeIcon icon={faEllipsisH} style={{color:'white', cursor: 'pointer'}}/> 
-                          </Popover>
+                            <Popover
+                              content={
+                                <div className="editFormPop">
+                                  <span  onClick={()=>{setOpenDrawer(true);setProp(true);}} >Add properties</span>
+                                  <span className='disabled'>Add conditional logic</span>
+                                  <span className='disabled'>Add associations</span>
+                                </div>
+                              }
+
+                            > 
+                              <FontAwesomeIcon icon={faEllipsisH} style={{color:'white', cursor: 'pointer', textAlign:'right'}}/> 
+                            </Popover>
+                          </div>
 
                       </div>
                       
@@ -206,7 +251,7 @@ export const EditEmployeeForm=()=>{
                       {loading &&
                       <div style={{
                         height:'100%',
-                        width: "90%",
+                        width: "100%",
                         background: "white",position:'absolute',
                         opacity: 0.8,}}>
                           <Loader/>
@@ -269,15 +314,16 @@ export const EditEmployeeForm=()=>{
                   </div>
               </div>
 
-            </div>
-
-          </div>
           {/* side drawer */}
           <AddProperty
-            close={()=>setOpenDrawer(false)}
+            close={async()=>{setOpenDrawer(false);setBtnDisabled(true)}}
             visible={openDrawer}
             setProp={setProp}
             isPropOpen={isPropOpen}
+            save={async()=>{await handelSave();setOpenDrawer(false);setBtnDisabled(true);}}
+            btnDisabled={btnDisabled}
+            
+
           />
             
         </div>
