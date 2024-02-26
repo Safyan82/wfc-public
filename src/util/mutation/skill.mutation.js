@@ -7,3 +7,11 @@ mutation($input: SkillInput!){
     }
 }
 `;
+
+export const SkillDeleteMutation = gql`
+mutation($deleteSkills: BulkInput!){
+  deleteSkill(deleteSkills: $deleteSkills) {
+    message
+  }
+}
+`;

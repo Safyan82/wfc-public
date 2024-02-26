@@ -1,5 +1,5 @@
 import React,{ useEffect, useState } from 'react';
-import { Form, Input, Drawer, Button, notification, Spin, Select, TreeSelect, DatePicker, TimePicker, Radio, Popover } from 'antd';
+import { Form, Input, Drawer, Button, notification, Spin, Select, TreeSelect, DatePicker, TimePicker, Radio, Popover, Collapse } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdd, faCalendar, faChevronLeft, faClose, faExternalLink, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
 import './advanceFilter.css';
@@ -16,7 +16,7 @@ import { setAdvanceFilter } from '../../middleware/redux/reducers/quickFilter';
 import { createdDateList } from '../../util/date';
 
 export const AdvanceFilter = ({
-    visible, onClose,
+    visible, onClose, object,
     objectData, // object data is the specific properties that are in the schema of specific module F.e Branch object schema/ employee object schema
     groupProperty // group of all available property
 }) =>{
@@ -43,7 +43,8 @@ export const AdvanceFilter = ({
     useEffect(()=>{
         if(groupProperty){
             setPropList(groupProperty?.map((props)=>{
-                const properties = props?.properties?.filter((prop)=>objectData?.find((branchProp)=>branchProp.propertyId==prop._id))
+                // const properties = props?.properties?.filter((prop)=>objectData?.find((branchProp)=>branchProp.propertyId==prop._id))
+                const properties = props?.properties?.filter((prop)=>prop)
                 return {
                     ...props,
                     properties
@@ -57,7 +58,8 @@ export const AdvanceFilter = ({
     const [propSearch, setPropSearch] = useState("");
     useEffect(()=>{
         setPropList(groupProperty?.map((props)=>{
-            const properties = props?.properties?.filter((prop)=>objectData?.find((branchProp)=>branchProp.propertyId==prop._id))
+            const properties = props?.properties?.filter((prop)=>prop)
+            // const properties = props?.properties?.filter((prop)=>objectData?.find((branchProp)=>branchProp.propertyId==prop._id))
             const filteredProperties = properties.filter((prop)=>prop.label.toLowerCase().includes(propSearch.toLowerCase()));
             console.log(filteredProperties, "filter prop")
             return {
@@ -363,7 +365,7 @@ export const AdvanceFilter = ({
                 <div className='back-btn' style={{marginBottom:'6%'}} onClick={()=>setFilterEnable(false)}> <FontAwesomeIcon style={{fontSize: '8px'}} icon={faChevronLeft}/> <span>Back</span> </div>
             }
 
-            <div className="h5" style={{marginTop:'-4%', marginBottom:'2.6%',letterSpacing: '0.4px'}}>Branch Properties</div>
+            <div className="h5" style={{marginTop:'-4%', marginBottom:'2.6%',letterSpacing: '0.4px'}}>{object} Properties</div>
             <Input 
                 type="text"
                 style={{ width: '-webkit-fill-available', backgroundColor: 'white'  }}
@@ -374,17 +376,19 @@ export const AdvanceFilter = ({
                 suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}
             />
             <div className="proplistView">
-                {propList?.map((list)=>(
+                {propList?.map((list, index)=>(
                     list?.properties?.length>0?
-                    <>
-                        <div className="proplistHead">{list._id}</div>
-                        {list?.properties?.map((prop)=>(
+                    <Collapse  activeKey={propSearch?.length>1?[index?.toString()]:[]}>
+                        <Collapse.Panel  key={index.toString()} header={<div className="proplistHead">{list._id}</div>}>
+                            {list?.properties?.map((prop)=>(
 
                             <div className="list-item popoverdataitem" 
                             onClick={()=>renderFilterOption(prop)}
                             >{prop.label}</div>
-                        ))}
-                    </>
+                            ))}
+                        </Collapse.Panel>
+                    </Collapse>
+                    
                     : null
                 ))}
             </div>
