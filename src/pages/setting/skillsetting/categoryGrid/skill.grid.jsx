@@ -101,7 +101,7 @@ export const SkillGrid = ({skill, loading, refetchSkill})=>{
     }
     </div>
 );
-
+    
     return(
         
         <div style={{textAlign:'center', margin:'auto'}}>

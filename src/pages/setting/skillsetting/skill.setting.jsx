@@ -3,7 +3,7 @@ import TabPane from "antd/es/tabs/TabPane";
 import "./skill.setting.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateCategoryModal } from "./modal/createCategory.modal";
 import { CreateSkillModal } from "./modal/createSkill.modal";
 import { CategoryGrid } from "./categoryGrid/category.grid";
@@ -33,7 +33,15 @@ export const SkillSetting = ()=>{
     });
 
 
-    console.log(skillData, "skillData");
+
+    const [skillCategoryToBeEdit, setSkillCategoryToBeEdit] = useState(null);
+
+    useEffect(()=>{
+        console.log(skillCategoryToBeEdit, "selectedSkillCategory");
+    },[skillCategoryToBeEdit]);
+
+    // category grid selectedRow
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
 
     return(
@@ -107,6 +115,10 @@ export const SkillSetting = ()=>{
                                     categoryData={categoryData}
                                     categoryLoading={categoryLoading}
                                     refetchCategory={refetchCategory}
+                                    setCategoryModal={setCategoryModal}
+                                    setSkillCategoryToBeEdit={setSkillCategoryToBeEdit}
+                                    selectedRowKeys={selectedRowKeys}
+                                    setSelectedRowKeys={setSelectedRowKeys}
                                 />
                             </div>
 
@@ -125,7 +137,9 @@ export const SkillSetting = ()=>{
             <CreateCategoryModal
               refetch={refetchCategory}
               visible={categoryModal}
-              close={()=>setCategoryModal(false)}
+              close={()=>{setCategoryModal(false); setSkillCategoryToBeEdit(null);}}
+              skillCategoryToBeEdit={skillCategoryToBeEdit}
+              setSelectedRowKeys={setSelectedRowKeys}
                                             
             />
 
@@ -133,7 +147,7 @@ export const SkillSetting = ()=>{
             <CreateSkillModal
                 visible={skillModal}
                 categories = {categoryData?.getSkillCategories?.map((category)=>({_id:category?._id, label: category?.category})) || []}
-                close={()=>setSkillModal(false)}
+                close={()=>{setSkillModal(false); setSkillCategoryToBeEdit(null);}}
                 openSkillCategoryModal={()=>{setCategoryModal(true);}}
                 refetchSkill={refetchSkill}
             />
