@@ -7,3 +7,12 @@ mutation($input: SkillCategoryInput!){
       category
     }
 }`;
+
+
+export const DeleteSkillCategoryMutation = gql`
+mutation($input: CategoryBulkDeleteInput!){
+  deleteSkillCategory(input: $input) {
+    message
+  }
+}
+`;

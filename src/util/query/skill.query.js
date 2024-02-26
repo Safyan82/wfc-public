@@ -13,6 +13,7 @@ query{
       dateFields
       digitalCertificate
       anyDate
+      fields
       createdBy
       createdAt
     }

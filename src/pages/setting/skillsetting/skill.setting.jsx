@@ -77,6 +77,7 @@ export const SkillSetting = ()=>{
                                 <SkillGrid
                                     skill={skillData?.getSkills}
                                     loading={skillDataLoading}
+                                    refetchSkill={refetchSkill}
                                 />
                             </div>
 
@@ -105,6 +106,7 @@ export const SkillSetting = ()=>{
                                 <CategoryGrid 
                                     categoryData={categoryData}
                                     categoryLoading={categoryLoading}
+                                    refetchCategory={refetchCategory}
                                 />
                             </div>
 

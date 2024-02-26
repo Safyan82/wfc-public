@@ -81,10 +81,10 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                                 {/* modules */}
                                                 <Collapse.Panel  key="m-1" header={<div className='setting-sidebar-nav' style={{fontWeight:500, marginLeft:'-11px'}}>Modules</div>}>
                                                     <ul className='setting-sidebar-nav-list' style={{marginTop:'10px', marginLeft:'-17px'}}>
-                                                        <Link to={routes.branchEditForm}><li className={path==routes?.branchEditForm?active:inactive}>Branch</li></Link>
-                                                        <Link to={routes.branchEditForm}><li className={path==routes?.branchEditForm?active:inactive}>Employee</li></Link>
-                                                        <Link to={routes.branchEditForm}><li className={path==routes?.branchEditForm?active:inactive}>Site</li></Link>
-                                                        <Link to={routes.branchEditForm}><li className={path==routes?.branchEditForm?active:inactive}>Customer</li></Link>
+                                                        <Link to={routes.module+"?branch"}><li className={path==routes?.module+"?branch"?active:inactive}>Branch</li></Link>
+                                                        <Link to={routes.module+"?employee"}><li className={path==routes?.module+"?employee"?active:inactive}>Employee</li></Link>
+                                                        <Link to={routes.module+"?site"}><li className={path==routes?.module+"?site"?active:inactive}>Site</li></Link>
+                                                        <Link to={routes.module+"?customer"}><li className={path==routes?.module+"?customer"?active:inactive}>Customer</li></Link>
                                                     </ul>
                                                 </Collapse.Panel>
 

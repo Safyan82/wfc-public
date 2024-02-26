@@ -41,6 +41,7 @@ import { setNotification } from './middleware/redux/reducers/notification.reduce
 import { UserPerference } from './pages/setting/userPerference/userPerference';
 import { SkillSetting } from './pages/setting/skillsetting/skill.setting';
 import { ModuleForms } from './pages/setting/moduleForms/moduleForms';
+import { Module } from './pages/setting/module/module';
 
 
 
@@ -157,6 +158,8 @@ function App() {
             <Route path={routes.employeeEditForm} exact element={<EditEmployeeForm />} />
             <Route path={routes.branchEditForm} exact element={<EditForm />} />
             <Route path={routes.editskill} exact element={<SkillSetting/>} />
+            <Route path={routes.module} exact element={<Module/>} />
+            
           </Route>
           
         </Routes>

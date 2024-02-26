@@ -2,13 +2,23 @@ import { faLock } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button, Select } from "antd"
 import { objectType } from "../../../util/types/object.types"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { EditForm } from "../../editBranchForm/editForm.page"
 import { EditEmployeeForm } from "../../employee/editEmployeeForm/editEmployeeForm"
+import { useLocation } from "react-router-dom"
 
 export const ModuleForms = () =>{
 
-    const [objectTypelocal, setObjectType] = useState("Branch");
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    const myParam = query.get('field'); // Replace 'myParam' with your parameter name
+    const [objectTypelocal, setObjectType] = useState(myParam ? myParam[0].toUpperCase()+myParam.slice(1).toLowerCase() : "Branch");
+
+    useEffect(()=>{
+        if(myParam){
+            setObjectType(myParam ? myParam[0].toUpperCase()+myParam.slice(1).toLowerCase() : "Branch")
+        }
+    },[myParam]);
 
     return(
         

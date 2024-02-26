@@ -9,6 +9,7 @@ export const routes = {
     editskill: "/setting/employee/editskill",
     forms: "/setting/forms",
     branchEditForm: "/setting/branch/editform",
+    module:"/setting/module/config"
 }
 
 export const publicRoutes = ["/", "/pwd/*", "/classic/*"];
