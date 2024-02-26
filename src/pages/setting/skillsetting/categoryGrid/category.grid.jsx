@@ -6,9 +6,9 @@ import { DeleteSkillCategoryMutation } from "../../../../util/mutation/skillCate
 import { useDispatch } from "react-redux";
 import { setNotification } from "../../../../middleware/redux/reducers/notification.reducer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
-export const CategoryGrid = ({categoryData, categoryLoading, refetchCategory})=>{
+export const CategoryGrid = ({categoryData, categoryLoading, refetchCategory, setCategoryModal, setSkillCategoryToBeEdit, selectedRowKeys, setSelectedRowKeys})=>{
     const columns = [
         {title:'Category', dataIndex: 'category'}, {title:'Created By', dataIndex:'createdBy'}, {title:'Created At', dataIndex:'createdAt'}
     ];
@@ -17,7 +17,6 @@ export const CategoryGrid = ({categoryData, categoryLoading, refetchCategory})=>
 
     const [hoveredRow, setHoveredRow] = useState(null);
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
 
     const onSelectChange = (newSelectedRowKeys) => {
@@ -88,6 +87,13 @@ export const CategoryGrid = ({categoryData, categoryLoading, refetchCategory})=>
           <div onClick={()=>handelSkillCategoryDelete()}>
               <FontAwesomeIcon icon={faTrashCan} style={{marginRight:'5px'}}/> <span>Delete</span>
           </div>
+
+        {selectedRowKeys?.length==1?
+          <div onClick={()=>{setCategoryModal(true); setSkillCategoryToBeEdit(categoryData?.getSkillCategories?.find((category)=>category?._id==selectedRowKeys[0]))}}>
+              <FontAwesomeIcon icon={faPencil} style={{marginRight:'5px'}} /> <span>Edit</span>
+          </div>
+          : null
+        }
 
       </>
     }
