@@ -6,6 +6,7 @@ query{
       _id
       skill
       categoryId
+      categoryName
       description
       hardSkill
       createdBy
@@ -16,6 +17,7 @@ query{
       fields
       createdBy
       createdAt
+
     }
 }
 `;

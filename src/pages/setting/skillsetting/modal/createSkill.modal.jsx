@@ -100,8 +100,8 @@ export const CreateSkillModal = ({visible, close, openSkillCategoryModal, catego
 
             dispatch(setNotification({
                 notificationState:true,
-                error:false,
-                message: "An error encountered while adding the skill"+err.message,
+                error:true,
+                message: err.message,
             }));
         }
         if(!isAdding){

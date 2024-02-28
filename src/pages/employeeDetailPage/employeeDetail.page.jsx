@@ -128,14 +128,14 @@ export const EmployeeDetailPage = ()=>{
     const [tabs, setTabs] = useState([
         {title:"Profile", url:''},
         {title:"HR", url:''},
-        {title:"Pay Details", url:''},
-        {title:"HR Task", url:''},
-        {title:"Absense", url:''},
+        // {title:"Pay Details", url:''},
+        // {title:"HR Task", url:''},
+        // {title:"Absense", url:''},
         {title:"Calendar", url:''},
-        {title:"Sites Trained/Banned", url:''},
+        {title:"Sites Credentials", url:''},
         {title:"Skills", url:''},
-        {title:"Premiums", url:''},
-        {title:"Custom Fields", url:''},
+        // {title:"Premiums", url:''},
+        // {title:"Custom Fields", url:''},
         {title:"Document Library", url:''},
     ]);
 
@@ -247,22 +247,13 @@ export const EmployeeDetailPage = ()=>{
                         : null}
                     </div>
                 :
-                activeTab==moduleTabs.Employee[0]?
+                activeTab=="HR"?
                     <HRTab/>
                 :
-                activeTab==moduleTabs.Employee[1]?
-                    <PayDetailsTab/>
-                :
-                activeTab==moduleTabs.Employee[2]?
-                    <HRTaskTab/>
-                :
-                activeTab==moduleTabs.Employee[3]?
-                    <AbsenseTab/>
-                :
-                activeTab==moduleTabs.Employee[4]?
+                activeTab=="Calendar"?
                     <CalendarTab/>
                 :
-                activeTab==moduleTabs.Employee[6]?
+                activeTab=="Skills"?
                     <SkillTab/>
                 : null
                 }

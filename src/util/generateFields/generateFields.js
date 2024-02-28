@@ -1,11 +1,17 @@
 import { faCalendarAlt, faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { DatePicker, Form, Input, Select, TimePicker, TreeSelect } from "antd";
+import { Image, DatePicker, Form, Input, Select, TimePicker, TreeSelect } from "antd";
 import dayjs from "dayjs";
+import "dayjs/locale/en-gb";
+// import weekday from '@dayjs/plugin/weekday';
 
-export const GenerateFields = (label, name, fieldType, handelDataValue, property, value="")=>{
+dayjs.locale('en-gb');
+
+// value and image base is just in use to edit employee personal skill
+export const GenerateFields = (label, name, fieldType, handelDataValue, property, value="", imgbas64="")=>{
         
         const {Option} = Select;
+        
 
         return(
           
@@ -16,7 +22,7 @@ export const GenerateFields = (label, name, fieldType, handelDataValue, property
             <Input 
               className='generic-input-control'
               value={value}
-              onChange={(e)=>{ handelDataValue(e.target);}} 
+              onChange={(e)=>{ handelDataValue(e.target,label);}} 
               type={fieldType==="password"? "password" : "text"}
               name={name} 
               id={name} 
@@ -30,7 +36,7 @@ export const GenerateFields = (label, name, fieldType, handelDataValue, property
           <Input.TextArea rows={4} 
             className='generic-input-control' 
             value={value}
-            onChange={(e)=>{handelDataValue(e.target);}} 
+            onChange={(e)=>{handelDataValue(e.target,label);}} 
             name={name} 
             id={name} 
             />
@@ -49,7 +55,7 @@ export const GenerateFields = (label, name, fieldType, handelDataValue, property
                 handelDataValue({
                     name: label.replaceAll(" ","").toLowerCase(),
                     value: e
-                    });
+                    },label);
                 }}
             >
                 <Option value="yes">Yes</Option>
@@ -152,7 +158,7 @@ export const GenerateFields = (label, name, fieldType, handelDataValue, property
                       onChange={(e)=>{handelDataValue({
                         name,
                         value: e
-                      });}}
+                      },label);}}
 
                     >
                         {property?.options?.map((option)=>(<Option value={option.value}> {option.key} </Option>))}
@@ -174,7 +180,7 @@ export const GenerateFields = (label, name, fieldType, handelDataValue, property
                 onChange={(e)=>{handelDataValue({
                   name,
                   value:e
-                });}}
+                },label);}}
             >
                 {property?.options?.map((option)=>(
                     option?.value?.length > 0 && option?.showFormIn && <TreeSelect.TreeNode value={option.value} title={option.key}/>
@@ -185,22 +191,24 @@ export const GenerateFields = (label, name, fieldType, handelDataValue, property
           : fieldType == 'date' || fieldType == 'datetime-local'?
           <Form.Item>
             <label>{label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
-            <DatePicker
-              showTime={fieldType == "datetime-local"}
-              name={name}
-              value={value && dayjs(value)}
-              id={name}
-              onChange={(e, dateString)=>{handelDataValue({
-                name,
-                value: dateString
-            });}}
+            {/* <ConfigProvider locale={locale}> */}
+              <DatePicker
+                showTime={fieldType == "datetime-local"}
+                name={name}
+                value={value && dayjs(value)}
+                id={name}
+                onChange={(e, dateString)=>{handelDataValue({
+                  name,
+                  value: dateString
+              },label);}}
 
-              className='generic-input-control'
-            //   disabledDate={
-            //     (current)=>handelDateRule(property?.propertyDetail?.rules, current)
-            //   }
-              suffixIcon={<FontAwesomeIcon style={{color:'rgb(0, 145, 174) !important'}} icon={faCalendarAlt} />}
-            />
+                className='generic-input-control'
+              //   disabledDate={
+              //     (current)=>handelDateRule(property?.propertyDetail?.rules, current)
+              //   }
+                suffixIcon={<FontAwesomeIcon style={{color:'rgb(0, 145, 174) !important'}} icon={faCalendarAlt} />}
+              />
+            {/* </ConfigProvider> */}
           </Form.Item>
           : fieldType == 'time' ?
           <Form.Item>
@@ -209,9 +217,26 @@ export const GenerateFields = (label, name, fieldType, handelDataValue, property
               id={name}
               className='generic-input-control'
               value={value}
-              onChange={(e)=>{handelDataValue(e.target);}}
+              onChange={(e)=>{handelDataValue(e.target,label);}}
               suffixIcon={<FontAwesomeIcon style={{color:'rgb(0, 145, 174) !important'}} icon={faClock} />}
             />
+          </Form.Item>
+          :
+          fieldType=="file"?
+          <Form.Item>
+              <label>{label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
+
+              {<Image style={imgbas64?.name?{display:'none'}:{}} src={imgbas64} width={50} height={30} />}
+              
+              <Input 
+                id={name}
+                name={name} 
+                // value={typeof(imgbas64)==="string"?"":value}
+                onChange={(e)=>{handelDataValue(e.target,label,fieldType);}}
+                type={fieldType} className='generic-input-control'
+              /> 
+              
+              
           </Form.Item>
           :
           <Form.Item>
@@ -220,7 +245,7 @@ export const GenerateFields = (label, name, fieldType, handelDataValue, property
                 id={name}
                 name={name} 
                 value={value}
-                onChange={(e)=>{handelDataValue(e.target);}}
+                onChange={(e)=>{handelDataValue(e.target,label,fieldType);}}
                 type={fieldType} className='generic-input-control'
               /> 
               
