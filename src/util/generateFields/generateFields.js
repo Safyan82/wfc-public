@@ -226,7 +226,7 @@ export const GenerateFields = (label, name, fieldType, handelDataValue, property
           <Form.Item>
               <label>{label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
 
-              {<Image style={imgbas64?.name?{display:'none'}:{}} src={imgbas64} width={50} height={30} />}
+              {<Image style={imgbas64?.name || imgbas64==""?{display:'none'}:{}} src={imgbas64} width={50} height={30} />}
               
               <Input 
                 id={name}
