@@ -101,7 +101,11 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
 
                                         </ul>
                                         
-                                    </Collapse.Panel>                                 
+                                    </Collapse.Panel>  
+
+                                    <ul className='setting-sidebar-nav-list'>
+                                        <Link to={routes.module+"?customer"}><li className={path==routes?.module+"?customer"?active:inactive}>Billing</li></Link>
+                                    </ul>                               
                                     
                                 </Collapse>
                             </nav>

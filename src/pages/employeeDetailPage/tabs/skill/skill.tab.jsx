@@ -46,7 +46,8 @@ export const SkillTab = ()=>{
     const {data:employeeSkill, loading:employeeSkillLoading, refetch: refetchSkill} = useQuery(EmployeeSkillQuery,{
         variables:{
             employeeId: param?.id
-        }
+        },
+        fetchPolicy:'network-only'
     });
 
     const [data, setData] = useState([]);
