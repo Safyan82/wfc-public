@@ -68,7 +68,7 @@ export const CategoryGrid = ({categoryData, categoryLoading, refetchCategory, se
             dispatch(setNotification({
                 notificationState: true,
                 error: true,
-                message:"An Error Occured"
+                message:err.message,
             }));
         }
     }

@@ -20,3 +20,22 @@
     font-size: 32px;
   }
   
+  .skillSelect .ant-select-selection-search{
+    padding-top: 25px !important;
+  }
+
+  .skillSelect .ant-select-selection-search input{
+    margin-top: 4px !important;
+  }
+
+  .skill-action-btn{
+    display:flex;
+    column-gap:20px;
+    align-items:center;
+    color:#0091ae;
+    cursor: pointer;
+  }
+
+  .skill-action-btn svg:hover{
+    color: rgba(0, 164, 189, 0.8);
+  }

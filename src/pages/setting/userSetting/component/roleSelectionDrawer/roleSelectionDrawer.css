@@ -49,3 +49,10 @@
     font-size: 11px;
     font-weight: normal;
 }
+
+.table-footer .small-text{
+    margin-top: 0 !important;
+    color: #516f90!important;
+    font-size: 11px;
+    font-weight: normal;
+}

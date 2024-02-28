@@ -7,12 +7,13 @@ import { faCancel, faCheck, faPlus, faTimes, faTrashCan } from "@fortawesome/fre
 import { useDispatch } from "react-redux";
 import { setNotification } from "../../../../middleware/redux/reducers/notification.reducer";
 import { SkillDeleteMutation } from "../../../../util/mutation/skill.mutation";
+import { EmployeeSkillQuery } from "../../../../util/query/employeeSkill.query";
 
 export const SkillGrid = ({skill, loading, refetchSkill})=>{
     const columns = [
         {title:'Skill', dataIndex: 'skill'}, 
-        {title:'Description', dataIndex:'description'}, 
-        {title:'Category', dataIndex:'categoryId'},
+        // {title:'Description', dataIndex:'description'}, 
+        {title:'Category', dataIndex:'categoryName'},
         {title:'Required Fields', dataIndex:'fields'},
         {title:'Created By', dataIndex:'createdBy'},
         {title:'Created At', dataIndex:'createdAt'},
@@ -20,6 +21,8 @@ export const SkillGrid = ({skill, loading, refetchSkill})=>{
     ];
 
     
+   
+
 
     const [hoveredRow, setHoveredRow] = useState(null);
 
@@ -77,7 +80,7 @@ export const SkillGrid = ({skill, loading, refetchSkill})=>{
             dispatch(setNotification({
                 notificationState: true,
                 error: true,
-                message:"An Error Occured"
+                message:err.message
             }));
         }
     }
@@ -116,7 +119,7 @@ export const SkillGrid = ({skill, loading, refetchSkill})=>{
                     dataSource={skill?.map((data)=>({
                         ...data, 
                         key: data?._id, 
-                        fields: data?.fields?.map((field)=>field.label).join(" "),
+                        fields: data?.fields?.map((field)=>field.label).join(" , "),
                         hardSkill: data?.hardSkill? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faTimes} /> ,
                         anyDate: data?.anyDate? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faTimes} /> ,
                         digitalCertificate: data?.digitalCertificate? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faTimes} /> ,
