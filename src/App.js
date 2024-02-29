@@ -42,6 +42,9 @@ import { UserPerference } from './pages/setting/userPerference/userPerference';
 import { SkillSetting } from './pages/setting/skillsetting/skill.setting';
 import { ModuleForms } from './pages/setting/moduleForms/moduleForms';
 import { Module } from './pages/setting/module/module';
+import { BillingServices } from './pages/setting/billing/billingservice/billingservice';
+import { PaymentMethod } from './pages/setting/billing/paymentMethod/paymentMethods';
+import { BillingNotification } from './pages/setting/billing/billingNotification/billingNotification';
 
 
 
@@ -158,7 +161,15 @@ function App() {
             <Route path={routes.employeeEditForm} exact element={<EditEmployeeForm />} />
             <Route path={routes.branchEditForm} exact element={<EditForm />} />
             <Route path={routes.editskill} exact element={<SkillSetting/>} />
+
+            {/* objects */}
             <Route path={routes.module} exact element={<Module/>} />
+
+            {/* billing */}
+
+            <Route path={routes.service} exact element={<PrivateRoutes><BillingServices/></PrivateRoutes>}/>
+            <Route path={routes.payment} exact element={<PaymentMethod/>}/>
+            <Route path={routes.billingNotification} exact element={<BillingNotification/>}/>
             
           </Route>
           

@@ -1,0 +1,27 @@
+export const BillingServices = ()=>{
+    return(
+        <div className='setting-body'>
+            <div className='setting-body-inner'>
+                <div className="setting-body-inner">
+                    <div className="setting-body-title">
+                        <div className='setting-body-inner-title'>
+                            Manage Skills
+                        </div>
+                    </div>
+                    <div className="text">
+                        Efficiently track and optimize employee competencies for enhanced productivity and resource allocation.
+                    </div>
+
+
+                    {/* body */}
+        
+
+
+                </div> 
+
+                             
+            </div>
+        </div>
+        
+    )
+}

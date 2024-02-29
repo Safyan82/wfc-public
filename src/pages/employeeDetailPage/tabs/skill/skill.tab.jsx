@@ -1,4 +1,4 @@
-import { Image, Modal, Switch, Table } from "antd"
+import { Image, Modal, Popover, Switch, Table } from "antd"
 import { SkillModal } from "./addSkillModal";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
@@ -25,8 +25,18 @@ export const SkillTab = ()=>{
             key: 'cat'
         },
         {
-            title: 'Additional Information',
+            title: 'Description',
             dataIndex: 'additionalInfo',
+            key:'info'
+        },
+        {
+            title: 'Issue Date',
+            dataIndex: 'issueDate',
+            key:'info'
+        },
+        {
+            title: 'Expiry Date',
+            dataIndex: 'expiryDate',
             key:'info'
         },
         {
@@ -46,7 +56,8 @@ export const SkillTab = ()=>{
     const {data:employeeSkill, loading:employeeSkillLoading, refetch: refetchSkill} = useQuery(EmployeeSkillQuery,{
         variables:{
             employeeId: param?.id
-        }
+        },
+        fetchPolicy:'network-only'
     });
 
     const [data, setData] = useState([]);
@@ -59,14 +70,30 @@ export const SkillTab = ()=>{
                     key: empSkill?._id,
                     skill: empSkill?.skillDetail[0]?.skill,
                     category: empSkill?.categoryDetail[0]?.category,
-                    additionalInfo: <table style={{textAlign:'left'}}>
-                                        {empSkill?.fields?.map((field)=>(
-                                        <tr style={{height:'50px'}}>
-                                            <th style={{width:'40%'}}>{field?.label}</th>
-                                            <td style={{textAlign:'left'}}> {field?.imgbas64?.length>0? <Image src={field?.imgbas64} width={50} height={30} /> : field?.value} </td>
+                    issueDate: empSkill?.fields?.find((field)=> field?.label?.toLowerCase()?.includes('issue') || field?.label?.toLowerCase()?.includes('issuance') || field?.label?.toLowerCase()?.includes('issued') )?.value || "--",
+                    expiryDate: empSkill?.fields?.find((field)=> field?.label?.toLowerCase()?.includes('expiry') || field?.label?.toLowerCase()?.includes('expired') || field?.label?.toLowerCase()?.includes('renewal')  || field?.label?.toLowerCase()?.includes('renewal'))?.value || "--",
+                    additionalInfo: <table style={{textAlign:'left',}}>
+
+                                        <tr>                                            
+                                            {empSkill?.fields?.filter((field)=>(
+                                                !field?.label?.toLowerCase()?.includes('issue') && !field?.label?.toLowerCase()?.includes('issuance') && !field?.label?.toLowerCase()?.includes('issued') && !field?.label?.toLowerCase()?.includes('expiry') && !field?.label?.toLowerCase()?.includes('expired') && !field?.label?.toLowerCase()?.includes('renewal')  && !field?.label?.toLowerCase()?.includes('renewal')
+                                            )).map((field)=>
+                                                <td style={{textAlign:'left', width:'50px'}}> 
+                                                    {field?.imgbas64?.length>0?
+                                                    //  <Image src={field?.imgbas64} width={50} height={30} /> 
+                                                    null
+                                                    : 
+                                                    <Popover
+                                                        content={field?.label}
+                                                    >
+                                                        {field?.value || "--"} 
+                                                    </Popover>
+                                                    } 
+                                                </td>
+                                            )}
                                         </tr>
-                                        ))}
                                     </table>,
+
                     status: <div style={{display:'flex', gap:'10px', alignItems:'center'}}>
                         {empSkill?.categoryDetail[0]?.category==="Licence" || empSkill?.categoryDetail[0]?.category==="License"?
                             <><div style={{height: '15px', width: '15px', background: 'rgb(0, 189, 165)', borderRadius: '50%'}}></div> <a href="#">Check Live Status</a></>

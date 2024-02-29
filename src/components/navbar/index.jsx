@@ -187,9 +187,9 @@ export function Navbar({themeData, themeLoading, refetchTheme}){
 
     useEffect(()=>{
         if(themeToChange){
-            upsertTheme();
-            setSelectedTheme(themeToChange);
             localStorage.setItem('color', themeToChange);
+            setSelectedTheme(themeToChange);
+            upsertTheme();
         }
     },[themeToChange]);
 

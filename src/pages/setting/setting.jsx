@@ -50,7 +50,7 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                             </div>
 
                             <nav className='setting-custom-nav'>
-                                <Collapse  defaultActiveKey={['2','1','3']}>
+                                <Collapse  defaultActiveKey={['2','1','3','4']}>
                                     
                                     <Collapse.Panel key='1' header={<div className='setting-sidebar-nav'>Your Preferences</div>}>
                                         <ul className='setting-sidebar-nav-list'>
@@ -62,11 +62,11 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                     
                                     <Collapse.Panel key='2'  header={<div className='setting-sidebar-nav'>Account Setup</div>}>    
                                         <ul className='setting-sidebar-nav-list'>
-                                            <li className='setting-sidebar-nav-list-item'>Account Defaults</li>
+                                            {/* <li className='setting-sidebar-nav-list-item'>Account Defaults</li> */}
                                             <Link to={routes.userRole}><li className={path==routes.userRole?active:inactive}>User Roles</li></Link>
                                             <Link to={routes.addUser}><li className={path==routes.addUser?active:inactive }>Users & Teams</li></Link>
                                             <Link to={routes.userAccess}><li className={path==routes.userAccess?active:inactive}>Users Access Log</li></Link>
-                                            <li className='setting-sidebar-nav-list-item'>Privacy & Consent</li>
+                                            {/* <li className='setting-sidebar-nav-list-item'>Privacy & Consent</li> */}
                                         </ul>
                                     </Collapse.Panel>
 
@@ -77,7 +77,7 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                             <Link to={routes.forms}><li className={path==routes.forms?active:inactive}>Forms</li></Link>
                                             <Link to={routes.editskill}><li className={path==routes.editskill?active:inactive}>Skills</li></Link>
 
-                                            <Collapse accordion defaultActiveKey={['m-1']} style={{paddingBottom:'16px'}}>
+                                            <Collapse accordion defaultActiveKey={[]} style={{paddingBottom:'16px'}}>
                                                 {/* modules */}
                                                 <Collapse.Panel  key="m-1" header={<div className='setting-sidebar-nav' style={{fontWeight:500, marginLeft:'-11px'}}>Modules</div>}>
                                                     <ul className='setting-sidebar-nav-list' style={{marginTop:'10px', marginLeft:'-17px'}}>
@@ -101,7 +101,17 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
 
                                         </ul>
                                         
-                                    </Collapse.Panel>                                 
+                                    </Collapse.Panel>
+
+                                    
+                                    <Collapse.Panel key='4'  header={<div className='setting-sidebar-nav'>Billing</div>}>    
+                                        <ul className='setting-sidebar-nav-list'>
+                                            <Link to={routes.service}><li className={path==routes.service?active:inactive}>Services</li></Link>
+                                            <Link to={routes.payment}><li className={path==routes.payment?active:inactive}>Payment Methods</li></Link>
+                                            <Link to={routes.billingNotification}><li className={path==routes.billingNotification?active:inactive }>Billing Notification</li></Link>
+                                        </ul>
+                                    </Collapse.Panel>  
+                             
                                     
                                 </Collapse>
                             </nav>
