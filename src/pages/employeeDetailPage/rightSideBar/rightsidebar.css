@@ -3,7 +3,7 @@
 .emp-rightsidebar-wrapper{
     padding-right: 0px;
     max-height: calc(100vh - 134px);
-    overflow-y: scroll;
+    overflow-y: auto;
     background-color: rgb(245, 248, 250) !important;
     padding-top: 5%;
 }

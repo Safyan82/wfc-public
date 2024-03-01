@@ -162,12 +162,12 @@ export const UserPerference = ()=>{
                 </div>
 
                 {/* user tabs */}
-                <div className='editFieldTabs'>
-                    <Tabs defaultActiveKey="1" className={tabKey=="1" ? "system-user" : ""} onChange={(key)=>setTabKey(key)}>
+                <div className='editFieldTabs' style={{background:'transparent'}}>
+                    <Tabs defaultActiveKey="1" className={tabKey=="1" ? "" : ""} onChange={(key)=>setTabKey(key)}>
                        
 
                         <TabPane tab={`Perferences`} key="3">
-                           <div style={{display: 'flex', gap:'55px'}}>
+                           <div style={{display: 'flex', gap:'55px', background:'transparent'}}>
                                 {/* user perferences */}
                                 <div style={{width:'250px', maxWidth:'300px'}}>
                                     <div className={activeSession==="resetPassword"?active:inactive} onClick={()=>setActiveSession("resetPassword")} > Reset Password </div>

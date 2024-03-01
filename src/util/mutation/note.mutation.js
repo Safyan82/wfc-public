@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
 
-export const NoteMutation = gql`
+export const NewNoteMutation = gql`
 mutation($input: NoteInput!){
-    upsertNote(input: $input) {
-      message
-      success
-    }
+  newNote(input: $input) {
+    response
+    message
+  }
 }`;
