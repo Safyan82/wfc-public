@@ -39,3 +39,7 @@
   .skill-action-btn svg:hover{
     color: rgba(0, 164, 189, 0.8);
   }
+
+  .skillSelect .ant-select-selection-item{
+    color: black;
+  }

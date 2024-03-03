@@ -215,7 +215,7 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
                     onClick={isBtnDisabled? console.warn("not-allowed") :handelEmployeeSkill}
                     className={newEmpSkillLoading || updateEmpSkillLoading || isBtnDisabled?'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
                 >
-                    {newEmpSkillLoading || updateEmpSkillLoading? <Spin indicator={<LoadingOutlined/>}/> : skillToBeEdit?.skillDetail?.length>0? "Update" :"Save"}
+                    {newEmpSkillLoading || updateEmpSkillLoading? <Spin indicator={<LoadingOutlined/>}/> : skillToBeEdit?.skillDetail?.length>0? "Replace" :"Save"}
                 </button>
                 <button  disabled={newEmpSkillLoading || updateEmpSkillLoading} className={newEmpSkillLoading || updateEmpSkillLoading ? 'disabled-btn drawer-outlined-btn':'drawer-outlined-btn'} onClick={()=>{onClose();setSkill({})}}>
                     Cancel
@@ -228,7 +228,7 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
             <>
 
                 <div className='modal-header-title'>
-                    <span style={{letterSpacing:'0.2px'}}> {skillToBeEdit?.skillDetail?.length>0? "Edit ": "Add "} New Skill</span>
+                    <span style={{letterSpacing:'0.2px'}}> {skillToBeEdit?.skillDetail?.length>0? "Replace ": "Add New "}  Skill</span>
                     <span  onClick={()=>{onClose();setSkill({})}}><FontAwesomeIcon className='close' icon={faClose}/></span>
                 </div>
                 
@@ -244,6 +244,7 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
                                 className="custom-select"
                                 value={skillToBeEdit?.skillDetail?.length>0? skillToBeEdit?.skillDetail[0]?.skill : skill?.length>0?JSON.parse(skill)?.skill:null}
                                 onChange={e=>setSkill(e)}
+                                disabled={skillToBeEdit?.skillDetail?.length>0}
                             >
                                 {skillData?.getSkills?.map((sk)=>(
                                     <Select.Option value={JSON.stringify(sk)}>{sk.skill}</Select.Option>
@@ -258,7 +259,8 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
                                 const name = prop?.label.toLowerCase().replace(/\s/g,"");
                                 const fieldType = prop?.fieldType;
                                 // const newprop = name=="nationality"? {...prop, options: countryList} : prop;
-                                const {value, imgbas64} = field?.find((f)=>f.name==name) || {value: "", imgbas64: ""};
+                                // const {value, imgbas64} = field?.find((f)=>f.name==name) || {value: "", imgbas64: ""};
+                                const {value, imgbas64} = {value: "", imgbas64: ""};
                                
                                 return GenerateFields(label, name, fieldType, handelDataValue, prop, value, imgbas64);
                             })
