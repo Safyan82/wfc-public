@@ -3,22 +3,18 @@ import Draggable from 'react-draggable';
 import './notes.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDownAZ, faArrowsH, faChevronDown, faChevronRight, faClose, faEllipsisV, faMaximize } from '@fortawesome/free-solid-svg-icons';
-
-import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { Checkbox, Popover } from 'antd';
-import draftToHtml from 'draftjs-to-html';
 import { setNoteToggle } from '@src/middleware/redux/reducers/note.reducer';
 import { useDispatch } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { setNotification } from '@src/middleware/redux/reducers/notification.reducer';
-import { useParams } from 'react-router-dom';
-import Spinner from '@src/components/spinner';
 import { objectType } from "@src/util/types/object.types";
 import { NewNoteMutation } from '@src/util/mutation/note.mutation';
 import ReactQuill from 'react-quill';
+import { useParams } from 'react-router-dom';
 
 
-export const Notes = ()=>{
+export const Notes = ({refetch})=>{
     const [position, setPosition] = useState({ x: 206, y: 122 });
 
     const handleDrag = (e, ui) => {
@@ -27,28 +23,12 @@ export const Notes = ()=>{
       setPosition({ x, y });
     };
     const [collapse, setCollapse] = useState(false);
-    const uploadImageCallBack = ()=>{
-
-    };
-    
-    const [editorState, setEditorState] = useState(EditorState.createEmpty())
-
-    const onEditorStateChange = (newEditorState) =>{
-        setEditorState(newEditorState);
-    }
-
+   
+   
     const [newNote, {loading}] = useMutation(NewNoteMutation);
 
     const [note, setNote] = useState(null);
 
-    useEffect(()=>{
-        if(editorState){
-            const contentState = editorState.getCurrentContent();
-            const rawContentState = convertToRaw(contentState);
-            setNote(draftToHtml(rawContentState));
-           
-        }
-    },[editorState]);
 
     const [followUp, setFollowUp] = useState("To-do");
     const [timespan, setTimeSpan] = useState("In 3 business days");
@@ -56,11 +36,11 @@ export const Notes = ()=>{
     const [width, setWidth] = useState(false);
     const dispatch = useDispatch();
 
-    const param = useParams();
 
     const [value, setValue] = useState("");
 
-
+    const param = useParams();
+    
     const handelNote = async()=>{
         try{
             await newNote({
@@ -77,6 +57,7 @@ export const Notes = ()=>{
                 error:false,
                 message: "Note Added"
             }));
+            await refetch();
             dispatch(setNoteToggle(false));
 
         }catch(err){
@@ -84,7 +65,7 @@ export const Notes = ()=>{
                 notificationState: true,
                 error: true,
                 message: err.message
-            }))
+            }));
         }
     }
 
@@ -128,16 +109,8 @@ export const Notes = ()=>{
 
                 <div className="notes-body">
 
-                    {
-                        loading? 
-                            <div style={{display:'table', margin:'auto', paddingTop:'55px'}}>
-                                <Spinner/>
-                            </div>
-                        
-                        :
-                    
-                        <ReactQuill theme="snow" value={value} onChange={setValue} />
-                    }
+                    <ReactQuill theme="snow" value={value} onChange={setValue} />
+            
 
                     <div className='note-association'>
                         <Popover
@@ -154,7 +127,7 @@ export const Notes = ()=>{
                 </div>
 
                 <div className="note-footer">
-                    <button onClick={handelNote} disabled={note?.length<1 || loading? true : false} className={note?.length<1 || loading? 'disabled-btn middle-note-btn' :'middle-note-btn'}>Save note</button>
+                    <button onClick={handelNote} disabled={value?.length<1 || loading? true : false} className={value?.length<1 || loading? 'disabled-btn middle-note-btn' :'middle-note-btn'}>Save note</button>
                     <Checkbox>
                         Create a&nbsp;
 

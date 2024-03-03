@@ -20,6 +20,9 @@ import { HRTab } from "./tabs/hr/hr.tab";
 import { CalendarTab } from "./tabs/calendar/calendar.tab";
 import { SkillTab } from "./tabs/skill/skill.tab";
 import { NotesTab } from "./tabs/notes/notes.tab";
+import { objectType } from "@src/util/types/object.types";
+import { getNote } from "@src/util/query/note.query";
+
 
 
 export const EmployeeDetailPage = ()=>{
@@ -142,6 +145,15 @@ export const EmployeeDetailPage = ()=>{
     const [isAction, setAction] = useState(false);
     const containerRef = useRef(null);
 
+    
+    const { data:note , loading: noteLoading, refetch: noteRefetch} = useQuery(getNote,{
+        variables:{
+            createdFor: param?.id,
+            objectType: objectType?.Employee
+        },
+        fetchPolicy:'network-only',
+    });
+
     return(
         <div style={{background:'rgb(245, 248, 250)'}}>
 
@@ -200,7 +212,7 @@ export const EmployeeDetailPage = ()=>{
                     <div>
                         <Row>
                             {noteToggle?
-                            <Notes/>
+                            <Notes refetch={noteRefetch}/>
                             :null}
 
                             <Col span={6} style={{paddingRight:'0px',
@@ -233,7 +245,7 @@ export const EmployeeDetailPage = ()=>{
                                     activeTab=="Profile"?
                                     <DetailPageMiddleSection  />
                                     :
-                                    <NotesTab/>
+                                    <NotesTab note={note?.getNote?.response} noteRefetch={noteRefetch} />
                                 }
 
                             </Col>

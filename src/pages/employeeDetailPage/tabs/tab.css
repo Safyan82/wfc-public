@@ -90,3 +90,18 @@
 .ant-select-selection-search {
     margin-top: -25px !important;
 }
+
+.edit-comment-icon{
+    position: absolute;
+    right: 42px;
+    display: flex;
+    gap: 20px;
+    margin-top: -20px;
+}
+
+.edit-comment-icon svg{
+    color: rgb(124, 152, 182);
+    font-size: 12px;
+    cursor: pointer;
+}
+
