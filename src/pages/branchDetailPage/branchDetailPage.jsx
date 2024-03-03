@@ -177,10 +177,16 @@ export const BranchDetailPage = ()=>{
                     />
 
                 </Col>
-                <Col span={12} style={{paddingLeft:'0px'}} >
+                <Col span={12} style={{paddingRight:'0px',
+                                    width:'100%',
+                                    maxHeight: 'calc(100vh - 56px)',
+                                    overflowY: 'scroll',
+                                    transition: 'scroll-behavior 1s',
+                                    background: 'white'
+                                }} >
                     <DetailPageMiddleSection  />
                 </Col>
-                <Col span={6}>
+                <Col span={6} style={{background:'rgb(245, 248, 250)'}}>
                     <DetailPageRightSideBar  />
                 </Col>
             </Row>

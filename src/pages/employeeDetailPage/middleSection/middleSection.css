@@ -27,9 +27,10 @@
 .detailPageTab .ant-tabs-content-holder{
     padding-right: 16px;
     margin-top: -16px;
-    max-height: calc(100vh - 130px);
-    height: 100vh;
+    /* max-height: calc(100vh - 130px);
+    min-height: 100vh; */
     padding-top: 3%;
+    /* overflow-y: auto; */
 }
 
 .detailActivityTab .ant-tabs-content-holder{
@@ -204,16 +205,16 @@
     margin-top: 7px;
     margin-bottom: -3px;
     padding: 8px 0px 8px 35px;
+    border: 1px solid transparent;
 }
 
 .note-body-main{
-    
     padding: 8px 0px 8px 35px;
 }
 
-.note-list-body:hover{
-    border: 1px solid rgb(127, 209, 222);
-    background-color: rgb(229, 245, 248);
+.note-list-body-uncollapse:hover{
+    border: 1px solid rgb(127, 209, 222) !important;
+    background-color: rgb(229, 245, 248) !important;
 }
 
 
@@ -266,7 +267,7 @@
     position: absolute;
     margin-bottom: 0px;
     background-color: transparent;
-    z-index: 9999999999;
+    z-index: 9;
 }
 
 .commenteditorToolbar div, .noteEditToolbar div{
@@ -285,7 +286,7 @@
     position: absolute;
     margin-bottom: 0px;
     background-color: transparent;
-    z-index: 9999999999;
+    z-index: 9;
 }
 
 

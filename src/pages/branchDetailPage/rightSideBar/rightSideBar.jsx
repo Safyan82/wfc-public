@@ -78,7 +78,7 @@ export const DetailPageRightSideBar = () => {
   };
 
   return (
-    <div className="rightsidebar-wrapper">
+    <div className="emp-rightsidebar-wrapper"  style={{background:'rgb(245, 248, 250)'}}>
         <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="items">
             {(provided) => (

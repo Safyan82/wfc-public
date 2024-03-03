@@ -1,6 +1,7 @@
 import './assets/default.css';
 import 'react-resizable/css/styles.css';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import 'react-quill/dist/quill.snow.css';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import { Login } from "./pages/login";
 import { DefaultLayout } from "./layout/defaultLayout";

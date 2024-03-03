@@ -57,6 +57,14 @@ export const BillingServices = ({themeData})=>{
                                                 <FontAwesomeIcon style={{color: localStorage.getItem("color") || themeData?.getThemeByUserId?.color}} icon={faTowerBroadcast} />
                                             </div>
 
+                                            <div style={{padding:'0 16px'}}>
+                                                <div style={{fontSize:'16px', fontWeight:'500'}}>
+                                                    SIA Licences Live Status
+                                                </div>
+                                                <div className="text">
+                                                    SIA Licences Live Status add-on is a cutting-edge digital solution that offers instant and up-to-date information on the status of security licenses issued by the Security Industry Authority.
+                                                </div>
+                                            </div>
                                         </div>
                                 </div>
 

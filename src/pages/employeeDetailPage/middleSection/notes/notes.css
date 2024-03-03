@@ -60,54 +60,6 @@
     /* transform: scale(1); */
 }
 
-.wrapperClassName{
-    display: flex;
-    flex-direction: column-reverse;
-}
-
-.rdw-link-modal , .rdw-image-modal{
-    left: -125px !important;
-    top:-225px !important
-}
-
-.editor-container {
-    /* height: ; */
-    padding: 10px;
-    overflow: auto;
-}
-
-.editorToolbar{
-    bottom: 72px;
-    position: absolute;
-    z-index: 99999999;
-}
-
-.rdw-dropdown-optionwrapper {
-    z-index: 100;
-    position: relative;
-    border: 1px solid #F1F1F1;
-    width: 98%;
-    background: white;
-    border-radius: 2px;
-    margin: 0;
-    padding: 0;
-    max-height: 160px;
-    overflow-y: scroll;
-    bottom: 200px !important;
-    left: -4% !important;
-}
-
-.rdw-dropdown-wrapper{
-    border: 0 !important;
-}
-
-.rdw-editor-toolbar{
-    border: 0 !important;
-}
-.rdw-option-wrapper{
-    border: 0 !important;
-}
-
 .note-association{
     position: absolute;
     bottom: 72px;
@@ -126,13 +78,12 @@
 .note-footer{
     border-top: 1px solid #dfe3eb;
     background: #fff;
-    padding: 8px  20px;
+    padding: 8px 20px;
     min-height: 60px;
     align-items: center;
     display: flex;
-    position: relative;
-    top: 46%;   
     column-gap: 30px;
+    width: 100%;
 }
 
 .note-btn-enabled{
@@ -188,4 +139,38 @@
 
 .notePopover :where(.css-dev-only-do-not-override-12jzuas).ant-popover .ant-popover-arrow::after{
     background-color: white !important;
+}
+.quill {
+    display: flex;
+    flex-direction: column-reverse;
+    border: 0;
+}
+
+.ql-container.ql-snow{
+    border: 0 !important;
+}
+
+.ql-toolbar.ql-snow{
+    border: 0px !important;
+    border-top: 1px solid #ccc;
+}
+
+
+.ql-editor{
+    height: 35vh !important;
+    overflow: auto;
+}
+
+.comment-editor .ql-editor{
+    height: 15vh !important;
+    overflow: auto;
+}
+
+.ql-picker-options{
+    height: 82px;
+    overflow-y: scroll;
+}
+
+.ql-tooltip .ql-editing{
+    right: -219px !important;
 }

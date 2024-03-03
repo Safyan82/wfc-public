@@ -17,12 +17,12 @@ import Spinner from '../../components/spinner';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HRTab } from "./tabs/hr/hr.tab";
-import { PayDetailsTab } from "./tabs/payDetails/payDetails.tab";
 import { CalendarTab } from "./tabs/calendar/calendar.tab";
-import { moduleTabs } from "../../util/tabs/employee.tab";
-import { HRTaskTab } from "./tabs/hrtask/hrtask.tab";
-import { AbsenseTab } from "./tabs/absense/absense.tab";
 import { SkillTab } from "./tabs/skill/skill.tab";
+import { NotesTab } from "./tabs/notes/notes.tab";
+import { objectType } from "@src/util/types/object.types";
+import { getNote } from "@src/util/query/note.query";
+
 
 
 export const EmployeeDetailPage = ()=>{
@@ -134,6 +134,8 @@ export const EmployeeDetailPage = ()=>{
         {title:"Calendar", url:''},
         {title:"Sites Credentials", url:''},
         {title:"Skills", url:''},
+        {title:"Notes", url:''},
+        {title:"Task", url:''},
         // {title:"Premiums", url:''},
         // {title:"Custom Fields", url:''},
         {title:"Document Library", url:''},
@@ -142,6 +144,15 @@ export const EmployeeDetailPage = ()=>{
     const [activeTab, setActiveTab] = useState("Profile");
     const [isAction, setAction] = useState(false);
     const containerRef = useRef(null);
+
+    
+    const { data:note , loading: noteLoading, refetch: noteRefetch} = useQuery(getNote,{
+        variables:{
+            createdFor: param?.id,
+            objectType: objectType?.Employee
+        },
+        fetchPolicy:'network-only',
+    });
 
     return(
         <div style={{background:'rgb(245, 248, 250)'}}>
@@ -197,11 +208,11 @@ export const EmployeeDetailPage = ()=>{
             <div style={{padding:'50px 5px 5px 5px'}}>
                 
                 {/* ProfileTAB */}
-                {activeTab=="Profile"?
+                {activeTab=="Profile" || activeTab=="Notes"?
                     <div>
                         <Row>
                             {noteToggle?
-                            <Notes/>
+                            <Notes refetch={noteRefetch}/>
                             :null}
 
                             <Col span={6} style={{paddingRight:'0px',
@@ -220,20 +231,31 @@ export const EmployeeDetailPage = ()=>{
                                 <Loader/>
                                 }
                             </Col>
+
                             <Col span={12}
-                            style={{paddingRight:'0px',
-                                width:'100%',
-                                maxHeight: 'calc(100vh - 110px)',
-                                overflowY: 'auto',
-                                transition: 'scroll-behavior 1s',
-                                background: 'white'
-                            }}>
-                                <DetailPageMiddleSection  />
+                                style={{paddingRight:'0px',
+                                    width:'100%',
+                                    maxHeight: 'calc(100vh - 110px)',
+                                    overflowY: 'scroll',
+                                    transition: 'scroll-behavior 1s',
+                                    background: 'white'
+                                }}>
+
+                                {
+                                    activeTab=="Profile"?
+                                    <DetailPageMiddleSection  />
+                                    :
+                                    <NotesTab note={note?.getNote?.response} noteRefetch={noteRefetch} />
+                                }
+
                             </Col>
+
                             <Col span={6} style={{background:'rgb(245, 248, 250)'}}>
                                 <DetailPageRightSideBar  />
                             </Col>
+                            
                         </Row>
+
                         {dataFields?.length>0 ?
                         <div className='action-footer'>
                             <button className={loading? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} disabled={loading} onClick={handelUpdateSave}>{loading?<Spinner/>:"Save"}</button>
@@ -255,7 +277,9 @@ export const EmployeeDetailPage = ()=>{
                 :
                 activeTab=="Skills"?
                     <SkillTab/>
-                : null
+                : 
+                
+                null
                 }
 
                 
