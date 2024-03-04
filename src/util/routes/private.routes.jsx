@@ -57,7 +57,7 @@ export const PrivateRoutes = ({children})=>{
     useEffect(()=>{
         setInterval(()=>{
             if(localStorage.getItem('authToken')){
-                getUser();
+                // getUser();
             }else{
                 if(pathname!=="/"){
                     window.location="/";

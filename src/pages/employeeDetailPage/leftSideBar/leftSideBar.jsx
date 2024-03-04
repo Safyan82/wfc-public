@@ -194,8 +194,8 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
 
                     const filteredBranch = localGroup?.find((lg)=>(lg._id==branchId));
                     return {
-                        name: filteredBranch.branchname,
-                        id: filteredBranch._id
+                        name: filteredBranch?.branchname,
+                        id: filteredBranch?._id
                     }
                     
                 })

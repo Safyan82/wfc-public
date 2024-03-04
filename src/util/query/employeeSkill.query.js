@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const EmployeeSkillQuery = gql`
-query($employeeId: String!){
-    getEmployeeSkill(employeeId: $employeeId) {
+query($condition: String!, $employeeId: String!){
+  getEmployeeSkill(condition: $condition, employeeId: $employeeId) {
       response
       message
     }

@@ -6,6 +6,7 @@ query{
       category
       createdBy
       createdAt
+      skillsnumber
       _id
     }
 }
