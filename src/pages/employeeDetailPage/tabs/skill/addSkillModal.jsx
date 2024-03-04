@@ -1,7 +1,7 @@
 import { LoadingOutlined } from "@ant-design/icons"
 import { faClose } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Form, Modal, Select, Spin } from "antd"
+import { Drawer, Form, Modal, Select, Spin } from "antd"
 import { useMutation, useQuery } from "@apollo/client"
 import {skillQuery} from "@src/util/query/skill.query.js"
 import { useEffect, useState } from "react"
@@ -31,8 +31,8 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
         if(skillToBeEdit?.skillDetail?.length>0){
             setSkill(JSON.stringify(skillToBeEdit?.skillDetail[0]));
             console.log(JSON.stringify(skillToBeEdit?.skillDetail[0]), "skillToBeEdit?.skillDetail[0]");
-            setField([...skillToBeEdit?.fields])
-            console.log(skillToBeEdit?.fields, "editfield")
+            // setField([...skillToBeEdit?.fields])
+            // console.log(skillToBeEdit?.fields, "editfield")
         }
     },[skillToBeEdit]);
 
@@ -173,7 +173,7 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
                 dispatch(setNotification({
                     notificationState: true,
                     error:false,
-                    message:"Skill was updated successfully",
+                    message:"Skill was replaced successfully",
                 }));
                 setSelectedRowKeys([]);
             }else{
@@ -206,11 +206,13 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
     }
 
     return(
-        <Modal
+        <Drawer
             open={visible}
+            placement="right"
+            title={skillToBeEdit?.skillDetail?.length>0? "Replace Skill": "Add New Skill"}
             width={600}
             footer={
-            <div style={{padding:'6px 40px', paddingBottom:'16px', textAlign:'left', display:'flex', columnGap:'16px', marginTop:'-25px' }}>
+            <div className='drawer-footer' style={{display:'flex', justifyContent:'space-between'}}>
                 <button  
                     onClick={isBtnDisabled? console.warn("not-allowed") :handelEmployeeSkill}
                     className={newEmpSkillLoading || updateEmpSkillLoading || isBtnDisabled?'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 
@@ -222,17 +224,21 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
                 </button>
             </div>
             }
-            closable={false}
+            closable={true}
+            onClose={()=>{onClose();setSkill({})}}
+            closeIcon={<FontAwesomeIcon icon={faClose} onClick={()=>{onClose();setSkill({})}} className='close-icon'/>}
+            maskClosable={false}
+            mask={true}
         >
 
             <>
 
-                <div className='modal-header-title'>
+                {/* <div className='modal-header-title'>
                     <span style={{letterSpacing:'0.2px'}}> {skillToBeEdit?.skillDetail?.length>0? "Replace ": "Add New "}  Skill</span>
                     <span  onClick={()=>{onClose();setSkill({})}}><FontAwesomeIcon className='close' icon={faClose}/></span>
                 </div>
                 
-                <div className='modal-body'>
+                <div className='modal-body'> */}
 
                     {/* modal  */}
                     <div className="skillSelect">
@@ -259,8 +265,8 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
                                 const name = prop?.label.toLowerCase().replace(/\s/g,"");
                                 const fieldType = prop?.fieldType;
                                 // const newprop = name=="nationality"? {...prop, options: countryList} : prop;
-                                // const {value, imgbas64} = field?.find((f)=>f.name==name) || {value: "", imgbas64: ""};
-                                const {value, imgbas64} = {value: "", imgbas64: ""};
+                                const {value, imgbas64} = field?.find((f)=>f.name==name) || {value: "", imgbas64: ""};
+                                // const {value, imgbas64} = {value: "", imgbas64: ""};
                                
                                 return GenerateFields(label, name, fieldType, handelDataValue, prop, value, imgbas64);
                             })
@@ -269,10 +275,10 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
 
                     </div>
 
-                </div>
+                {/* </div> */}
 
             </>
 
-        </Modal>
+        </Drawer>
     )
 }
