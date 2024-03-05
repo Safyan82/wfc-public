@@ -68,7 +68,7 @@ export const Password=()=>{
                 localStorage.setItem("authToken", token);
                 localStorage.setItem("employeeId", rest?.employeeId);
                 localStorage.setItem("deviceId", deviceId);
-                navigate("/user/branch");
+                navigate("/user/employee");
             }
         }
         catch(err){

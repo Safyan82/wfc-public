@@ -24,7 +24,7 @@ export const Login=()=>{
     // useEffect to redirect the user from login page if he already registered
     useEffect(()=>{
         if(localStorage.getItem('authToken')){
-            navigate("/user/branch");
+            navigate("/user/employee");
         }
     },[]);
     
