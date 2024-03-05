@@ -223,15 +223,28 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                                 <span>
                                     {singleEmployee?.firstname+" "+singleEmployee?.lastname}
                                 </span>
-                                <span>
+                                <Popover
+                                    overlayClassName='notePopover'
+                                    placement='right'
+                                    content={
+                                        <div className='popover-data'>
+                                            <div className="popoverdataitem" onClick={()=>navigate("/user/employee-detail-view/"+singleEmployee?._id)}>
+                                                Data Fields View
+                                            </div>
+                                            <div className="popoverdataitem" onClick={()=>navigate(`/user/employee-prop-history/`+singleEmployee?._id)}>
+                                               Data Fields History
+                                            </div>
+                                        </div>
+                                    }
+                                >
                                     <FontAwesomeIcon style={{cursor:'pointer'}} icon={faEllipsisV}/>
-                                </span>
+                                </Popover>
                             </div>
 
                             <div className='text-subtitle'>
 
                                 <div style={{textTransform:'lowercase', fontSize:'1em', marginBottom:'22px', marginTop:'10px'}}>
-                                <FontAwesomeIcon icon={faEnvelope}/> &nbsp; {singleEmployee?.metadata?.email} 
+                                    <FontAwesomeIcon icon={faEnvelope}/> &nbsp; {singleEmployee?.metadata?.email} 
                                 </div>   
                             
                                 <div className="activity-btn-grp">

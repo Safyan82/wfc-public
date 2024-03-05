@@ -159,7 +159,7 @@ export const EmployeeDetailPage = ()=>{
 
         {/* employee dashboard main top navbar  */}
 
-            <div style={{background: 'rgb(245, 248, 250)', padding: '15px 45px 7px 15px', display:'flex', justifyContent:'space-between', alignItems: 'center', position: 'fixed',  width: '100%', zIndex: '996'}}>
+            <div style={{background: 'rgb(245, 248, 250)', padding: '15px 45px 7px 15px', display:'flex', gap:50, alignItems: 'center', position: 'fixed',  width: '100%', zIndex: '996'}}>
                 
                 {/* back + user name btn */}
                 <div style={{display:'flex', alignItems:'center', gap:'25px', paddingBottom:'8px'}}>
@@ -174,14 +174,14 @@ export const EmployeeDetailPage = ()=>{
                 </div>
 
                 {/* navigation tabs */}
-                <div style={{display:'flex', alignItems:'center', gap:'20px'}}>
+                <div style={{display:'flex', alignItems:'center', gap:'20px', margin:'auto', width:'46%'}}>
                     {tabs?.map((tab)=>(
                         <div className={activeTab==tab.title? 'emp-menubar emp-menubar-active': 'emp-menubar'} onClick={()=>setActiveTab(tab.title)}>{tab.title}</div>
                     ))}
                 </div>
 
                 
-                <div className="dropdown" ref={containerRef} style={{paddingRight:'40px'}}>
+                {/* <div className="dropdown" ref={containerRef} style={{paddingRight:'40px'}}>
 
                     <span className='text-deco' onClick={()=>setAction(!isAction)}>Actions<span className='caret'></span></span> 
                     
@@ -199,7 +199,7 @@ export const EmployeeDetailPage = ()=>{
                             Generate report
                         </a>
                     </div>
-                </div>
+                </div> */}
 
             </div>
 
