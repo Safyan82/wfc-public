@@ -155,56 +155,54 @@ export const EmployeeDetailPage = ()=>{
     });
 
     return(
-        <div style={{background:'rgb(245, 248, 250)'}}>
+        <div>
 
         {/* employee dashboard main top navbar  */}
-            {/* <div style={{marginBottom:'50px'}}> */}
-                <div style={{background: 'white', padding: '15px 45px 7px 15px', display:'flex', justifyContent:'space-between', alignItems: 'center', position: 'fixed',  width: '100%', zIndex: '996'}}>
-                    
-                    {/* back + user name btn */}
-                    <div style={{display:'flex', alignItems:'center', gap:'25px', paddingBottom:'8px'}}>
 
-                        <div onClick={()=>navigate(-1)} >
-                            <FontAwesomeIcon className='left-chevron-icon' icon={faChevronLeft}/> <span className='text-deco' style={{left: '5%', position: 'relative', fontSize:'14px'}}>Back</span> 
-                        </div>
+            <div style={{background: 'rgb(245, 248, 250)', padding: '15px 45px 7px 15px', display:'flex', justifyContent:'space-between', alignItems: 'center', position: 'fixed',  width: '100%', zIndex: '996'}}>
+                
+                {/* back + user name btn */}
+                <div style={{display:'flex', alignItems:'center', gap:'25px', paddingBottom:'8px'}}>
 
-                        <div style={{fontSize:'14px'}}>
-                            {singleEmployee?.firstname +" "+ singleEmployee?.lastname}
-                        </div>
+                    <div onClick={()=>navigate(-1)} >
+                        <FontAwesomeIcon className='left-chevron-icon' icon={faChevronLeft}/> <span className='text-deco' style={{left: '5%', position: 'relative', fontSize:'14px'}}>Back</span> 
                     </div>
 
-                    {/* navigation tabs */}
-                    <div style={{display:'flex', alignItems:'center', gap:'20px'}}>
-                        {tabs?.map((tab)=>(
-                            <div className={activeTab==tab.title? 'emp-menubar emp-menubar-active': 'emp-menubar'} onClick={()=>setActiveTab(tab.title)}>{tab.title}</div>
-                        ))}
+                    <div style={{fontSize:'14px'}}>
+                        {singleEmployee?.firstname +" "+ singleEmployee?.lastname}
                     </div>
-
-                    
-                    <div className="dropdown" ref={containerRef} style={{paddingRight:'40px'}}>
-
-                        <span className='text-deco' onClick={()=>setAction(!isAction)}>Actions<span className='caret'></span></span> 
-                        
-                        <div  className="dropdown-content dropdown-content-prev" style={isAction ? {display:'block'}: {display:'none'}}>
-                            <a href="" onClick={(e)=>{ e.preventDefault(); }}>
-                                Edit view
-                            </a>
-                            <a href="" onClick={(e)=>{ e.preventDefault(); navigate("/user/employee-detail-view/"+singleEmployee?._id)}}>
-                                Edit data fields
-                            </a>
-                            <a href="" onClick={(e)=>{ e.preventDefault(); navigate(`/user/employee-prop-history/`+singleEmployee?._id)}}>
-                                Audit log
-                            </a>
-                            <a href="" onClick={(e)=>{ e.preventDefault(); }}>
-                                Generate report
-                            </a>
-                        </div>
-                    </div>
-
                 </div>
-            {/* </div> */}
 
-        {/* employee detail page 3 section main employee dashboard */}
+                {/* navigation tabs */}
+                <div style={{display:'flex', alignItems:'center', gap:'20px'}}>
+                    {tabs?.map((tab)=>(
+                        <div className={activeTab==tab.title? 'emp-menubar emp-menubar-active': 'emp-menubar'} onClick={()=>setActiveTab(tab.title)}>{tab.title}</div>
+                    ))}
+                </div>
+
+                
+                <div className="dropdown" ref={containerRef} style={{paddingRight:'40px'}}>
+
+                    <span className='text-deco' onClick={()=>setAction(!isAction)}>Actions<span className='caret'></span></span> 
+                    
+                    <div  className="dropdown-content dropdown-content-prev" style={isAction ? {display:'block'}: {display:'none'}}>
+                        <a href="" onClick={(e)=>{ e.preventDefault(); }}>
+                            Edit view
+                        </a>
+                        <a href="" onClick={(e)=>{ e.preventDefault(); navigate("/user/employee-detail-view/"+singleEmployee?._id)}}>
+                            Edit data fields
+                        </a>
+                        <a href="" onClick={(e)=>{ e.preventDefault(); navigate(`/user/employee-prop-history/`+singleEmployee?._id)}}>
+                            Audit log
+                        </a>
+                        <a href="" onClick={(e)=>{ e.preventDefault(); }}>
+                            Generate report
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
             <div style={{padding:'50px 5px 5px 5px'}}>
                 
                 {/* ProfileTAB */}
@@ -216,7 +214,6 @@ export const EmployeeDetailPage = ()=>{
                             :null}
 
                             <Col span={6} style={{paddingRight:'0px',
-                                maxHeight: 'calc(100vh - 110px)',
                                 overflowY: 'auto',
                                 transition: 'scroll-behavior 1s',
                                 background:'white'
@@ -235,22 +232,24 @@ export const EmployeeDetailPage = ()=>{
                             <Col span={12}
                                 style={{paddingRight:'0px',
                                     width:'100%',
-                                    maxHeight: 'calc(100vh - 110px)',
-                                    overflowY: 'scroll',
+                                    // maxHeight: 'calc(100vh - 100px)',
+                                    overflowY: 'auto',
                                     transition: 'scroll-behavior 1s',
                                     background: 'white'
                                 }}>
 
                                 {
                                     activeTab=="Profile"?
-                                    <DetailPageMiddleSection  />
+                                    <DetailPageMiddleSection  
+                                        singleEmployee={singleEmployee}
+                                    />
                                     :
                                     <NotesTab note={note?.getNote?.response} noteRefetch={noteRefetch} />
                                 }
 
                             </Col>
 
-                            <Col span={6} style={{background:'rgb(245, 248, 250)'}}>
+                            <Col span={6}>
                                 <DetailPageRightSideBar  />
                             </Col>
                             

@@ -165,7 +165,7 @@ export const NotesTab = ({note, noteRefetch}) =>{
     return(
         
         <div className='setting-body-inner detailPageTab'
-        style={{background:'rgb(245, 248, 250)', padding:'16px', paddingRight: '0'}}>
+        style={{background:'rgb(245, 248, 250)', padding:'16px', overflowY:'auto', maxHeight:'85.6vh'}}>
 
         <Tabs defaultActiveKey="1" >
 

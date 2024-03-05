@@ -1,65 +1,46 @@
 
 
-.emp-rightsidebar-wrapper{
-    padding-right: 0px;
-    max-height: calc(100vh - 134px);
-    overflow-y: auto;
-    background-color: rgb(245, 248, 250) !important;
-    padding-top: 5%;
-}
-
-.emp-rightsidebar-wrapper div{
+.emp-rightsidebar-wrapper {
     display: flex !important;
     flex-direction: column !important;
-    /* column-gap: 26px !important; */
     row-gap: 5px !important;
+    max-height: calc(100vh - 134px);
+    overflow-y: auto;
+    padding: 10px;
 }
 
-.rightSideItem div{
-    padding: 6px 6px;
+
+.rightSideItem{
+    padding: 12px 10px 0 10px;
     background-color: white !important;
-    border: 0px !important ;
-    box-shadow: 0 0 15px rgba(0,0,0,.19);
-    margin-bottom: 15%;
+    border: 1px solid #ECEFEC !important;
+    border-radius: 12px;
     display: block !important;
+    margin-bottom: 16px;
 }
 
 
 .rightItem{
-    box-shadow: none !important;
-    margin-bottom: 0 !important;
-    align-items: center;
-}
-
-.callItem{
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #F7F9F6 !important;
+    padding: 8px 6px !important;
+    height: 37px;
     display: flex;
-    row-gap: 10px;
-    flex-direction: column; 
     align-items: center;
-    border-right: 1px solid rgba(0,0,0,.19);
-    padding-right: 16px;
+    justify-content: space-between;
+    margin-bottom: 16px;
 }
 
-#chart{
-    width: 40%;
-    margin-left: -15px;
-    margin-top: -26%;
+.ant-progress-line {
+    position: relative;
+    width: 100%;
+    font-size: 14px;
+    margin-top: -3px !important;
+    margin-inline-end: 0px !important;
+    margin-bottom: 0px !important;
 }
 
-#chart div{
-    box-shadow: none !important;
-    height: 50px !important;
-    margin: 0;
-    min-height: 50px !important;
-}
-
-.apexcharts-text {
-    font-size: 12px;
-    font-weight: normal;
-    margin-top: 40px;
-    fill: #333; /* Text color */
-    /* Add other styling properties as needed */
-}
 
 .rightCollapseBtn{
     width: 15px;

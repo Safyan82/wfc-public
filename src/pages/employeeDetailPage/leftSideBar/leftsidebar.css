@@ -1,29 +1,9 @@
-.sidebar-wrapper{
-    /* height: 100vh; */
-    /* border-right: 1px solid #dfe3eb;
-    padding-bottom: 20%; */
-    
-   
-}
-
-
 .leftsidebar{
-    padding: 16px 16px 0px;
-    /* max-width: 500px; */
-    /* min-width: 280px;
-    width: 280px; */
+    padding: 16px 0px;
     
 }
 
-.sidebar-wrapper :where(.css-dev-only-do-not-override-12jzuas).ant-collapse .ant-collapse-content>.ant-collapse-content-box {
-    padding: 0px 12px;
-    margin-top: -5%;
-}
 
-.sidebar-wrapper .ant-collapse{
-    /* border-bottom: 1px solid rgb(203, 214, 226) !important; */
-    padding: 10px 16px;
-}
 
 .btm-border{
     border-bottom: 1px solid rgb(203, 214, 226);
@@ -62,10 +42,8 @@
 }
 
 .side-intro{
-    margin: 24px 0px;
     display: flex;
     column-gap: 24px;
-
 }
 
 .text-title{
@@ -76,17 +54,17 @@
 }
 
 .text-subtitle{
-    font-weight: 600;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: all .15s ease-out;
-    color: #0091ae;
+    color: #33475b;
 }
 
 .text-head{
     display: flex;
     flex-direction: column;
-    row-gap: 15px;
+    row-gap: 8px;
 }
 
 .iconHover:hover{
@@ -106,9 +84,6 @@
 
 }
 
-.side-intro:hover .pen-icon{
-    visibility: visible;
-}
 
 .activity-btn-grp{
     display: flex;
@@ -149,15 +124,6 @@
     row-gap: 5px;
 }
 
-.sidebar-wrapper .ant-collapse-header-text{
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-}
-
-.sidebar-wrapper .ant-collapse-content{
-    /* background: rgb(245, 248, 250) !important; */
-}
 
 .simple-btn{
     background-color: #eaf0f6;
@@ -483,4 +449,22 @@
 :where(.css-dev-only-do-not-override-12jzuas).ant-collapse .ant-collapse-item-disabled>.ant-collapse-header, :where(.css-dev-only-do-not-override-12jzuas).ant-collapse .ant-collapse-item-disabled>.ant-collapse-header>.arrow{
     color:#33475b;
     cursor: pointer;
+}
+
+.emp-avatar .ant-avatar-string{
+    line-height: 55px !important;
+    font-size: 12px;
+}
+
+
+/* new field view */
+.fieldView{
+    display: flex;
+    justify-content: space-between;
+    height: 37px;
+    border-radius: 5px;
+    margin-top: 16px;
+    padding: 8px 10px;
+    background-color: #F7F9F6;
+    align-items: center;
 }
