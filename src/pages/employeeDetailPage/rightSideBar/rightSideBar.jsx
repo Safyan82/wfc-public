@@ -5,65 +5,142 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { faChevronCircleRight, faChevronRight, faCircleChevronRight, faMobile, faMobileAndroidAlt, faPhone, faPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import noData from '../noData.svg';
 import { Guage } from './guage';
+import { Popover, Progress } from 'antd';
 
 export const DetailPageRightSideBar = () => {
   const [items, setItems] = useState([
+    
     { id: '1', content: 
-    <div className='rightItem'>
-        Last duty performed never
-    </div> 
+    <div className='rightSideItem'>
+        <div style={{fontWeight:'500', fontSize:'14px', marginBottom:'12px', paddingBottom:'10px', borderBottom:'1px solid #ECEFEC'}}>Recent Availability</div>
+        <div className='rightItem'>
+            Last seen now
+            <FontAwesomeIcon icon={faMobileAndroidAlt} style={{marginRight:'2%'}}/> 
+        </div> 
+    </div>
     },
-    
+
     { id: '2', content: 
-    <div className='rightItem'>
-        <FontAwesomeIcon icon={faMobileAndroidAlt} style={{marginRight:'2%'}}/> 
-        Last seen now
-    </div> 
-    },
+    <div className='rightSideItem'>
+        <div style={{fontWeight:'500', fontSize:'14px', marginBottom:'12px', paddingBottom:'10px', borderBottom:'1px solid #ECEFEC'}}>Last Post by You</div>
+        
+        <div className='rightItem'>
+            <span>First Aid</span>  
+            <span>02-09-2023</span>      
+        </div> 
 
+        <div className='rightItem'>
+            <span>XYZ Site Instruction</span>  
+            <span>02-09-2023</span>  
+        </div> 
+    </div>
+    },
+    
     { id: '3', content: 
-    <div className='rightItem'>
-        <b style={{letterSpacing:'1px',marginBottom:'5%', display:'flex', justifyContent:'space-between', alignItems:'center', }}>Emergency Contacts <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus}/></b>
-        <p className="overview-body" style={{textAlign:'center', }}>
-            <img src={noData} width={100}/>
-            <p className="text">There is no contact.</p>
-        </p>
-    </div> 
-    },
+    <div className='rightSideItem'>
+        <div style={{fontWeight:'500', fontSize:'14px', marginBottom:'12px', paddingBottom:'10px', borderBottom:'1px solid #ECEFEC', display:'flex', justifyContent:'space-between'}}>
+            <span>Emergency Contact information</span>
+            <Popover
+                content={"Click to add emergency contacts"}
+            >
+                <FontAwesomeIcon icon={faPlus} style={{cursor:'pointer', marginRight:'10px'}}/>
+            </Popover>
+        </div>
+        
+        <div className='rightItem'>
+            <span>Relationship</span>  
+            <span>Father</span>      
+        </div> 
 
-    { id: '4', content: 
-    <div className='rightItem'>
-        <b style={{letterSpacing:'1px',marginBottom:'5%', display:'flex', justifyContent:'space-between', alignItems:'center', }}>Calls</b>
-        <p style={{display: 'flex', columnGap: '10px', alignItems:'center'}}>
-            <p className="callItem">
-                <b>0</b>
-                <span>Total</span>
-            </p>
-            <p className="callItem">
-                <b>0</b>
-                <span>Auto</span>
-            </p>
-            <p className="callItem">
-                <b>0</b>
-                <span>Manual</span>
-            </p>
-            <b style={{fontSize:'15px'}}>0.00 %</b>
-        </p>
-        <p style={{marginBottom:'0%'}}>No call found for 7 days.</p>
-    </div> 
+        <div className='rightItem'>
+            <span>Mobile Number</span>  
+            <span>07904259391</span>  
+        </div> 
+    </div>
     },
 
     
-    { id: '5', content: 
-    <div className='rightItem'>
-        <b style={{letterSpacing:'1px', zIndex:99999999999999999999 }}> Skills</b>
-        <p style={{marginTop:'32px', marginLeft:'5px', textAlign:'center', display:'flex', justifyContent:'space-between', width:'auto', height:'120px', alignItems:'center'}}>
-            <Guage/>
-            <Guage/>
-            <Guage/>
-        </p>
-    </div> 
+    { id: '4', content: 
+    <div className='rightSideItem'>
+        <div style={{fontWeight:'500', fontSize:'14px', marginBottom:'12px', paddingBottom:'10px', borderBottom:'1px solid #ECEFEC'}}>Status</div>
+        <div className='rightItem'>
+            <span>Job Status</span>
+
+            <div style={{width:'30%', display:'flex',flexDirection:'column', alignItems:'center'}}>
+                <span>Active</span>
+                <Progress
+                    showInfo={false}
+                    percent={100}
+                    success={{
+                      percent: 100,
+                    }}
+                    trailColor="red"
+                    strokeColor="red"
+                />
+            </div>
+        </div> 
+
+        <div className='rightItem'>
+            <span>SIA Licence Validity</span>
+
+            <div style={{width:'30%', display:'flex',flexDirection:'column', alignItems:'center'}}>
+                <span>01-10-2025</span>
+                <Progress
+                    showInfo={false}
+                    percent={60}
+                    success={{
+                      percent: 60,
+                    }}
+                    trailColor="red"
+                    strokeColor="red"
+                />
+            </div>
+        </div>
+        
+        <div className='rightItem'>
+            <span>Health & Saftey Validity</span>
+
+            <div style={{width:'30%', display:'flex',flexDirection:'column', alignItems:'center'}}>
+                <span>01-10-2025</span>
+                <Progress
+                    showInfo={false}
+                    percent={100}
+                    success={{
+                      percent: 100,
+                    }}
+                    trailColor="red"
+                    strokeColor="red"
+                />
+            </div>
+        </div>
+
+    </div>
     },
+
+    { id: '5', content: 
+    <div className='rightSideItem'>
+        <div style={{fontWeight:'500', fontSize:'14px', marginBottom:'12px', paddingBottom:'10px', borderBottom:'1px solid #ECEFEC', display:'flex', justifyContent:'space-between'}}>
+            <span>Emergency Contact information</span>
+            <Popover
+                content={"Click to add emergency contacts"}
+            >
+                <FontAwesomeIcon icon={faPlus} style={{cursor:'pointer', marginRight:'10px'}}/>
+            </Popover>
+        </div>
+        
+        <div className='rightItem'>
+            <span>Relationship</span>  
+            <span>Father</span>      
+        </div> 
+
+        <div className='rightItem'>
+            <span>Mobile Number</span>  
+            <span>07904259391</span>  
+        </div> 
+    </div>
+    },
+
+
 
   ]);
 
@@ -78,11 +155,9 @@ export const DetailPageRightSideBar = () => {
   };
 
   return (
-    <div className="emp-rightsidebar-wrapper" style={{background:'rgb(245, 248, 250)'}}>
-        {/* <div className='rightCollapseBtn'>
-            <FontAwesomeIcon icon={faChevronRight}/>
-        </div> */}
-        <DragDropContext onDragEnd={onDragEnd} style={{background:'rgb(245, 248, 250)'}}>
+    <div className="emp-rightsidebar-wrapper">
+     
+        <DragDropContext onDragEnd={onDragEnd} >
         <Droppable droppableId="items">
             {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
@@ -93,7 +168,7 @@ export const DetailPageRightSideBar = () => {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className='rightSideItem'
+                        // className='rightSideItem'
                     >
                         <DraggableItem content={item.content} />
                     </div>
@@ -110,7 +185,7 @@ export const DetailPageRightSideBar = () => {
 };
 const DraggableItem = ({ content }) => {
     return (
-      <div style={{ border: '1px solid #ccc', padding: '8px', margin: '4px', backgroundColor: 'lightgray' }}>
+      <div >
         {content}
       </div>
     );

@@ -1,29 +1,11 @@
 .sidebar-wrapper{
-    /* height: 100vh; */
-    /* border-right: 1px solid #dfe3eb;
-    padding-bottom: 20%; */
-    
-   
+    border: 1px solid #ECEFEC !important;
+    border-radius: 12px;
+    margin-left: 16px;
+    padding: 0 14px 12px 14px;
+    margin:10px !important;
 }
 
-
-.leftsidebar{
-    padding: 16px 16px 0px;
-    /* max-width: 500px; */
-    /* min-width: 280px;
-    width: 280px; */
-    
-}
-
-.sidebar-wrapper :where(.css-dev-only-do-not-override-12jzuas).ant-collapse .ant-collapse-content>.ant-collapse-content-box {
-    padding: 0px 12px;
-    margin-top: -5%;
-}
-
-.sidebar-wrapper .ant-collapse{
-    /* border-bottom: 1px solid rgb(203, 214, 226) !important; */
-    padding: 10px 16px;
-}
 
 .btm-border{
     border-bottom: 1px solid rgb(203, 214, 226);
@@ -61,12 +43,12 @@
     transform: scale(2) translateX(-50%) translateY(3px) !important;
 }
 
-.side-intro{
+/* .side-intro{
     margin: 24px 0px;
     display: flex;
     column-gap: 24px;
 
-}
+} */
 
 .text-title{
     font-weight: 400;
@@ -83,11 +65,7 @@
     color: #0091ae;
 }
 
-.text-head{
-    display: flex;
-    flex-direction: column;
-    row-gap: 15px;
-}
+
 
 .iconHover:hover{
     color: #007a8c
@@ -106,13 +84,13 @@
 
 }
 
-.side-intro:hover .pen-icon{
+/* .side-intro:hover .pen-icon{
     visibility: visible;
-}
+} */
 
 .activity-btn-grp{
     display: flex;
-    column-gap: 18px;
+    column-gap: 30px;
     padding-top: 6px;
 }
 

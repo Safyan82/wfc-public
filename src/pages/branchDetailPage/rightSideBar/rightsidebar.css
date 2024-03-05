@@ -9,17 +9,16 @@
     padding-top: 5%;
 }
 
-.rightsidebar-wrapper div{
+/* .rightsidebar-wrapper div{
     display: flex !important;
     flex-direction: column !important;
-    /* column-gap: 26px !important; */
+    column-gap: 26px !important;
     row-gap: 5px !important;
-}
+} */
 
-.rightSideItem div{
+/* .rightSideItem {
     padding: 6px 6px;
     background-color: white !important;
-    border: 0px !important ;
     box-shadow: 0 0 15px rgba(0,0,0,.19);
     margin-bottom: 15%;
     display: block !important;
@@ -30,7 +29,7 @@
     box-shadow: none !important;
     margin-bottom: 0 !important;
     align-items: center;
-}
+} */
 
 .callItem{
     display: flex;
