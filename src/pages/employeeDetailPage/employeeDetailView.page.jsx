@@ -20,6 +20,7 @@ import { Loader } from '../../components/loader';
 import { getUserEmployeeDetailView } from '../../util/query/employeeDetailView.query';
 import { EmployeeObjectQuery, getSingleEmployeeRecord } from '../../util/query/employee.query';
 import { AddEmployeeDetailView } from "../../util/mutation/employeeDetailView.mutation";
+import {objectType} from "@src/util/types/object.types";
 
 export const EmployeeDetailViewPage  = () => {
 
@@ -29,8 +30,19 @@ export const EmployeeDetailViewPage  = () => {
 
     // Employee Default object
     const {data:employeeSchema, loading: employeeObjectLoading, refetch: employeeObjectRefetch} = useQuery(EmployeeObjectQuery,{fetchPolicy:'network-only'});
+    const {data: employeeDetailViewData, loading: employeeDetailViewLoading, refetch: employeeDetailViewRefetch} = useQuery(getUserEmployeeDetailView,{
+        variables:{
+            createdBy: authenticatedUserDetail?._id,
+            createdFor: param?.id,
+        },
+        fetchPolicy: 'network-only'
+    });
     const [employeeObject, setEmployeeObject] = useState([]);
 
+    useEffect(()=>{
+        employeeObjectRefetch();
+        employeeDetailViewRefetch();
+    },[])
     
     const [groupedProp, setGroupedProp] = useState([]);
 
@@ -54,15 +66,25 @@ export const EmployeeDetailViewPage  = () => {
     
 
 
+    // const {data, loading:allPropLoading, refetch} = useQuery(GetPropertyByGroupQuery,{
+    //     fetchPolicy:'network-only',
+    //     variables: {
+    //         objectType: objectType.Employee
+    //     }
+
+    // });
+
+    // useEffect(()=>{
+    //     if(data.getPropertyByGroup.data){
+    //         setGroupedProp([...data.getPropertyByGroup.data]);
+    //     }
+    // },[data]);
+    
+
+
     const [newEmployeeDetailView, {loading, error}] = useMutation(AddEmployeeDetailView);
     
-    const {data: employeeDetailViewData, loading: employeeDetailViewLoading, refetch: employeeDetailViewRefetch} = useQuery(getUserEmployeeDetailView,{
-        variables:{
-            createdBy: authenticatedUserDetail?._id,
-            createdFor: param?.id,
-        },
-        fetchPolicy: 'network-only'
-    });
+    
 
     const [employeeDetailView, setEmployeeDetailView] = useState([]);
 
@@ -70,7 +92,7 @@ export const EmployeeDetailViewPage  = () => {
         if(!employeeDetailViewLoading){
             setEmployeeDetailView(employeeDetailViewData?.getUserEmployeeDetailView?.response);
         }
-    },[employeeDetailViewData]);
+    },[employeeDetailViewData, employeeDetailViewLoading]);
 
 
     const updateUserBranchView = async(properties) =>{

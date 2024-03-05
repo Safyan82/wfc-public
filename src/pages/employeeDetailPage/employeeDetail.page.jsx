@@ -22,6 +22,7 @@ import { SkillTab } from "./tabs/skill/skill.tab";
 import { NotesTab } from "./tabs/notes/notes.tab";
 import { objectType } from "@src/util/types/object.types";
 import { getNote } from "@src/util/query/note.query";
+import { PostModal } from "./middleSection/postModal/post.modal";
 
 
 
@@ -157,7 +158,7 @@ export const EmployeeDetailPage = ()=>{
     return(
         <div>
 
-        {/* employee dashboard main top navbar  */}
+            {/* employee dashboard main top navbar  */}
 
             <div style={{background: 'rgb(245, 248, 250)', padding: '15px 45px 7px 15px', display:'flex', gap:50, alignItems: 'center', position: 'fixed',  width: '100%', zIndex: '996'}}>
                 
@@ -284,6 +285,8 @@ export const EmployeeDetailPage = ()=>{
                 
 
             </div>
+
+
         </div>
         
     );

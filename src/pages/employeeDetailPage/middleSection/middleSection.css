@@ -29,3 +29,53 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.post-option{
+    color: black !important;
+    cursor: pointer;
+}
+
+.modal-body .ql-toolbar{
+    background-color: white;
+}
+
+.post-color{
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.postlight .quill > .ql-container > .ql-editor.ql-blank::before{
+    font-size: 20px;
+    /* color: black !important; */
+    /* text-align: center !important; */
+}
+
+.postdark .quill > .ql-container > .ql-editor.ql-blank::before{
+    font-size: 20px;
+    color: rgb(255, 255, 255) !important;
+    text-align: center !important;
+    font-weight: 500;
+}
+
+.post-btn{
+    padding: 10px 50px;
+}
+
+.postdark .ql-editor {
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    word-break: break-word;
+    word-wrap: break-word;
+    user-select: text;
+    white-space: pre-wrap;
+
+}
+
+.postlight .ql-editor {
+    font-size: 18px;
+}
