@@ -329,16 +329,38 @@ export const DetailPageLeftSideBar = ({employeeObject, singleEmployee, loading, 
                     (viewProperties?.length>0? viewProperties:
                     employeeObject)?.map((prop, index)=>{
                         if(prop?.label?.replaceAll(" ","")?.toLowerCase()!=="firstname" && prop?.label?.replaceAll(" ","")?.toLowerCase()!=="lastname"){
-                            return(
-                                <div className='fieldView'>
-                                    <div>{prop?.label}</div>
-                                    <div>
-                                        {singleEmployee?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || singleEmployee['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())? 
-                                        singleEmployee[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleEmployee['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()] : ""}
+                            if(prop?.label?.toLowerCase()=="branch"){
+                                return(                                
+                                    tags?.length>0?
+                                    <>
+                                        <div className='fieldView'>
+                                            <div>{prop?.label}</div>
+                                            <div>
+                                            {tags?.map((property)=>(
+                                                <span>
+                                                    {property.name}
+                                                </span>
+                                            ))}
+                                            </div>
+                                        </div>
+        
+                                        
+                                    </>
+                                    : null
+                                    
+                                )
+                            }else{
+                                return(
+                                    <div className='fieldView'>
+                                        <div>{prop?.label}</div>
+                                        <div>
+                                            {singleEmployee?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())  || singleEmployee['metadata']?.hasOwnProperty(prop?.label?.replaceAll(" ","")?.toLowerCase())? 
+                                            singleEmployee[prop?.label?.replaceAll(" ","")?.toLowerCase()] || singleEmployee['metadata'][prop?.label?.replaceAll(" ","")?.toLowerCase()] : ""}
+                                        </div>
                                     </div>
-                                </div>
-    
-                            )
+        
+                                )
+                            }                             
                         }
                     })
                 }
