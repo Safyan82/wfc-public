@@ -2,9 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './rightsidebar.css';
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { faChevronCircleRight, faChevronRight, faCircleChevronRight, faMobile, faMobileAndroidAlt, faPhone, faPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-import noData from '../noData.svg';
-import { Guage } from './guage';
+import {faMobileAndroidAlt, faPlus} from '@fortawesome/free-solid-svg-icons';
 import { Popover, Progress } from 'antd';
 
 export const DetailPageRightSideBar = () => {
@@ -116,30 +114,6 @@ export const DetailPageRightSideBar = () => {
 
     </div>
     },
-
-    { id: '5', content: 
-    <div className='rightSideItem'>
-        <div style={{fontWeight:'500', fontSize:'14px', marginBottom:'12px', paddingBottom:'10px', borderBottom:'1px solid #ECEFEC', display:'flex', justifyContent:'space-between'}}>
-            <span>Emergency Contact information</span>
-            <Popover
-                content={"Click to add emergency contacts"}
-            >
-                <FontAwesomeIcon icon={faPlus} style={{cursor:'pointer', marginRight:'10px'}}/>
-            </Popover>
-        </div>
-        
-        <div className='rightItem'>
-            <span>Relationship</span>  
-            <span>Father</span>      
-        </div> 
-
-        <div className='rightItem'>
-            <span>Mobile Number</span>  
-            <span>07904259391</span>  
-        </div> 
-    </div>
-    },
-
 
 
   ]);
