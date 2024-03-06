@@ -46,6 +46,7 @@ import { Module } from './pages/setting/module/module';
 import { BillingServices } from './pages/setting/billing/billingservice/billingservice';
 import { PaymentMethod } from './pages/setting/billing/paymentMethod/paymentMethods';
 import { BillingNotification } from './pages/setting/billing/billingNotification/billingNotification';
+import { Site } from '@src/pages/site/site.page';
 
 
 
@@ -143,7 +144,7 @@ function App() {
             <Route path='allproperties' element={<AllProperties/>} />
             
             <Route path='sitegroup' element={<SiteGroup/>} />
-            <Route path='customer' element={<BranchAllPropHistory/>} />
+            <Route path='site' element={<Site/>} />
 
           
             

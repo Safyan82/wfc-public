@@ -159,7 +159,6 @@ export const Employee = () =>{
     // update Bulk data
     const [updateBulkEmployee] = useMutation(updateBulkEmployeeMutation)
     const handelBulkUpdateSave = async (property, record)=>{
-      console.log(property, record, "new ");
       try{
           let schemaFields = {};
           

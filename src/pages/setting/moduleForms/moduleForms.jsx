@@ -6,6 +6,8 @@ import { useEffect, useState } from "react"
 import { EditForm } from "../../editBranchForm/editForm.page"
 import { EditEmployeeForm } from "../../employee/editEmployeeForm/editEmployeeForm"
 import { useLocation } from "react-router-dom"
+import { EditSiteGroupForm } from "../../sitegroup/ediSiteGroupForm/editSiteGroupForm"
+import { EditSiteForm } from "../../site/ediSiteForm/editSiteForm"
 
 export const ModuleForms = () =>{
 
@@ -16,7 +18,11 @@ export const ModuleForms = () =>{
 
     useEffect(()=>{
         if(myParam){
-            setObjectType(myParam ? myParam[0].toUpperCase()+myParam.slice(1).toLowerCase() : "Branch")
+            if(myParam==="siteGroup"){
+                setObjectType("SiteGroup")
+            }else{
+                setObjectType(myParam ? myParam[0].toUpperCase()+myParam.slice(1).toLowerCase() : "Branch")
+            }
         }
     },[myParam]);
 
@@ -61,7 +67,7 @@ export const ModuleForms = () =>{
                                         // disabled
                                     >
                                         {
-                                            Object.keys(objectType).slice(0,4)?.map((object)=>(
+                                            Object.keys(objectType).slice(0,5)?.map((object)=>(
 
                                                 <Select.Option value={objectType[object]}>{objectType[object]}</Select.Option>
                                             ))
@@ -82,7 +88,16 @@ export const ModuleForms = () =>{
                         :
                         objectTypelocal=="Employee"?
                             <EditEmployeeForm/>
-                        :null
+                        :
+                        objectTypelocal=="SiteGroup"?
+                            <EditSiteGroupForm/>
+
+                        :
+                        objectTypelocal=="Site"?
+                            <EditSiteForm/>
+
+                        :
+                        null
                     }
                     {/* Body terminated */}
 

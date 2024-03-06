@@ -79,10 +79,11 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
 
                                             <Collapse accordion defaultActiveKey={[]} style={{paddingBottom:'16px'}}>
                                                 {/* modules */}
-                                                <Collapse.Panel  key="m-1" header={<div className='setting-sidebar-nav' style={{fontWeight:500, marginLeft:'-11px'}}>Modules</div>}>
+                                                <Collapse.Panel  key="m-1" header={<div className='setting-sidebar-nav' style={{fontWeight:500, marginLeft:'-11px'}}>Objects</div>}>
                                                     <ul className='setting-sidebar-nav-list' style={{marginTop:'10px', marginLeft:'-17px'}}>
                                                         <Link to={routes.module+"?branch"}><li className={path==routes?.module+"?branch"?active:inactive}>Branch</li></Link>
                                                         <Link to={routes.module+"?employee"}><li className={path==routes?.module+"?employee"?active:inactive}>Employee</li></Link>
+                                                        <Link to={routes.module+"?siteGroup"}><li className={path==routes?.module+"?siteGroup"?active:inactive}>Site Group</li></Link>
                                                         <Link to={routes.module+"?site"}><li className={path==routes?.module+"?site"?active:inactive}>Site</li></Link>
                                                         <Link to={routes.module+"?customer"}><li className={path==routes?.module+"?customer"?active:inactive}>Customer</li></Link>
                                                     </ul>
