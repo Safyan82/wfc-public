@@ -7,3 +7,12 @@ mutation($input: createSiteGroupInput!){
     }
   }
 `;
+
+export const UpdateBulkSiteGroupMutation = gql`
+mutation($input: BulkSiteGroupUpdateInput!){
+  updateBulkSiteGroup(input: $input) {
+    response
+    message
+  }
+}
+`;

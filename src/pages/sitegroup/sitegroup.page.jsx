@@ -1,7 +1,4 @@
 import { GridHeader } from "@src/components/tablegrid/header";
-import DraggableTab from "@src/components/dragableTab";
-import { GridFilter } from "@src/components/tablegrid/gridFilter/gridFilter";
-import { AdvanceFilter } from "@src/components/advanceFilter/advanceFilter";
 import { TableGrid } from "@src/components/tablegrid";
 import { FormDrawer } from "../formDrawer";
 import { EditColumn } from "@src/components/table/editColumn/editColumn.modal";
@@ -11,7 +8,7 @@ import { SiteGroupObjectQuery, getSiteGroups } from "../../util/query/siteGroup.
 import { useMutation, useQuery } from "@apollo/client";
 import { objectType } from "../../util/types/object.types";
 import { useDispatch } from "react-redux";
-import { AddSiteGroupMutation } from "../../util/mutation/siteGroup.mutation";
+import { AddSiteGroupMutation, UpdateBulkSiteGroupMutation } from "../../util/mutation/siteGroup.mutation";
 import { setNotification } from "../../middleware/redux/reducers/notification.reducer";
 
 export const SiteGroup = ()=>{
@@ -22,10 +19,10 @@ export const SiteGroup = ()=>{
     const [siteGroupSchema, setSiteGroupSchema] = useState();
 
     useEffect(()=>{
-        if(!siteGroupObjectLoading){
+        if(siteGroupObject){
             setSiteGroupSchema(siteGroupObject?.getSiteGroupObject?.response);
         }
-    },[siteGroupObjectLoading]);
+    },[siteGroupObject]);
 
      // states that we had to define for formDrawer
     const [data, setData] = useState([]);
@@ -37,7 +34,14 @@ export const SiteGroup = ()=>{
 
     // Add new Employee while form creation
     const [addSiteGroupMutation, {loading: processloading}] = useMutation(AddSiteGroupMutation);
-    const {data: siteGroupData, loading: siteGroupLoading, refetch} = useQuery(getSiteGroups,{fetchPolicy: 'cache-and-network',});
+    const {data: siteGroupData, loading: siteGroupLoading, refetch} = useQuery(getSiteGroups,{fetchPolicy: 'cache-and-network',
+        variables: {
+            input: {
+                filters: null
+            }
+        }
+    });
+
 
     const siteGroupMutation = async (siteGroup) =>{
         try{
@@ -85,7 +89,48 @@ export const SiteGroup = ()=>{
 
     };
 
+    // dynamic column state for table gird
+    const [dynamicColumn, setDynamicColumn] = useState([]);
+    const [updateBulkSiteGroup, {loading: updateBulkSiteGroupLoading}] = useMutation(UpdateBulkSiteGroupMutation);
 
+    const handelBulkUpdateSave = async (property, record)=>{
+        try{
+            let schemaFields = {};
+            
+            
+              if(property?.field==="sitegroupname"){
+                schemaFields[property?.field] = property?.value;
+              }
+              else{
+                schemaFields['metadata.'+property.field]=property?.value;
+              }
+            
+            await updateBulkSiteGroup({
+                variables:{
+                    input:{
+                        _ids: [...record],
+                        properties: {...schemaFields},
+                    }
+                }
+            });
+  
+            dispatch(setNotification({
+                message: "Site groups Updated Successfully",
+                notificationState: true,
+                error: false
+            }));
+            await refetch();
+            return true;
+        }
+        catch(err){            
+            dispatch(setNotification({
+                message: "An error encountered while updating site group"+err.message,
+                notificationState: true,
+                error: true
+            }));
+            return false;
+        }
+    };
 
     return(
         <React.Fragment>
@@ -94,12 +139,12 @@ export const SiteGroup = ()=>{
           <GridHeader 
             title={"Site Groups"} 
             to={"/branch/editform"}
-            record={siteGroupData?.sitegroups?.response?.length} 
+            record={siteGroupData?.sitegroups?.length} 
             from={"/user/branch"}      
-            createAction={async()=>{setSiteGroupModal(true);}} 
+            createAction={()=>{setSiteGroupModal(true);}} 
           />
 
-          <div className="hr" style={{margin:'42px 42px'}}></div>
+          <div className="hr" style={{margin:'40px 50px', width:'auto'}}></div>
         
           {/* <DraggableTab  
             // viewList = {branchViewList?.branchViews}
@@ -128,16 +173,16 @@ export const SiteGroup = ()=>{
           
             <TableGrid
                 title={"Site Group"}
-                // data={employeeData?.getEmployee?.response}
+                data={siteGroupData?.sitegroups?.map((sitegroup)=>({...sitegroup, key:sitegroup?._id}))}
                 // refetch={refetch}
-                // setDynamicColumn={setDynamicColumn}
-                // dynamicColumn={dynamicColumn}
-                // viewRefetch={viewRefetch}
-                // view={employeeViewData?.employeeView?.response?.find((e)=>e._id==sessionStorage.getItem("selectedViewId"))?.viewFields || []}
-                // loading={employeeDataLoading ||employeeDataLoading || employeeViewLoading}
-                // objectData={employeeObject?.getEmployeeObject?.response}
-                // detailpage={"employee-detail/"}
-                // handelBulkUpdateSave={handelBulkUpdateSave}
+                setDynamicColumn={setDynamicColumn}
+                dynamicColumn={dynamicColumn}
+                viewRefetch={()=>{return false;}}
+                view={false}
+                loading={false}
+                objectData={siteGroupSchema}
+                detailpage={"sitegroup-detail/"}
+                handelBulkUpdateSave={handelBulkUpdateSave}
 
             />
         
@@ -161,22 +206,7 @@ export const SiteGroup = ()=>{
             from={"/user/branch"}
             title={"Site Group"}
         />
-        {editGridColumn?
-            <EditColumn 
-            // objectType={objectType.Employee} 
-            // visible={editGridColumn} 
-            // onClose={()=>dispatch(setEditGridColumn(false))}
-            // properties = {employeeObject?.getEmployeeObject?.response}
-            // propertiesRefetch = {employeeObjectRefetch}
-            // loading = {employeeObjectLoading || employeeViewLoading}
-            // disable = {updateEmployeeViewLoading}
-            // refetchView = {viewRefetch}
-            // view = {employeeViewData?.employeeView?.response?.find((e)=>e._id==sessionStorage.getItem("selectedViewId"))?.viewFields}
-            // updateRenderedView = {updateEmployeeView}
-            
-            />
-            : null
-        } 
+       
         </React.Fragment>
     );
 }

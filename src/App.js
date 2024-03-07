@@ -47,6 +47,11 @@ import { BillingServices } from './pages/setting/billing/billingservice/billings
 import { PaymentMethod } from './pages/setting/billing/paymentMethod/paymentMethods';
 import { BillingNotification } from './pages/setting/billing/billingNotification/billingNotification';
 import { Site } from '@src/pages/site/site.page';
+import { SiteGroupDetailPage } from './pages/sitegroup/sitegroupDetailPage/sitegroupDetail.page';
+import { PayLevel } from './pages/setting/finanace/paylevel/paylevel';
+import { ShiftType } from './pages/setting/finanace/shiftType/shiftType';
+import { PayTable } from './pages/setting/finanace/payTable/payTable';
+import { PayBillColumn } from './pages/setting/finanace/paybillcolumn/payBillColumn';
 
 
 
@@ -143,9 +148,12 @@ function App() {
 
             <Route path='allproperties' element={<AllProperties/>} />
             
+            {/* site group */}
             <Route path='sitegroup' element={<SiteGroup/>} />
-            <Route path='site' element={<Site/>} />
+            <Route path='sitegroup-detail/:id' element={<SiteGroupDetailPage/>} />
 
+            {/* site */}
+            <Route path='site' element={<Site/>} />
           
             
           </Route>
@@ -166,6 +174,14 @@ function App() {
 
             {/* objects */}
             <Route path={routes.module} exact element={<Module/>} />
+
+            {/* finance */}
+
+            <Route path={routes.paybillcol}  element={<PayBillColumn/>} />
+            <Route path={routes.paylevel}    element={<PayLevel/>} />
+            <Route path={routes.shifttype}   element={<ShiftType/>} />
+            <Route path={routes.paytable}    element={<PayTable/>} />
+
 
             {/* billing */}
 

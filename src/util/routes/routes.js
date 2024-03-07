@@ -9,7 +9,18 @@ export const routes = {
     editskill: "/setting/employee/editskill",
     forms: "/setting/forms",
     branchEditForm: "/setting/branch/editform",
+
+    // Finance module
+    paylevel: "/setting/finance/paylevel",
+    paybillcol: "/setting/finance/paybillcol",
+    shifttype: "/setting/finance/shifttype",
+    paytable: "/setting/finance/paytable",
+
+
+    // module objects
     module:"/setting/module/config",
+
+    // billing
     service:"/setting/billing/service",
     payment:"/setting/billing/payment",
     billingNotification:"/setting/billing/billingNotification"

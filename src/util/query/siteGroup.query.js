@@ -12,6 +12,7 @@ query{
 export const getSiteGroups = gql `
 query($input: SiteGroupFilter!){
     sitegroups(input: $input) {
+      _id
       sitegroupname
       metadata
       createdDate
@@ -20,3 +21,12 @@ query($input: SiteGroupFilter!){
 }
 `;
 
+export const getSiteGroup = gql `
+query($id: String!){
+  siteGroup(_id: $id) {
+    _id
+    sitegroupname
+    metadata
+  }
+}
+`;

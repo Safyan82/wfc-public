@@ -49,7 +49,7 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                 </div>
                             </div>
 
-                            <nav className='setting-custom-nav'>
+                            <nav className='setting-custom-nav' style={{paddingBottom:'32px'}}>
                                 <Collapse  defaultActiveKey={['2','1','3','4']}>
                                     
                                     <Collapse.Panel key='1' header={<div className='setting-sidebar-nav'>Your Preferences</div>}>
@@ -104,6 +104,15 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                         
                                     </Collapse.Panel>
 
+                                    
+                                    <Collapse.Panel key='4'  header={<div className='setting-sidebar-nav'>Finance</div>}>    
+                                        <ul className='setting-sidebar-nav-list'>
+                                            <Link to={routes.paybillcol}><li className={path==routes.paybillcol?active:inactive}>Pay & Bill Columns</li></Link>
+                                            <Link to={routes.paylevel}><li className={path==routes.paylevel?active:inactive}>Pay Level</li></Link>
+                                            <Link to={routes.paytable}><li className={path==routes.paytable?active:inactive }>Pay Table</li></Link>
+                                            <Link to={routes.shifttype}><li className={path==routes.shifttype?active:inactive}>Shift Type</li></Link>
+                                        </ul>
+                                    </Collapse.Panel>  
                                     
                                     <Collapse.Panel key='4'  header={<div className='setting-sidebar-nav'>Billing</div>}>    
                                         <ul className='setting-sidebar-nav-list'>

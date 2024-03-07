@@ -4,3 +4,7 @@
     row-gap: 20px;
     align-items: center;
 }
+
+.grptab .ant-select-selection-placeholder{
+    top:60% !important;
+}

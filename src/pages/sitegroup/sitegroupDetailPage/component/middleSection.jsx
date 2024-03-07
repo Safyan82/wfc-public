@@ -1,4 +1,3 @@
-import './middleSection.css';
 import { Avatar, Input, Modal, Popover } from 'antd';
 import React, { useState } from 'react';
 import dayjs from 'dayjs';
@@ -6,10 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faClose, faEllipsisV, faPoll } from '@fortawesome/free-solid-svg-icons';
 import ReactQuill from 'react-quill';
 import multi from "./assets/multi-shade.png";
-import heartico from "./assets/heart_ico.jpg";
-import heartbg from "./assets/heart_bg.jpg";
+import { useSelector } from 'react-redux';
 
-export const DetailPageMiddleSection = ({singleEmployee})=>{
+export const SiteGroupPostSection = ()=>{
+    const {authenticatedUserDetail} = useSelector(state=>state.userAuthReducer);
+    const { firstname, lastname} = authenticatedUserDetail?.employeeDetail[0];
+
     const [postCollapse, setPostCollapse] = useState(false)
     const [post, setPost] = useState(false);
     const [postContent, setPostContent] = useState("");
@@ -24,7 +25,7 @@ export const DetailPageMiddleSection = ({singleEmployee})=>{
                 </div>
                 <Input
                     className='generic-input-control'
-                    placeholder={"What's on your mind, "+singleEmployee?.lastname+"?"}
+                    placeholder={"What's on your mind, "+lastname+"?"}
                     style={{borderRadius:'5px',height:'50px'}}
                     onClick={()=>setPost(!post)}
                 />
@@ -39,7 +40,7 @@ export const DetailPageMiddleSection = ({singleEmployee})=>{
                             </div>
 
                             <div style={{width:'97%', borderBottom:'1px solid #ECEFEC', paddingBottom:'16px'}}>
-                                <div style={{fontWeight:'500',marginBottom:'6px', fontSize:'14px'}}>{singleEmployee?.firstname+" "+singleEmployee?.lastname}</div>
+                                <div style={{fontWeight:'500',marginBottom:'6px', fontSize:'14px'}}>{firstname+" "+lastname}</div>
                                 <div>{dayjs().format("DD-MM-YYYY HH:mm")}</div>
                             </div>
                         </div>
@@ -100,7 +101,7 @@ export const DetailPageMiddleSection = ({singleEmployee})=>{
                 <div className={bg=="white"?'modal-body postlight':'modal-body postdark'} style={{padding:'0px 0px'}}>
                         
                         <ReactQuill
-                            placeholder={"What's on your mind, "+singleEmployee?.lastname+"?"}
+                            placeholder={"What's on your mind, "+lastname+"?"}
                             onChange={(e)=>setPostContent(e)}
                             value={postContent}
                             style={{color:bg=="white"?'black' :'white', fontWeight:'normal', fontSize:'30px', background: bg}}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Modal, Select, Button, notification, Spin, Checkbox } from 'antd';
+import { Form, Input, Modal, Select, Button, notification, Spin, Checkbox, TreeSelect } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { CREATE_GROUP, UPDATE_GROUP } from '../../../../util/mutation/group.mutation';
@@ -116,6 +116,12 @@ export const GroupModal = ({ visible, onClose, groupRefetch, objectType}) => {
     }
   };
 
+
+  const handelChangeTab = (e)=>{
+    console.log(e, "eee");
+  }
+ 
+
   return (
     <Modal
       visible={visible}
@@ -159,13 +165,21 @@ export const GroupModal = ({ visible, onClose, groupRefetch, objectType}) => {
             
               <Form.Item>
                 <label>Associated Tabs</label>
-              </Form.Item>
-              <Form.Item>
-                {moduleTabs[objectType]?.map((tab)=>{
-                  return <div style={{width:'auto'}}>
-                      <Checkbox checked={localtab?.find((tb)=>tb==tab)? true : false} onChange={(e)=>handelTab(e.target.checked, tab)}>{tab}</Checkbox>
-                    </div>
-                })}
+                <TreeSelect className='custom-select grptab'
+                  placeholder="Select Associated Tabs"
+                  multiple
+                  treeCheckable
+                >
+                    {moduleTabs[objectType]?.map((tab)=>{
+                      return (
+                        <TreeSelect.TreeNode value={null} title={<div style={{width:'auto'}}>
+                        <Checkbox checked={localtab?.find((tb)=>tb==tab)? true : false} onChange={(e)=>handelTab(e.target.checked, tab)}>{tab}</Checkbox>
+                      </div>}>
+                          
+                        </TreeSelect.TreeNode>
+                      )
+                    })}
+                </TreeSelect>
               </Form.Item>
 
             </>
