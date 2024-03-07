@@ -212,7 +212,7 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
             title={skillToBeEdit?.skillDetail?.length>0? "Replace Skill": "Add New Skill"}
             width={600}
             footer={
-            <div className='drawer-footer' style={{display:'flex', justifyContent:'space-between'}}>
+            <div className='drawer-footer' style={{display:'flex', gap:'20px'}}>
                 <button  
                     onClick={isBtnDisabled? console.warn("not-allowed") :handelEmployeeSkill}
                     className={newEmpSkillLoading || updateEmpSkillLoading || isBtnDisabled?'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} 

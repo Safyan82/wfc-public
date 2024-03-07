@@ -99,6 +99,69 @@ export const DataTable = ({
       })||[];
       setDynamicColumn([...col]);
       dispatch(refreshBranchGrid(false));
+    }else if(objectData?.length>0 && view==false){
+      const col = objectData.map((prop)=>{
+        // if(prop.propertyDetail.label=="Branch name" || prop.propertyDetail.label=="Post code"){
+          
+          return {
+            originalObj: prop,
+            title: prop.propertyDetail.label,
+            dataIndex: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(),
+            key: prop.propertyDetail.label.replaceAll(" ","").toLowerCase(), // Initial width of the column
+            width: 100,
+            onHeaderCell: (column) => ({
+              width: column.width,
+              onResize: handleResize(column.dataIndex),
+              ellipsis: true
+            }),
+            ellipsis: true,
+
+            render: (_, record) => {
+              const showActions = sessionStorage.getItem('hoverItem') == record.key && prop.propertyDetail.label == objectData[0].propertyDetail.label &&  selectedRowKeys?.length===0;
+              if(prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="phonenumber"
+              ){
+                return(
+                  <a style={{textDecoration:'underline'}} href={"tel:"+record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}>
+                    {record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}
+                  </a>
+                )
+              }
+              else if(prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="email"
+              ){
+                return(
+                  <a style={{textDecoration:'underline'}} target='_blank' href={"mailto:"+record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}>
+                    {record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}
+                  </a>
+                )
+              }
+              else{
+              return (          
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between',}}>
+                  
+                  <div 
+                    onClick={()=>history('/user/'+detailpage+record.key)}
+                    className={showActions? 'prev-btn' : null}
+                    style={prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="firstname" || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="branchname" || prop.propertyDetail.label.replaceAll(" ","").toLowerCase()=="sitegroupname"?{color:'#0091ae'}:{}}
+                  >
+                    {record[prop.propertyDetail.label.replaceAll(" ","").toLowerCase()]}
+                  
+                  </div>
+                    
+  
+                
+
+                  <button className={"grid-sm-btn"} style={showActions?{visibility: 'visible'}:{visibility: 'hidden'}} type="link" onClick={()=>history('/user/'+detailpage+record.key)}>
+                    Preview
+                  </button>
+                
+              </div>
+              );
+              }
+            },
+          }
+        // }
+      })||[];
+      setDynamicColumn([...col]);
     }
   }, [objectData, view]);
 
@@ -160,7 +223,22 @@ export const DataTable = ({
   },[data]);
 
 
-  
+  const [search, setSearch] = useState("");
+
+  useEffect(()=>{
+    if(search?.value?.length>0){
+
+      setDataSource(data?.map((key,index) => {
+        const {metadata, ...rest} = key;
+        return {key:key?._id ,...metadata, ...rest};
+      })?.filter((data)=> Object.values(data).includes(search)));
+    }else{
+      setDataSource(data?.map((key,index) => {
+        const {metadata, ...rest} = key;
+        return {key:key?._id ,...metadata, ...rest};
+      }));
+    }
+  },[search]);
 
 
   const {
@@ -213,7 +291,7 @@ export const DataTable = ({
                     <div className='grid-table-search-input'>
                     
                       <div className='table-footer' id="selection-options">
-                        <Input type='search' style={{background: 'white', width:'250px', height:'33px'}} className='generic-input-control' placeholder='Search ...'  suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}/>
+                        <Input type='search' onChange={(e)=>setSearch(e.target.value)} style={{background: 'white', width:'250px', height:'33px'}} className='generic-input-control' placeholder='Search ...'  suffix={<FontAwesomeIcon style={{color:'#0091ae'}}  icon={faSearch}/>}/>
                         {selectedRowKeys?.length>0 &&
                           <>
                               <small class='small-text'> {selectedRowKeys?.length} selected</small>

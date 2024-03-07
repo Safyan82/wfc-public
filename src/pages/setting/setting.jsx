@@ -49,7 +49,7 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                 </div>
                             </div>
 
-                            <nav className='setting-custom-nav'>
+                            <nav className='setting-custom-nav' style={{paddingBottom:'32px'}}>
                                 <Collapse  defaultActiveKey={['2','1','3','4']}>
                                     
                                     <Collapse.Panel key='1' header={<div className='setting-sidebar-nav'>Your Preferences</div>}>
@@ -79,10 +79,11 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
 
                                             <Collapse accordion defaultActiveKey={[]} style={{paddingBottom:'16px'}}>
                                                 {/* modules */}
-                                                <Collapse.Panel  key="m-1" header={<div className='setting-sidebar-nav' style={{fontWeight:500, marginLeft:'-11px'}}>Modules</div>}>
+                                                <Collapse.Panel  key="m-1" header={<div className='setting-sidebar-nav' style={{fontWeight:500, marginLeft:'-11px'}}>Objects</div>}>
                                                     <ul className='setting-sidebar-nav-list' style={{marginTop:'10px', marginLeft:'-17px'}}>
                                                         <Link to={routes.module+"?branch"}><li className={path==routes?.module+"?branch"?active:inactive}>Branch</li></Link>
                                                         <Link to={routes.module+"?employee"}><li className={path==routes?.module+"?employee"?active:inactive}>Employee</li></Link>
+                                                        <Link to={routes.module+"?siteGroup"}><li className={path==routes?.module+"?siteGroup"?active:inactive}>Site Group</li></Link>
                                                         <Link to={routes.module+"?site"}><li className={path==routes?.module+"?site"?active:inactive}>Site</li></Link>
                                                         <Link to={routes.module+"?customer"}><li className={path==routes?.module+"?customer"?active:inactive}>Customer</li></Link>
                                                     </ul>
@@ -103,6 +104,15 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                         
                                     </Collapse.Panel>
 
+                                    
+                                    <Collapse.Panel key='4'  header={<div className='setting-sidebar-nav'>Finance</div>}>    
+                                        <ul className='setting-sidebar-nav-list'>
+                                            <Link to={routes.paybillcol}><li className={path==routes.paybillcol?active:inactive}>Pay & Bill Columns</li></Link>
+                                            <Link to={routes.paylevel}><li className={path==routes.paylevel?active:inactive}>Pay Level</li></Link>
+                                            <Link to={routes.paytable}><li className={path==routes.paytable?active:inactive }>Pay Table</li></Link>
+                                            <Link to={routes.shifttype}><li className={path==routes.shifttype?active:inactive}>Shift Type</li></Link>
+                                        </ul>
+                                    </Collapse.Panel>  
                                     
                                     <Collapse.Panel key='4'  header={<div className='setting-sidebar-nav'>Billing</div>}>    
                                         <ul className='setting-sidebar-nav-list'>

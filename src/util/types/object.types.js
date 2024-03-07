@@ -9,9 +9,9 @@ export const normalUser = {
 export const objectType = {
     Branch: "Branch",
     Employee: "Employee",
+    SiteGroup: "SiteGroup",
     Site: "Site",
     Customer: "Customer",
-    SiteGroup: "SiteGroup",
     Setting: "Setting",
     UserRoles: "UserRoles",
     UserTeam: "UserTeams",
