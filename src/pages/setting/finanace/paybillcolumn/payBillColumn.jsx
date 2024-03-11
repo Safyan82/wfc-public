@@ -1,21 +1,49 @@
 import { useState } from "react";
-import { faArrowsSpin, faClose, faSearch, faTowerBroadcast } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Input, Table, Tabs } from "antd"
+import { Table, Tabs } from "antd"
 import TabPane from "antd/es/tabs/TabPane"
 import { NewPayBillColumnDrawer } from "./newPayBillColumn.drawer";
+import { useMutation, useQuery } from "@apollo/client";
+import { getPayandBillColumnQuery } from "@src/util/query/payandbillColumn.query";
+import { deletePayandBillColumnMutation } from "@src/util/mutation/payandbillColumn.mutation";
+import Spinner from "@src/components/spinner";
 
 export const PayBillColumn = ({themeData})=>{
 
 
-    const [searchInput, setSearchInput] = useState("");
+    const [editColumn, setEditColumn] = useState({});
+    const [deletePayandBillColumn, {loading: deletePayandBillColumnLoading}] = useMutation(deletePayandBillColumnMutation);
     
     const columns = [
         {
             title: 'Name',
-            dataIndex: 'name',
+            dataIndex: 'columnName',
             key:'name',
-            width:'50%'
+            width:'50%',
+            
+      ellipsis:true,
+      render: (_, record) => {
+        const showActions = hoveredRow === record.key;
+        return (          
+            <div style={{display:'flex', alignItems:'center', gap:'20px'}}>
+                {record?.columnName}
+                {showActions &&
+                <div style={{width:'auto', display:'flex', justifyContent:'flex-start' ,alignItems:'center', columnGap:'10px'}}>
+                
+                    <button className={"grid-sm-btn"} type="link" onClick={() => { setEditColumn(record); setNewPayLevelModal(true);}}>
+                        Edit
+                    </button>
+
+                    <button className={"grid-sm-btn"} type="link" onClick={async() => {  await deletePayandBillColumn({variables:{deletePayandBillCoulmnId:record?._id}}); await refetch(); }}>
+                        Delete
+                    </button>
+                    
+
+                </div>
+                }
+
+            </div>
+        );
+      },
         },
         {
             title: 'Column ORDER',
@@ -25,6 +53,25 @@ export const PayBillColumn = ({themeData})=>{
     ];
 
     const [newPayLevelModal, setNewPayLevelModal] = useState(false);
+
+    const {data, loading:getPayandBillColumnLoading, refetch} = useQuery(getPayandBillColumnQuery);
+
+    const [hoveredRow, setHoveredRow] = useState("");
+
+    const rowClassName = (record) => {
+        return record.key === hoveredRow ? 'hovered-row' : '';
+    };
+      
+    const handleRowMouseEnter = (record) => {
+        setHoveredRow(record.key);
+        console.log(record.key);
+    };
+
+
+    const handleRowMouseLeave = () => {
+        setHoveredRow(null);
+    };
+    
 
 
     return(
@@ -50,20 +97,37 @@ export const PayBillColumn = ({themeData})=>{
                             <div>
                                 {/* search header */}
                                 <div style={{display:'flex', justifyContent:'flex-end', alignItems:'center'}}>
-                                        <button className="drawer-filled-btn" onClick={()=>setNewPayLevelModal(!newPayLevelModal)}>Add</button>
+                                        <button className="drawer-filled-btn" onClick={()=>{ setNewPayLevelModal(!newPayLevelModal); setEditColumn({}); }}>Add</button>
                                 </div>
 
                                 {/* subscription main body cards */}
                                 <div className="propertyTab"></div>
-                                <Table
-                                    columns={columns}
-                                    dataSource={[{name:'Test', columnOrder: '1'},]}
-                                />
+                                {
+                                    deletePayandBillColumnLoading?
+                                    <Spinner />
+
+                                    :
+                                    
+                                    <Table
+                                        columns={columns}
+                                        dataSource={data?.getPayandBillColumn?.response?.map((data)=>({key:data?._id, ...data}))}
+                                        
+                                        onRow={(record) => ({
+                                            onMouseEnter: () => handleRowMouseEnter(record),
+                                            onMouseLeave: () => handleRowMouseLeave(),
+                                        })}
+                                        rowClassName={rowClassName}
+                                    />
+                                }
 
                                 {/* add new paylevel drawer */}
                                 <NewPayBillColumnDrawer
                                     visible={newPayLevelModal}
                                     close={()=>setNewPayLevelModal(!newPayLevelModal)}
+                                    refetch={refetch}
+                                    editColumn={editColumn}
+                                    setEditColumn={setEditColumn}
+                                    
                                 />
 
                             </div>
