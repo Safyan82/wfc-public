@@ -105,7 +105,7 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                     </Collapse.Panel>
 
                                     
-                                    <Collapse.Panel key='4'  header={<div className='setting-sidebar-nav'>Finance</div>}>    
+                                    <Collapse.Panel key='4'  header={<div className='setting-sidebar-nav'>Pay & Bill Management</div>}>    
                                         <ul className='setting-sidebar-nav-list'>
                                             <Link to={routes.paybillcol}><li className={path==routes.paybillcol?active:inactive}>Pay & Bill Columns</li></Link>
                                             <Link to={routes.paylevel}><li className={path==routes.paylevel?active:inactive}>Pay Level</li></Link>
@@ -114,7 +114,7 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                         </ul>
                                     </Collapse.Panel>  
                                     
-                                    <Collapse.Panel key='4'  header={<div className='setting-sidebar-nav'>Billing</div>}>    
+                                    <Collapse.Panel key='4'  header={<div className='setting-sidebar-nav'>Subscription & Services</div>}>    
                                         <ul className='setting-sidebar-nav-list'>
                                             <Link to={routes.service}><li className={path==routes.service?active:inactive}>Services</li></Link>
                                             <Link to={routes.payment}><li className={path==routes.payment?active:inactive}>Payment Methods</li></Link>

@@ -1,0 +1,8 @@
+.payTable .ant-form-item{
+    margin: 0 !important;
+}
+
+.payTable .generic-input-control{
+    margin: 0 !important;
+    height: 35px !important;
+}
