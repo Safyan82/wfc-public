@@ -105,8 +105,9 @@ export const ShiftType = ({themeData})=>{
                                               </div>
                                           );
                                             } 
-                                        }, {title:'description', dataIndex:'description'},
-                                        {title:'summary shift type', dataIndex:'summaryShiftType'}, 
+                                        }, 
+                                        {title:'description', dataIndex:'description'},
+                                        {title:'summary shift type', dataIndex:'summaryShiftType', width:'10%'}, 
                                         {title:'pay code', dataIndex:'payCode'}, {title:'pay column', dataIndex:'paycolumn'},
                                         {title:'pay method', dataIndex:'payMethod'},
                                         {title:'pay multiplier', dataIndex:'payMultiplier'}, 

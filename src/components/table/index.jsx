@@ -25,7 +25,7 @@ export const DataTable = ({
   header, data, loading, 
   setDynamicColumn, 
   dynamicColumn, objectData,
-  viewRefetch, view, detailpage, handelBulkUpdateSave}) => {
+  viewRefetch, view, detailpage, handelBulkUpdateSave, noHeader}) => {
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   
@@ -310,8 +310,8 @@ export const DataTable = ({
                       
                       
                       <div className="small-btn">
-                        <button className='sm-btn'>Export</button> &emsp;
-                        <button className='sm-btn' onClick={()=>dispatch(setEditGridColumn(true))}>Edit columns</button>
+                        <button className={noHeader? 'sm-btn disabled-btn' : 'sm-btn'}>Export</button> &emsp;
+                        <button className={noHeader? 'sm-btn disabled-btn' : 'sm-btn'} onClick={noHeader? ()=>{} : ()=>{dispatch(setEditGridColumn(true))}}>Edit columns</button>
                       </div>
                     </div>
                   )}else{return null}

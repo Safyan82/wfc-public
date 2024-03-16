@@ -12,12 +12,12 @@ import { Loader } from '../../../components/loader';
 import { objectType } from '../../../util/types/object.types';
 
 
-export const AddProperty=({back, close, visible, isPropOpen, setProp, save, btnDisabled,})=>{
+export const AddProperty=({back, close, visible, isPropOpen, setProp,})=>{
 
     const {data, loading, refetch} = useQuery(GetPropertyByGroupQuery,{
         fetchPolicy:'network-only',
         variables:{
-            objectType: objectType.Employee
+            objectType: objectType.Customer
         }
     });
     const [list, setList] = useState([]);

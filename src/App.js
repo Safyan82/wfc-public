@@ -52,6 +52,8 @@ import { PayLevel } from './pages/setting/finanace/paylevel/paylevel';
 import { ShiftType } from './pages/setting/finanace/shiftType/shiftType';
 import { PayTable } from './pages/setting/finanace/payTable/payTable';
 import { PayBillColumn } from './pages/setting/finanace/paybillcolumn/payBillColumn';
+import { CustomerPage } from './pages/customer/customer.page';
+import { CustomerDetailPage } from './pages/customer/customerDetailPage/customerDetail.page';
 
 
 
@@ -154,8 +156,11 @@ function App() {
 
             {/* site */}
             <Route path='site' element={<Site/>} />
-          
-            
+
+            {/* Customer */}
+            <Route path='customer' element={<CustomerPage/>} />
+            <Route path='customer-detail/:id' element={<CustomerDetailPage/>} />
+             
           </Route>
 
           {/* setting navigation layout under hte main navigation*/}

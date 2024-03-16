@@ -62,6 +62,7 @@ export const FieldType = ({basicInfo, setWidth, fieldType, setFieldType})=>{
                     <OptGroup label="Meta Field">
                         <Option value="email">Email</Option>
                         <Option value="password">Password</Option>
+                        <Option value="phone">Phone Number</Option>
                         {/* <Option value="phone">Phone</Option> */}
                     </OptGroup>
                     <OptGroup label="Text Field">
