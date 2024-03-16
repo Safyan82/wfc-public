@@ -6,6 +6,8 @@ import { useMutation, useQuery } from '@apollo/client';
 import { getPayLevelQuery } from '@src/util/query/paylevel.query';
 import { UpsertPayTableMutation } from '@src/util/mutation/payTable.mutation';
 import { getPayTable } from '@src/util/query/PayTable.query';
+import { getCustomerPayTableQuery } from '../../../util/query/customerPayTable.query';
+import { upsertCustomerPayTableMutation } from '../../../util/mutation/customerPayTable.mutation';
 
 const EditableContext = React.createContext(null);
 
@@ -122,7 +124,7 @@ export const CustomerPayTable = ({themeData})=>{
 
     const [dataSource, setDataSource] = useState([]);
 
-    const {data: payTableData} = useQuery(getPayTable,{
+    const {data: customerPayTableData} = useQuery(getCustomerPayTableQuery,{
       fetchPolicy:'network-only'
     })
 
@@ -132,7 +134,7 @@ export const CustomerPayTable = ({themeData})=>{
         const columns = data?.getPayandBillColumn?.response?.map((col)=>(col?._id));
         const resultObject = {};
         
-        const payLevelData = payTableData?.getPayTable?.response;
+        const payLevelData = customerPayTableData?.getCustomerPayTable?.response;
 
         for (let i = 0; i < columns.length; i ++) {
           const payLevelColData = payLevelData?.find((pld)=>pld?.payLevelId===pl?._id);
@@ -147,9 +149,9 @@ export const CustomerPayTable = ({themeData})=>{
         })
 
       }))
-    },[payLevel, payTableData?.getPayTable?.response]);
+    },[payLevel, customerPayTableData?.getCustomerPayTable?.response]);
 
-    const [upsertPayTable, {loading: upsertPayTableLoading}] = useMutation(UpsertPayTableMutation);
+    const [upsertCustomerPayTable, {loading: upsertCustomerPayTableLoading}] = useMutation(upsertCustomerPayTableMutation);
 
     const handleSave = async(row) => {
 
@@ -164,7 +166,7 @@ export const CustomerPayTable = ({themeData})=>{
         });
         setDataSource(newData);
 
-        await upsertPayTable({
+        await upsertCustomerPayTable({
           variables:{
             input: {
               payLevelId,
@@ -207,8 +209,7 @@ export const CustomerPayTable = ({themeData})=>{
             </div>
 
             <div className="text">
-                Pay and bill columns as well as Pay levels are settled in PayTable. 
-                <i> To make changes please review</i> <b>Pay & Bill Columns</b> or <b> Pay Level </b>
+                This is the customer pay table that will be use if there's no pay set in site group.
             </div>
 
 
