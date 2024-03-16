@@ -124,7 +124,7 @@ export const CustomerPayTable = ({themeData})=>{
 
     const [dataSource, setDataSource] = useState([]);
 
-    const {data: customerPayTableData} = useQuery(getCustomerPayTableQuery,{
+    const {data: customerPayTableData, loading: customerPayTableLoading} = useQuery(getCustomerPayTableQuery,{
       fetchPolicy:'network-only'
     })
 
@@ -136,7 +136,7 @@ export const CustomerPayTable = ({themeData})=>{
         
         const payLevelData = customerPayTableData?.getCustomerPayTable?.response;
 
-        for (let i = 0; i < columns.length; i ++) {
+        for (let i = 0; i < columns?.length; i ++) {
           const payLevelColData = payLevelData?.find((pld)=>pld?.payLevelId===pl?._id);
           resultObject[columns[i]] =  payLevelColData?.payTableMeta?.hasOwnProperty([columns[i]])? payLevelColData?.payTableMeta[columns[i]] : 0;
         }
