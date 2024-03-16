@@ -11,6 +11,7 @@ import { faCalendarAlt, faClock } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import { useQuery } from '@apollo/client';
 import axios from "axios";
+import { automationEndPoint } from "../../config/apollo";
 
 export const CustomerFormDrawer = ({ objectLoading, 
   objectData, 
@@ -538,7 +539,7 @@ export const CustomerFormDrawer = ({ objectLoading,
     const handelCompanyDetail = async (companyname) => {
         try{      
             setCompanySuggestion(true);
-            const companyDetail = await axios.get("http://localhost:3500/getcompanydetail/"+companyname);
+            const companyDetail = await axios.get(automationEndPoint+companyname);
             setCompanies(companyDetail?.data?.data);
         }catch(err){
             setCompanies([]);
