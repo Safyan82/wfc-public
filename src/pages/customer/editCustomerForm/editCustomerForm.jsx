@@ -1,5 +1,3 @@
-// import './editform.css';
-// import '../../assets/default.css';
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAsterisk, faChevronLeft, faChevronRight, faEllipsisH, faStar } from "@fortawesome/free-solid-svg-icons";
@@ -9,63 +7,59 @@ import DraggableList from '../../../components/shuffle/draggeableList';
 import { AddProperty } from './AddProperty.modal';
 import { Popover } from "antd";
 import { ApartmentOutlined } from "@ant-design/icons";
-import { faDeleteLeft, faEdit, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from 'react-redux';
-import { addFieldToBranchSchema, removeFieldFromBranchSchema, resetBranch, resetSchemaNewFieldsOnCancel, resetbranchSchemaNewFields, setBranchSchema } from '../../../middleware/redux/reducers/branch.reducer';
+import { addFieldToBranchSchema, removeFieldFromBranchSchema, resetBranch, resetbranchSchemaNewFields, setBranchSchema } from '../../../middleware/redux/reducers/branch.reducer';
 import { useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/client';
-import { BulkBranchObjectMutation, BulkDeleteBranchObjectMutation } from '../../../util/mutation/branch.mutation';
 import { Loader } from '../../../components/loader';
 import { setNotification } from '../../../middleware/redux/reducers/notification.reducer';
 
-import { EmployeeObjectQuery } from '../../../util/query/employee.query';
-import { FormHeader } from "../../../components/header/header";
-import { BulkDeleteEmployeeObjectMutation, BulkEmployeeObjectCreationMutation, bulkUpdateEmployeeObjectOrderMutation } from "../../../util/mutation/employeeObject.mutation";
-import Spinner from "../../../components/spinner";
+import { BulkCustomerObjectCreationMutation, BulkDeleteCustomerObjectMutation, BulkDeleteEmployeeObjectMutation, BulkDeleteSiteGroupObjectMutation, bulkUpdateCustomerObjectOrderMutation, bulkUpdateEmployeeObjectOrderMutation, bulkUpdateSiteGroupObjectOrderMutation } from "../../../util/mutation/customerObject.mutation";
 
-export const EditEmployeeForm=()=>{
+import { CustomerObjectQuery } from "@src/util/query/customer.query";
+
+export const EditCustomerForm=()=>{
     const location = useLocation();
     // const title= "Employee Form";
     // const url= "";
-    const {title="Employee", url=""} = location?.state || {title:"Employee", url:""};
+    const {title="Customer", url=""} = location?.state || {title:"Customer", url:""};
     const [modalState, setModalState] = useState(false);
 
 
-    const {data:employeeObject, loading: employeeObjectLoading, refetch: employeeObjectRefetch} = useQuery(EmployeeObjectQuery,{
+    const {data:customerObject, loading: customerObjectLoading, refetch: customerObjectRefetch} = useQuery(CustomerObjectQuery,{
       fetchPolicy: 'network-only',
     });
 
 
-    const [createBulkProperties, {loading: createBulkPropertiesLoading, error}] = useMutation(BulkEmployeeObjectCreationMutation);
+    const [createBulkProperties, {loading: createBulkPropertiesLoading, error}] = useMutation(BulkCustomerObjectCreationMutation);
     
     const [mandatory, setMandatory] = useState([]);
 
     const { branchSchemaNewFields } = useSelector(state=>state.branchReducer);
     const [branchSchemaLocal, setBranchSchemaLocal] = useState([...branchSchemaNewFields]);
     useEffect(()=>{
-      employeeObjectRefetch();
+      customerObjectRefetch();
     }, []);
     useEffect(()=>{
       setBranchSchemaLocal([...branchSchemaNewFields]);
     }, [branchSchemaNewFields]);
 
-    useEffect(()=>{
-
-      console.log(branchSchemaLocal.sort((a, b) => a?.order - b?.order), "sort", branchSchemaLocal)
-    },[branchSchemaLocal]);
     
     const dispatch = useDispatch();
     const [cancel,setCancel] = useState(false);
-
+    const [addProperty, setAddProperty] = useState(false);
+    
     useEffect(()=>{
-      if(!employeeObjectLoading){
+      if(!customerObjectLoading){
         dispatch(resetBranch());
-
-        const mandatoryFields = employeeObject?.getEmployeeObject?.response?.filter((property)=> property.isReadOnly===true);
+        console.log(customerObject, "customerObject");
+        //customerObject?.getCustomerObject?.response
+        const mandatoryFields = customerObject?.getCustomerObject?.response?.filter((property)=> property.isReadOnly===true);
         setMandatory(mandatoryFields);
-        dispatch(setBranchSchema(employeeObject?.getEmployeeObject?.response));
+        dispatch(setBranchSchema(customerObject?.getCustomerObject?.response));
 
-        employeeObject?.getEmployeeObject?.response?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
+        customerObject?.getCustomerObject?.response?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
           const propData = {
             label:field?.propertyDetail?.label,
             _id:field?.propertyId,
@@ -75,36 +69,36 @@ export const EditEmployeeForm=()=>{
           }
           dispatch(addFieldToBranchSchema(propData));
         });
-
+        setAddProperty(true)
         setCancel(false);
       }
-    },[employeeObject]);
+    },[customerObject]);
 
     const[isPropOpen, setProp]=useState(false);
 
-    const [deleteProperties, {loading: deletePropertiesLoading}] = useMutation(BulkDeleteEmployeeObjectMutation);
+    const [deleteProperties, {loading: deletePropertiesLoading}] = useMutation(BulkDeleteCustomerObjectMutation);
 
     const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
-      if(deletePropertiesLoading || createBulkPropertiesLoading || employeeObjectLoading){
+      if(deletePropertiesLoading || createBulkPropertiesLoading || customerObjectLoading){
         setLoading(true);
       }else{
         setLoading(false);
       }
-    },[deletePropertiesLoading, createBulkPropertiesLoading, employeeObjectLoading ]); 
+    },[deletePropertiesLoading, createBulkPropertiesLoading, customerObjectLoading ]); 
 
     
-    const [btnDisabled, setBtnDisabled] = useState(true);
+    const [btnDisabled, setBtnDisabled] = useState(false);
     
     useEffect(()=>{
       
-      if(employeeObject?.getEmployeeObject?.response){
+      if(customerObject?.getCustomerObject?.response){
 
         const props = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==0 && schema?.isNew==1));
         const deletedProps = branchSchemaNewFields.filter((schema)=> (schema?.isLocalDeleted==1));
-        const object = employeeObject?.getEmployeeObject?.response?.filter((property)=> property.isReadOnly!==true );
-        const isChange =  branchSchemaNewFields.find((schema)=>(object.find((property)=> property?.propertyId === schema?._id && property?.isMandatory !== schema?.isMandatory)));
+        const object = customerObject?.getCustomerObject?.response?.filter((property)=> property.isReadOnly!==true );
+        const isChange =  branchSchemaNewFields?.find((schema)=>(object.find((property)=> property?.propertyId === schema?._id && property?.isMandatory !== schema?.isMandatory )));
         // console.log(props?.length>0 || deletedProps?.length>0 || isChange, isChange, "tttttds",object , branchSchemaNewFields)
 
         if(props?.length>0 || deletedProps?.length>0 || isChange){
@@ -114,7 +108,7 @@ export const EditEmployeeForm=()=>{
         }
 
       }
-    },[branchSchemaNewFields,createBulkPropertiesLoading,deletePropertiesLoading,employeeObject]);
+    },[branchSchemaNewFields,createBulkPropertiesLoading,deletePropertiesLoading,customerObject]);
 
     
     const handelSave = async() => {
@@ -143,7 +137,7 @@ export const EditEmployeeForm=()=>{
           error: false,
         }));
         // setBtnDisabled(true);
-        await employeeObjectRefetch();
+        await customerObjectRefetch();
         setCancel(true);
 
       }
@@ -152,14 +146,14 @@ export const EditEmployeeForm=()=>{
     
     useEffect(() =>{
       if(cancel){
-        if(!employeeObjectLoading){
+        if(!customerObjectLoading){
           dispatch(resetBranch());
   
-          const mandatoryFields = employeeObject?.getEmployeeObject?.response?.filter((property)=> property.isReadOnly===true);
+          const mandatoryFields = customerObject?.getCustomerObject?.response?.filter((property)=> property.isReadOnly===true);
           setMandatory(mandatoryFields);
-          dispatch(setBranchSchema(employeeObject?.getEmployeeObject?.response));
+          dispatch(setBranchSchema(customerObject?.getCustomerObject?.response));
   
-          employeeObject?.getEmployeeObject?.response?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
+          customerObject?.getCustomerObject?.response?.filter((property)=> property.isReadOnly!==true)?.map((field)=>{
             const propData = {
               label:field?.propertyDetail?.label,
               _id:field?.propertyId,
@@ -184,7 +178,7 @@ export const EditEmployeeForm=()=>{
       }
     },[propertyToBeRemoveFromSchema]);
 
-    const [reorderEmployeeObjectSchema] = useMutation(bulkUpdateEmployeeObjectOrderMutation)
+    const [reorderEmployeeObjectSchema] = useMutation(bulkUpdateCustomerObjectOrderMutation)
     
     
     // on session terminate of this page clear the 
@@ -204,7 +198,7 @@ export const EditEmployeeForm=()=>{
                   <div className="form-section-inner">
                       <div className="modal-header-title">
                           <div style={{width:'100%'}}>
-                            Edit Employee Form
+                            Edit Customer Form
                           </div>
                           
                           <div style={{width:'30%', display:'flex', justifyContent:'flex-end', alignItems:'center'}}>
@@ -304,7 +298,7 @@ export const EditEmployeeForm=()=>{
                         <DraggableList
                           reorderSchema = {reorderEmployeeObjectSchema}
                           list={branchSchemaNewFields?.length>0 ? branchSchemaLocal.sort((a, b) => a?.order - b?.order) : []} 
-                          objectRefetch={()=>console.log("employee refetch not implement")}
+                          objectRefetch={()=>console.log("refetch object")}
                         />        
                                       
                         </div>
@@ -315,16 +309,20 @@ export const EditEmployeeForm=()=>{
               </div>
 
           {/* side drawer */}
-          <AddProperty
-            close={async()=>{setOpenDrawer(false);}}
-            visible={openDrawer}
-            setProp={setProp}
-            isPropOpen={isPropOpen}
-            save={async()=>{await handelSave();setOpenDrawer(false);}}
-            btnDisabled={()=>{}}
-            
-
-          />
+          {
+            addProperty && !customerObjectLoading && openDrawer?
+            <AddProperty
+              close={async()=>{setOpenDrawer(false);}}
+              visible={openDrawer}
+              setProp={setProp}
+              isPropOpen={isPropOpen}
+              save={async()=>{await handelSave();setOpenDrawer(false);}}
+              btnDisabled={()=>{}}
+              
+  
+            />
+            :null
+          }
             
         </div>
     );

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisV, faBusinessTime, faMapLocationDot, faGroupArrowsRotate } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV, faBusinessTime, faMapLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Avatar, Popover, Collapse, Skeleton, Tag, DatePicker, Input } from 'antd';
 import {faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { PhoneOutlined,  FormOutlined, MessageOutlined, UserAddOutlined } from '@ant-design/icons';
@@ -12,19 +12,22 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from '@src/components/spinner';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
-import { SiteGroupObjectQuery } from '../../../../util/query/siteGroup.query';
+import { CustomerObjectQuery } from '../../../../util/query/customer.query';
 
-export const SiteGroupDetailPageLeftSideBar = ({siteGroup, loading})=>{
+export const CustomerDetailPageLeftSideBar = ({customer, loading})=>{
     
-    const {data:siteGroupObject, loading: siteGroupObjectLoading, refetch: siteGroupObjectRefetch} = useQuery(SiteGroupObjectQuery);
+    const {data:customerObject, loading: siteGroupObjectLoading, refetch: siteGroupObjectRefetch} = useQuery(CustomerObjectQuery);
     const navigate = useNavigate();
 
-    const [siteGroupSchema, setSiteGroupSchema] = useState([]);
+    const [customerSchema, setCustomerSchema] = useState([]);
     useEffect(()=>{
-        if(siteGroupObject?.getSiteGroupObject?.response){
-            setSiteGroupSchema(siteGroupObject?.getSiteGroupObject?.response?.map((object)=>(object?.propertyDetail?.label)));
+        if(customerObject?.getCustomerObject?.response){
+            setCustomerSchema(customerObject?.getCustomerObject?.response?.map((object)=>(object?.propertyDetail?.label)));
+           
+            console.log(customer, "cccc customer",Object.keys(customer), customerObject?.getCustomerObject?.response?.map((object)=>(object?.propertyDetail?.label)))
+            
         }
-    },[siteGroupObject?.getSiteGroupObject?.response]);
+    },[customerObject?.getCustomerObject?.response]);
 
 
     return(
@@ -32,7 +35,7 @@ export const SiteGroupDetailPageLeftSideBar = ({siteGroup, loading})=>{
             <div className='leftsidebar'>
 
                 <div className='side-intro'>
-                    {siteGroup?
+                    {!loading && Object.keys(customer)?.length>0 ?
                     <>
                         <div className='emp-avatar'>
                             {/* <Avatar size={70} src={"https://scontent-man2-1.xx.fbcdn.net/v/t39.30808-6/424898432_4542228726002734_5791661793434540279_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=95FoMIfU6UgAX9ihnaO&_nc_ht=scontent-man2-1.xx&oh=00_AfBAVkq-CuOQsJjYfVH10IDnqpXH79nyCpVGPrFJndgURA&oe=65EB1456"}/> */}
@@ -46,17 +49,17 @@ export const SiteGroupDetailPageLeftSideBar = ({siteGroup, loading})=>{
                                 width: '100%',}}
                             >
                                 <span>
-                                    {siteGroup?.sitegroupname?.toUpperCase()}
+                                    {customer?.customername?.toUpperCase()}
                                 </span>
                                 <Popover
                                     overlayClassName='notePopover'
                                     placement='right'
                                     content={
                                         <div className='popover-data'>
-                                            <div className="disabled popoverdataitem" onClick={()=>navigate("/user/employee-detail-view/"+siteGroup?._id)}>
+                                            <div className="disabled popoverdataitem" >
                                                 Data Fields View
                                             </div>
-                                            <div className="disabled popoverdataitem" onClick={()=>navigate(`/user/employee-prop-history/`+siteGroup?._id)}>
+                                            <div className="disabled popoverdataitem" >
                                                Data Fields History
                                             </div>
                                         </div>
@@ -69,7 +72,7 @@ export const SiteGroupDetailPageLeftSideBar = ({siteGroup, loading})=>{
                             <div className='text-subtitle'>
 
                                 <div style={{textTransform:'lowercase', fontSize:'1em', marginBottom:'22px', marginTop:'10px'}}>
-                                    <FontAwesomeIcon icon={faGroupArrowsRotate}/> &nbsp; {"Site Group"} 
+                                    <FontAwesomeIcon icon={faBusinessTime}/> &nbsp; {"Customer"} 
                                 </div>   
                             
                                 <div className="activity-btn-grp">
@@ -143,11 +146,11 @@ export const SiteGroupDetailPageLeftSideBar = ({siteGroup, loading})=>{
             
 
                 {
-                    Object.values(siteGroup)?.map((prop, index)=>{
-                        if(Object.keys(siteGroup)[index]=="sitegroupname"){
+                    Object.values(customer)?.map((prop, index)=>{
+                        if(Object.keys(customer)[index]=="customername"){
                             return(
                                 <div className='fieldView'>
-                                    <div>{siteGroupSchema[index]}</div>
+                                    <div>{customerSchema[index]}</div>
                                     <div>
                                         {prop}
                                     </div>
@@ -162,19 +165,20 @@ export const SiteGroupDetailPageLeftSideBar = ({siteGroup, loading})=>{
 
                 
                 {
-                    Object.values(siteGroup)?.map((prop, index)=>{
-                        if(Object.keys(siteGroup)[index]!=="sitegroupname"){
-                            return(
+                    customerSchema.map((schema)=>(
+                        schema.toLowerCase().replace(/\s/g,"")!=="customername"?
+                            (
                                 <div className='fieldView'>
-                                    <div>{siteGroupSchema[index]}</div>
-                                    <div>
-                                        {prop}
+                                    <div>{schema}</div>
+                                    <div style={{textAlign:'right'}}>
+                                        {customer[schema.toLowerCase().replace(/\s/g,"")]}
                                     </div>
                                 </div>
     
                             )
-                        }
-                    })
+                        : null
+                        
+                    ))
                 }
                
         </div>

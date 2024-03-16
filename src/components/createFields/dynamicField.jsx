@@ -51,6 +51,7 @@ export function CreateField({sortType,fieldType,label,search, preview=true}){
     'text',
     'multilineText',
     'singlelineNumber',
+    'phone',
     'password',
     'number','email','date','time','datetime-local']);
     const [multiInput, setMutiInput] = useState(['multiCheckbox', 'selectDropdown', 'radioDropdown']);
@@ -137,7 +138,7 @@ export function CreateField({sortType,fieldType,label,search, preview=true}){
                 
             break;
             case 'phone':
-                setFields([{id: new Date().getMilliseconds(), type: 'text', label}]);  
+                setFields([{id: new Date().getMilliseconds(), type: 'phone', label}]);  
             break;
             case 'password':
                 setFields([{id: new Date().getMilliseconds(), type: 'password', label}]);
@@ -563,6 +564,7 @@ export function CreateField({sortType,fieldType,label,search, preview=true}){
                 <div className='preview-box'>
                     {fields?.length > 0 &&
                         fields?.map((field)=>{
+                            console.log(field?.type, field, "f");
                             return (
                             <> 
                             {singleInput.includes(field?.type) ? 
@@ -573,7 +575,17 @@ export function CreateField({sortType,fieldType,label,search, preview=true}){
                                     <Input.TextArea rows={4} placeholder={field?.type[0].toLocaleUpperCase() + field?.type?.slice(1)} className='generic-input-control'/> 
                                     
                                 </>
+                                :
 
+                                field?.type=="phone" ?
+                                <>
+                                    <label>{label}</label>
+                                    <div style={{display:'flex', gap:'10px'}}>
+                                        <Input placeholder='Ext' className='generic-input-control' style={{width:'15%'}}/>
+                                        <Input type={field?.type} placeholder={"Phone number"} className='generic-input-control'/> 
+                                    </div>
+                                    
+                                </>
                                 :
                                 <>
                                     <label>{label}</label>

@@ -8,6 +8,7 @@ import { EditEmployeeForm } from "../../employee/editEmployeeForm/editEmployeeFo
 import { useLocation } from "react-router-dom"
 import { EditSiteGroupForm } from "../../sitegroup/ediSiteGroupForm/editSiteGroupForm"
 import { EditSiteForm } from "../../site/ediSiteForm/editSiteForm"
+import { EditCustomerForm } from "../../customer/editCustomerForm/editCustomerForm"
 
 export const ModuleForms = () =>{
 
@@ -25,6 +26,7 @@ export const ModuleForms = () =>{
             }
         }
     },[myParam]);
+
 
     return(
         
@@ -96,6 +98,9 @@ export const ModuleForms = () =>{
                         objectTypelocal=="Site"?
                             <EditSiteForm/>
 
+                        :
+                        objectTypelocal=="Customer"?
+                            <EditCustomerForm/>
                         :
                         null
                     }
