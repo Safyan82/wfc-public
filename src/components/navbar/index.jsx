@@ -268,6 +268,7 @@ export function Navbar({themeData, themeLoading, refetchTheme}){
                             }
                             <Menu.Item key="siteGrp" onClick={()=>handelNavigate("/user/sitegroup")} className='menu-item'>Site Groups</Menu.Item>
                             <Menu.Item key="customer" onClick={()=>handelNavigate("/user/customer")}  className='menu-item'>Customers</Menu.Item>
+                            <Menu.Item key="agency" onClick={()=>handelNavigate("/user/agency")}  className='menu-item'>Agency</Menu.Item>
                         </Menu>
                     } visible={moreOption} placement="bottomLeft" onClick={()=>{ setMoreOption(!moreOption); setVisible(false); }}>
                         <span>More <span className='caret-white'></span></span>

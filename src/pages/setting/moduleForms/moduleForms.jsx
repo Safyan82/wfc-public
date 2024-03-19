@@ -1,7 +1,5 @@
-import { faLock } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Button, Select } from "antd"
-import { objectType } from "../../../util/types/object.types"
+import { Select } from "antd"
+import { objectType } from "@src/util/types/object.types"
 import { useEffect, useState } from "react"
 import { EditForm } from "../../editBranchForm/editForm.page"
 import { EditEmployeeForm } from "../../employee/editEmployeeForm/editEmployeeForm"
@@ -9,6 +7,7 @@ import { useLocation } from "react-router-dom"
 import { EditSiteGroupForm } from "../../sitegroup/ediSiteGroupForm/editSiteGroupForm"
 import { EditSiteForm } from "../../site/ediSiteForm/editSiteForm"
 import { EditCustomerForm } from "../../customer/editCustomerForm/editCustomerForm"
+import { EditAgencyForm } from "../../agency/editAgencyForm/editAgencyForm"
 
 export const ModuleForms = () =>{
 
@@ -69,7 +68,7 @@ export const ModuleForms = () =>{
                                         // disabled
                                     >
                                         {
-                                            Object.keys(objectType).slice(0,5)?.map((object)=>(
+                                            Object.keys(objectType).slice(0,6)?.map((object)=>(
 
                                                 <Select.Option value={objectType[object]}>{objectType[object]}</Select.Option>
                                             ))
@@ -101,6 +100,9 @@ export const ModuleForms = () =>{
                         :
                         objectTypelocal=="Customer"?
                             <EditCustomerForm/>
+                        :
+                        objectTypelocal=="Agency"?
+                            <EditAgencyForm/>
                         :
                         null
                     }

@@ -305,7 +305,7 @@ export const PropertySetting=()=>{
                                             // disabled
                                         >
                                             {
-                                                Object.keys(objectType).slice(0,5)?.map((object)=>(
+                                                Object.keys(objectType).slice(0,6)?.map((object)=>(
 
                                                     <Select.Option value={objectType[object]}>{objectType[object]} data fields</Select.Option>
                                                 ))

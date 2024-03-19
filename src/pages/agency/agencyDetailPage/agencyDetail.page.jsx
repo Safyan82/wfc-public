@@ -1,43 +1,43 @@
+import { useQuery } from "@apollo/client";
+import { Col, Row } from "antd";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getSiteGroup } from "../../../util/query/siteGroup.query";
-import { useQuery } from "@apollo/client";
-import { Col, Row } from "antd";
-import { CustomerDetailPageLeftSideBar, SiteGroupDetailPageLeftSideBar } from "./component/leftSidebar";
+import { AgencyDetailPageLeftSideBar } from "./component/leftSidebar";
 import { SiteGroupPostSection } from "./component/middleSection";
-import { getSingleCustomerQuery } from "../../../util/query/customer.query";
-import { CustomerPayTable } from "../customerpayTable/customerPayTable";
+import { getSingleAgency } from "../../../util/query/agency.query";
+import { AgencyPayTable } from "../agencypayTable/agencyPayTable";
 
-export const CustomerDetailPage = ()=>{
+export const AgencyDetailPage = ()=>{
 
     const navigate = useNavigate();
 
-    const customertabs = {
+    const agencytabs = {
         GENERAL: 'General',
         PAYTABLE: 'Pay Table',
         NOTES: 'Notes',
     };
 
-    const [activeTab, setActiveTab] = useState(customertabs.GENERAL);
+    const [activeTab, setActiveTab] = useState(agencytabs.GENERAL);
     const param = useParams();
 
     // site group details
-    const {data: singleCustomer, loading: singleCustomerLoading, refetch} = useQuery(getSingleCustomerQuery,{fetchPolicy: 'cache-and-network',
+    const {data: singleAgency, loading: singleAgencyLoading, refetch} = useQuery(getSingleAgency,{fetchPolicy: 'cache-and-network',
         variables: {
             id: param?.id
         }
     });
 
-    const [customer, setCustomer] = useState({});
+
+    const [agency, setAgency] = useState({});
 
     useEffect(()=>{
-        if(!singleCustomerLoading){
-            const {customername, metadata} = singleCustomer?.customer;
-            setCustomer({customername, ...metadata});
+        if(!singleAgencyLoading){
+            const {agencyname, metadata} = singleAgency?.agency;
+            setAgency({agencyname, ...metadata});
         }
-    },[singleCustomer,singleCustomerLoading]);
+    },[singleAgency,singleAgencyLoading]);
 
     return(
         <div>
@@ -53,13 +53,13 @@ export const CustomerDetailPage = ()=>{
                     </div>
 
                     <div style={{fontSize:'14px'}}>
-                        {singleCustomer?.customername}
+                        {singleAgency?.agencyname}
                     </div>
                 </div>
 
                 {/* navigation tabs */}
                 <div style={{display:'flex', alignItems:'center', gap:'50px', justifyContent:'center', width:'100%'}}>
-                    {Object.values(customertabs)?.map((tab)=>(
+                    {Object.values(agencytabs)?.map((tab)=>(
                         <div className={activeTab==tab? 'emp-menubar emp-menubar-active': 'emp-menubar'} onClick={()=>setActiveTab(tab)}>{tab}</div>
                     ))}
                 </div>
@@ -70,12 +70,12 @@ export const CustomerDetailPage = ()=>{
 
             <div style={{padding:'50px 5px 5px 5px'}}>
                 {
-                    activeTab==customertabs?.GENERAL?
+                    activeTab==agencytabs?.GENERAL?
                     <Row>
                         <Col span={6}>
-                            <CustomerDetailPageLeftSideBar
-                                customer={customer}
-                                loading={singleCustomerLoading}
+                            <AgencyDetailPageLeftSideBar
+                                agency={agency}
+                                loading={singleAgencyLoading}
                             />
                         </Col>
 
@@ -84,17 +84,17 @@ export const CustomerDetailPage = ()=>{
                         </Col>
                     </Row>
                     :
-                    activeTab==customertabs?.PAYTABLE?
+                    activeTab==agencytabs?.PAYTABLE?
                     <Row>
                         <Col span={6}>
-                            <CustomerDetailPageLeftSideBar
-                                customer={customer}
-                                loading={singleCustomerLoading}
+                            <AgencyDetailPageLeftSideBar
+                                agency={agency}
+                                loading={singleAgencyLoading}
                             />
                         </Col>
 
                         <Col span={18}>
-                            <CustomerPayTable id={param?.id} />
+                            <AgencyPayTable id={param?.id}/>
                         </Col>
                     </Row>
                     :null

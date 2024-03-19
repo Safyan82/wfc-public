@@ -3,22 +3,21 @@ import {SearchOutlined} from '@ant-design/icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight, faClose, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Checkbox, Collapse, Divider, Drawer, Input } from "antd";
-import './editform.css';
 import { useQuery } from '@apollo/client';
-import { GetPropertyByGroupQuery } from '../../util/query/properties.query';
+import { GetPropertyByGroupQuery } from '../../../util/query/properties.query';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { addFieldToBranchSchema, removeFieldFromBranchSchema, resetSchemaNewFieldsOnCancel } from '../../middleware/redux/reducers/branch.reducer';
-import { Loader } from '../../components/loader';
-import { objectType } from '../../util/types/object.types';
+import { addFieldToBranchSchema, removeFieldFromBranchSchema, resetSchemaNewFieldsOnCancel } from '../../../middleware/redux/reducers/branch.reducer';
+import { Loader } from '../../../components/loader';
+import { objectType } from '../../../util/types/object.types';
 
 
-export const AddProperty=({back, close, visible, isPropOpen, setProp, save, btnDisabled})=>{
+export const AddProperty=({back, close, visible, isPropOpen, setProp,})=>{
 
     const {data, loading, refetch} = useQuery(GetPropertyByGroupQuery,{
         fetchPolicy:'network-only',
         variables:{
-            objectType: objectType.Branch
+            objectType: objectType.Agency
         }
     });
     const [list, setList] = useState([]);
@@ -185,6 +184,7 @@ export const AddProperty=({back, close, visible, isPropOpen, setProp, save, btnD
         }
     };  
 
+    // const [isPropOpen, setProp] = useState(false);
 
     return(
         <>
@@ -197,12 +197,12 @@ export const AddProperty=({back, close, visible, isPropOpen, setProp, save, btnD
                     {/* <FontAwesomeIcon icon={faChevronLeft} style={{cursor:'pointer'}} onClick={()=>setProp(false)} /> */}
                 </div>
                 :
-                "Edit Branch Form"
+                "Edit Employee Form"
             }
             placement="right"
             closable={true}
             onClose={()=>{close();setProp(false)}}
-            closeIcon={<FontAwesomeIcon icon={faClose} onClick={()=>{dispatch(resetSchemaNewFieldsOnCancel());close();setProp(false);}} className='close-icon'/>}
+            closeIcon={<FontAwesomeIcon icon={faClose} onClick={()=>{close();setProp(false);}} className='close-icon'/>}
             visible={visible}
             width={600}
             
@@ -210,23 +210,20 @@ export const AddProperty=({back, close, visible, isPropOpen, setProp, save, btnD
             mask={false}
             footer={
               <div className='drawer-footer' style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                  {/* <button className={btnDisabled?'disabled-btn drawer-filled-btn':'drawer-filled-btn'} disabled={btnDisabled} onClick={()=>{save();close();setProp(false)}}>Apply</button> */}
                  
-                  {/* <button className='drawer-filled-btn' disabled={btnDisabled} onClick={()=>{save();close();setProp(false)}}>Apply</button> */}
-                  <button className='drawer-outlined-btn' onClick={()=>{dispatch(resetSchemaNewFieldsOnCancel());close();setProp(false);}}>Cancel</button>
+                  <button className='drawer-outlined-btn' onClick={()=>{close();setProp(false)}}>Cancel</button>
+                  
               </div>
             }
         >
-            
-            
         {
             isPropOpen?
             <>
-                {/* add property */}
-                
                 <div className='content-text'>
                     <div className="text">
                         <p style={{marginBottom:'12px'}}>
-                            Properties are fields that capture and store information. Choose the properties users will see when they create a record. 
+                            Properties are fields that capture and store information. Choose the properties users will see when they create a Employee. 
                         </p>
                         Either the post code, branch name, or address must be required.
                     </div>
@@ -262,7 +259,8 @@ export const AddProperty=({back, close, visible, isPropOpen, setProp, save, btnD
             </>
 
             :
-                null
+             null
+
             // <>
             //     {/* main content of property */}
             //     <div className="left-sidebar-item">
@@ -280,10 +278,9 @@ export const AddProperty=({back, close, visible, isPropOpen, setProp, save, btnD
             //         <FontAwesomeIcon icon={faChevronRight} style={{fontSize:'18px'}} />
             //     </div>
             // </>
-
         }
+        </Drawer>
 
-        </Drawer> 
         </>
     )
 }
