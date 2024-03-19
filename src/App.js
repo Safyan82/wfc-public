@@ -54,6 +54,8 @@ import { PayTable } from './pages/setting/finanace/payTable/payTable';
 import { PayBillColumn } from './pages/setting/finanace/paybillcolumn/payBillColumn';
 import { CustomerPage } from './pages/customer/customer.page';
 import { CustomerDetailPage } from './pages/customer/customerDetailPage/customerDetail.page';
+import { AgencyPage } from './pages/agency/agency.page';
+import { AgencyDetailPage } from './pages/agency/agencyDetailPage/agencyDetail.page';
 
 
 
@@ -160,6 +162,12 @@ function App() {
             {/* Customer */}
             <Route path='customer' element={<CustomerPage/>} />
             <Route path='customer-detail/:id' element={<CustomerDetailPage/>} />
+
+            {/* agency */}
+            <Route path='agency' element={<AgencyPage/>} />
+            <Route path='agency-detail/:id' element={<AgencyDetailPage/>} />
+
+
              
           </Route>
 

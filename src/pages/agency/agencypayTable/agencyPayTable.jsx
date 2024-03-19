@@ -4,10 +4,8 @@ import TabPane from "antd/es/tabs/TabPane"
 import { getPayandBillColumnQuery } from '@src/util/query/payandbillColumn.query';
 import { useMutation, useQuery } from '@apollo/client';
 import { getPayLevelQuery } from '@src/util/query/paylevel.query';
-import { UpsertPayTableMutation } from '@src/util/mutation/payTable.mutation';
-import { getPayTable } from '@src/util/query/PayTable.query';
-import { getCustomerPayTableQuery } from '../../../util/query/customerPayTable.query';
-import { upsertCustomerPayTableMutation } from '../../../util/mutation/customerPayTable.mutation';
+import { getAgencyPayTableQuery } from '../../../util/query/agencyPayTable.query';
+import { upsertAgencyPayTableMutation } from '../../../util/mutation/agencyPayTable.mutation';
 
 const EditableContext = React.createContext(null);
 
@@ -90,7 +88,7 @@ const EditableCell = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
-export const CustomerPayTable = ({id})=>{
+export const AgencyPayTable = ({id})=>{
 
 
     const [remoteColumns, setRemoteColumns] = useState([]);
@@ -124,9 +122,9 @@ export const CustomerPayTable = ({id})=>{
 
     const [dataSource, setDataSource] = useState([]);
 
-    const {data: customerPayTableData, loading: customerPayTableLoading} = useQuery(getCustomerPayTableQuery,{
+    const {data: agencyPayTableData, loading: agencyPayTableLoading} = useQuery(getAgencyPayTableQuery,{
       variables:{
-        customerId: id
+        agencyId: id
       },
       fetchPolicy:'network-only'
     })
@@ -137,7 +135,7 @@ export const CustomerPayTable = ({id})=>{
         const columns = data?.getPayandBillColumn?.response?.map((col)=>(col?._id));
         const resultObject = {};
         
-        const payLevelData = customerPayTableData?.getCustomerPayTable?.response;
+        const payLevelData = agencyPayTableData?.getAgencyPayTable?.response;
 
         for (let i = 0; i < columns?.length; i ++) {
           const payLevelColData = payLevelData?.find((pld)=>pld?.payLevelId===pl?._id);
@@ -152,9 +150,9 @@ export const CustomerPayTable = ({id})=>{
         })
 
       }))
-    },[payLevel, customerPayTableData?.getCustomerPayTable?.response]);
+    },[payLevel, agencyPayTableData?.getAgencyPayTable?.response]);
 
-    const [upsertCustomerPayTable, {loading: upsertCustomerPayTableLoading}] = useMutation(upsertCustomerPayTableMutation);
+    const [upsertAgencyPayTable, {loading: upsertAgencyPayTableLoading}] = useMutation(upsertAgencyPayTableMutation);
 
     const handleSave = async(row) => {
 
@@ -169,10 +167,10 @@ export const CustomerPayTable = ({id})=>{
         });
         setDataSource(newData);
 
-        await upsertCustomerPayTable({
+        await upsertAgencyPayTable({
           variables:{
             input: {
-              customerId: id,
+              agencyId: id,
               payLevelId,
               payTableMeta: rest
             }

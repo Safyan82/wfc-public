@@ -12,6 +12,7 @@ export const objectType = {
     SiteGroup: "SiteGroup",
     Site: "Site",
     Customer: "Customer",
+    Agency: "Agency",
     Setting: "Setting",
     UserRoles: "UserRoles",
     UserTeam: "UserTeams",
