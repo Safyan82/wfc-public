@@ -126,6 +126,7 @@
 .custom-select{
   border-radius: 3px;
   margin-top: -1%;
+  /* border: 0px !important; */
 }
 .step2 .ant-select-selection-item{
   margin-top: -10px;
@@ -142,7 +143,7 @@
 
 .custom-select .ant-select-selector{
   background-color: #f5f8fa !important;
-  
+  /* border: 0px !important; */
 }
 
 
