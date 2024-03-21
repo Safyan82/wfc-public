@@ -436,7 +436,7 @@ const getField = (data, setData, branchData, property, popoverRef, inputRef, par
       onBlur={(e)=>onBlurDesign(e.target)} 
       onFocus={(e)=>onFocusDesign(e.target)}
       
-      onChange={(e)=>{;handelChange(e.target, property?.propertyDetail);}} 
+      onChange={(e)=>{handelChange(e.target, property?.propertyDetail);}} 
       name={name} 
       id={name} 
       />

@@ -202,7 +202,7 @@ export const AddProperty=({back, close, visible, isPropOpen, setProp, save, btnD
             placement="right"
             closable={true}
             onClose={()=>{close();setProp(false)}}
-            closeIcon={<FontAwesomeIcon icon={faClose} onClick={()=>{dispatch(resetSchemaNewFieldsOnCancel());close();setProp(false);}} className='close-icon'/>}
+            closeIcon={<FontAwesomeIcon icon={faClose} onClick={()=>{close();setProp(false);}} className='close-icon'/>}
             visible={visible}
             width={600}
             
@@ -212,7 +212,7 @@ export const AddProperty=({back, close, visible, isPropOpen, setProp, save, btnD
               <div className='drawer-footer' style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
                   {/* <button className={btnDisabled?'disabled-btn drawer-filled-btn':'drawer-filled-btn'} disabled={btnDisabled} onClick={()=>{save();close();setProp(false)}}>Apply</button> */}
                  
-                  <button className='drawer-outlined-btn' onClick={()=>{dispatch(resetSchemaNewFieldsOnCancel());close();setProp(false)}}>Cancel</button>
+                  <button className='drawer-outlined-btn' onClick={()=>{close();setProp(false)}}>Cancel</button>
                   
               </div>
             }

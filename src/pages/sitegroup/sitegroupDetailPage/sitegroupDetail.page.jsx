@@ -7,6 +7,7 @@ import { useQuery } from "@apollo/client";
 import { Col, Row } from "antd";
 import { SiteGroupDetailPageLeftSideBar } from "./component/leftSidebar";
 import { SiteGroupPostSection } from "./component/middleSection";
+import { SiteGroupPayTable } from "../sitegroupPayTable/sitegroupPayTable";
 
 export const SiteGroupDetailPage = ()=>{
 
@@ -17,6 +18,7 @@ export const SiteGroupDetailPage = ()=>{
         PAYTABLE: 'Pay Table',
         NOTIFICATIONS: 'Notifications',
         HOLIDAYS: 'Holidays',
+        NOTES: 'Notes',
         SHIFTTYPEMAPPING: 'Shift Type Mapping'
     };
 
@@ -34,13 +36,16 @@ export const SiteGroupDetailPage = ()=>{
 
     useEffect(()=>{
         if(!siteGroupLoading){
-            const {sitegroupname, metadata} = siteGroupData?.siteGroup;
-            setSiteGroup({sitegroupname, ...metadata});
-            console.log(siteGroupData?.siteGroup, "siteeee")
+            const {sitegroupname, customer, branch, metadata, customerId, branchId} = siteGroupData?.siteGroup?.response;
+            setSiteGroup({sitegroupname, customer, branch, customerId, branchId, ...metadata});
         }
     },[siteGroupData,siteGroupLoading]);
 
+    const [isFieldChanged, setIsFieldChanged] = useState(false);
+    const [saveUpdate, setSaveUpdate] = useState(false);
+
     return(
+        <>
         <div>
             {/* site group tabs */}
 
@@ -77,6 +82,10 @@ export const SiteGroupDetailPage = ()=>{
                             <SiteGroupDetailPageLeftSideBar
                                 siteGroup={siteGroup}
                                 loading={siteGroupLoading}
+                                setIsFieldChanged={setIsFieldChanged}
+                                saveUpdate={saveUpdate}
+                                setSaveUpdate={setSaveUpdate}
+                                refetch={refetch}
                             />
                         </Col>
 
@@ -84,11 +93,41 @@ export const SiteGroupDetailPage = ()=>{
                             <SiteGroupPostSection/>
                         </Col>
                     </Row>
-                    :null
+                    :
+                    activeTab===siteGrouptabs?.PAYTABLE?
+                    <Row>
+                        <Col span={6}>
+                            <SiteGroupDetailPageLeftSideBar
+                                siteGroup={siteGroup}
+                                loading={siteGroupLoading}
+                                setIsFieldChanged={setIsFieldChanged}
+                                saveUpdate={saveUpdate}
+                                setSaveUpdate={setSaveUpdate}
+                                refetch={refetch}
+
+
+                            />
+                        </Col>
+
+                        <Col span={18}>
+                            <SiteGroupPayTable/>
+                        </Col>
+                    </Row>
+                    : null
                 
                 }
             </div>
 
         </div>
+        {isFieldChanged>0 ?
+            <div className='action-footer'>
+                <button disabled={siteGroupLoading} className={siteGroupLoading? 'disabled-btn drawer-filled-btn' : 'drawer-filled-btn'} onClick={()=>setSaveUpdate(true)}>Save</button>
+                <button disabled={siteGroupLoading} className={siteGroupLoading? 'disabled-btn drawer-outlined-btn' : 'drawer-outlined-btn'} onClick={async()=> await refetch()}>Cancel</button>
+                {
+                    <span className='text' style={{margin: 0}}>You've changed field value</span>
+                }
+            </div>
+        : null}
+        </>
     )
 };

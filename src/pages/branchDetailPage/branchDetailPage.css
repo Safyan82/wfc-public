@@ -2,11 +2,13 @@
     background-color: rgb(245, 248, 250);
     border-top: 1px solid rgb(203, 214, 226);
     padding: 1rem 140px 1rem 3.25rem;
-    position: relative;
+    position: absolute;
     margin-top: -75px;
     overflow: hidden;
     height: 42.5px;
     display: flex;
     align-items: center;
     column-gap: 20px;
+    bottom: 0;
+    width: -webkit-fill-available;
 }

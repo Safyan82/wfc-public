@@ -14,6 +14,8 @@ query($input: SiteGroupFilter!){
     sitegroups(input: $input) {
       _id
       sitegroupname
+      customer 
+      branch
       metadata
       createdDate
       updatedDate
@@ -24,9 +26,17 @@ query($input: SiteGroupFilter!){
 export const getSiteGroup = gql `
 query($id: String!){
   siteGroup(_id: $id) {
-    _id
-    sitegroupname
-    metadata
+    response 
+    message
+  }
+}
+`;
+
+export const getSiteGroupPayTableQuery = gql `
+query($sitegroupId: String!){
+  getSiteGroupPayTable(sitegroupId: $sitegroupId) {
+    response
+    message
   }
 }
 `;

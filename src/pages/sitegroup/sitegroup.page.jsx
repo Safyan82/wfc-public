@@ -10,6 +10,7 @@ import { objectType } from "../../util/types/object.types";
 import { useDispatch } from "react-redux";
 import { AddSiteGroupMutation, UpdateBulkSiteGroupMutation } from "../../util/mutation/siteGroup.mutation";
 import { setNotification } from "../../middleware/redux/reducers/notification.reducer";
+import { SitegroupFormDrawer } from "./sitegroupFormDrawer";
 
 export const SiteGroup = ()=>{
     
@@ -69,15 +70,19 @@ export const SiteGroup = ()=>{
 
     const handelSubmit = async (isCloseAble)=>{
         const sitegroupname = data?.find((d)=>(Object.keys(d)[0]=="sitegroupname"));
+        const branch = data?.find((d)=>(Object.keys(d)[0]=="branch"));
+        const customer = data?.find((d)=>(Object.keys(d)[0]=="customer"));
        
         let metadata = {};
         data?.map(d=>{
-          if(Object.keys(d)[0]!=="sitegroupname"){
+          if(Object.keys(d)[0]!=="sitegroupname" && Object.keys(d)[0]!=="branch" && Object.keys(d)[0]!=="customer" ){
             metadata[Object.keys(d)[0]]= Object.values(d)[0]
           }
         });
         const siteGroupData = {
           ...sitegroupname,
+          ...branch,
+          ...customer,
           metadata,
         }
         // handel mutation
@@ -98,7 +103,7 @@ export const SiteGroup = ()=>{
             let schemaFields = {};
             
             
-              if(property?.field==="sitegroupname"){
+              if(property?.field==="sitegroupname" || property?.field==="customer" || property?.field==="branch" ){
                 schemaFields[property?.field] = property?.value;
               }
               else{
@@ -188,7 +193,7 @@ export const SiteGroup = ()=>{
         
         </div>
 
-        <FormDrawer
+        <SitegroupFormDrawer
             objectData={siteGroupSchema}
             objectLoading={siteGroupObjectLoading}
             handelSubmit={handelSubmit}

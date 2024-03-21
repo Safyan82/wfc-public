@@ -32,6 +32,9 @@ export const EditSiteGroupForm=()=>{
       fetchPolicy: 'network-only',
     });
 
+    const [addProperty, setAddProperty] = useState(false);
+
+
 
     const [createBulkProperties, {loading: createBulkPropertiesLoading, error}] = useMutation(BulkSiteGroupObjectCreationMutation);
     
@@ -72,7 +75,7 @@ export const EditSiteGroupForm=()=>{
           }
           dispatch(addFieldToBranchSchema(propData));
         });
-
+        setAddProperty(true)
         setCancel(false);
       }
     },[siteGroupObject]);
@@ -229,6 +232,7 @@ export const EditSiteGroupForm=()=>{
                             }
 
                             <Popover
+                              placement="left"
                               content={
                                 <div className="editFormPop">
                                   <span  onClick={()=>{setOpenDrawer(true);setProp(true);}} >Add properties</span>
@@ -312,16 +316,20 @@ export const EditSiteGroupForm=()=>{
               </div>
 
           {/* side drawer */}
-          <AddProperty
-            close={async()=>{setOpenDrawer(false);setBtnDisabled(true)}}
-            visible={openDrawer}
-            setProp={setProp}
-            isPropOpen={isPropOpen}
-            save={async()=>{await handelSave();setOpenDrawer(false);setBtnDisabled(true);}}
-            btnDisabled={btnDisabled}
-            
+          
+          {addProperty && !siteGroupObjectLoading && openDrawer?
+            <AddProperty
+              close={async()=>{setOpenDrawer(false);}}
+              visible={openDrawer}
+              setProp={setProp}
+              isPropOpen={isPropOpen}
+              save={async()=>{await handelSave();setOpenDrawer(false);setBtnDisabled(true);}}
+              btnDisabled={()=>{}}
+              
 
-          />
+            />
+            :null
+          }
             
         </div>
     );
