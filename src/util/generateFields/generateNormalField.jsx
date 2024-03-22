@@ -14,11 +14,10 @@ import { useEffect, useState } from "react";
 dayjs.locale('en-gb');
 
 // value and image base is just in use to edit employee personal skill
-export const GenerateFields = ({label, name, fieldType, handelDataValue, property, value="", imgbas64=""})=>{
+export const GenerateNormalFields = ({label, name, fieldType, handelDataValue, property, value="", imgbas64=""})=>{
         
         const {Option} = Select;
 
-        console.log(fieldType, "fielddd", label)
         const {data: customerData, loading: customerLoading} = useQuery(getCustomerQuery,{
           variables: {
               input: {
@@ -48,39 +47,40 @@ export const GenerateFields = ({label, name, fieldType, handelDataValue, propert
           
           fieldType==="singlelineText" || fieldType==="password" || fieldType==="email" ?
           
-          <div className="generatedfieldView">
+          <Form.Item>
             <label>{label} <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
             
             <Input 
-              className='auto-input-control'
+              className='generic-input-control'
               value={value}
               onChange={(e)=>{ handelDataValue(e.target,label);}} 
               type={fieldType==="password"? "password" : "text"}
               name={name} 
               id={name} 
             />
-          </div>  
+          </Form.Item>  
           
           : fieldType==="multilineText"?
 
-          <div className="generatedfieldView">
+          <Form.Item>
           <label>{label} <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
           <Input.TextArea rows={1} 
-            className='auto-input-control' 
+            className='generic-input-control' 
             style={{maxWidth:'80%'}}
             value={value}
             onChange={(e)=>{handelDataValue(e.target);}} 
             name={name} 
             id={name} 
             />
-          </div>  
+          </Form.Item>  
 
           : fieldType=="singleCheckbox" ?
           
-          <div  className="generatedfieldView">
+          <Form.Item>
             <label>{label} <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
-            <div className="auto-custom-select">
+            
               <Select
+                className="custom-select"
                 style={{width:'100%'}}
                 name={name}
                 id={name}
@@ -96,16 +96,15 @@ export const GenerateFields = ({label, name, fieldType, handelDataValue, propert
                   <Option value="yes">Yes</Option>
                   <Option value="no">No</Option>
               </Select>
-            </div>
-          </div>
+          </Form.Item>
           
           : fieldType == 'selectDropdown' || fieldType == 'radioDropdown' ?
             name=="branch"?
-            <div className="generatedfieldView">
+            <Form.Item>
                 <label>{'Branch'} <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
-                <div className="auto-custom-select">
+                
                   <Select
-                      
+                      className="custom-select"
                       name={name}
                       id={name}
                       placeholder="Select Branch"
@@ -123,15 +122,14 @@ export const GenerateFields = ({label, name, fieldType, handelDataValue, propert
                       ))
                       }
                   </Select>
-                </div>
 
-            </div>
+            </Form.Item>
             :
             name=="customer"?
               
-              <div className="generatedfieldView">
+              <Form.Item>
                 <label>{label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
-                <div className="auto-custom-select">
+              
                   
                   <Select  
                     suffixIcon={<span className='dropdowncaret'></span>}
@@ -144,24 +142,23 @@ export const GenerateFields = ({label, name, fieldType, handelDataValue, propert
                       name,
                       value: e
                     });}}
-
+                    className="custom-select"
                   >
                       {customerData?.customers?.map((option)=>(<Option value={option._id} label={option?.customername}> {option?.customername} </Option>))}
                   </Select>
 
-                </div>
-              </div> 
+              </Form.Item> 
             :
 
-            <div className="generatedfieldView">
+            <Form.Item>
                 <label>{label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
-                  <div className="auto-custom-select">
+                 
                     <Select 
                       suffixIcon={<span className='dropdowncaret'></span>}
                       name={name}
                       id={name}
                       value={value}
-                      style={{width:'-webkit-fill-available'}}
+                      className="custom-select"
 
                       onChange={(e)=>{handelDataValue({
                         name,
@@ -171,11 +168,11 @@ export const GenerateFields = ({label, name, fieldType, handelDataValue, propert
                     >
                         {property?.options?.map((option)=>(<Option value={option.value}> {option.key} </Option>))}
                     </Select>
-                  </div>
-            </div>  
+
+            </Form.Item>  
           
           : fieldType == 'multiCheckbox' ?
-          <div className="generatedfieldView">
+          <Form.Item>
               <label>{label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup> </label>
               <TreeSelect 
                   multiple
@@ -196,9 +193,11 @@ export const GenerateFields = ({label, name, fieldType, handelDataValue, propert
                   ))}
               </TreeSelect>
         
-          </div>  
+          </Form.Item>  
+
           : fieldType == 'date' || fieldType == 'datetime-local'?
-          <div className="generatedfieldView">
+
+          <Form.Item>
             <label>{label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
             {/* <ConfigProvider locale={locale}> */}
               <DatePicker
@@ -211,28 +210,29 @@ export const GenerateFields = ({label, name, fieldType, handelDataValue, propert
                   value: dateString
               },label);}}
 
-                className='auto-input-control'
+                className='generic-input-control'
               //   disabledDate={
               //     (current)=>handelDateRule(property?.propertyDetail?.rules, current)
               //   }
                 suffixIcon={<FontAwesomeIcon style={{color:'rgb(0, 145, 174) !important'}} icon={faCalendarAlt} />}
               />
             {/* </ConfigProvider> */}
-          </div>
+          </Form.Item>
+
           : fieldType == 'time' ?
-          <div className="generatedfieldView">
+          <Form.Item>
             <label>{label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
             <TimePicker
               id={name}
-              className='auto-input-control'
+              className='generic-input-control'
               value={value}
               onChange={(e)=>{handelDataValue(e.target,label);}}
               suffixIcon={<FontAwesomeIcon style={{color:'rgb(0, 145, 174) !important'}} icon={faClock} />}
             />
-          </div>
+          </Form.Item>
           :
           fieldType=="file"?
-          <div className="generatedfieldView">
+          <Form.Item>
               <label>{label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
 
               {<Image style={imgbas64?.name || imgbas64==""?{display:'none'}:{}} src={imgbas64} width={50} height={30} />}
@@ -242,23 +242,23 @@ export const GenerateFields = ({label, name, fieldType, handelDataValue, propert
                 name={name} 
                 // value={typeof(imgbas64)==="string"?"":value}
                 onChange={(e)=>{handelDataValue(e.target,label,fieldType);}}
-                type={fieldType} className='auto-input-control'
+                type={fieldType} className='generic-input-control'
               /> 
               
               
-          </div>
+          </Form.Item>
           :
-          <div className="generatedfieldView">
+          <Form.Item>
               <label>{label}  <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
               <Input 
                 id={name}
                 name={name} 
                 value={value}
                 onChange={(e)=>{handelDataValue(e.target,label,fieldType);}}
-                type={fieldType} className='auto-input-control'
+                type={fieldType} className='generic-input-control'
               /> 
               
-          </div>
+          </Form.Item>
         
         )
 }

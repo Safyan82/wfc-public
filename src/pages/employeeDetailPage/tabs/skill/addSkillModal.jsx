@@ -12,6 +12,7 @@ import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import { setNotification } from "../../../../middleware/redux/reducers/notification.reducer"
 import { useParams } from "react-router-dom"
+import { GenerateNormalFields } from "../../../../util/generateFields/generateNormalField"
 
 export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSelectedRowKeys})=>{
         
@@ -268,7 +269,7 @@ export const SkillModal = ({visible, onClose, refetchSkill, skillToBeEdit, setSe
                                 const {value, imgbas64} = field?.find((f)=>f.name==name) || {value: "", imgbas64: ""};
                                 // const {value, imgbas64} = {value: "", imgbas64: ""};
                                
-                                return GenerateFields(label, name, fieldType, handelDataValue, prop, value, imgbas64);
+                                return <GenerateNormalFields label={label} name={name} fieldType={fieldType} handelDataValue={handelDataValue} property={prop} value={value} imgbas64={imgbas64} />;
                             })
                             : null
                         }

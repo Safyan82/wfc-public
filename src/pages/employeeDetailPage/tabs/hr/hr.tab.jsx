@@ -112,17 +112,30 @@ export const HRTab = ()=>{
                 <div className="hr-section">
                         <div className="hr-info">
                             <h3> {selectedGrp} </h3>
-                            {
-                                selectedGroupProp?.map((prop)=> {
-                                    
-                                    const label = prop?.label;
-                                    const name = prop?.label.toLowerCase().replace(/\s/g,"");
-                                    const fieldType = prop?.fieldType;
-                                    const newprop = name=="nationality"? {...prop, options: countryList} : prop;
-                                    const {value} = field?.find((f)=>f.name==name) || {value: ""};
-                                    return GenerateFields(label, name, fieldType, handelDataValue, newprop, value);
-                                })
-                            }
+                            <div style={{display: 'flex', justifyContent: 'flex-start', width:'100%', flexWrap:'wrap', gap:'1px 100px'}}>
+                                {
+                                    selectedGroupProp?.map((prop)=> {
+                                        
+                                        const label = prop?.label;
+                                        const name = prop?.label.toLowerCase().replace(/\s/g,"");
+                                        const fieldType = prop?.fieldType;
+                                        const newprop = name=="nationality"? {...prop, options: countryList} : prop;
+                                        const {value} = field?.find((f)=>f.name==name) || {value: ""};
+                                        return (
+                                            <div style={{width:'420px'}}>
+                                                <GenerateFields 
+                                                    label={label}
+                                                    name={name}
+                                                    fieldType={fieldType}
+                                                    handelDataValue={handelDataValue}
+                                                    property={newprop}
+                                                    value={value}
+                                                />
+                                            </div>
+                                        );
+                                    })
+                                }
+                            </div>
                         </div>
 
                     

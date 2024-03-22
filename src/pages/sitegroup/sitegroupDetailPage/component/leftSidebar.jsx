@@ -313,7 +313,7 @@ export const SiteGroupDetailPageLeftSideBar = ({siteGroup, loading, setIsFieldCh
                                 :
                                 <div className='fieldView'>
                                     <div>
-                                        {siteGroupSchema[index].label}
+                                        {siteGroupSchema[index]?.label}
                                     </div>
                                     <div>
                                         {prop}
