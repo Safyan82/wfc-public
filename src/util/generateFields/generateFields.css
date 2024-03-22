@@ -1,0 +1,93 @@
+.generatedfieldView{
+    display: flex;
+    height: 37px;
+    border-radius: 5px;
+    margin-top: 16px;
+    padding: 8px 10px;
+    background-color: #F7F9F6;
+    align-items: center;
+    /* width: 420px; */
+    gap:30px
+}
+
+.generatedfieldView:hover{
+    background-color: #e5f5f8;
+    cursor: pointer;
+}
+
+
+.generatedfieldView label{
+    width: -webkit-fill-available !important;
+}
+
+.generatedfieldView label:hover{
+    cursor: pointer;
+}
+
+.generatedfieldView .ant-picker-focused{
+    box-shadow: none !important;
+}
+
+
+/* auto generic input */
+
+
+.auto-input-control{
+    padding: 9px 10px;
+    border-radius: 0px;
+    border: 0px;
+    border-bottom: 1px solid #cbd6e2;
+    font-size: 16px;
+    transition: all .15s ease-out;
+    background-color: transparent;
+    color: #33475b;
+    display: block;
+    height: 40px;
+    line-height: 22px;
+    width: 122%;
+    margin-top: 3px;
+}
+
+.auto-input-control:focus{
+    /* border-bottom: 1px solid rgba(0,208,228,.5) !important; */
+    background-color: transparent !important;
+    box-shadow: 0px 1px 0px rgba(0,208,228,.5) !important;
+}
+
+
+.auto-input-control:hover{
+    outline: 0 !important;
+    border-color: rgba(0,208,228,.5) !important;
+}
+
+/* auto select while generating the dropdown select */
+
+.auto-custom-select{
+    margin-top: -1%;
+    width: 140%;
+}
+
+.auto-custom-select .ant-select-selector{
+  border: 0 !important;
+  box-shadow: 0 !important;
+  border-bottom: 1px solid #cbd6e2 !important;
+  outline: 0 !important;
+  background-color: transparent !important;
+
+
+}
+
+
+.auto-custom-select .ant-select-selector:hover{
+    border-color: rgba(0,208,228,.5) !important;
+    background-color: transparent !important;
+    
+}
+
+.auto-custom-select .ant-select-focused .ant-select-selector{
+    box-shadow: none !important;
+    /* border-bottom: 0.1px solid rgba(0,208,228,.5) !important; */
+    background-color: transparent !important;
+    box-shadow: 0px 1px 0px rgba(0,208,228,.5) !important;
+    outline: 0 !important;
+}
