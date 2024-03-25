@@ -109,9 +109,9 @@ export const Setting = ({themeData, themeLoading, refetchTheme})=>{
                                     <Collapse.Panel key='4'  header={<div className='setting-sidebar-nav'>Pay & Bill Management</div>}>    
                                         <ul className='setting-sidebar-nav-list'>
                                             <Link to={routes.paybillcol}><li className={path==routes.paybillcol?active:inactive}>Pay & Bill Columns</li></Link>
-                                            <Link to={routes.paylevel}><li className={path==routes.paylevel?active:inactive}>Pay Level</li></Link>
+                                            <Link to={routes.paylevel}><li className={path==routes.paylevel?active:inactive}>Duty Type</li></Link>
                                             <Link to={routes.paytable}><li className={path==routes.paytable?active:inactive }>Pay Table</li></Link>
-                                            <Link to={routes.shifttype}><li className={path==routes.shifttype?active:inactive}>Shift Type</li></Link>
+                                            <Link to={routes.shifttype}><li className={path==routes.shifttype?active:inactive}>Hour Type</li></Link>
                                         </ul>
                                     </Collapse.Panel>  
                                     

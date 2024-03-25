@@ -47,7 +47,7 @@ export const ShiftTypeDrawer = ({visible, close, summaryShiftType, shiftTypeEdit
                 dispatch(setNotification({
                     error: false,
                     notificationState: true,
-                    message: "Shift Type was updated successfully",
+                    message: "Hour Type was updated successfully",
                 }));
             }
             else{
@@ -62,7 +62,7 @@ export const ShiftTypeDrawer = ({visible, close, summaryShiftType, shiftTypeEdit
                 dispatch(setNotification({
                     error: false,
                     notificationState: true,
-                    message: "Shift Type was created successfully",
+                    message: "Hour Type was created successfully",
                 }));
             }
             close();
@@ -80,7 +80,7 @@ export const ShiftTypeDrawer = ({visible, close, summaryShiftType, shiftTypeEdit
         <Drawer
             open={visible}
             placement="right"
-            title={"Add Summary Shift Type"}
+            title={"Add Hour Type"}
             width={800}
             footer={
             <div className='drawer-footer' style={{display:'flex',gap:'20px'}}>
@@ -123,9 +123,9 @@ export const ShiftTypeDrawer = ({visible, close, summaryShiftType, shiftTypeEdit
             </Form.Item>
 
             <Form.Item>
-                <label>Summary shift type</label>
+                <label>Summary hour type</label>
                 <Select
-                    placeholder="Select summary shift type"
+                    placeholder="Select summary hour type"
                     value={summaryShiftTypeId}
                     onChange={(e)=>setSummaryShiftTypeId(e)}
                     className="custom-select"

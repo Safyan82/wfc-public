@@ -47,7 +47,7 @@ export const NewPayLevelDrawer = ({editPayLevel, visible, close, refetch}) =>{
                 dispatch(setNotification({
                     error: false,
                     notificationState: true,
-                    message: "Pay level was updated successfully"
+                    message: "Duty Type was updated successfully"
                 }));
 
             }else{
@@ -62,7 +62,7 @@ export const NewPayLevelDrawer = ({editPayLevel, visible, close, refetch}) =>{
                 dispatch(setNotification({
                     error: false,
                     notificationState: true,
-                    message: "Pay Level was added Successfully"
+                    message: "Duty Type was added Successfully"
                 }));
 
             }
@@ -86,7 +86,7 @@ export const NewPayLevelDrawer = ({editPayLevel, visible, close, refetch}) =>{
         <Drawer
             open={visible}
             placement="right"
-            title={"Add Pay Level"}
+            title={"Add Duty Type"}
             width={600}
             footer={
             <div className='drawer-footer' style={{display:'flex',gap:'20px'}}>
