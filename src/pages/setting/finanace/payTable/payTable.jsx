@@ -109,7 +109,7 @@ export const PayTable = ({themeData})=>{
               title: col?.columnName,
               dataIndex: col?._id,
               editable: true,
-              width:'20%'
+              // width:'20%'
             }
           ))
         ]);

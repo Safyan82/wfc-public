@@ -83,12 +83,12 @@ export const PayLevel = ({themeData})=>{
                 <div className="setting-body-inner">
                     <div className="setting-body-title">
                         <div className='setting-body-inner-title'>
-                            Pay Level
+                            Duty Type
                         </div>
                     </div>
 
                     <div className="text">
-                        Define clear payment tiers within the pay level module, aligning compensation with roles and responsibilities for a transparent and equitable remuneration structure.
+                        Define clear payment tiers within the Duty Type module, aligning compensation with roles and responsibilities for a transparent and equitable remuneration structure.
                     </div>
 
 
@@ -96,7 +96,7 @@ export const PayLevel = ({themeData})=>{
 
                     <div className="propertyTab"></div>
                     <Tabs defaultActiveKey="1" >
-                        <TabPane tab={`Pay Level`} key="1" >
+                        <TabPane tab={`Duty Type`} key="1" >
                             <div>
                                 {/* search header */}
                                 <div style={{display:'flex', justifyContent:'flex-end', alignItems:'center'}}>
@@ -111,7 +111,7 @@ export const PayLevel = ({themeData})=>{
                                             <FontAwesomeIcon style={{color:'#7c98b6', cursor:'pointer', fontSize: '20px'}} onClick={()=>{setSearchInput('');}} icon={faClose}/> : 
                                             <FontAwesomeIcon style={{color:'#0091ae'}} icon={faSearch}/> }
                                         /> */}
-                                        <button className="drawer-filled-btn" onClick={()=>setNewPayLevelModal(!newPayLevelModal)}>Add Pay Level</button>
+                                        <button className="drawer-filled-btn" onClick={()=>setNewPayLevelModal(!newPayLevelModal)}>Add Duty Type</button>
                                 </div>
 
                                 {/* subscription main body cards */}

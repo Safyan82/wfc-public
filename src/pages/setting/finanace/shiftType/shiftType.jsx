@@ -50,7 +50,7 @@ export const ShiftType = ({themeData})=>{
                 <div className="setting-body-inner">
                     <div className="setting-body-title">
                         <div className='setting-body-inner-title'>
-                            Shift Type
+                            Hour Type
                         </div>
                     </div>
 
@@ -65,13 +65,13 @@ export const ShiftType = ({themeData})=>{
                     <div className="propertyTab"></div>
                     <Tabs defaultActiveKey="1" >
 
-                        <TabPane tab={`Shift Type`} key="1" >
+                        <TabPane tab={`Hour Type`} key="1" >
                             <div>
                                 
                                 <div style={{display:'flex', justifyContent:'flex-end', width:'100%'}}>
                                     <button className="drawer-filled-btn" 
                                         onClick={()=>setShiftTypeModal(!shiftTypeModal)}
-                                    >Add Shift Type</button>
+                                    >Add Hour Type</button>
                                 </div>  
 
                                 {/* subscription main body cards */}
@@ -81,14 +81,16 @@ export const ShiftType = ({themeData})=>{
                                     columns={[
                                         {title:'name', dataIndex:'name',                                           
                                             ellipsis:true,
-                                            width:'20%',
+                                            width:'350px',
                                             render: (_, record) => {
                                           const showActions = hoveredRow === record.key;
                                           return (          
-                                              <div style={{display:'flex', alignItems:'center', gap:'20px'}}>
-                                                  {record?.name}
+                                              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                                                  <div style={{width:'100px', overflow:'ellipsis'}}>
+                                                    {record?.name}
+                                                  </div>
                                                   {showActions &&
-                                                  <div style={{width:'auto', display:'flex', justifyContent:'flex-start' ,alignItems:'center', columnGap:'10px'}}>
+                                                  <div style={{width:'auto', display:'flex' ,alignItems:'center', columnGap:'10px'}}>
                                                   
                                                       <button className={"grid-sm-btn"} type="link" onClick={() => { setShiftTypeEdit(record); setShiftTypeModal(true);}}>
                                                           Edit
@@ -107,7 +109,7 @@ export const ShiftType = ({themeData})=>{
                                             } 
                                         }, 
                                         {title:'description', dataIndex:'description'},
-                                        {title:'summary shift type', dataIndex:'summaryShiftType', width:'10%'}, 
+                                        {title:'summary hour type', dataIndex:'summaryShiftType', width:'10%'}, 
                                         {title:'pay code', dataIndex:'payCode'}, {title:'pay column', dataIndex:'paycolumn'},
                                         {title:'pay method', dataIndex:'payMethod'},
                                         {title:'pay multiplier', dataIndex:'payMultiplier'}, 
@@ -121,6 +123,7 @@ export const ShiftType = ({themeData})=>{
                                         paycolumn: shiftType?.payColumnDetail[0]?.columnName,
                                         biillcolumn: shiftType?.billColumnDetail[0]?.columnName,
                                         summaryShiftType: shiftType?.summaryShiftType[0]?.name,
+                                        key: shiftType?._id
 
                                     }))}
                                     
@@ -144,12 +147,12 @@ export const ShiftType = ({themeData})=>{
                             </div>
                         </TabPane>
 
-                        <TabPane tab={`Summary Shift Type`} key="2" >
+                        <TabPane tab={`Summary Hour Type`} key="2" >
                             <div>
                                 
                                 <div style={{display:'flex', justifyContent:'flex-end', width:'100%'}}>
                                     <button className="drawer-filled-btn" onClick={()=>setSummaryShiftTypeModal(!summaryShiftTypeModal)}>
-                                        Add Summary Shift Type
+                                        Add Summary Hour Type
                                     </button>
                                 </div>  
 
@@ -209,12 +212,12 @@ export const ShiftType = ({themeData})=>{
                             </div>
                         </TabPane>
                         
-                        <TabPane tab={`Shift Type Mapping`} key="3" >
+                        <TabPane tab={`Hour Type Mapping`} key="3" >
                             <div>
 
                                 {/* subscription main body cards */}
                                 <div className="propertyTab"></div>
-                                <div className='h4'>Shift type mapping</div>
+                                <div className='h4'>Hour type mapping</div>
 
                             </div>
                         </TabPane>

@@ -45,7 +45,7 @@ export const SummaryShiftTypeDrawer = ({visible, close, refetchSummaryShiftType,
                 dispatch(setNotification({
                     error: false,
                     notificationState: true,
-                    message: "Summary Shift Type was updated successfully",
+                    message: "Summary Hour Type was updated successfully",
                 }));
 
             }else{
@@ -60,7 +60,7 @@ export const SummaryShiftTypeDrawer = ({visible, close, refetchSummaryShiftType,
                 dispatch(setNotification({
                     error: false,
                     notificationState: true,
-                    message: "Summary Shift Type was added successfully",
+                    message: "Summary Hour Type was added successfully",
                 }));
             }
 
@@ -101,7 +101,7 @@ export const SummaryShiftTypeDrawer = ({visible, close, refetchSummaryShiftType,
         <Drawer
             open={visible}
             placement="right"
-            title={summaryShiftTypeEdit?._id? "Update Summary Shift Type" : "Add Summary Shift Type"}
+            title={summaryShiftTypeEdit?._id? "Update Summary Hour Type" : "Add Summary Hour Type"}
             width={600}
             footer={
                 <div className='drawer-footer' style={{display:'flex',gap:'20px'}}>

@@ -56,13 +56,23 @@ import { CustomerPage } from './pages/customer/customer.page';
 import { CustomerDetailPage } from './pages/customer/customerDetailPage/customerDetail.page';
 import { AgencyPage } from './pages/agency/agency.page';
 import { AgencyDetailPage } from './pages/agency/agencyDetailPage/agencyDetail.page';
-
+// HolidayFeed
+import  Holidays from 'date-holidays';
+import { SitePage } from './pages/site/site.page';
 
 
 
 function App() {
+
+  const hd = new Holidays('GB', 'ENG');
+  useEffect(()=>{
+    
+    console.log(hd,"Holiday")
+
+  },[]);
   
   const dispatch = useDispatch();
+
 
   useEffect(()=>{
     dispatch(setNotification({}));
@@ -157,7 +167,7 @@ function App() {
             <Route path='sitegroup-detail/:id' element={<SiteGroupDetailPage/>} />
 
             {/* site */}
-            <Route path='site' element={<Site/>} />
+            <Route path='site' element={<SitePage/>} />
 
             {/* Customer */}
             <Route path='customer' element={<CustomerPage/>} />
