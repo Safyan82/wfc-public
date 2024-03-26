@@ -262,6 +262,26 @@ export const FormDrawer = ({ objectLoading,
               return d;
             }
           }): [...data, {[e.name]: e.value}]);
+
+          
+        const checkMandatory = mandatoryProperties?.length>0 ? mandatoryProperties[0]?.propertyDetail?.label.toLowerCase().replaceAll(" ","") : "";
+        console.log(checkMandatory, "check mandatory");
+        
+        if(e.value.length>0){
+            if(e.name==checkMandatory){
+                setIsOverlay(false);
+            }
+        }else{
+            if(e.name==checkMandatory){
+                setIsOverlay(true);
+                
+              }
+              Array.from(document.getElementsByClassName("errorMsg")).map((ele)=>ele.remove());
+              e.style.borderColor="rgba(0,208,228,.5)";
+              e.style.boxShadow="0 0 4px 1px rgba(0,208,228,.3), 0 0 0 1px #00d0e4";
+        }
+
+        checkMandatoryField();
       }
 
       const handelChange=(e, propertyDetail)=>{
@@ -618,6 +638,8 @@ export const FormDrawer = ({ objectLoading,
                     <Form.Item>
                       <label>{property?.propertyDetail?.label} <sup className='mandatory'>{property?.isMandatory? '*' : null}</sup></label>
                       <Select
+                        className='custom-select'
+                        suffixIcon={<div className='dropdowncaret'></div>}
                         name={name}
                         id={name}
                         value={value}

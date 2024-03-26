@@ -9,6 +9,7 @@ import { EditColumn } from "../../components/table/editColumn/editColumn.modal";
 import { FormDrawer } from "../formDrawer";
 import { AgencyObjectQuery, createAgencyMutation, getAgencies } from "../../util/query/agency.query";
 import { UpdateBulkAgency } from "../../util/mutation/agency.mutation";
+import { AgencyFormDrawer } from "./agencyFormDrawer";
 
 export const AgencyPage = ()=>{
     
@@ -190,7 +191,7 @@ export const AgencyPage = ()=>{
         
         </div>
 
-        <FormDrawer
+        <AgencyFormDrawer
             objectData={agencySchema}
             objectLoading={agencyObjectLoading}
             handelSubmit={handelSubmit}
