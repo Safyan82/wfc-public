@@ -661,8 +661,8 @@ export const AgencyFormDrawer = ({ objectLoading,
         {address:company?.address_snippet},
         {agencyname:company?.title},
         {postcode:company?.address?.postal_code},
-        {companynumber:company?.company_number},
-        {companystatus:company?.company_status}
+        {agencynumber:company?.company_number},
+        {agencystatus:company?.company_status}
       ];
       
       const contractorDetail = await axios.get("http://134.209.22.223:3500/getSIAApprovedAgencyDetail");
