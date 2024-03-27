@@ -56,20 +56,13 @@ import { CustomerPage } from './pages/customer/customer.page';
 import { CustomerDetailPage } from './pages/customer/customerDetailPage/customerDetail.page';
 import { AgencyPage } from './pages/agency/agency.page';
 import { AgencyDetailPage } from './pages/agency/agencyDetailPage/agencyDetail.page';
-// HolidayFeed
-import  Holidays from 'date-holidays';
 import { SitePage } from './pages/site/site.page';
+// HolidayFeed
 
 
 
 function App() {
 
-  const hd = new Holidays('GB', 'ENG');
-  useEffect(()=>{
-    
-    console.log(hd,"Holiday")
-
-  },[]);
   
   const dispatch = useDispatch();
 
