@@ -45,12 +45,6 @@ export const AgencyFormDrawer = ({ objectLoading,
         }
       },[objectData, visible]);
       
-      const getSIAApprovedAgencyDetail = async () => {
-        const agencyData = data?.find((da)=>da?.agencyname);
-        const contractorDetail = await axios.get("http://localhost:3500/getSIAApprovedAgencyDetail");
-        const approvedContractor = contractorDetail?.data?.data?.find((apc)=>apc?.contractor?.toLowerCase()==agencyData?.agencyname.toLowerCase());
-        return approvedContractor;
-      }
       
       useEffect(()=>{
         checkMandatoryField();
@@ -263,10 +257,61 @@ export const AgencyFormDrawer = ({ objectLoading,
       }
 
 
-      const handelDataValue=(e)=>{
+      const handelDataValue=async (e)=>{
 
         const isExist = data?.find((d)=>Object.keys(d)[0]==e.name);
-        
+        if(e.name==="agencybasedin"){
+
+          setData(isExist? data?.map((d)=>{
+            if(Object.keys(d)[0]==e.name){
+              return {
+                [e.name]: e.value,
+              }
+            }else{
+              return {name: d.name, value:''};
+            }
+          }): [...data, {[e.name]: e.value}]);
+
+        }else if(e.name==="agencyname"){
+
+          if(data?.find((d)=>d?.agencybasedin==="NON-UK")){
+            
+            const contractorDetail = await axios.get("http://134.209.22.223:3500/getSIAApprovedAgencyDetail");
+            const approvedContractor = contractorDetail?.data?.data?.find((apc)=>apc?.contractor.includes(e.value));
+            const isSectorExist = data?.find((d)=>Object.keys(d)[0]=='sectors');            
+            
+            setData(isExist? data?.map((d)=>{
+              if(Object.keys(d)[0]==e.name){
+                return [{
+                  [e.name]: e.value,
+                },{sectors: JSON.stringify(approvedContractor)}]
+              }
+              else if(Object.keys(d)[0]==="agencybasedin" || Object.keys(d)[0]==="phonenumber" || Object.keys(d)[0]==="agencyalias"){
+                return d;
+              }else{
+                return {name: d?.name, value:''};
+              }
+            }): [...data, {sectors: JSON.stringify(approvedContractor)}]);
+            
+          }
+          else{
+            
+            setData(isExist? data?.map((d)=>{
+              if(Object.keys(d)[0]==e.name){
+                return {
+                  [e.name]: e.value,
+                }
+              }
+              else if(Object.keys(d)[0]==="agencybasedin" || Object.keys(d)[0]==="phonenumber" || Object.keys(d)[0]==="agencyalias"){
+                return d;
+              }else{
+                return {name: d?.name, value:''};
+              }
+            }): [...data, {[e.name]: e.value}]);
+          }
+
+        }else{
+
           setData(isExist? data?.map((d)=>{
             if(Object.keys(d)[0]==e.name){
               return {
@@ -276,6 +321,7 @@ export const AgencyFormDrawer = ({ objectLoading,
               return d;
             }
           }): [...data, {[e.name]: e.value}]);
+        }
           
         const checkMandatory = mandatoryProperties?.length>0 ? mandatoryProperties[0]?.propertyDetail?.label.toLowerCase().replaceAll(" ","") : "";
      
@@ -572,22 +618,20 @@ export const AgencyFormDrawer = ({ objectLoading,
 
     const handelCompanyDetail = async (companyname) => {
         try{      
+
           setCompanySuggestion(true);
           const companyDetail = await axios.get(automationEndPoint+companyname);
+          
           setCompanies(companyDetail?.data?.data);
-          const contractorDetail = await axios.get("http://134.209.22.223:3500/getSIAApprovedAgencyDetail");
-          const approvedContractor = contractorDetail?.data?.data?.find((apc)=>apc?.contractor?.toLowerCase()==companyname.toLowerCase());
-          const approvedContractorDetail = [{agencyname:companyname},{'activities(sectors)approved': approvedContractor?.sector}, {'expirydateofaccreditation': approvedContractor?.expiry}];
-    
-          const preField = ['agencyname', 'activities(sectors)approved', 'expirydateofaccreditation'];
-    
-          setData([...data?.filter((d)=> !preField.includes(Object.keys(d)[0])), ...approvedContractorDetail]);
-    
+
         }catch(err){
-            setCompanies([]);
-            setCompanies(false);
+
+          setCompanies([]);
+          setCompanies(false);
+
         }
     };
+
 
     const companyPopover = useRef();
 
@@ -622,11 +666,10 @@ export const AgencyFormDrawer = ({ objectLoading,
       ];
       
       const contractorDetail = await axios.get("http://134.209.22.223:3500/getSIAApprovedAgencyDetail");
-      const agencyData = data?.find((da)=>da?.agencyname);
       const approvedContractor = contractorDetail?.data?.data?.find((apc)=>apc?.contractor?.toLowerCase()==company?.title.toLowerCase());
-      const approvedContractorDetail = [{'activities(sectors)approved': approvedContractor?.sector}, {'expirydateofaccreditation': approvedContractor?.expiry}];
+      const approvedContractorDetail = [{'sectors': approvedContractor?.sector}, {'expirydateofaccreditation': approvedContractor?.expiry}];
 
-      const preField = ['agencyname', 'address', 'postcode', 'agencystatus', 'agencynumber', 'activities(sectors)approved', 'expirydateofaccreditation'];
+      const preField = ['agencyname', 'address', 'postcode', 'agencystatus', 'agencynumber', 'sectors', 'expirydateofaccreditation'];
 
       setData([...data?.filter((d)=> !preField.includes(Object.keys(d)[0])), ...companydata, ...approvedContractorDetail]);
 
