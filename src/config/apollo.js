@@ -4,8 +4,8 @@ import { setContext } from '@apollo/client/link/context';
 
 export const automationEndPoint = "http://134.209.22.223:3500/getcompanydetail/";
 
-// const graphqlEndpoint =  "http://134.209.22.223:5000/graphql"; // Replace with your LIVE GraphQL server URL
-const graphqlEndpoint =  "http://localhost:5000/graphql" // Replace with your LOCAL GraphQL server URL
+const graphqlEndpoint =  "http://134.209.22.223:5000/graphql"; // Replace with your LIVE GraphQL server URL
+// const graphqlEndpoint =  "http://localhost:5000/graphql" // Replace with your LOCAL GraphQL server URL
 
 
 const httpLink = createHttpLink({
